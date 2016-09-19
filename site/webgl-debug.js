@@ -1127,8 +1127,6 @@ var makeShape = function (name, buffers) {
     }
     return shapes[name];
 };
-"use strict;"
-
 var makeCube = function () {
     return makeShape("cube", function () {
         return {
@@ -1153,8 +1151,6 @@ var makeCube = function () {
         };
     } );
 };
-"use strict;"
-
 var makeTetrahedron = function () {
     return makeShape("tetrahedron", function () {
         var overSqrt2 = 1 / Math.sqrt(2);
@@ -1174,8 +1170,6 @@ var makeTetrahedron = function () {
         };
     } );
 };
-"use strict;"
-
 var makeSphere = function (subdivisions) {
     return makeShape("sphere", function () {
         var overSqrt2 = 1 / Math.sqrt(2);

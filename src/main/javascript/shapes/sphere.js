@@ -1,5 +1,3 @@
-"use strict;"
-
 var makeSphere = function (subdivisions) {
     return makeShape("sphere", function () {
         var overSqrt2 = 1 / Math.sqrt(2);

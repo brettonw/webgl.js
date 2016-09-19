@@ -1,5 +1,3 @@
-"use strict;"
-
 var makeCube = function () {
     return makeShape("cube", function () {
         return {

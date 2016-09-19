@@ -1,5 +1,3 @@
-"use strict;"
-
 var makeTetrahedron = function () {
     return makeShape("tetrahedron", function () {
         var overSqrt2 = 1 / Math.sqrt(2);
