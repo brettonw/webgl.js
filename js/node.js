@@ -21,7 +21,7 @@ var Node = function () {
 
     _.traverse = function (baseTransform) {
         var nodeTransform = Float4x4.multiply(baseTransform, this.transform);
-        Shader.currentShader().parameters.modelMatrix.set (nodeTransform);
+        Shader.getCurrentShader().setModelMatrix (nodeTransform);
         this.state.pre ();
         this.shape.draw();
         this.state.post ();

@@ -52,7 +52,7 @@ var draw = function (delta) {
     Float4x4.rotate(viewMatrix, degToRad(currentAngle), [0, 1, 0]);
     Float4x4.scale(viewMatrix, [2, 2, 2]);
     Float4x4.translate(viewMatrix, [-0.5, -0.5, -0.5]);
-    Shader.currentShader().parameters.viewMatrix.set (viewMatrix);
+    Shader.getCurrentShader().setViewMatrix (viewMatrix);
 
     // draw the scene
     scene.traverse(Float4x4.identity());
@@ -70,12 +70,12 @@ var buildScene = function () {
     Float4x4.translate(transform, [1, 1, 1]);
     var background = makeNode ({ transform: transform, shape: "cube", state: {
         pre: function () {
-            Shader.currentShader().parameters.blendAlpha.set (0.85);
+            Shader.getCurrentShader().setBlendAlpha (0.85);
             webgl.cullFace(webgl.FRONT);
             webgl.disable(webgl.DEPTH_TEST);
         },
         post: function () {
-            Shader.currentShader().parameters.blendAlpha.set (1.0);
+            Shader.getCurrentShader().setBlendAlpha (1.0);
             webgl.enable(webgl.DEPTH_TEST);
             webgl.cullFace(webgl.BACK);
         }
@@ -94,8 +94,8 @@ var buildScene = function () {
     var shader = makeShader("shaders/vertex.glsl", "shaders/fragment.glsl");
     var projectionMatrix = Float4x4.create();
     Float4x4.perspective(45, webgl.viewportWidth / webgl.viewportHeight, 0.1, 100.0, projectionMatrix);
-    shader.parameters.projectionMatrix.set (projectionMatrix);
-    shader.parameters.blendAlpha.set (1.0);
+    shader.setProjectionMatrix (projectionMatrix);
+    shader.setBlendAlpha (1.0);
     shader.use ();
 
     draw(0);

@@ -47,11 +47,20 @@ var Shader = function () {
         // have to do this before collecting parameters, or else...
         webgl.useProgram(program);
 
+        var uppercase = function (s) {
+            return s[0].toUpperCase() + s.slice(1);
+        };
+
+        var lowercase = function (s) {
+            return s[0].toLowerCase() + s.slice(1);
+        };
+
         // add shader parameters
-        var parameters = this.parameters = Object.create (null);
         for (let i = 0, end = webgl.getProgramParameter (program, webgl.ACTIVE_UNIFORMS); i < end; i++) {
-            var shaderParameter = makeShaderParameter(program, i);
-            parameters[shaderParameter.name] = shaderParameter;
+            let shaderParameter = makeShaderParameter(program, i);
+            this["set" + uppercase (shaderParameter.name)] = function (value) {
+                shaderParameter.set (value);
+            }
         }
 
         // add shader attributes
@@ -70,7 +79,7 @@ var Shader = function () {
         }
     };
 
-    _.currentShader = function () {
+    _.getCurrentShader = function () {
         return currentShader;
     };
 

@@ -34,7 +34,7 @@ var Shape = function () {
         if (currentShape !== this) {
             webgl.bindBuffer(webgl.ARRAY_BUFFER, this.vertexBuffer);
             webgl.bindBuffer(webgl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
-            Shader.currentShader().bindAttributes();
+            Shader.getCurrentShader().bindAttributes();
             currentShape = this;
         }
         webgl.drawElements(webgl.TRIANGLES, this.indexBuffer.numItems, webgl.UNSIGNED_SHORT, 0);
