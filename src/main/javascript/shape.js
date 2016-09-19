@@ -1,5 +1,3 @@
-"use strict";
-
 var Shape = function () {
     var _ = Object.create(null);
     var currentShape;

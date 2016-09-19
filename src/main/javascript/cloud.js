@@ -1,5 +1,3 @@
-"use strict";
-
 var Cloud = function () {
     var _ = Object.create (Node);
 

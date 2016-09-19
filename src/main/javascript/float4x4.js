@@ -1,12 +1,10 @@
-"use strict";
-
 var Float4x4 = function () {
     var _ = FloatNxN (4);
 
     _.determinant = function (a) {
         var b = a[0], c = a[1], d = a[2], e = a[3], g = a[4], f = a[5], h = a[6], i = a[7], j = a[8], k = a[9], l = a[10], o = a[11], m = a[12], n = a[13], p = a[14];
         a = a[15];
-        return m * k * h * e - j * n * h * e - m * f * l * e + g * n * l * e + j * f * p * e - g * k * p * e - m * k * d * i + j * n * d * i + m * c * l * i - b * n * l * i - j * c * p * i + b * k * p * i + m * f * d * o - g * n * d * o - m * c * h * o + b * n * h * o + g * c * p * o - b * f * p * o - j * f * d * a + g * k * d * a + j * c * h * a - b * k * h * a - g * c * l * a + b * f * l * a
+        return m * k * h * e - j * n * h * e - m * f * l * e + g * n * l * e + j * f * p * e - g * k * p * e - m * k * d * i + j * n * d * i + m * c * l * i - b * n * l * i - j * c * p * i + b * k * p * i + m * f * d * o - g * n * d * o - m * c * h * o + b * n * h * o + g * c * p * o - b * f * p * o - j * f * d * a + g * k * d * a + j * c * h * a - b * k * h * a - g * c * l * a + b * f * l * a;
     };
 
     _.inverse = function (a, b) {
@@ -28,7 +26,7 @@ var Float4x4 = function () {
         b[13] = (c * C - d * y + e * x) * q;
         b[14] = (-n * u + p * B - r * A) * q;
         b[15] = (k * u - l * B + o * A) * q;
-        return b
+        return b;
     };
 
     _.toRotationMat = function (a, b) {
@@ -49,7 +47,7 @@ var Float4x4 = function () {
         b[13] = 0;
         b[14] = 0;
         b[15] = 1;
-        return b
+        return b;
     };
 
     _.toMat3 = function (a, b) {
@@ -63,7 +61,7 @@ var Float4x4 = function () {
         b[6] = a[8];
         b[7] = a[9];
         b[8] = a[10];
-        return b
+        return b;
     };
 
     _.toInverseMat3 = function (a, b) {
@@ -80,7 +78,7 @@ var Float4x4 = function () {
         b[6] = m * n;
         b[7] = (-j * c + d * i) * n;
         b[8] = (f * c - d * g) * n;
-        return b
+        return b;
     };
 
     _.multiplyVec3 = function (a, b, c) {
@@ -90,7 +88,7 @@ var Float4x4 = function () {
         c[0] = a[0] * d + a[4] * e + a[8] * b + a[12];
         c[1] = a[1] * d + a[5] * e + a[9] * b + a[13];
         c[2] = a[2] * d + a[6] * e + a[10] * b + a[14];
-        return c
+        return c;
     };
 
     _.multiplyVec4 = function (a, b, c) {
@@ -101,7 +99,7 @@ var Float4x4 = function () {
         c[1] = a[1] * d + a[5] * e + a[9] * g + a[13] * b;
         c[2] = a[2] * d + a[6] * e + a[10] * g + a[14] * b;
         c[3] = a[3] * d + a[7] * e + a[11] * g + a[15] * b;
-        return c
+        return c;
     };
 
     _.scale = function (a, b, c) {
@@ -120,7 +118,7 @@ var Float4x4 = function () {
             a[9] *= b;
             a[10] *= b;
             a[11] *= b;
-            return a
+            return a;
         }
         c[0] = a[0] * d;
         c[1] = a[1] * d;
@@ -138,7 +136,7 @@ var Float4x4 = function () {
         c[13] = a[13];
         c[14] = a[14];
         c[15] = a[15];
-        return c
+        return c;
     };
 
     _.translate = function (a, b, c) {
@@ -149,7 +147,7 @@ var Float4x4 = function () {
             a[13] = a[1] * d + a[5] * e + a[9] * b + a[13];
             a[14] = a[2] * d + a[6] * e + a[10] * b + a[14];
             a[15] = a[3] * d + a[7] * e + a[11] * b + a[15];
-            return a
+            return a;
         }
         var g = a[0], f = a[1], h = a[2], i = a[3], j = a[4], k = a[5], l = a[6], o = a[7], m = a[8], n = a[9], p = a[10], r = a[11];
         c[0] = g;
@@ -168,7 +166,7 @@ var Float4x4 = function () {
         c[13] = f * d + k * e + n * b + a[13];
         c[14] = h * d + l * e + p * b + a[14];
         c[15] = i * d + o * e + r * b + a[15];
-        return c
+        return c;
     };
 
     _.rotate = function (a, b, c, d) {
@@ -209,7 +207,7 @@ var Float4x4 = function () {
         d[9] = f * z + m * e + s * g;
         d[10] = k * z + n * e + A * g;
         d[11] = l * z + p * e + B * g;
-        return d
+        return d;
     };
 
     _.rotateX = function (a, b, c) {
@@ -236,7 +234,7 @@ var Float4x4 = function () {
         c[9] = g * -d + j * b;
         c[10] = f * -d + k * b;
         c[11] = h * -d + l * b;
-        return c
+        return c;
     };
 
     _.rotateY = function (a, b, c) {
@@ -263,7 +261,7 @@ var Float4x4 = function () {
         c[9] = g * d + j * b;
         c[10] = f * d + k * b;
         c[11] = h * d + l * b;
-        return c
+        return c;
     };
 
     _.rotateZ = function (a, b, c) {
@@ -290,7 +288,7 @@ var Float4x4 = function () {
         c[5] = g * -d + j * b;
         c[6] = f * -d + k * b;
         c[7] = h * -d + l * b;
-        return c
+        return c;
     };
 
     _.frustum = function (a, b, c, d, e, g, f) {
@@ -312,13 +310,13 @@ var Float4x4 = function () {
         f[13] = 0;
         f[14] = -(g * e * 2) / j;
         f[15] = 0;
-        return f
+        return f;
     };
 
     _.perspective = function (a, b, c, d, e) {
         a = c * Math.tan(a * Math.PI / 360);
         b = a * b;
-        return _.frustum(-b, b, -a, a, c, d, e)
+        return _.frustum(-b, b, -a, a, c, d, e);
     };
 
     _.ortho = function (a, b, c, d, e, g, f) {
@@ -340,7 +338,7 @@ var Float4x4 = function () {
         f[13] = -(d + c) / i;
         f[14] = -(g + e) / j;
         f[15] = 1;
-        return f
+        return f;
     };
 
     _.lookAt = function (a, b, c, d) {
@@ -394,7 +392,7 @@ var Float4x4 = function () {
         d[13] = -(h * e + l * g + o * a);
         d[14] = -(c * e + j * g + b * a);
         d[15] = 1;
-        return d
+        return d;
     };
 
     return _;

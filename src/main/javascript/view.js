@@ -1,5 +1,3 @@
-"use strict";
-
 var webgl;
 
 var degToRad = function (degrees) {
@@ -40,20 +38,6 @@ var currentAngle = 0;
 var draw = function (delta) {
     currentAngle += (delta * 180);
 
-    // ordinarily, webGl will automatically present and clear when we return control to the event loop from this
-    // function, but we overrode that to have explicit control. webGl still presents the buffer automatically, but the
-    // back buffer is not cleared until we do it...
-    webgl.clear(webgl.COLOR_BUFFER_BIT | webgl.DEPTH_BUFFER_BIT);
-
-    // setup the view matrix
-    var viewMatrix = Float4x4.identity();
-    Float4x4.rotate(viewMatrix, degToRad(27.5), [1, 0, 0]);
-    Float4x4.translate(viewMatrix, [0, -1.5, -3.5]);
-    Float4x4.rotate(viewMatrix, degToRad(currentAngle), [0, 1, 0]);
-    Float4x4.scale(viewMatrix, [2, 2, 2]);
-    Float4x4.translate(viewMatrix, [-0.5, -0.5, -0.5]);
-    Shader.getCurrentShader().setViewMatrix (viewMatrix);
-
     // draw the scene
     scene.traverse(Float4x4.identity());
 };
@@ -64,6 +48,25 @@ var buildScene = function () {
     makeCube ();
     makeTetrahedron ();
     makeSphere (3);
+
+    scene = makeNode({ state: {
+        pre: function () {
+            // ordinarily, webGl will automatically present and clear when we return control to the event loop from this
+            // function, but we overrode that to have explicit control. webGl still presents the buffer automatically, but the
+            // back buffer is not cleared until we do it...
+            webgl.clear(webgl.COLOR_BUFFER_BIT | webgl.DEPTH_BUFFER_BIT);
+
+            // setup the view matrix
+            var viewMatrix = Float4x4.identity();
+            Float4x4.rotate(viewMatrix, degToRad(27.5), [1, 0, 0]);
+            Float4x4.translate(viewMatrix, [0, -1.5, -3.5]);
+            Float4x4.rotate(viewMatrix, degToRad(currentAngle), [0, 1, 0]);
+            Float4x4.scale(viewMatrix, [2, 2, 2]);
+            Float4x4.translate(viewMatrix, [-0.5, -0.5, -0.5]);
+            Shader.getCurrentShader().setViewMatrix (viewMatrix);
+        },
+        post: function () {}
+    }});
 
     var transform = Float4x4.identity();
     Float4x4.scale(transform, [0.5, 0.5, 0.5]);

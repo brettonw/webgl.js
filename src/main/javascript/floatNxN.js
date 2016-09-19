@@ -1,5 +1,3 @@
-"use strict";
-
 var FloatNxN = function (dim) {
     var _ = Object.create(null);
     var _FloatN = FloatN (dim);

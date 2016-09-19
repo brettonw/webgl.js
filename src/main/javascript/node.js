@@ -1,5 +1,3 @@
-"use strict";
-
 var Node = function () {
     var _ = Object.create (null);
     var EMPTY_SHAPE = { draw : function () {} };

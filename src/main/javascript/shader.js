@@ -1,5 +1,3 @@
-"use strict;"
-
 var Shader = function () {
     var _ = Object.create (null);
 

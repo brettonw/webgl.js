@@ -1,0 +1,51 @@
+<project name="WebGL" default="rel" basedir=".">
+    <description> Build file for JavaScript WebGL project </description>
+
+    <property name="target-name" value="webgl"/>
+
+    <property name="build-tools-dir" value="tools"/>
+    <import file="${build-tools-dir}/common-build.xml"/>
+
+    <property name="source-dir" value="${src-dir}/main/javascript/"/>
+    <property name="test-dir" value="${src-dir}/test/javascript"/>
+
+    <property name="concat-target" value="${target-name}-concat.js"/>
+    <property name="preprocess-target" value="${target-name}-preprocess.js"/>
+    <property name="dev-target" value="${target-name}-debug.js"/>
+    <property name="rel-target" value="${target-name}.js"/>
+
+    <target name="js-concatenate-common" depends="init">
+        <concat destfile="${build-dir}/${concat-target}">
+            <!-- file order is important -->
+            <fileset dir="${source-dir}" includes="macros.js" />
+            <fileset dir="${source-dir}" includes="types.js" />
+            <fileset dir="${source-dir}" includes="floatN.js" />
+            <fileset dir="${source-dir}" includes="float3.js" />
+            <fileset dir="${source-dir}" includes="float4.js" />
+            <fileset dir="${source-dir}" includes="floatNxN.js" />
+            <fileset dir="${source-dir}" includes="float4x4.js" />
+            <fileset dir="${source-dir}" includes="view.js" />
+            <fileset dir="${source-dir}" includes="shader.js" />
+            <fileset dir="${source-dir}" includes="shaderParameter.js" />
+            <fileset dir="${source-dir}" includes="shaderAttribute.js" />
+            <fileset dir="${source-dir}" includes="node.js" />
+            <fileset dir="${source-dir}" includes="cloud.js" />
+            <fileset dir="${source-dir}" includes="shape.js" />
+            <fileset dir="${source-dir}/shapes" includes="cube.js" />
+            <fileset dir="${source-dir}/shapes" includes="tetrahedron.js" />
+            <fileset dir="${source-dir}/shapes" includes="sphere.js" />
+            <fileset dir="${source-dir}" includes="mouse.js" />
+
+        </concat>
+    </target>
+
+    <target name="dev-js-concatenate" depends="js-concatenate-common">
+        <concat destfile="${build-dir}/${concat-target}" append="true">
+            <!-- debug files,  file order is important -->
+            <fileset dir="${test-dir}" includes="test.js" />
+        </concat>
+    </target>
+
+    <target name="rel-js-concatenate" depends="js-concatenate-common">
+    </target>
+</project>
