@@ -2,6 +2,36 @@
 
 // by convention, I will use the _ character to represent the object currently 
 // being defined
+var webgl;
+
+var initWebGL = function () {
+    try {
+        var canvas = document.getElementById("view-canvas");
+        webgl = canvas.getContext("webgl", {preserveDrawingBuffer: true});
+        webgl.viewportWidth = canvas.width;
+        webgl.viewportHeight = canvas.height;
+        webgl.viewport(0, 0, webgl.viewportWidth, webgl.viewportHeight);
+
+        // extensions I want for getting gradient infomation inside the fragment shader
+        webgl.getExtension("OES_standard_derivatives");
+        webgl.getExtension("EXT_shader_texture_lod");
+
+        // oh for &#^%'s sake, alpha blending should be standard
+        webgl.blendFunc(webgl.SRC_ALPHA, webgl.ONE_MINUS_SRC_ALPHA);
+        webgl.enable(webgl.BLEND);
+
+        webgl.enable(webgl.CULL_FACE);
+
+        webgl.clearColor (1.0, 1.0, 1.0, 1.0);
+
+        webgl.enable (webgl.DEPTH_TEST);
+    } catch (e) {
+        console.log("EXCEPTION");
+    }
+    if (!webgl) {
+        console.log("Could not initialise WebGL, sorry :-(");
+    }
+};
 var glMatrixArrayType = ((typeof Float32Array) != "undefined") ? Float32Array : ((typeof WebGLFloatArray) != "undefined") ? WebGLFloatArray : Array;
 var FloatN = function (dim) {
     var _ = Object.create(null);
@@ -732,111 +762,6 @@ var Float4x4 = function () {
 
     return _;
 } ();
-var webgl;
-
-var degToRad = function (degrees) {
-    return degrees * Math.PI / 180;
-};
-
-var initWebGL = function () {
-    try {
-        var canvas = document.getElementById("view-canvas");
-        webgl = canvas.getContext("webgl", {preserveDrawingBuffer: true});
-        webgl.viewportWidth = canvas.width;
-        webgl.viewportHeight = canvas.height;
-        webgl.viewport(0, 0, webgl.viewportWidth, webgl.viewportHeight);
-
-        // extensions I want for getting gradient infomation inside the fragment shader
-        webgl.getExtension("OES_standard_derivatives");
-        webgl.getExtension("EXT_shader_texture_lod");
-
-        // oh for &#^%'s sake, alpha blending should be standard
-        webgl.blendFunc(webgl.SRC_ALPHA, webgl.ONE_MINUS_SRC_ALPHA);
-        webgl.enable(webgl.BLEND);
-
-        webgl.enable(webgl.CULL_FACE);
-
-        webgl.clearColor (1.0, 1.0, 1.0, 1.0);
-
-        webgl.enable (webgl.DEPTH_TEST);
-    } catch (e) {
-        console.log("EXCEPTION");
-    }
-    if (!webgl) {
-        console.log("Could not initialise WebGL, sorry :-(");
-    }
-};
-
-
-var currentAngle = 0;
-var draw = function (delta) {
-    currentAngle += (delta * 180);
-
-    // draw the scene
-    scene.traverse(Float4x4.identity());
-};
-
-var buildScene = function () {
-    initWebGL ();
-
-    makeCube ();
-    makeTetrahedron ();
-    makeSphere (3);
-
-    scene = makeNode({ state: {
-        pre: function () {
-            // ordinarily, webGl will automatically present and clear when we return control to the event loop from this
-            // function, but we overrode that to have explicit control. webGl still presents the buffer automatically, but the
-            // back buffer is not cleared until we do it...
-            webgl.clear(webgl.COLOR_BUFFER_BIT | webgl.DEPTH_BUFFER_BIT);
-
-            // setup the view matrix
-            var viewMatrix = Float4x4.identity();
-            Float4x4.rotate(viewMatrix, degToRad(27.5), [1, 0, 0]);
-            Float4x4.translate(viewMatrix, [0, -1.5, -3.5]);
-            Float4x4.rotate(viewMatrix, degToRad(currentAngle), [0, 1, 0]);
-            Float4x4.scale(viewMatrix, [2, 2, 2]);
-            Float4x4.translate(viewMatrix, [-0.5, -0.5, -0.5]);
-            Shader.getCurrentShader().setViewMatrix (viewMatrix);
-        },
-        post: function () {}
-    }});
-
-    var transform = Float4x4.identity();
-    Float4x4.scale(transform, [0.5, 0.5, 0.5]);
-    Float4x4.translate(transform, [1, 1, 1]);
-    var background = makeNode ({ transform: transform, shape: "cube", state: {
-        pre: function () {
-            Shader.getCurrentShader().setBlendAlpha (0.85);
-            webgl.cullFace(webgl.FRONT);
-            webgl.disable(webgl.DEPTH_TEST);
-        },
-        post: function () {
-            Shader.getCurrentShader().setBlendAlpha (1.0);
-            webgl.enable(webgl.DEPTH_TEST);
-            webgl.cullFace(webgl.BACK);
-        }
-    } });
-    scene.addChild(background);
-
-    var cloud = makeCloud ();
-    cloud.addPoint([0.5, 0.45, 0.65]);
-    cloud.addPoint([0.75, 0.75, 0.75]);
-    cloud.addPoint([0.75, 0.5, 0.75]);
-    cloud.addPoint([0.75, 0.5, 0.5]);
-    cloud.addPoint([0.25, 0.25, 0.25]);
-    cloud.addPoint([0.9, 0.25, 0.25]);
-    scene.addChild(cloud);
-
-    var shader = makeShader("shaders/vertex.glsl", "shaders/fragment.glsl");
-    var projectionMatrix = Float4x4.create();
-    Float4x4.perspective(45, webgl.viewportWidth / webgl.viewportHeight, 0.1, 100.0, projectionMatrix);
-    shader.setProjectionMatrix (projectionMatrix);
-    shader.setBlendAlpha (1.0);
-    shader.use ();
-
-    draw(0);
-};
 var Shader = function () {
     var _ = Object.create (null);
 
@@ -884,18 +809,10 @@ var Shader = function () {
         // have to do this before collecting parameters, or else...
         webgl.useProgram(program);
 
-        var uppercase = function (s) {
-            return s[0].toUpperCase() + s.slice(1);
-        };
-
-        var lowercase = function (s) {
-            return s[0].toLowerCase() + s.slice(1);
-        };
-
         // add shader parameters
         for (let i = 0, end = webgl.getProgramParameter (program, webgl.ACTIVE_UNIFORMS); i < end; i++) {
             let shaderParameter = makeShaderParameter(program, i);
-            this["set" + uppercase (shaderParameter.name)] = function (value) {
+            this["set" + Utility.uppercase (shaderParameter.name)] = function (value) {
                 shaderParameter.set (value);
             }
         }
@@ -1229,54 +1146,27 @@ var makeSphere = function (subdivisions) {
         };
     } );
 };
-var mouseTracking = function () {
-    var KEY_LEFT = 37;
-    var KEY_RIGHT = 39;
+var Utility = function () {
+    var _ = Object.create(null);
 
-    var canvas = document.getElementById("view-canvas");
-    var bound = canvas.getBoundingClientRect();
-    var mouseDownPosition;
-
-    var mousePosition = function (event) {
-        return {
-            x: (event.clientX - bound.left) / bound.width,
-            y: (event.clientY - bound.top) / bound.height
-        };
-    }
-
-    var mouseMoved = function (event) {
-        var mouseMovedPosition = mousePosition(event);
-        var deltaPosition = {
-            x: mouseMovedPosition.x - mouseDownPosition.x,
-            y: mouseMovedPosition.y - mouseDownPosition.y
-        };
-        draw (deltaPosition.x);
-        mouseDownPosition = mouseMovedPosition;
+    _.degreesToRadians = function (degrees) {
+        return (degrees / 180) * Math.PI;
     };
 
-    var mouseUp = function (event) {
-        window.removeEventListener("mousemove", mouseMoved, false);
-        window.removeEventListener("mouseup", mouseUp, false);
+    _.radiansToDegrees = function (radians) {
+        return (radians / Math.PI) * 180;
     };
 
-    var mouseDown = function (event) {
-        //getting mouse position correctly
-        mouseDownPosition = mousePosition(event);
-        window.addEventListener("mousemove", mouseMoved, false);
-        window.addEventListener("mouseup", mouseUp, false);
+    _.uppercase = function (string) {
+        return string[0].toUpperCase() + string.slice(1);
     };
 
-    var keyDown = function (event) {
-        switch (event.keyCode) {
-            case KEY_LEFT: draw (-0.05); break;
-            case KEY_RIGHT: draw (0.05); break;
-        }
+    _.lowercase = function (string) {
+        return string[0].toLowerCase() + string.slice(1);
     };
 
-    canvas.addEventListener("mousedown", mouseDown, false);
-    canvas.addEventListener('keydown', keyDown, true);
-    canvas.focus();
-};
+    return _;
+} ();
 var TestContainer = function () {
     var _ = Object.create(null);
 

@@ -18,13 +18,13 @@
         <concat destfile="${build-dir}/${concat-target}">
             <!-- file order is important -->
             <fileset dir="${source-dir}" includes="macros.js" />
+            <fileset dir="${source-dir}" includes="webgl.js" />
             <fileset dir="${source-dir}" includes="types.js" />
             <fileset dir="${source-dir}" includes="floatN.js" />
             <fileset dir="${source-dir}" includes="float3.js" />
             <fileset dir="${source-dir}" includes="float4.js" />
             <fileset dir="${source-dir}" includes="floatNxN.js" />
             <fileset dir="${source-dir}" includes="float4x4.js" />
-            <fileset dir="${source-dir}" includes="view.js" />
             <fileset dir="${source-dir}" includes="shader.js" />
             <fileset dir="${source-dir}" includes="shaderParameter.js" />
             <fileset dir="${source-dir}" includes="shaderAttribute.js" />
@@ -34,8 +34,7 @@
             <fileset dir="${source-dir}/shapes" includes="cube.js" />
             <fileset dir="${source-dir}/shapes" includes="tetrahedron.js" />
             <fileset dir="${source-dir}/shapes" includes="sphere.js" />
-            <fileset dir="${source-dir}" includes="mouse.js" />
-
+            <fileset dir="${source-dir}" includes="utility.js" />
         </concat>
     </target>
 

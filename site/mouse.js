@@ -1,3 +1,5 @@
+"use strict;"
+
 var mouseTracking = function () {
     var KEY_LEFT = 37;
     var KEY_RIGHT = 39;

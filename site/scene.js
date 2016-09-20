@@ -1,38 +1,4 @@
-var webgl;
-
-var degToRad = function (degrees) {
-    return degrees * Math.PI / 180;
-};
-
-var initWebGL = function () {
-    try {
-        var canvas = document.getElementById("view-canvas");
-        webgl = canvas.getContext("webgl", {preserveDrawingBuffer: true});
-        webgl.viewportWidth = canvas.width;
-        webgl.viewportHeight = canvas.height;
-        webgl.viewport(0, 0, webgl.viewportWidth, webgl.viewportHeight);
-
-        // extensions I want for getting gradient infomation inside the fragment shader
-        webgl.getExtension("OES_standard_derivatives");
-        webgl.getExtension("EXT_shader_texture_lod");
-
-        // oh for &#^%'s sake, alpha blending should be standard
-        webgl.blendFunc(webgl.SRC_ALPHA, webgl.ONE_MINUS_SRC_ALPHA);
-        webgl.enable(webgl.BLEND);
-
-        webgl.enable(webgl.CULL_FACE);
-
-        webgl.clearColor (1.0, 1.0, 1.0, 1.0);
-
-        webgl.enable (webgl.DEPTH_TEST);
-    } catch (e) {
-        console.log("EXCEPTION");
-    }
-    if (!webgl) {
-        console.log("Could not initialise WebGL, sorry :-(");
-    }
-};
-
+"use strict;"
 
 var currentAngle = 0;
 var draw = function (delta) {
@@ -42,7 +8,7 @@ var draw = function (delta) {
     scene.traverse(Float4x4.identity());
 };
 
-var buildScene = function () {
+var buildScene = function (points) {
     initWebGL ();
 
     makeCube ();
@@ -58,9 +24,9 @@ var buildScene = function () {
 
             // setup the view matrix
             var viewMatrix = Float4x4.identity();
-            Float4x4.rotate(viewMatrix, degToRad(27.5), [1, 0, 0]);
+            Float4x4.rotate(viewMatrix, Utility.degreesToRadians(27.5), [1, 0, 0]);
             Float4x4.translate(viewMatrix, [0, -1.5, -3.5]);
-            Float4x4.rotate(viewMatrix, degToRad(currentAngle), [0, 1, 0]);
+            Float4x4.rotate(viewMatrix, Utility.degreesToRadians(currentAngle), [0, 1, 0]);
             Float4x4.scale(viewMatrix, [2, 2, 2]);
             Float4x4.translate(viewMatrix, [-0.5, -0.5, -0.5]);
             Shader.getCurrentShader().setViewMatrix (viewMatrix);
@@ -86,12 +52,9 @@ var buildScene = function () {
     scene.addChild(background);
 
     var cloud = makeCloud ();
-    cloud.addPoint([0.5, 0.45, 0.65]);
-    cloud.addPoint([0.75, 0.75, 0.75]);
-    cloud.addPoint([0.75, 0.5, 0.75]);
-    cloud.addPoint([0.75, 0.5, 0.5]);
-    cloud.addPoint([0.25, 0.25, 0.25]);
-    cloud.addPoint([0.9, 0.25, 0.25]);
+    for (let point of points) {
+        cloud.addPoint(point);
+    }
     scene.addChild(cloud);
 
     var shader = makeShader("shaders/vertex.glsl", "shaders/fragment.glsl");
