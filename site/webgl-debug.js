@@ -200,6 +200,15 @@ var FloatN = function (dim) {
 
 var Float3 = function () {
     var _ = FloatN (3);
+
+    _.cross = function (left, right, to) {
+        to = (typeof to !== 'undefined') ? to : _.create ();
+        to[0] = (left[1] * right[2]) - (left[2] * right[1]);
+        to[1] = (left[2] * right[0]) - (left[0] * right[2]);
+        to[2] = (left[0] * right[1]) - (left[1] * right[0]);
+        return to;
+    };
+
     return _;
 } ();
 var Float4 = function () {
@@ -1030,34 +1039,50 @@ var Shape = function () {
     _.construct = function (name, buffers) {
         this.name = name;
 
+        var makeBuffer = function (bufferType, source, itemSize) {
+            var buffer = context.createBuffer ();
+            context.bindBuffer (bufferType, buffer);
+            context.bufferData (bufferType, source, context.STATIC_DRAW);
+            buffer.itemSize = itemSize;
+            buffer.numItems = source.length / itemSize;
+            return buffer;
+        };
+
         // build the buffers
         if ("vertex" in buffers) {
-            this.vertexBuffer = function (vertices) {
-                var vertexBuffer = context.createBuffer ();
-                context.bindBuffer (context.ARRAY_BUFFER, vertexBuffer);
-                context.bufferData (context.ARRAY_BUFFER, new Float32Array (vertices), context.STATIC_DRAW);
-                vertexBuffer.itemSize = 3;
-                vertexBuffer.numItems = vertices.length / 3;
-                return vertexBuffer;
-            } (buffers.vertex);
+            this.vertexBuffer = makeBuffer (context.ARRAY_BUFFER, new Float32Array (buffers.vertex), 3);
         }
 
         if ("index" in buffers) {
-            this.indexBuffer = function (indices) {
-                var indexBuffer = context.createBuffer ();
-                context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, indexBuffer);
-                context.bufferData (context.ELEMENT_ARRAY_BUFFER, new Uint16Array (indices), context.STATIC_DRAW);
-                indexBuffer.itemSize = 1;
-                indexBuffer.numItems = indices.length;
-                return indexBuffer;
-            } (buffers.index);
+            this.indexBuffer = makeBuffer (context.ELEMENT_ARRAY_BUFFER, new Uint16Array (buffers.index), 1);
         }
 
         if ("normal" in buffers) {
+            this.normalBuffer = makeBuffer (context.ARRAY_BUFFER, new Float32Array (buffers.normal), 3);
         }
 
         if ("texture" in buffers) {
+            this.normalBuffer = makeBuffer (context.ARRAY_BUFFER, new Float32Array (buffers.texture), 2);
         }
+
+        var drawFunctions = [
+            function () {
+                if (this.setCurrentShape ()) {
+                    context.bindBuffer (context.ARRAY_BUFFER, this.vertexBuffer);
+                    Shader.getCurrentShader ().bindAttributes ();
+                }
+                context.drawArrays(context.TRIANGLES, 0, this.vertexBuffer.numItems);
+            },
+            function () {
+                if (this.setCurrentShape ()) {
+                    context.bindBuffer (context.ARRAY_BUFFER, this.vertexBuffer);
+                    context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
+                    Shader.getCurrentShader ().bindAttributes ();
+                }
+                context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
+            },
+        ];
+        this.draw = drawFunctions[0];
 
         return this;
     };
@@ -1087,29 +1112,58 @@ var Shape = function () {
 } ();
 
 var shapes = Object.create (null);
-var shapes2 = {};
+var makeFacets = function (buffers) {
+    // input is a vertex buffer and index buffer, output is a new vertex buffer and index buffer,
+    // along with a normal buffer, so that each vertex output
+
+    var output = {
+        vertex: [],
+        normal: []
+    };
+    let vertex = [];
+    let normal = [];
+    for (let face of buffers.face) {
+        // get the first three vertices of the face to compute the normal
+        let a = buffers.vertex[face[0]];
+        let b = buffers.vertex[face[1]];
+        let c = buffers.vertex[face[2]];
+        let ab = Float3.normalize (Float3.subtract (b, a));
+        let bc = Float3.normalize (Float3.subtract (c, b));
+        let n = Float3.cross (ab, bc);
+
+        // now loop over all of the points to add them to the vertices
+        for (let i = 0; i < face.length; ++i) {
+            vertex.push(buffers.vertex[face[i]]);
+            normal.push(n);
+        }
+    }
+    return {
+        vertex: Utility.flatten (vertex),
+        normal: Utility.flatten (normal)
+    };
+};
 var makeCube = function () {
     return Shape.new ("cube", function () {
-        return {
+        return makeFacets ({
             vertex: [
-                -1, -1, -1,
-                -1, 1, -1,
-                1, 1, -1,
-                1, -1, -1,
-                -1, -1, 1,
-                -1, 1, 1,
-                1, 1, 1,
-                1, -1, 1
+                [-1, -1, -1],
+                [-1, 1, -1],
+                [1, 1, -1],
+                [1, -1, -1],
+                [-1, -1, 1],
+                [-1, 1, 1],
+                [1, 1, 1],
+                [1, -1, 1]
             ],
-            index: [
-                0, 1, 2, 0, 2, 3, // Front face
-                7, 6, 5, 7, 5, 4, // Back face
-                1, 5, 6, 1, 6, 2, // Top face
-                4, 0, 3, 4, 3, 7, // Bottom face
-                4, 5, 1, 4, 1, 0, // Left face
-                3, 2, 6, 3, 6, 7 // Right face
+            face: [
+                [0, 1, 2, 0, 2, 3], // Front face
+                [7, 6, 5, 7, 5, 4], // Back face
+                [1, 5, 6, 1, 6, 2], // Top face
+                [4, 0, 3, 4, 3, 7], // Bottom face
+                [4, 5, 1, 4, 1, 0], // Left face
+                [3, 2, 6, 3, 6, 7] // Right face
             ]
-        };
+        });
     });
 };
 var makeTetrahedron = function () {
