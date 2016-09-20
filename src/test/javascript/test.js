@@ -1,5 +1,5 @@
 var TestContainer = function () {
-    var _ = Object.create(null);
+    var _ = Object.create (null);
 
     return _;
-}();
+} ();

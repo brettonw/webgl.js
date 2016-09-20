@@ -1,7 +1,7 @@
 var makeCube = function () {
-    return makeShape("cube", function () {
+    return Shape.new ("cube", function () {
         return {
-            vertices:[
+            vertices: [
                 -1, -1, -1,
                 -1, 1, -1,
                 1, 1, -1,
@@ -11,7 +11,7 @@ var makeCube = function () {
                 1, 1, 1,
                 1, -1, 1
             ],
-            indices:[
+            indices: [
                 0, 1, 2, 0, 2, 3,    // Front face
                 7, 6, 5, 7, 5, 4,    // Back face
                 1, 5, 6, 1, 6, 2,    // Top face
@@ -20,5 +20,5 @@ var makeCube = function () {
                 3, 2, 6, 3, 6, 7     // Right face
             ]
         };
-    } );
+    });
 };

@@ -30,7 +30,7 @@ var Float4x4 = function () {
     };
 
     _.toRotationMat = function (a, b) {
-        b || (b = _.create());
+        b || (b = _.create ());
         b[0] = a[0];
         b[1] = a[1];
         b[2] = a[2];
@@ -51,7 +51,7 @@ var Float4x4 = function () {
     };
 
     _.toMat3 = function (a, b) {
-        b || (b = mat3.create());
+        b || (b = mat3.create ());
         b[0] = a[0];
         b[1] = a[1];
         b[2] = a[2];
@@ -68,7 +68,7 @@ var Float4x4 = function () {
         var c = a[0], d = a[1], e = a[2], g = a[4], f = a[5], h = a[6], i = a[8], j = a[9], k = a[10], l = k * f - h * j, o = -k * g + h * i, m = j * g - f * i, n = c * l + d * o + e * m;
         if (!n)return null;
         n = 1 / n;
-        b || (b = mat3.create());
+        b || (b = mat3.create ());
         b[0] = l * n;
         b[1] = (-k * d + e * j) * n;
         b[2] = (h * d - e * f) * n;
@@ -172,7 +172,7 @@ var Float4x4 = function () {
     _.rotate = function (a, b, c, d) {
         var e = c[0], g = c[1];
         c = c[2];
-        var f = Math.sqrt(e * e + g * g + c * c);
+        var f = Math.sqrt (e * e + g * g + c * c);
         if (!f)return null;
         if (f != 1) {
             f = 1 / f;
@@ -180,7 +180,7 @@ var Float4x4 = function () {
             g *= f;
             c *= f
         }
-        var h = Math.sin(b), i = Math.cos(b), j = 1 - i;
+        var h = Math.sin (b), i = Math.cos (b), j = 1 - i;
         b = a[0];
         f = a[1];
         var k = a[2], l = a[3], o = a[4], m = a[5], n = a[6], p = a[7], r = a[8], s = a[9], A = a[10], B = a[11], t = e * e * j + i, u = g * e * j + c * h, v = c * e * j - g * h, w = e * g * j - c * h, x = g * g * j + i, y = c * g * j + e * h, z = e * c * j + g * h;
@@ -211,8 +211,8 @@ var Float4x4 = function () {
     };
 
     _.rotateX = function (a, b, c) {
-        var d = Math.sin(b);
-        b = Math.cos(b);
+        var d = Math.sin (b);
+        b = Math.cos (b);
         var e = a[4], g = a[5], f = a[6], h = a[7], i = a[8], j = a[9], k = a[10], l = a[11];
         if (c) {
             if (a != c) {
@@ -238,8 +238,8 @@ var Float4x4 = function () {
     };
 
     _.rotateY = function (a, b, c) {
-        var d = Math.sin(b);
-        b = Math.cos(b);
+        var d = Math.sin (b);
+        b = Math.cos (b);
         var e = a[0], g = a[1], f = a[2], h = a[3], i = a[8], j = a[9], k = a[10], l = a[11];
         if (c) {
             if (a != c) {
@@ -265,8 +265,8 @@ var Float4x4 = function () {
     };
 
     _.rotateZ = function (a, b, c) {
-        var d = Math.sin(b);
-        b = Math.cos(b);
+        var d = Math.sin (b);
+        b = Math.cos (b);
         var e = a[0], g = a[1], f = a[2], h = a[3], i = a[4], j = a[5], k = a[6], l = a[7];
         if (c) {
             if (a != c) {
@@ -292,7 +292,7 @@ var Float4x4 = function () {
     };
 
     _.frustum = function (a, b, c, d, e, g, f) {
-        f || (f = _.create());
+        f || (f = _.create ());
         var h = b - a, i = d - c, j = g - e;
         f[0] = e * 2 / h;
         f[1] = 0;
@@ -314,13 +314,13 @@ var Float4x4 = function () {
     };
 
     _.perspective = function (a, b, c, d, e) {
-        a = c * Math.tan(a * Math.PI / 360);
+        a = c * Math.tan (a * Math.PI / 360);
         b = a * b;
-        return _.frustum(-b, b, -a, a, c, d, e);
+        return _.frustum (-b, b, -a, a, c, d, e);
     };
 
     _.ortho = function (a, b, c, d, e, g, f) {
-        f || (f = _.create());
+        f || (f = _.create ());
         var h = b - a, i = d - c, j = g - e;
         f[0] = 2 / h;
         f[1] = 0;
@@ -342,25 +342,25 @@ var Float4x4 = function () {
     };
 
     _.lookAt = function (a, b, c, d) {
-        d || (d = _.create());
+        d || (d = _.create ());
         var e = a[0], g = a[1];
         a = a[2];
         var f = c[0], h = c[1], i = c[2];
         c = b[1];
         var j = b[2];
-        if (e == b[0] && g == c && a == j)return _.identity(d);
+        if (e == b[0] && g == c && a == j)return _.identity (d);
         var k, l, o, m;
         c = e - b[0];
         j = g - b[1];
         b = a - b[2];
-        m = 1 / Math.sqrt(c * c + j * j + b * b);
+        m = 1 / Math.sqrt (c * c + j * j + b * b);
         c *= m;
         j *= m;
         b *= m;
         k = h * b - i * j;
         i = i * c - f * b;
         f = f * j - h * c;
-        if (m = Math.sqrt(k * k + i * i + f * f)) {
+        if (m = Math.sqrt (k * k + i * i + f * f)) {
             m = 1 / m;
             k *= m;
             i *= m;
@@ -369,7 +369,7 @@ var Float4x4 = function () {
         h = j * f - b * i;
         l = b * k - c * f;
         o = c * i - j * k;
-        if (m = Math.sqrt(h * h + l * l + o * o)) {
+        if (m = Math.sqrt (h * h + l * l + o * o)) {
             m = 1 / m;
             h *= m;
             l *= m;

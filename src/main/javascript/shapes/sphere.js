@@ -1,11 +1,11 @@
 var makeSphere = function (subdivisions) {
-    return makeShape("sphere", function () {
-        var overSqrt2 = 1 / Math.sqrt(2);
+    return Shape.new ("sphere", function () {
+        var overSqrt2 = 1 / Math.sqrt (2);
         var vertices = [
-            Float3.normalize ([1,  0, -overSqrt2]),
-            Float3.normalize ([-1,  0, -overSqrt2]),
-            Float3.normalize ([0,  1,  overSqrt2]),
-            Float3.normalize ([0, -1,  overSqrt2])
+            Float3.normalize ([1, 0, -overSqrt2]),
+            Float3.normalize ([-1, 0, -overSqrt2]),
+            Float3.normalize ([0, 1, overSqrt2]),
+            Float3.normalize ([0, -1, overSqrt2])
         ];
         var indices = [
             [0, 1, 2],
@@ -19,9 +19,12 @@ var makeSphere = function (subdivisions) {
             var tri = indices.splice (0, 1)[0];
 
             // compute three new vertices as the averages of each pair of vertices
-            var v0 = vertices.length; vertices.push(Float3.normalize (Float3.add (vertices[tri[0]], vertices[tri[1]])));
-            var v1 = vertices.length; vertices.push(Float3.normalize (Float3.add (vertices[tri[1]], vertices[tri[2]])));
-            var v2 = vertices.length; vertices.push(Float3.normalize (Float3.add (vertices[tri[2]], vertices[tri[0]])));
+            var v0 = vertices.length;
+            vertices.push (Float3.normalize (Float3.add (vertices[tri[0]], vertices[tri[1]])));
+            var v1 = vertices.length;
+            vertices.push (Float3.normalize (Float3.add (vertices[tri[1]], vertices[tri[2]])));
+            var v2 = vertices.length;
+            vertices.push (Float3.normalize (Float3.add (vertices[tri[2]], vertices[tri[0]])));
 
             // add 4 new triangles to replace the one we removed
             indices.push ([tri[0], v0, v2]);
@@ -33,7 +36,7 @@ var makeSphere = function (subdivisions) {
         // subdivide the triangles we already defined, do this 3 times
         for (let j = 0; j < subdivisions; ++j) {
             for (let i = 0, iEnd = indices.length; i < iEnd; ++i) {
-                subdivide(0);
+                subdivide (0);
             }
         }
 
@@ -45,15 +48,15 @@ var makeSphere = function (subdivisions) {
             var result = [];
             for (let element of array) {
                 for (let value of element) {
-                    result.push(value);
+                    result.push (value);
                 }
             }
             return result;
         };
 
         return {
-            vertices:flatten (vertices),
-            indices:flatten (indices)
+            vertices: flatten (vertices),
+            indices: flatten (indices)
         };
-    } );
+    });
 };

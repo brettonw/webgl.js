@@ -1,9 +1,9 @@
 "use strict;"
 
-#ifdef  DEBUG
+#ifdef DEBUG
 
-#define LOG(x)      console.log(x)
-#define DEBUGGER    debugger
+#define LOG(x) console.log (x)
+#define DEBUGGER debugger
 
 #else
 

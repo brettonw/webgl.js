@@ -53,9 +53,9 @@ var MouseTracker = function () {
         canvas.focus();
     };
 
+    _.new = function (canvasId) {
+        return Object.create (_).construct(canvasId);
+    };
+
     return _;
 } ();
-
-var makeMouseTracker = function (canvasId) {
-    return Object.create (MouseTracker).construct(canvasId);
-};

@@ -1,8 +1,8 @@
 var FloatN = function (dim) {
-    var _ = Object.create(null);
+    var _ = Object.create (null);
 
     _.create = function () {
-        return new glMatrixArrayType(dim);
+        return new glMatrixArrayType (dim);
     };
 
     // _.copy (from, to)
@@ -11,7 +11,7 @@ var FloatN = function (dim) {
     // copies the values of 'from' over to 'to'
     // if 'to' is omitted, will create a new vector
     // returns 'to'
-    eval(function () {
+    eval (function () {
         var str = "_.copy = function (from, to) { ";
         str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
         for (var i = 0; i < dim; ++i) {
@@ -20,7 +20,7 @@ var FloatN = function (dim) {
         str += "return to; ";
         str += "}; ";
         return str;
-    }());
+    } ());
 
     // _.point (from, to)
     // from: FloatN-1
@@ -28,7 +28,7 @@ var FloatN = function (dim) {
     // populates 'to' as a homogenous coordinate point of 'from'
     // if 'to' is omitted, will create a new vector
     // returns 'to'
-    eval(function () {
+    eval (function () {
         var str = "_.point = function (from, to) {";
         str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
         var end = dim - 1;
@@ -39,7 +39,7 @@ var FloatN = function (dim) {
         str += "return to; ";
         str += "}; ";
         return str;
-    }());
+    } ());
 
     // _.vector (from, to)
     // from: FloatN-1
@@ -47,7 +47,7 @@ var FloatN = function (dim) {
     // populates 'to' as a homogenous coordinate point of 'from'
     // if 'to' is omitted, will create a new vector
     // returns 'to'
-    eval(function () {
+    eval (function () {
         var str = "_.vector = function (from, to) {";
         str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
         var end = dim - 1;
@@ -58,14 +58,14 @@ var FloatN = function (dim) {
         str += "return to; ";
         str += "}; ";
         return str;
-    }());
+    } ());
 
     // _.dot (left, right)
     // left: FloatN
     // right: FloatN
     // computes the dot produce of 'left' and 'right'
     // returns the Float result
-    eval(function () {
+    eval (function () {
         var str = "_.dot = function (left, right) {";
         str += "return (left[0] * right[0])";
         for (var i = 1; i < dim; ++i) {
@@ -74,7 +74,7 @@ var FloatN = function (dim) {
         str += "; ";
         str += "}; ";
         return str;
-    }());
+    } ());
 
     // _.normSq (from)
     // from: FloatN
@@ -99,7 +99,7 @@ var FloatN = function (dim) {
     // sets the values of 'to' to the sum of 'left' and 'right'
     // if 'to' is omitted, will create a new vector
     // returns 'to'
-    eval(function () {
+    eval (function () {
         var str = "_.add = function (left, right, to) {";
         str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
         for (var i = 0; i < dim; ++i) {
@@ -108,7 +108,7 @@ var FloatN = function (dim) {
         str += "return to; ";
         str += "}; ";
         return str;
-    }());
+    } ());
 
     // _.subtract (left, right, to)
     // left: FloatN
@@ -117,7 +117,7 @@ var FloatN = function (dim) {
     // sets the values of 'to' to the difference of 'left' and 'right'
     // if 'to' is omitted, will create a new vector
     // returns 'to'
-    eval(function () {
+    eval (function () {
         var str = "_.subtract = function (left, right, to) {";
         str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
         for (var i = 0; i < dim; ++i) {
@@ -126,7 +126,7 @@ var FloatN = function (dim) {
         str += "return to; ";
         str += "}; ";
         return str;
-    }());
+    } ());
 
     // _.scale (from, scale, to)
     // from: FloatN
@@ -135,7 +135,7 @@ var FloatN = function (dim) {
     // sets the values of 'to' to a scaled version of 'vector'
     // if 'to' is omitted, will create a new vector
     // returns 'to'
-    eval(function () {
+    eval (function () {
         var str = "_.scale = function (from, scale, to) {";
         str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
         for (var i = 0; i < dim; ++i) {
@@ -144,7 +144,7 @@ var FloatN = function (dim) {
         str += "return to; ";
         str += "}; ";
         return str;
-    }());
+    } ());
 
     _.normalize = function (from, to) {
         return _.scale (from, 1 / _.norm (from), to);
@@ -153,11 +153,11 @@ var FloatN = function (dim) {
     // _.str (from)
     // from: FloatN
     // returns the string representation of the from
-    eval(function () {
+    eval (function () {
         var strRow = function (from) {
-            var str = "'(' + from[" + index(row, 0) + "]";
+            var str = "'(' + from[" + index (row, 0) + "]";
             for (var column = 1; column < dim; ++column) {
-                str += " + ', ' + from[" + index(row, column) + "]";
+                str += " + ', ' + from[" + index (row, column) + "]";
             }
             str += " + ')'";
             return str;
@@ -171,7 +171,7 @@ var FloatN = function (dim) {
         str += " + ')'; ";
         str += "}; ";
         return str;
-    }());
+    } ());
 
     return _;
 };
