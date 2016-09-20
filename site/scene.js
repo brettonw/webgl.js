@@ -12,7 +12,7 @@ var buildScene = function (points) {
     initWebGL ();
 
     makeCube ();
-    makeTetrahedron ();
+    makeSquare ();
     makeSphere (3);
 
     scene = makeNode({ state: {

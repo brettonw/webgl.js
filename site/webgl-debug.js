@@ -1,7 +1,4 @@
 "use strict;"
-
-// by convention, I will use the _ character to represent the object currently 
-// being defined
 var webgl;
 
 var initWebGL = function () {
@@ -1143,6 +1140,21 @@ var makeSphere = function (subdivisions) {
         return {
             vertices:flatten (vertices),
             indices:flatten (indices)
+        };
+    } );
+};
+var makeSquare = function () {
+    return makeShape("square", function () {
+        return {
+            vertices:[
+                -1, -1, 0,
+                -1, 1, 0,
+                1, 1, 0,
+                1, -1, 0
+            ],
+            indices:[
+                2, 1, 3, 1, 0, 3
+            ]
         };
     } );
 };
