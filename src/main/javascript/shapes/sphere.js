@@ -38,7 +38,7 @@ var makeSphere = function (subdivisions) {
         }
 
         // report
-        console.log ("Sphere with " + indices.length + " triangles");
+        LOG ("Sphere with " + indices.length + " triangles");
 
         // flatten the vertices and indices
         var flatten = function (array) {

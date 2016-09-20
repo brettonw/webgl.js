@@ -2,6 +2,8 @@ var Shape = function () {
     var _ = Object.create(null);
     var currentShape;
 
+
+
     _.construct = function (name, buffers) {
         this.name = name;
 
@@ -28,12 +30,19 @@ var Shape = function () {
         return this;
     };
 
-    _.draw = function () {
+    _.setCurrentShape = function () {
         if (currentShape !== this) {
+            currentShape = this;
+            return true;
+        }
+        return false;
+    };
+
+    _.draw = function () {
+        if (this.setCurrentShape()) {
             webgl.bindBuffer(webgl.ARRAY_BUFFER, this.vertexBuffer);
             webgl.bindBuffer(webgl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
             Shader.getCurrentShader().bindAttributes();
-            currentShape = this;
         }
         webgl.drawElements(webgl.TRIANGLES, this.indexBuffer.numItems, webgl.UNSIGNED_SHORT, 0);
     };

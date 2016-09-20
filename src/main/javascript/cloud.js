@@ -12,6 +12,6 @@ var Cloud = function () {
     return _;
 } ();
 
-var makeCloud = function () {
-    return Object.create (Cloud).construct ();
+var makeCloud = function (parameters) {
+    return Object.create (Cloud).construct (parameters);
 };

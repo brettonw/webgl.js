@@ -20,7 +20,7 @@ var Shader = function () {
                 webgl.shaderSource(tmpShader, src);
                 webgl.compileShader(tmpShader);
                 if (! webgl.getShaderParameter(tmpShader, webgl.COMPILE_STATUS)) {
-                    console.log(webgl.getShaderInfoLog(tmpShader));
+                    LOG(webgl.getShaderInfoLog(tmpShader));
                 } else {
                     compiledShader = tmpShader;
                 }
@@ -38,7 +38,7 @@ var Shader = function () {
         webgl.attachShader(program, fragmentShader);
         webgl.linkProgram(program);
         if (!webgl.getProgramParameter(program, webgl.LINK_STATUS)) {
-            console.log("Could not initialise shaders");
+            LOG("Could not initialise shaders");
             // do we need to delete it?
         }
 

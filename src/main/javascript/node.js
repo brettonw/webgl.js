@@ -1,7 +1,7 @@
 var Node = function () {
     var _ = Object.create (null);
     var EMPTY_SHAPE = { draw : function () {} };
-    var EMPTY_STATE = { pre : function () {}, post : function () {} };
+    var EMPTY_STATE = function () {};
 
     _.construct = function (parameters) {
         if (typeof parameters !== "undefined") {
@@ -20,9 +20,8 @@ var Node = function () {
     _.traverse = function (baseTransform) {
         var nodeTransform = Float4x4.multiply(baseTransform, this.transform);
         Shader.getCurrentShader().setModelMatrix (nodeTransform);
-        this.state.pre ();
+        this.state ();
         this.shape.draw();
-        this.state.post ();
         for (let child of this.children) {
             child.traverse(nodeTransform);
         }
