@@ -1,13 +1,13 @@
 var makeSquare = function () {
     return Shape.new ("square", function () {
         return {
-            vertices: [
+            vertex: [
                 -1, -1, 0,
                 -1, 1, 0,
                 1, 1, 0,
                 1, -1, 0
             ],
-            indices: [
+            index: [
                 2, 1, 3, 1, 0, 3
             ]
         };

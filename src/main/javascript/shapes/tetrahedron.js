@@ -2,13 +2,13 @@ var makeTetrahedron = function () {
     return Shape.new ("tetrahedron", function () {
         var overSqrt2 = 1 / Math.sqrt (2);
         return {
-            vertices: [
+            vertex: [
                 1, 0, -overSqrt2,
                 -1, 0, -overSqrt2,
                 0, 1, overSqrt2,
                 0, -1, overSqrt2
             ],
-            indices: [
+            index: [
                 0, 1, 2,
                 1, 3, 2,
                 2, 3, 0,

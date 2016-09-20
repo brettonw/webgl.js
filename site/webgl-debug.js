@@ -13,24 +13,6 @@ var Render = function () {
         return this;
     };
 
-    _.makeVertexBuffer = function (vertices) {
-        var vertexBuffer = context.createBuffer ();
-        context.bindBuffer (context.ARRAY_BUFFER, vertexBuffer);
-        context.bufferData (context.ARRAY_BUFFER, new Float32Array (vertices), context.STATIC_DRAW);
-        vertexBuffer.itemSize = 3;
-        vertexBuffer.numItems = vertices.length / 3;
-        return vertexBuffer;
-    };
-
-    _.makeIndexBuffer = function (indices) {
-        var indexBuffer = context.createBuffer ();
-        context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, indexBuffer);
-        context.bufferData (context.ELEMENT_ARRAY_BUFFER, new Uint16Array (indices), context.STATIC_DRAW);
-        indexBuffer.itemSize = 1;
-        indexBuffer.numItems = indices.length;
-        return indexBuffer;
-    };
-
     _.new = function (canvasId) {
         return (render = Object.create (_).construct (canvasId));
     };
@@ -1048,9 +1030,34 @@ var Shape = function () {
     _.construct = function (name, buffers) {
         this.name = name;
 
-        // build the vertex and index buffers
-        this.vertexBuffer = render.makeVertexBuffer (buffers.vertices);
-        this.indexBuffer = render.makeIndexBuffer (buffers.indices);
+        // build the buffers
+        if ("vertex" in buffers) {
+            this.vertexBuffer = function (vertices) {
+                var vertexBuffer = context.createBuffer ();
+                context.bindBuffer (context.ARRAY_BUFFER, vertexBuffer);
+                context.bufferData (context.ARRAY_BUFFER, new Float32Array (vertices), context.STATIC_DRAW);
+                vertexBuffer.itemSize = 3;
+                vertexBuffer.numItems = vertices.length / 3;
+                return vertexBuffer;
+            } (buffers.vertex);
+        }
+
+        if ("index" in buffers) {
+            this.indexBuffer = function (indices) {
+                var indexBuffer = context.createBuffer ();
+                context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, indexBuffer);
+                context.bufferData (context.ELEMENT_ARRAY_BUFFER, new Uint16Array (indices), context.STATIC_DRAW);
+                indexBuffer.itemSize = 1;
+                indexBuffer.numItems = indices.length;
+                return indexBuffer;
+            } (buffers.index);
+        }
+
+        if ("normal" in buffers) {
+        }
+
+        if ("texture" in buffers) {
+        }
 
         return this;
     };
@@ -1084,7 +1091,7 @@ var shapes2 = {};
 var makeCube = function () {
     return Shape.new ("cube", function () {
         return {
-            vertices: [
+            vertex: [
                 -1, -1, -1,
                 -1, 1, -1,
                 1, 1, -1,
@@ -1094,7 +1101,7 @@ var makeCube = function () {
                 1, 1, 1,
                 1, -1, 1
             ],
-            indices: [
+            index: [
                 0, 1, 2, 0, 2, 3, // Front face
                 7, 6, 5, 7, 5, 4, // Back face
                 1, 5, 6, 1, 6, 2, // Top face
@@ -1109,13 +1116,13 @@ var makeTetrahedron = function () {
     return Shape.new ("tetrahedron", function () {
         var overSqrt2 = 1 / Math.sqrt (2);
         return {
-            vertices: [
+            vertex: [
                 1, 0, -overSqrt2,
                 -1, 0, -overSqrt2,
                 0, 1, overSqrt2,
                 0, -1, overSqrt2
             ],
-            indices: [
+            index: [
                 0, 1, 2,
                 1, 3, 2,
                 2, 3, 0,
@@ -1145,12 +1152,9 @@ var makeSphere = function (subdivisions) {
             var tri = indices.splice (0, 1)[0];
 
             // compute three new vertices as the averages of each pair of vertices
-            var v0 = vertices.length;
-            vertices.push (Float3.normalize (Float3.add (vertices[tri[0]], vertices[tri[1]])));
-            var v1 = vertices.length;
-            vertices.push (Float3.normalize (Float3.add (vertices[tri[1]], vertices[tri[2]])));
-            var v2 = vertices.length;
-            vertices.push (Float3.normalize (Float3.add (vertices[tri[2]], vertices[tri[0]])));
+            var v0 = vertices.length; vertices.push (Float3.normalize (Float3.add (vertices[tri[0]], vertices[tri[1]])));
+            var v1 = vertices.length; vertices.push (Float3.normalize (Float3.add (vertices[tri[1]], vertices[tri[2]])));
+            var v2 = vertices.length; vertices.push (Float3.normalize (Float3.add (vertices[tri[2]], vertices[tri[0]])));
 
             // add 4 new triangles to replace the one we removed
             indices.push ([tri[0], v0, v2]);
@@ -1159,7 +1163,8 @@ var makeSphere = function (subdivisions) {
             indices.push ([v0, v1, v2]);
         };
 
-        // subdivide the triangles we already defined, do this 3 times
+        // subdivide the triangles we already defined, do this the requested number of times (3
+        // seems to be the minimum for a spherical appearance)
         for (let j = 0; j < subdivisions; ++j) {
             for (let i = 0, iEnd = indices.length; i < iEnd; ++i) {
                 subdivide (0);
@@ -1170,32 +1175,22 @@ var makeSphere = function (subdivisions) {
         console.log ("Sphere with " + indices.length + " triangles");
 
         // flatten the vertices and indices
-        var flatten = function (array) {
-            var result = [];
-            for (let element of array) {
-                for (let value of element) {
-                    result.push (value);
-                }
-            }
-            return result;
-        };
-
         return {
-            vertices: flatten (vertices),
-            indices: flatten (indices)
+            vertex: Utility.flatten (vertices),
+            index: Utility.flatten (indices)
         };
     });
 };
 var makeSquare = function () {
     return Shape.new ("square", function () {
         return {
-            vertices: [
+            vertex: [
                 -1, -1, 0,
                 -1, 1, 0,
                 1, 1, 0,
                 1, -1, 0
             ],
-            indices: [
+            index: [
                 2, 1, 3, 1, 0, 3
             ]
         };
@@ -1218,6 +1213,16 @@ var Utility = function () {
 
     _.lowercase = function (string) {
         return string[0].toLowerCase () + string.slice (1);
+    };
+
+    _.flatten = function (array) {
+        var result = [];
+        for (let element of array) {
+            for (let value of element) {
+                result.push (value);
+            }
+        }
+        return result;
     };
 
     return _;

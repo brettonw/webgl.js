@@ -17,5 +17,15 @@ var Utility = function () {
         return string[0].toLowerCase () + string.slice (1);
     };
 
+    _.flatten = function (array) {
+        var result = [];
+        for (let element of array) {
+            for (let value of element) {
+                result.push (value);
+            }
+        }
+        return result;
+    };
+
     return _;
 } ();

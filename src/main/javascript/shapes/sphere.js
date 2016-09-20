@@ -19,12 +19,9 @@ var makeSphere = function (subdivisions) {
             var tri = indices.splice (0, 1)[0];
 
             // compute three new vertices as the averages of each pair of vertices
-            var v0 = vertices.length;
-            vertices.push (Float3.normalize (Float3.add (vertices[tri[0]], vertices[tri[1]])));
-            var v1 = vertices.length;
-            vertices.push (Float3.normalize (Float3.add (vertices[tri[1]], vertices[tri[2]])));
-            var v2 = vertices.length;
-            vertices.push (Float3.normalize (Float3.add (vertices[tri[2]], vertices[tri[0]])));
+            var v0 = vertices.length; vertices.push (Float3.normalize (Float3.add (vertices[tri[0]], vertices[tri[1]])));
+            var v1 = vertices.length; vertices.push (Float3.normalize (Float3.add (vertices[tri[1]], vertices[tri[2]])));
+            var v2 = vertices.length; vertices.push (Float3.normalize (Float3.add (vertices[tri[2]], vertices[tri[0]])));
 
             // add 4 new triangles to replace the one we removed
             indices.push ([tri[0], v0, v2]);
@@ -33,7 +30,8 @@ var makeSphere = function (subdivisions) {
             indices.push ([v0, v1, v2]);
         };
 
-        // subdivide the triangles we already defined, do this 3 times
+        // subdivide the triangles we already defined, do this the requested number of times (3
+        // seems to be the minimum for a spherical appearance)
         for (let j = 0; j < subdivisions; ++j) {
             for (let i = 0, iEnd = indices.length; i < iEnd; ++i) {
                 subdivide (0);
@@ -44,19 +42,9 @@ var makeSphere = function (subdivisions) {
         LOG ("Sphere with " + indices.length + " triangles");
 
         // flatten the vertices and indices
-        var flatten = function (array) {
-            var result = [];
-            for (let element of array) {
-                for (let value of element) {
-                    result.push (value);
-                }
-            }
-            return result;
-        };
-
         return {
-            vertices: flatten (vertices),
-            indices: flatten (indices)
+            vertex: Utility.flatten (vertices),
+            index: Utility.flatten (indices)
         };
     });
 };
