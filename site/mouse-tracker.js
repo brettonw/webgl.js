@@ -1,12 +1,10 @@
 "use strict;"
 
-var mouseTracking = function () {
-    var KEY_LEFT = 37;
-    var KEY_RIGHT = 39;
+var MouseTracker = function () {
+    var _ = Object.create (null);
 
-    var canvas = document.getElementById("view-canvas");
-    var bound = canvas.getBoundingClientRect();
     var mouseDownPosition;
+    var bound;
 
     var mousePosition = function (event) {
         return {
@@ -37,6 +35,9 @@ var mouseTracking = function () {
         window.addEventListener("mouseup", mouseUp, false);
     };
 
+    var KEY_LEFT = 37;
+    var KEY_RIGHT = 39;
+
     var keyDown = function (event) {
         switch (event.keyCode) {
             case KEY_LEFT: draw (-0.05); break;
@@ -44,7 +45,17 @@ var mouseTracking = function () {
         }
     };
 
-    canvas.addEventListener("mousedown", mouseDown, false);
-    canvas.addEventListener('keydown', keyDown, true);
-    canvas.focus();
+    _.construct = function (canvasId) {
+        var canvas = document.getElementById(canvasId);
+        bound = canvas.getBoundingClientRect();
+        canvas.addEventListener("mousedown", mouseDown, false);
+        canvas.addEventListener("keydown", keyDown, true);
+        canvas.focus();
+    };
+
+    return _;
+} ();
+
+var makeMouseTracker = function (canvasId) {
+    return Object.create (MouseTracker).construct(canvasId);
 };

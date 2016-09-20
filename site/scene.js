@@ -8,8 +8,8 @@ var draw = function (delta) {
     scene.traverse(Float4x4.identity());
 };
 
-var buildScene = function (points) {
-    var myWebGL = makeWebGL ("view-canvas");
+var buildScene = function (canvasId, points) {
+    makeRender (canvasId);
 
     makeCube ();
     makeSquare ();

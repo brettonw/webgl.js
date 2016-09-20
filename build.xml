@@ -18,7 +18,7 @@
         <concat destfile="${build-dir}/${concat-target}">
             <!-- file order is important -->
             <fileset dir="${source-dir}" includes="macros.js" />
-            <fileset dir="${source-dir}" includes="webgl.js" />
+            <fileset dir="${source-dir}" includes="render.js" />
             <fileset dir="${source-dir}" includes="types.js" />
             <fileset dir="${source-dir}" includes="floatN.js" />
             <fileset dir="${source-dir}" includes="float3.js" />
@@ -26,8 +26,8 @@
             <fileset dir="${source-dir}" includes="floatNxN.js" />
             <fileset dir="${source-dir}" includes="float4x4.js" />
             <fileset dir="${source-dir}" includes="shader.js" />
-            <fileset dir="${source-dir}" includes="shaderParameter.js" />
-            <fileset dir="${source-dir}" includes="shaderAttribute.js" />
+            <fileset dir="${source-dir}" includes="shader-parameter.js" />
+            <fileset dir="${source-dir}" includes="shader-attribute.js" />
             <fileset dir="${source-dir}" includes="node.js" />
             <fileset dir="${source-dir}" includes="cloud.js" />
             <fileset dir="${source-dir}" includes="shape.js" />
