@@ -68,11 +68,11 @@
     </target>
 
     <target name="js-minify" depends="js-preprocess">
-        <java jar="${build-tools-dir}/${yui-compressor.jar}" fork="true">
+        <exec executable="uglifyjs">
+            <arg value="${build-dir}/${preprocess-target}"/>
             <arg value="-o"/>
             <arg value="${site-dir}/${final-target}"/>
-            <arg value="${build-dir}/${preprocess-target}"/>
-        </java>
+        </exec>
     </target>
 
     <target name="clean" description="Remove all artifacts of the build process" >
