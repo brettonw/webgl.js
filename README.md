@@ -1,5 +1,7 @@
 # WebGL
-Javascript drawing...
+Javascript drawing in 3D 
+
+deployed at: http://webgl-render.azurewebsites.net/
 
 ### Building
 This project uses ant for building. It requires gcc for the C-preprocessor.
