@@ -17,7 +17,7 @@ var makeFacets = function (buffers) {
         }
     }
     return {
-        vertex: Utility.flatten (vertex),
+        position: Utility.flatten (vertex),
         normal: Utility.flatten (normal)
     };
 };

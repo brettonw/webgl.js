@@ -761,22 +761,26 @@ var Float4x4 = function () {
 var Shader = function () {
     var _ = Object.create (null);
 
+    _.POSITION_ATTRIBUTE = "POSITION_ATTRIBUTE";
+    _.NORMAL_ATTRIBUTE = "NORMAL_ATTRIBUTE";
+    _.TEXTURE_ATTRIBUTE = "TEXTURE_ATTRIBUTE";
+
     var currentShader;
 
-    _.construct = function (vertexShaderUrl, fragmentShaderUrl) {
+    _.construct = function (vertexShaderUrl, fragmentShaderUrl, attributeMapping) {
         var getSource = function (url) {
-            var request = new XMLHttpRequest ();
+            let request = new XMLHttpRequest ();
             request.open ("GET", url, false);
             request.send (null);
             return (request.status === 200) ? request.responseText : null;
         };
 
         var compileShader = function (url, type) {
-            var compiledShader = null;
-            var src = getSource (url);
+            let compiledShader = null;
+            let src = getSource (url);
             if (src !== null) {
                 // type is one of (context.VERTEX_SHADER, context.FRAGMENT_SHADER)
-                var tmpShader = context.createShader (type);
+                let tmpShader = context.createShader (type);
                 context.shaderSource (tmpShader, src);
                 context.compileShader (tmpShader);
                 if (!context.getShaderParameter (tmpShader, context.COMPILE_STATUS)) {
@@ -789,8 +793,8 @@ var Shader = function () {
         };
 
         // fetch and compile the shader components
-        var vertexShader = compileShader (vertexShaderUrl, context.VERTEX_SHADER);
-        var fragmentShader = compileShader (fragmentShaderUrl, context.FRAGMENT_SHADER);
+        let vertexShader = compileShader (vertexShaderUrl, context.VERTEX_SHADER);
+        let fragmentShader = compileShader (fragmentShaderUrl, context.FRAGMENT_SHADER);
 
         // create the shader program and attach the components
         var program = this.program = context.createProgram ();
@@ -813,20 +817,44 @@ var Shader = function () {
             }
         }
 
-        // add shader attributes
-        var attributes = this.attributes = Object.create (null);
+        // to add shader attributes, we start by reversing the mapping
+        let reverseAttributeMapping = Object.create (null);
+        reverseAttributeMapping[attributeMapping.POSITION_ATTRIBUTE] = _.POSITION_ATTRIBUTE;
+        reverseAttributeMapping[attributeMapping.NORMAL_ATTRIBUTE] = _.NORMAL_ATTRIBUTE;
+        reverseAttributeMapping[attributeMapping.TEXTURE_ATTRIBUTE] = _.TEXTURE_ATTRIBUTE;
+
+        // then we loop over the found active attributes, and map the ones we know about
+        let attributes = this.attributes = Object.create (null);
         for (let i = 0, end = context.getProgramParameter (program, context.ACTIVE_ATTRIBUTES); i < end; i++) {
-            let shaderAttribute = ShaderAttribute.new (program, i);
-            attributes[shaderAttribute.name] = shaderAttribute;
+            let activeAttribute = context.getActiveAttrib (program, i);
+            let name = activeAttribute.name;
+            if (name in reverseAttributeMapping) {
+                attributes[reverseAttributeMapping[name]] = ShaderAttribute.new (program, activeAttribute);
+            }
         }
 
         return this;
     };
 
-    _.bindAttributes = function () {
-        for (let name in this.attributes) {
-            this.attributes[name].bind ();
+    var bindAttribute = function (which, buffer) {
+        // not every shader uses every attribute, so don't bother to set them unless they will be used
+        if (which in currentShader.attributes) {
+            context.bindBuffer (context.ARRAY_BUFFER, buffer);
+            currentShader.attributes[which].bind ();
         }
+        return Shader;
+    };
+
+    _.bindPositionAttribute = function (buffer) {
+        return bindAttribute(_.POSITION_ATTRIBUTE, buffer);
+    };
+
+    _.bindNormalAttribute = function (buffer) {
+        return bindAttribute(_.NORMAL_ATTRIBUTE, buffer);
+    };
+
+    _.bindTextureAttribute = function (buffer) {
+        return bindAttribute(_.TEXTURE_ATTRIBUTE, buffer);
     };
 
     _.getCurrentShader = function () {
@@ -838,10 +866,16 @@ var Shader = function () {
             currentShader = this;
             context.useProgram (this.program);
         }
+        return this;
     };
 
-    _.new = function (vertexShaderUrl, fragmentShaderUrl) {
-        return Object.create (_).construct (vertexShaderUrl, fragmentShaderUrl);
+    _.new = function (vertexShaderUrl, fragmentShaderUrl, attributeMapping) {
+        attributeMapping = (typeof attributeMapping !== "undefined") ? attributeMapping : {
+            POSITION_ATTRIBUTE: "inputPosition",
+            NORMAL_ATTRIBUTE: "inputNormal",
+            TEXTURE_ATTRIBUTE: "inputTexture"
+        };
+        return Object.create (_).construct (vertexShaderUrl, fragmentShaderUrl, attributeMapping);
     };
 
     return _;
@@ -907,62 +941,44 @@ var ShaderParameter = function () {
 var ShaderAttribute = function () {
     var _ = Object.create (null);
 
-    var arrayTypes = function (typeNames) {
-        var arrayTypes = Object.create (null);
-        for (let typeName of typeNames) {
-            arrayTypes[typeName] = typeName;
-        }
-        return arrayTypes;
-    } (["inputXYZW", "vertex", "normal", "inputXYZ", "inputABC", "texture", "inputUV"]);
-
-    _.construct = function (program, i) {
-        var activeAttribute = context.getActiveAttrib (program, i);
-        var name = this.name = activeAttribute.name;
+    _.construct = function (program, activeAttribute) {
+        this.name = activeAttribute.name;
         this.type = activeAttribute.type;
-        var location = this.location = context.getAttribLocation (program, name);
+        this.location = context.getAttribLocation (program, this.name);
+        context.enableVertexAttribArray (this.location);
 
-        // we use pre-defined names for vertices, texture coords, and normals - and we enable them
-        // as arrays with fixed size for rendering purposes
-        if (name in arrayTypes) {
-            context.enableVertexAttribArray (location);
+        // set the bind function
+        switch (this.type) {
+            case 0x1404:
+                this.bind = function () { context.vertexAttribPointer (this.location, 1, context.INT, false, 0, 0) };
+                break;
+            case 0x8B53:
+                this.bind = function () { context.vertexAttribPointer (this.location, 2, context.INT, false, 0, 0) };
+                break;
+            case 0x8B54:
+                this.bind = function () { context.vertexAttribPointer (this.location, 3, context.INT, false, 0, 0) };
+                break;
+            case 0x8B55:
+                this.bind = function () { context.vertexAttribPointer (this.location, 4, context.INT, false, 0, 0) };
+                break;
+            case 0x1406:
+                this.bind = function () { context.vertexAttribPointer (this.location, 1, context.FLOAT, false, 0, 0) };
+                break;
+            case 0x8B50:
+                this.bind = function () { context.vertexAttribPointer (this.location, 2, context.FLOAT, false, 0, 0) };
+                break;
+            case 0x8B51:
+                this.bind = function () { context.vertexAttribPointer (this.location, 3, context.FLOAT, false, 0, 0) };
+                break;
+            case 0x8B52:
+                this.bind = function () { context.vertexAttribPointer (this.location, 4, context.FLOAT, false, 0, 0) };
+                break;
         }
-
         return this;
     };
 
-    _.bind = function () {
-        // I know the type and size...
-        switch (this.type) {
-            case 0x1404:
-                context.vertexAttribPointer (this.location, 1, context.INT, false, 0, 0);
-                break;
-            case 0x8B53:
-                context.vertexAttribPointer (this.location, 2, context.INT, false, 0, 0);
-                break;
-            case 0x8B54:
-                context.vertexAttribPointer (this.location, 3, context.INT, false, 0, 0);
-                break;
-            case 0x8B55:
-                context.vertexAttribPointer (this.location, 4, context.INT, false, 0, 0);
-                break;
-
-            case 0x1406:
-                context.vertexAttribPointer (this.location, 1, context.FLOAT, false, 0, 0);
-                break;
-            case 0x8B50:
-                context.vertexAttribPointer (this.location, 2, context.FLOAT, false, 0, 0);
-                break;
-            case 0x8B51:
-                context.vertexAttribPointer (this.location, 3, context.FLOAT, false, 0, 0);
-                break;
-            case 0x8B52:
-                context.vertexAttribPointer (this.location, 4, context.FLOAT, false, 0, 0);
-                break;
-        }
-    };
-
-    _.new = function (program, i) {
-        return Object.create (_).construct (program, i);
+    _.new = function (program, activeAttribute) {
+        return Object.create (_).construct (program, activeAttribute);
     };
 
     return _;
@@ -1048,41 +1064,118 @@ var Shape = function () {
             return buffer;
         };
 
-        // build the buffers
-        if ("vertex" in buffers) {
-            this.vertexBuffer = makeBuffer (context.ARRAY_BUFFER, new Float32Array (buffers.vertex), 3);
-        }
+        // we will use the combination of input
+        // 0 vertex only
+        // 1 vertex, normal
+        // 2 vertex, texture
+        // 3 vertex, normal, texture
+        // 4 vertex, index
+        // 5 vertex, normal, index
+        // 6 vertex, texture, index
+        // 7 vertex, normal, texture, index
 
-        if ("index" in buffers) {
-            this.indexBuffer = makeBuffer (context.ELEMENT_ARRAY_BUFFER, new Uint16Array (buffers.index), 1);
+        // build the buffers
+        let HAS_NORMAL = 1;
+        let HAS_TEXTURE = 2;
+        let HAS_INDEX = 4;
+        let drawFunctionIndex = 0;
+        if ("position" in buffers) {
+            this.positionBuffer = makeBuffer (context.ARRAY_BUFFER, new Float32Array (buffers.position), 3);
+        } else {
+            console.log ("What you talking about willis?");
         }
 
         if ("normal" in buffers) {
             this.normalBuffer = makeBuffer (context.ARRAY_BUFFER, new Float32Array (buffers.normal), 3);
+            drawFunctionIndex += HAS_NORMAL;
         }
 
         if ("texture" in buffers) {
             this.normalBuffer = makeBuffer (context.ARRAY_BUFFER, new Float32Array (buffers.texture), 2);
+            drawFunctionIndex += HAS_TEXTURE;
         }
 
-        var drawFunctions = [
+        if ("index" in buffers) {
+            this.indexBuffer = makeBuffer (context.ELEMENT_ARRAY_BUFFER, new Uint16Array (buffers.index), 1);
+            drawFunctionIndex += HAS_INDEX;
+        }
+
+        this.draw = [
+            // 0 vertex only
             function () {
                 if (this.setCurrentShape ()) {
-                    context.bindBuffer (context.ARRAY_BUFFER, this.vertexBuffer);
-                    Shader.getCurrentShader ().bindAttributes ();
+                    Shader.bindPositionAttribute (this.positionBuffer);
                 }
-                context.drawArrays(context.TRIANGLES, 0, this.vertexBuffer.numItems);
+                context.drawArrays(context.TRIANGLES, 0, this.positionBuffer.numItems);
             },
+            // 1 vertex, normal
             function () {
                 if (this.setCurrentShape ()) {
-                    context.bindBuffer (context.ARRAY_BUFFER, this.vertexBuffer);
+                    Shader
+                        .bindPositionAttribute (this.positionBuffer)
+                        .bindNormalAttribute (this.normalBuffer);
+                }
+                context.drawArrays(context.TRIANGLES, 0, this.positionBuffer.numItems);
+            },
+            // 2 vertex, texture
+            function () {
+                if (this.setCurrentShape ()) {
+                    Shader
+                        .bindPositionAttribute (this.positionBuffer)
+                        .bindTextureAttribute (this.textureBuffer);
+                }
+                context.drawArrays(context.TRIANGLES, 0, this.positionBuffer.numItems);
+            },
+            // 3 vertex, normal, texture
+            function () {
+                if (this.setCurrentShape ()) {
+                    Shader
+                        .bindPositionAttribute (this.positionBuffer)
+                        .bindNormalAttribute (this.normalBuffer)
+                        .bindTextureAttribute (this.textureBuffer);
+                }
+                context.drawArrays(context.TRIANGLES, 0, this.positionBuffer.numItems);
+            },
+            // 4 vertex, index
+            function () {
+                if (this.setCurrentShape ()) {
+                    Shader.bindPositionAttribute (this.positionBuffer);
                     context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
-                    Shader.getCurrentShader ().bindAttributes ();
                 }
                 context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
             },
-        ];
-        this.draw = drawFunctions[0];
+            // 5 vertex, normal, index
+            function () {
+                if (this.setCurrentShape ()) {
+                    Shader
+                        .bindPositionAttribute (this.positionBuffer)
+                        .bindNormalAttribute (this.normalBuffer);
+                    context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
+                }
+                context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
+            },
+            // 6 vertex, texture, index
+            function () {
+                if (this.setCurrentShape ()) {
+                    Shader
+                        .bindPositionAttribute (this.positionBuffer)
+                        .bindTextureAttribute (this.textureBuffer);
+                    context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
+                }
+                context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
+            },
+            // 7 vertex, normal, texture, index
+            function () {
+                if (this.setCurrentShape ()) {
+                    Shader
+                        .bindPositionAttribute (this.positionBuffer)
+                        .bindNormalAttribute (this.normalBuffer)
+                        .bindTextureAttribute (this.textureBuffer);
+                    context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
+                }
+                context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
+            },
+        ][drawFunctionIndex];
 
         return this;
     };
@@ -1095,6 +1188,7 @@ var Shape = function () {
         return false;
     };
 
+    /*
     _.draw = function () {
         if (this.setCurrentShape ()) {
             context.bindBuffer (context.ARRAY_BUFFER, this.vertexBuffer);
@@ -1103,6 +1197,7 @@ var Shape = function () {
         }
         context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
     };
+    */
 
     _.new = function (name, buffers) {
         return (shapes[name] = Object.create (_).construct (name, buffers ()));
@@ -1113,13 +1208,6 @@ var Shape = function () {
 
 var shapes = Object.create (null);
 var makeFacets = function (buffers) {
-    // input is a vertex buffer and index buffer, output is a new vertex buffer and index buffer,
-    // along with a normal buffer, so that each vertex output
-
-    var output = {
-        vertex: [],
-        normal: []
-    };
     let vertex = [];
     let normal = [];
     for (let face of buffers.face) {
@@ -1138,7 +1226,7 @@ var makeFacets = function (buffers) {
         }
     }
     return {
-        vertex: Utility.flatten (vertex),
+        position: Utility.flatten (vertex),
         normal: Utility.flatten (normal)
     };
 };
@@ -1169,20 +1257,20 @@ var makeCube = function () {
 var makeTetrahedron = function () {
     return Shape.new ("tetrahedron", function () {
         var overSqrt2 = 1 / Math.sqrt (2);
-        return {
+        return makeFacets ({
             vertex: [
-                1, 0, -overSqrt2,
-                -1, 0, -overSqrt2,
-                0, 1, overSqrt2,
-                0, -1, overSqrt2
+                [1, 0, -overSqrt2],
+                [-1, 0, -overSqrt2],
+                [0, 1, overSqrt2],
+                [0, -1, overSqrt2]
             ],
-            index: [
-                0, 1, 2,
-                1, 3, 2,
-                2, 3, 0,
-                3, 1, 0
+            face: [
+                [0, 1, 2],
+                [1, 3, 2],
+                [2, 3, 0],
+                [3, 1, 0]
             ]
-        };
+        });
     });
 };
 var makeSphere = function (subdivisions) {
@@ -1230,24 +1318,24 @@ var makeSphere = function (subdivisions) {
 
         // flatten the vertices and indices
         return {
-            vertex: Utility.flatten (vertices),
+            position: Utility.flatten (vertices),
             index: Utility.flatten (indices)
         };
     });
 };
 var makeSquare = function () {
     return Shape.new ("square", function () {
-        return {
+        return makeFacets({
             vertex: [
-                -1, -1, 0,
-                -1, 1, 0,
-                1, 1, 0,
-                1, -1, 0
+                [-1, -1, 0],
+                [-1, 1, 0],
+                [1, 1, 0],
+                [1, -1, 0]
             ],
-            index: [
-                2, 1, 3, 1, 0, 3
+            face: [
+                [2, 1, 3, 1, 0, 3]
             ]
-        };
+        });
     });
 };
 var Utility = function () {

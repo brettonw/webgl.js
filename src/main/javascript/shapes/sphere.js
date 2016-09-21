@@ -43,7 +43,7 @@ var makeSphere = function (subdivisions) {
 
         // flatten the vertices and indices
         return {
-            vertex: Utility.flatten (vertices),
+            position: Utility.flatten (vertices),
             index: Utility.flatten (indices)
         };
     });

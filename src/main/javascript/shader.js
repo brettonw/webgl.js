@@ -1,22 +1,26 @@
 var Shader = function () {
     var _ = Object.create (null);
 
+    _.POSITION_ATTRIBUTE = "POSITION_ATTRIBUTE";
+    _.NORMAL_ATTRIBUTE = "NORMAL_ATTRIBUTE";
+    _.TEXTURE_ATTRIBUTE = "TEXTURE_ATTRIBUTE";
+
     var currentShader;
 
-    _.construct = function (vertexShaderUrl, fragmentShaderUrl) {
+    _.construct = function (vertexShaderUrl, fragmentShaderUrl, attributeMapping) {
         var getSource = function (url) {
-            var request = new XMLHttpRequest ();
+            let request = new XMLHttpRequest ();
             request.open ("GET", url, false);
             request.send (null);
             return (request.status === 200) ? request.responseText : null;
         };
 
         var compileShader = function (url, type) {
-            var compiledShader = null;
-            var src = getSource (url);
+            let compiledShader = null;
+            let src = getSource (url);
             if (src !== null) {
                 // type is one of (context.VERTEX_SHADER, context.FRAGMENT_SHADER)
-                var tmpShader = context.createShader (type);
+                let tmpShader = context.createShader (type);
                 context.shaderSource (tmpShader, src);
                 context.compileShader (tmpShader);
                 if (!context.getShaderParameter (tmpShader, context.COMPILE_STATUS)) {
@@ -29,8 +33,8 @@ var Shader = function () {
         };
 
         // fetch and compile the shader components
-        var vertexShader = compileShader (vertexShaderUrl, context.VERTEX_SHADER);
-        var fragmentShader = compileShader (fragmentShaderUrl, context.FRAGMENT_SHADER);
+        let vertexShader = compileShader (vertexShaderUrl, context.VERTEX_SHADER);
+        let fragmentShader = compileShader (fragmentShaderUrl, context.FRAGMENT_SHADER);
 
         // create the shader program and attach the components
         var program = this.program = context.createProgram ();
@@ -53,20 +57,44 @@ var Shader = function () {
             }
         }
 
-        // add shader attributes
-        var attributes = this.attributes = Object.create (null);
+        // to add shader attributes, we start by reversing the mapping
+        let reverseAttributeMapping = Object.create (null);
+        reverseAttributeMapping[attributeMapping.POSITION_ATTRIBUTE] = _.POSITION_ATTRIBUTE;
+        reverseAttributeMapping[attributeMapping.NORMAL_ATTRIBUTE] = _.NORMAL_ATTRIBUTE;
+        reverseAttributeMapping[attributeMapping.TEXTURE_ATTRIBUTE] = _.TEXTURE_ATTRIBUTE;
+
+        // then we loop over the found active attributes, and map the ones we know about
+        let attributes = this.attributes = Object.create (null);
         for (let i = 0, end = context.getProgramParameter (program, context.ACTIVE_ATTRIBUTES); i < end; i++) {
-            let shaderAttribute = ShaderAttribute.new (program, i);
-            attributes[shaderAttribute.name] = shaderAttribute;
+            let activeAttribute = context.getActiveAttrib (program, i);
+            let name = activeAttribute.name;
+            if (name in reverseAttributeMapping) {
+                attributes[reverseAttributeMapping[name]] = ShaderAttribute.new (program, activeAttribute);
+            }
         }
 
         return this;
     };
 
-    _.bindAttributes = function () {
-        for (let name in this.attributes) {
-            this.attributes[name].bind ();
+    var bindAttribute = function (which, buffer) {
+        // not every shader uses every attribute, so don't bother to set them unless they will be used
+        if (which in currentShader.attributes) {
+            context.bindBuffer (context.ARRAY_BUFFER, buffer);
+            currentShader.attributes[which].bind ();
         }
+        return Shader;
+    };
+
+    _.bindPositionAttribute = function (buffer) {
+        return bindAttribute(_.POSITION_ATTRIBUTE, buffer);
+    };
+
+    _.bindNormalAttribute = function (buffer) {
+        return bindAttribute(_.NORMAL_ATTRIBUTE, buffer);
+    };
+
+    _.bindTextureAttribute = function (buffer) {
+        return bindAttribute(_.TEXTURE_ATTRIBUTE, buffer);
     };
 
     _.getCurrentShader = function () {
@@ -78,10 +106,16 @@ var Shader = function () {
             currentShader = this;
             context.useProgram (this.program);
         }
+        return this;
     };
 
-    _.new = function (vertexShaderUrl, fragmentShaderUrl) {
-        return Object.create (_).construct (vertexShaderUrl, fragmentShaderUrl);
+    _.new = function (vertexShaderUrl, fragmentShaderUrl, attributeMapping) {
+        attributeMapping = (typeof attributeMapping !== "undefined") ? attributeMapping : {
+            POSITION_ATTRIBUTE: "inputPosition",
+            NORMAL_ATTRIBUTE: "inputNormal",
+            TEXTURE_ATTRIBUTE: "inputTexture"
+        };
+        return Object.create (_).construct (vertexShaderUrl, fragmentShaderUrl, attributeMapping);
     };
 
     return _;
