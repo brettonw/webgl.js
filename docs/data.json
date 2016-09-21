@@ -1,0 +1,71 @@
+{
+    "project": {},
+    "files": {
+        "src/main/javascript/render.js": {
+            "name": "src/main/javascript/render.js",
+            "modules": {},
+            "classes": {
+                "Render": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        }
+    },
+    "modules": {},
+    "classes": {
+        "Render": {
+            "name": "Render",
+            "shortname": "Render",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src/main/javascript/render.js",
+            "line": 4,
+            "description": "This is the description for my class."
+        }
+    },
+    "elements": {},
+    "classitems": [
+        {
+            "file": "src/main/javascript/render.js",
+            "line": 12,
+            "description": "The initializer for a rendering context.",
+            "itemtype": "method",
+            "name": "construct",
+            "params": [
+                {
+                    "name": "canvasId",
+                    "description": "the id of the canvas element to use for the rendering context",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "Returns an initialized rendering context",
+                "type": "Render"
+            },
+            "class": "Render"
+        },
+        {
+            "file": "src/main/javascript/render.js",
+            "line": 28,
+            "description": "Static method to create and construct a new rendering context.",
+            "itemtype": "method",
+            "name": "new",
+            "params": [
+                {
+                    "name": "canvasId",
+                    "description": "the id of the canvas element to use for the rendering context",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "Returns an initialized rendering context",
+                "type": "Render"
+            },
+            "class": "Render"
+        }
+    ],
+    "warnings": []
+}

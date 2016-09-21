@@ -79,10 +79,10 @@
     </target>
 
     <target name="js-document" depends="js-preprocess">
-        <exec executable="jsdoc">
-            <arg value="-d"/>
+        <exec executable="yuidoc">
+            <arg value="-o"/>
             <arg value="${docs-dir}"/>
-            <arg value="${target-dir}/${preprocess-target}"/>
+            <arg value="${source-dir}"/>
         </exec>
     </target>
 
