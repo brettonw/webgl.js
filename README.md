@@ -4,22 +4,25 @@ Javascript drawing in 3D
 deployed at: http://webgl-render.azurewebsites.net/
 
 ### Building
-This project uses ant for building. It requires gcc for the C-preprocessor.
+This project uses ant for building, with the "dev" target being the default:
  
-    ant dev
-    ant release
+    ant | ant dev | ant rel
 
-### UglifyJS Minification
-I had a difficult time finding a minifier, after abandoning YUI, primarily because I'm dabbling with 
-ES6 features here and older minifiers don't understand that. So...
+### Build Dependencies
+* gcc (for the C-preprocessor)
+* uglifyjs (for Minification)
+* jsdoc (for Documentation)
+
+#### UglifyJS2
+For ES6 compatibility, you have to use the "harmony" branch of UglifyJS2:
 
     git clone git://github.com/mishoo/UglifyJS2.git
     cd UglifyJS2
     git checkout harmony
     npm link .
     
-## Building Documentation
-Using JSDoc:
+## JSDoc
+ JSDoc seems to support ES6:
  
     npm install -g jsdoc
 
