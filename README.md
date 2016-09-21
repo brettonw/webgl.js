@@ -22,13 +22,15 @@ For ES6 compatibility, you have to use the "harmony" branch of UglifyJS2:
     npm link .
     
 ## YUIDoc
-YUIDoc won me over because JSDoc tried very hard to enforce coding style, and simply wouldn't recognize
-the structure of my code as classes. YUIDoc just reads the comments, so I can structure my code how I 
-please:
+YUIDoc only reads the comments, so it doesn't impose any code structure:
  
     npm install -g yuidoc
     
-   
+It would be better if I could point it at a single file.
+    
+I also tried:
+* JSDoc, which wanted very specific code structure, and wouldn't bend to my will, and
+* ESDoc, which crashed on my code.
 
 ### Building a scene
 ...
