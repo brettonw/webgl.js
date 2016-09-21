@@ -17,6 +17,11 @@ ES6 features here and older minifiers don't understand that. So...
     cd UglifyJS2
     git checkout harmony
     npm link .
+    
+## Building Documentation
+Using JSDoc:
+ 
+    npm install -g jsdoc
 
 ### Building a scene
 ...
