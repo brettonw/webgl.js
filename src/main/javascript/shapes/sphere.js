@@ -1,27 +1,27 @@
-var makeSphere = function (subdivisions) {
+let makeSphere = function (subdivisions) {
     return Shape.new ("sphere", function () {
-        var overSqrt2 = 1 / Math.sqrt (2);
-        var vertices = [
+        let overSqrt2 = 1 / Math.sqrt (2);
+        let vertices = [
             Float3.normalize ([1, 0, -overSqrt2]),
             Float3.normalize ([-1, 0, -overSqrt2]),
             Float3.normalize ([0, 1, overSqrt2]),
             Float3.normalize ([0, -1, overSqrt2])
         ];
-        var indices = [
+        let indices = [
             [0, 1, 2],
             [1, 3, 2],
             [2, 3, 0],
             [3, 1, 0]
         ];
 
-        var subdivide = function () {
+        let subdivide = function () {
             // remove the triangle we want to subdivide, which is always the first one
-            var tri = indices.splice (0, 1)[0];
+            let tri = indices.splice (0, 1)[0];
 
             // compute three new vertices as the averages of each pair of vertices
-            var v0 = vertices.length; vertices.push (Float3.normalize (Float3.add (vertices[tri[0]], vertices[tri[1]])));
-            var v1 = vertices.length; vertices.push (Float3.normalize (Float3.add (vertices[tri[1]], vertices[tri[2]])));
-            var v2 = vertices.length; vertices.push (Float3.normalize (Float3.add (vertices[tri[2]], vertices[tri[0]])));
+            let v0 = vertices.length; vertices.push (Float3.normalize (Float3.add (vertices[tri[0]], vertices[tri[1]])));
+            let v1 = vertices.length; vertices.push (Float3.normalize (Float3.add (vertices[tri[1]], vertices[tri[2]])));
+            let v2 = vertices.length; vertices.push (Float3.normalize (Float3.add (vertices[tri[2]], vertices[tri[0]])));
 
             // add 4 new triangles to replace the one we removed
             indices.push ([tri[0], v0, v2]);

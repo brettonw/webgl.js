@@ -1,4 +1,4 @@
-var makeFacets = function (buffers) {
+let makeFacets = function (buffers) {
     let vertex = [];
     let normal = [];
     for (let face of buffers.face) {

@@ -1,20 +1,32 @@
-var Node = function () {
-    var _ = Object.create (null);
-    var EMPTY_SHAPE = {
-        draw: function () {
-        }
-    };
-    var EMPTY_STATE = function () {
+let Node = function () {
+    let _ = Object.create (null);
+
+    let nodes = Object.create (null);
+
+    let EMPTY_STATE = function () {};
+    let EMPTY_DRAW = function (nodeTransform) {};
+    let SHAPE_DRAW = function (nodeTransform) {
+        Shader.getCurrentShader ().setModelMatrix (nodeTransform);
+        this.shape.draw ();
     };
 
     _.construct = function (parameters) {
         if (typeof parameters !== "undefined") {
+            if ("name" in parameters) {
+                this.name = parameters.name;
+                nodes[this.name] = this;
+            }
             this.transform = ("transform" in parameters) ? parameters.transform : Float4x4.identity ();
-            this.shape = ("shape" in parameters) ? shapes[parameters.shape] : EMPTY_SHAPE;
             this.state = ("state" in parameters) ? parameters.state : EMPTY_STATE;
+            if ("shape" in parameters) {
+                this.shape = Shape.get (parameters.shape);
+                this.draw = SHAPE_DRAW;
+            } else {
+                this.draw = EMPTY_DRAW;
+            }
         } else {
             this.transform = Float4x4.identity ();
-            this.shape = EMPTY_SHAPE;
+            this.draw = EMPTY_DRAW;
             this.state = EMPTY_STATE;
         }
         this.children = [];
@@ -22,10 +34,9 @@ var Node = function () {
     };
 
     _.traverse = function (baseTransform) {
-        var nodeTransform = Float4x4.multiply (baseTransform, this.transform);
-        Shader.getCurrentShader ().setModelMatrix (nodeTransform);
+        let nodeTransform = Float4x4.multiply (baseTransform, this.transform);
         this.state ();
-        this.shape.draw ();
+        this.draw (nodeTransform);
         for (let child of this.children) {
             child.traverse (nodeTransform);
         }
@@ -42,4 +53,6 @@ var Node = function () {
     return _;
 } ();
 
-var scene = Node.new ();
+
+// XXX not sure this is really necessary to have here
+let scene = Node.new ();

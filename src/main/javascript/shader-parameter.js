@@ -1,8 +1,8 @@
-var ShaderParameter = function () {
-    var _ = Object.create (null);
+let ShaderParameter = function () {
+    let _ = Object.create (null);
 
     _.construct = function (program, i) {
-        var activeUniform = context.getActiveUniform (program, i);
+        let activeUniform = context.getActiveUniform (program, i);
         this.name = activeUniform.name;
         this.type = activeUniform.type;
         this.location = context.getUniformLocation (program, activeUniform.name);

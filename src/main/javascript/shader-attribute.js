@@ -1,5 +1,5 @@
-var ShaderAttribute = function () {
-    var _ = Object.create (null);
+let ShaderAttribute = function () {
+    let _ = Object.create (null);
 
     _.construct = function (program, activeAttribute) {
         this.name = activeAttribute.name;

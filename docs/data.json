@@ -23,7 +23,7 @@
             "extension_for": [],
             "file": "src/main/javascript/render.js",
             "line": 4,
-            "description": "This is the description for my class."
+            "description": "A Rendering context."
         }
     },
     "elements": {},
@@ -49,7 +49,7 @@
         },
         {
             "file": "src/main/javascript/render.js",
-            "line": 28,
+            "line": 33,
             "description": "Static method to create and construct a new rendering context.",
             "itemtype": "method",
             "name": "new",

@@ -1,12 +1,14 @@
-var Shape = function () {
-    var _ = Object.create (null);
-    var currentShape;
+let Shape = function () {
+    let _ = Object.create (null);
+
+    let shapes = Object.create (null);
+    let currentShape;
 
     _.construct = function (name, buffers) {
         this.name = name;
 
-        var makeBuffer = function (bufferType, source, itemSize) {
-            var buffer = context.createBuffer ();
+        let makeBuffer = function (bufferType, source, itemSize) {
+            let buffer = context.createBuffer ();
             context.bindBuffer (bufferType, buffer);
             context.bufferData (bufferType, source, context.STATIC_DRAW);
             buffer.itemSize = itemSize;
@@ -138,22 +140,13 @@ var Shape = function () {
         return false;
     };
 
-    /*
-    _.draw = function () {
-        if (this.setCurrentShape ()) {
-            context.bindBuffer (context.ARRAY_BUFFER, this.vertexBuffer);
-            context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
-            Shader.getCurrentShader ().bindAttributes ();
-        }
-        context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
-    };
-    */
-
     _.new = function (name, buffers) {
         return (shapes[name] = Object.create (_).construct (name, buffers ()));
     };
 
+    _.get = function (name) {
+        return shapes[name];
+    };
+
     return _;
 } ();
-
-var shapes = Object.create (null);

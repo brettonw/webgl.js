@@ -1,15 +1,14 @@
-var Cloud = function () {
-    var _ = Object.create (Node);
+let Cloud = function () {
+    let _ = Object.create (Node);
 
     _.addPoint = function (point) {
-        var transform = Float4x4.translate (Float4x4.identity (), point);
+        let transform = Float4x4.translate (Float4x4.identity (), point);
         Float4x4.scale (transform, [0.025, 0.025, 0.025]);
-        Float4x4.translate (transform, [-0.5, -0.5, -0.5]);
-        var node = Node.new ({
+        //Float4x4.translate (transform, [-0.5, -0.5, -0.5]);
+        this.addChild (Node.new ({
             transform: transform,
             shape: "sphere"
-        });
-        this.addChild (node);
+        }));
     };
 
     _.new = function (parameters) {

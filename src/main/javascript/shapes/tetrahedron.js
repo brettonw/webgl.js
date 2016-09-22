@@ -1,6 +1,6 @@
-var makeTetrahedron = function () {
+let makeTetrahedron = function () {
     return Shape.new ("tetrahedron", function () {
-        var overSqrt2 = 1 / Math.sqrt (2);
+        let overSqrt2 = 1 / Math.sqrt (2);
         return makeFacets ({
             vertex: [
                 [1, 0, -overSqrt2],

@@ -1,21 +1,21 @@
-var Shader = function () {
-    var _ = Object.create (null);
+let Shader = function () {
+    let _ = Object.create (null);
 
     _.POSITION_ATTRIBUTE = "POSITION_ATTRIBUTE";
     _.NORMAL_ATTRIBUTE = "NORMAL_ATTRIBUTE";
     _.TEXTURE_ATTRIBUTE = "TEXTURE_ATTRIBUTE";
 
-    var currentShader;
+    let currentShader;
 
     _.construct = function (vertexShaderUrl, fragmentShaderUrl, attributeMapping) {
-        var getSource = function (url) {
+        let getSource = function (url) {
             let request = new XMLHttpRequest ();
             request.open ("GET", url, false);
             request.send (null);
             return (request.status === 200) ? request.responseText : null;
         };
 
-        var compileShader = function (url, type) {
+        let compileShader = function (url, type) {
             let compiledShader = null;
             let src = getSource (url);
             if (src !== null) {
@@ -37,7 +37,7 @@ var Shader = function () {
         let fragmentShader = compileShader (fragmentShaderUrl, context.FRAGMENT_SHADER);
 
         // create the shader program and attach the components
-        var program = this.program = context.createProgram ();
+        let program = this.program = context.createProgram ();
         context.attachShader (program, vertexShader);
         context.attachShader (program, fragmentShader);
         context.linkProgram (program);
@@ -76,7 +76,7 @@ var Shader = function () {
         return this;
     };
 
-    var bindAttribute = function (which, buffer) {
+    let bindAttribute = function (which, buffer) {
         // not every shader uses every attribute, so don't bother to set them unless they will be used
         if (which in currentShader.attributes) {
             context.bindBuffer (context.ARRAY_BUFFER, buffer);

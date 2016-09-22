@@ -84,7 +84,7 @@ var context;
 var render;
 
 /**
- * This is the description for my class.
+ * A Rendering context.
  *
  * @class Render
  */
@@ -99,11 +99,16 @@ var Render = function () {
      * @return {Render} Returns an initialized rendering context
      */
     _.construct = function (canvasId) {
-        var canvas = this.canvas = document.getElementById (canvasId);
-        context = canvas.getContext (&quot;webgl&quot;, { preserveDrawingBuffer: true });
+        let canvas = this.canvas = document.getElementById (canvasId);
+        let context = this.context = canvas.getContext (&quot;webgl&quot;, { preserveDrawingBuffer: true });
         context.viewportWidth = canvas.width;
         context.viewportHeight = canvas.height;
         context.viewport (0, 0, context.viewportWidth, context.viewportHeight);
+        return this;
+    };
+
+    _.set = function () {
+        context = this.context;
         return this;
     };
 

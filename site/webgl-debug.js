@@ -1,27 +1,52 @@
 "use strict;"
-var context;
-var render;
-var Render = function () {
-    var _ = Object.create (null);
+let context;
+let render;
 
+/**
+ * A Rendering context.
+ *
+ * @class Render
+ */
+let Render = function () {
+    let _ = Object.create (null);
+
+    /**
+     * The initializer for a rendering context.
+     *
+     * @method construct
+     * @param {String} canvasId the id of the canvas element to use for the rendering context
+     * @return {Render} Returns an initialized rendering context
+     */
     _.construct = function (canvasId) {
-        var canvas = this.canvas = document.getElementById (canvasId);
-        context = canvas.getContext ("webgl", { preserveDrawingBuffer: true });
+        let canvas = this.canvas = document.getElementById (canvasId);
+        let context = this.context = canvas.getContext ("webgl", { preserveDrawingBuffer: true });
         context.viewportWidth = canvas.width;
         context.viewportHeight = canvas.height;
         context.viewport (0, 0, context.viewportWidth, context.viewportHeight);
         return this;
     };
 
+    _.use = function () {
+        context = this.context;
+        return this;
+    };
+
+    /**
+     * Static method to create and construct a new rendering context.
+     *
+     * @method new
+     * @param {String} canvasId the id of the canvas element to use for the rendering context
+     * @return {Render} Returns an initialized rendering context
+     */
     _.new = function (canvasId) {
         return (render = Object.create (_).construct (canvasId));
     };
 
     return _;
 } ();
-var glMatrixArrayType = ((typeof Float32Array) != "undefined") ? Float32Array : ((typeof WebGLFloatArray) != "undefined") ? WebGLFloatArray : Array;
-var FloatN = function (dim) {
-    var _ = Object.create (null);
+let glMatrixArrayType = ((typeof Float32Array) != "undefined") ? Float32Array : ((typeof WebGLFloatArray) != "undefined") ? WebGLFloatArray : Array;
+let FloatN = function (dim) {
+    let _ = Object.create (null);
 
     _.create = function () {
         return new glMatrixArrayType (dim);
@@ -34,9 +59,9 @@ var FloatN = function (dim) {
     // if 'to' is omitted, will create a new vector
     // returns 'to'
     eval (function () {
-        var str = "_.copy = function (from, to) { ";
+        let str = "_.copy = function (from, to) { ";
         str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
-        for (var i = 0; i < dim; ++i) {
+        for (let i = 0; i < dim; ++i) {
             str += "to[" + i + "] = from[" + i + "]; ";
         }
         str += "return to; ";
@@ -51,10 +76,10 @@ var FloatN = function (dim) {
     // if 'to' is omitted, will create a new vector
     // returns 'to'
     eval (function () {
-        var str = "_.point = function (from, to) {";
+        let str = "_.point = function (from, to) {";
         str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
-        var end = dim - 1;
-        for (var i = 0; i < end; ++i) {
+        let end = dim - 1;
+        for (let i = 0; i < end; ++i) {
             str += "to[" + i + "] = from[" + i + "]; ";
         }
         str += "to[" + end + "] = 1; ";
@@ -70,10 +95,10 @@ var FloatN = function (dim) {
     // if 'to' is omitted, will create a new vector
     // returns 'to'
     eval (function () {
-        var str = "_.vector = function (from, to) {";
+        let str = "_.vector = function (from, to) {";
         str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
-        var end = dim - 1;
-        for (var i = 0; i < end; ++i) {
+        let end = dim - 1;
+        for (let i = 0; i < end; ++i) {
             str += "to[" + i + "] = from[" + i + "]; ";
         }
         str += "to[" + end + "] = 0; ";
@@ -88,9 +113,9 @@ var FloatN = function (dim) {
     // computes the dot produce of 'left' and 'right'
     // returns the Float result
     eval (function () {
-        var str = "_.dot = function (left, right) {";
+        let str = "_.dot = function (left, right) {";
         str += "return (left[0] * right[0])";
-        for (var i = 1; i < dim; ++i) {
+        for (let i = 1; i < dim; ++i) {
             str += " + (left[" + i + "] * right[" + i + "])";
         }
         str += "; ";
@@ -122,9 +147,9 @@ var FloatN = function (dim) {
     // if 'to' is omitted, will create a new vector
     // returns 'to'
     eval (function () {
-        var str = "_.add = function (left, right, to) {";
+        let str = "_.add = function (left, right, to) {";
         str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
-        for (var i = 0; i < dim; ++i) {
+        for (let i = 0; i < dim; ++i) {
             str += "to[" + i + "] = left[" + i + "] + right[" + i + "]; ";
         }
         str += "return to; ";
@@ -140,9 +165,9 @@ var FloatN = function (dim) {
     // if 'to' is omitted, will create a new vector
     // returns 'to'
     eval (function () {
-        var str = "_.subtract = function (left, right, to) {";
+        let str = "_.subtract = function (left, right, to) {";
         str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
-        for (var i = 0; i < dim; ++i) {
+        for (let i = 0; i < dim; ++i) {
             str += "to[" + i + "] = left[" + i + "] - right[" + i + "]; ";
         }
         str += "return to; ";
@@ -158,9 +183,9 @@ var FloatN = function (dim) {
     // if 'to' is omitted, will create a new vector
     // returns 'to'
     eval (function () {
-        var str = "_.scale = function (from, scale, to) {";
+        let str = "_.scale = function (from, scale, to) {";
         str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
-        for (var i = 0; i < dim; ++i) {
+        for (let i = 0; i < dim; ++i) {
             str += "to[" + i + "] = from[" + i + "] * scale; ";
         }
         str += "return to; ";
@@ -176,18 +201,18 @@ var FloatN = function (dim) {
     // from: FloatN
     // returns the string representation of the from
     eval (function () {
-        var strRow = function (from) {
-            var str = "'(' + from[" + index (row, 0) + "]";
-            for (var column = 1; column < dim; ++column) {
+        let strRow = function (from) {
+            let str = "'(' + from[" + index (row, 0) + "]";
+            for (let column = 1; column < dim; ++column) {
                 str += " + ', ' + from[" + index (row, column) + "]";
             }
             str += " + ')'";
             return str;
         };
 
-        var str = "_.str = function (from) {";
+        let str = "_.str = function (from) {";
         str += "return '(' + from[0]";
-        for (var i = 1; i < dim; ++i) {
+        for (let i = 1; i < dim; ++i) {
             str += " + ', ' +  + from[" + i + "]";
         }
         str += " + ')'; ";
@@ -198,8 +223,8 @@ var FloatN = function (dim) {
     return _;
 };
 
-var Float3 = function () {
-    var _ = FloatN (3);
+let Float3 = function () {
+    let _ = FloatN (3);
 
     _.cross = function (left, right, to) {
         to = (typeof to !== 'undefined') ? to : _.create ();
@@ -211,16 +236,16 @@ var Float3 = function () {
 
     return _;
 } ();
-var Float4 = function () {
-    var _ = FloatN (4);
+let Float4 = function () {
+    let _ = FloatN (4);
     return _;
 } ();
-var FloatNxN = function (dim) {
-    var _ = Object.create (null);
-    var _FloatN = FloatN (dim);
-    var size = dim * dim;
+let FloatNxN = function (dim) {
+    let _ = Object.create (null);
+    let _FloatN = FloatN (dim);
+    let size = dim * dim;
 
-    var index = function (row, column) {
+    let index = function (row, column) {
         return (row * dim) + column;
     };
 
@@ -235,9 +260,9 @@ var FloatNxN = function (dim) {
     // if 'to' is omitted, will create a new matrix
     // returns 'to'
     eval (function () {
-        var str = "_.copy = function (from, to) { ";
+        let str = "_.copy = function (from, to) { ";
         str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
-        for (var i = 0; i < size; ++i) {
+        for (let i = 0; i < size; ++i) {
             str += "to[" + i + "] = from[" + i + "]; ";
         }
         str += "return to; ";
@@ -251,10 +276,10 @@ var FloatNxN = function (dim) {
     // if 'to' is omitted, will create a new matrix
     // returns 'to'
     eval (function () {
-        var str = "_.identity = function (to) {";
+        let str = "_.identity = function (to) {";
         str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
-        for (var row = 0; row < dim; ++row) {
-            for (var column = 0; column < dim; ++column) {
+        for (let row = 0; row < dim; ++row) {
+            for (let column = 0; column < dim; ++column) {
                 str += "to[" + index (row, column) + "] = " + ((row == column) ? 1 : 0) + "; ";
             }
         }
@@ -270,10 +295,10 @@ var FloatNxN = function (dim) {
     // if 'to' is omitted, will create a new matrix
     // returns 'to'
     eval (function () {
-        var str = "_.transpose = function (from, to) {";
+        let str = "_.transpose = function (from, to) {";
         str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
-        for (var row = 0; row < dim; ++row) {
-            for (var column = 0; column < dim; ++column) {
+        for (let row = 0; row < dim; ++row) {
+            for (let column = 0; column < dim; ++column) {
                 str += "to[" + index (row, column) + "] = from[" + index (column, row) + "]; ";
             }
         }
@@ -290,19 +315,19 @@ var FloatNxN = function (dim) {
     // if 'to' is omitted, will create a new matrix
     // returns 'to'
     eval (function () {
-        var rc = function (r, c) {
-            var str = "(left[" + index (r, 0) + "] * right[" + index (0, c) + "])";
-            for (var i = 1; i < dim; ++i) {
+        let rc = function (r, c) {
+            let str = "(left[" + index (r, 0) + "] * right[" + index (0, c) + "])";
+            for (let i = 1; i < dim; ++i) {
                 str += " + (left[" + index (r, i) + "] * right[" + index (i, c) + "])";
             }
             str += "; ";
             return str;
         };
 
-        var str = "_.multiply = function (left, right, to) {";
+        let str = "_.multiply = function (left, right, to) {";
         str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
-        for (var row = 0; row < dim; ++row) {
-            for (var column = 0; column < dim; ++column) {
+        for (let row = 0; row < dim; ++row) {
+            for (let column = 0; column < dim; ++column) {
                 str += "to[" + index (row, column) + "] = " + rc (row, column);
             }
         }
@@ -319,11 +344,11 @@ var FloatNxN = function (dim) {
      // if 'to' is omitted, will create a new matrix
      // returns 'to'
      eval(function () {
-     var str = "_.scale = function (scale, to) {";
+     let str = "_.scale = function (scale, to) {";
      str += "scale = Array.isArray(scale) ? scale : Array(dim).fill(scale); ";
      str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
      str += "_.identity (to); ";
-     for (var i = 0; i < dim; ++i) {
+     for (let i = 0; i < dim; ++i) {
      str += "to[" + index(i, i) + "] = scale[" + i + "]; ";
      }
      str += "return to; ";
@@ -336,19 +361,19 @@ var FloatNxN = function (dim) {
     // from: FloatNxN
     // returns the string representation of the matrix
     eval (function () {
-        var strRow = function (row) {
-            var str = "'(' + from[" + index (row, 0) + "]";
-            for (var column = 1; column < dim; ++column) {
+        let strRow = function (row) {
+            let str = "'(' + from[" + index (row, 0) + "]";
+            for (let column = 1; column < dim; ++column) {
                 str += " + ', ' + from[" + index (row, column) + "]";
             }
             str += " + ')'";
             return str;
         };
 
-        var str = "_.str = function (from) {";
+        let str = "_.str = function (from) {";
         str += "return ";
         str += strRow (0);
-        for (var row = 1; row < dim; ++row) {
+        for (let row = 1; row < dim; ++row) {
             str += " + ', ' + " + strRow (row);
         }
         str += "; ";
@@ -359,18 +384,18 @@ var FloatNxN = function (dim) {
     return _;
 };
 
-var Float4x4 = function () {
-    var _ = FloatNxN (4);
+let Float4x4 = function () {
+    let _ = FloatNxN (4);
 
     _.determinant = function (a) {
-        var b = a[0], c = a[1], d = a[2], e = a[3], g = a[4], f = a[5], h = a[6], i = a[7], j = a[8], k = a[9], l = a[10], o = a[11], m = a[12], n = a[13], p = a[14];
+        let b = a[0], c = a[1], d = a[2], e = a[3], g = a[4], f = a[5], h = a[6], i = a[7], j = a[8], k = a[9], l = a[10], o = a[11], m = a[12], n = a[13], p = a[14];
         a = a[15];
         return m * k * h * e - j * n * h * e - m * f * l * e + g * n * l * e + j * f * p * e - g * k * p * e - m * k * d * i + j * n * d * i + m * c * l * i - b * n * l * i - j * c * p * i + b * k * p * i + m * f * d * o - g * n * d * o - m * c * h * o + b * n * h * o + g * c * p * o - b * f * p * o - j * f * d * a + g * k * d * a + j * c * h * a - b * k * h * a - g * c * l * a + b * f * l * a;
     };
 
     _.inverse = function (a, b) {
         b || (b = a);
-        var c = a[0], d = a[1], e = a[2], g = a[3], f = a[4], h = a[5], i = a[6], j = a[7], k = a[8], l = a[9], o = a[10], m = a[11], n = a[12], p = a[13], r = a[14], s = a[15], A = c * h - d * f, B = c * i - e * f, t = c * j - g * f, u = d * i - e * h, v = d * j - g * h, w = e * j - g * i, x = k * p - l * n, y = k * r - o * n, z = k * s - m * n, C = l * r - o * p, D = l * s - m * p, E = o * s - m * r, q = 1 / (A * E - B * D + t * C + u * z - v * y + w * x);
+        let c = a[0], d = a[1], e = a[2], g = a[3], f = a[4], h = a[5], i = a[6], j = a[7], k = a[8], l = a[9], o = a[10], m = a[11], n = a[12], p = a[13], r = a[14], s = a[15], A = c * h - d * f, B = c * i - e * f, t = c * j - g * f, u = d * i - e * h, v = d * j - g * h, w = e * j - g * i, x = k * p - l * n, y = k * r - o * n, z = k * s - m * n, C = l * r - o * p, D = l * s - m * p, E = o * s - m * r, q = 1 / (A * E - B * D + t * C + u * z - v * y + w * x);
         b[0] = (h * E - i * D + j * C) * q;
         b[1] = (-d * E + e * D - g * C) * q;
         b[2] = (p * w - r * v + s * u) * q;
@@ -426,7 +451,7 @@ var Float4x4 = function () {
     };
 
     _.toInverseMat3 = function (a, b) {
-        var c = a[0], d = a[1], e = a[2], g = a[4], f = a[5], h = a[6], i = a[8], j = a[9], k = a[10], l = k * f - h * j, o = -k * g + h * i, m = j * g - f * i, n = c * l + d * o + e * m;
+        let c = a[0], d = a[1], e = a[2], g = a[4], f = a[5], h = a[6], i = a[8], j = a[9], k = a[10], l = k * f - h * j, o = -k * g + h * i, m = j * g - f * i, n = c * l + d * o + e * m;
         if (!n)return null;
         n = 1 / n;
         b || (b = mat3.create ());
@@ -444,7 +469,7 @@ var Float4x4 = function () {
 
     _.multiplyVec3 = function (a, b, c) {
         c || (c = b);
-        var d = b[0], e = b[1];
+        let d = b[0], e = b[1];
         b = b[2];
         c[0] = a[0] * d + a[4] * e + a[8] * b + a[12];
         c[1] = a[1] * d + a[5] * e + a[9] * b + a[13];
@@ -454,7 +479,7 @@ var Float4x4 = function () {
 
     _.multiplyVec4 = function (a, b, c) {
         c || (c = b);
-        var d = b[0], e = b[1], g = b[2];
+        let d = b[0], e = b[1], g = b[2];
         b = b[3];
         c[0] = a[0] * d + a[4] * e + a[8] * g + a[12] * b;
         c[1] = a[1] * d + a[5] * e + a[9] * g + a[13] * b;
@@ -464,7 +489,7 @@ var Float4x4 = function () {
     };
 
     _.scale = function (a, b, c) {
-        var d = b[0], e = b[1];
+        let d = b[0], e = b[1];
         b = b[2];
         if (!c || a == c) {
             a[0] *= d;
@@ -501,7 +526,7 @@ var Float4x4 = function () {
     };
 
     _.translate = function (a, b, c) {
-        var d = b[0], e = b[1];
+        let d = b[0], e = b[1];
         b = b[2];
         if (!c || a == c) {
             a[12] = a[0] * d + a[4] * e + a[8] * b + a[12];
@@ -510,7 +535,7 @@ var Float4x4 = function () {
             a[15] = a[3] * d + a[7] * e + a[11] * b + a[15];
             return a;
         }
-        var g = a[0], f = a[1], h = a[2], i = a[3], j = a[4], k = a[5], l = a[6], o = a[7], m = a[8], n = a[9], p = a[10], r = a[11];
+        let g = a[0], f = a[1], h = a[2], i = a[3], j = a[4], k = a[5], l = a[6], o = a[7], m = a[8], n = a[9], p = a[10], r = a[11];
         c[0] = g;
         c[1] = f;
         c[2] = h;
@@ -531,9 +556,9 @@ var Float4x4 = function () {
     };
 
     _.rotate = function (a, b, c, d) {
-        var e = c[0], g = c[1];
+        let e = c[0], g = c[1];
         c = c[2];
-        var f = Math.sqrt (e * e + g * g + c * c);
+        let f = Math.sqrt (e * e + g * g + c * c);
         if (!f)return null;
         if (f != 1) {
             f = 1 / f;
@@ -541,10 +566,10 @@ var Float4x4 = function () {
             g *= f;
             c *= f
         }
-        var h = Math.sin (b), i = Math.cos (b), j = 1 - i;
+        let h = Math.sin (b), i = Math.cos (b), j = 1 - i;
         b = a[0];
         f = a[1];
-        var k = a[2], l = a[3], o = a[4], m = a[5], n = a[6], p = a[7], r = a[8], s = a[9], A = a[10], B = a[11], t = e * e * j + i, u = g * e * j + c * h, v = c * e * j - g * h, w = e * g * j - c * h, x = g * g * j + i, y = c * g * j + e * h, z = e * c * j + g * h;
+        let k = a[2], l = a[3], o = a[4], m = a[5], n = a[6], p = a[7], r = a[8], s = a[9], A = a[10], B = a[11], t = e * e * j + i, u = g * e * j + c * h, v = c * e * j - g * h, w = e * g * j - c * h, x = g * g * j + i, y = c * g * j + e * h, z = e * c * j + g * h;
         e = g * c * j - e * h;
         g = c * c * j + i;
         if (d) {
@@ -572,9 +597,9 @@ var Float4x4 = function () {
     };
 
     _.rotateX = function (a, b, c) {
-        var d = Math.sin (b);
+        let d = Math.sin (b);
         b = Math.cos (b);
-        var e = a[4], g = a[5], f = a[6], h = a[7], i = a[8], j = a[9], k = a[10], l = a[11];
+        let e = a[4], g = a[5], f = a[6], h = a[7], i = a[8], j = a[9], k = a[10], l = a[11];
         if (c) {
             if (a != c) {
                 c[0] = a[0];
@@ -599,9 +624,9 @@ var Float4x4 = function () {
     };
 
     _.rotateY = function (a, b, c) {
-        var d = Math.sin (b);
+        let d = Math.sin (b);
         b = Math.cos (b);
-        var e = a[0], g = a[1], f = a[2], h = a[3], i = a[8], j = a[9], k = a[10], l = a[11];
+        let e = a[0], g = a[1], f = a[2], h = a[3], i = a[8], j = a[9], k = a[10], l = a[11];
         if (c) {
             if (a != c) {
                 c[4] = a[4];
@@ -626,9 +651,9 @@ var Float4x4 = function () {
     };
 
     _.rotateZ = function (a, b, c) {
-        var d = Math.sin (b);
+        let d = Math.sin (b);
         b = Math.cos (b);
-        var e = a[0], g = a[1], f = a[2], h = a[3], i = a[4], j = a[5], k = a[6], l = a[7];
+        let e = a[0], g = a[1], f = a[2], h = a[3], i = a[4], j = a[5], k = a[6], l = a[7];
         if (c) {
             if (a != c) {
                 c[8] = a[8];
@@ -654,7 +679,7 @@ var Float4x4 = function () {
 
     _.frustum = function (a, b, c, d, e, g, f) {
         f || (f = _.create ());
-        var h = b - a, i = d - c, j = g - e;
+        let h = b - a, i = d - c, j = g - e;
         f[0] = e * 2 / h;
         f[1] = 0;
         f[2] = 0;
@@ -682,7 +707,7 @@ var Float4x4 = function () {
 
     _.ortho = function (a, b, c, d, e, g, f) {
         f || (f = _.create ());
-        var h = b - a, i = d - c, j = g - e;
+        let h = b - a, i = d - c, j = g - e;
         f[0] = 2 / h;
         f[1] = 0;
         f[2] = 0;
@@ -704,13 +729,13 @@ var Float4x4 = function () {
 
     _.lookAt = function (a, b, c, d) {
         d || (d = _.create ());
-        var e = a[0], g = a[1];
+        let e = a[0], g = a[1];
         a = a[2];
-        var f = c[0], h = c[1], i = c[2];
+        let f = c[0], h = c[1], i = c[2];
         c = b[1];
-        var j = b[2];
+        let j = b[2];
         if (e == b[0] && g == c && a == j)return _.identity (d);
-        var k, l, o, m;
+        let k, l, o, m;
         c = e - b[0];
         j = g - b[1];
         b = a - b[2];
@@ -758,24 +783,24 @@ var Float4x4 = function () {
 
     return _;
 } ();
-var Shader = function () {
-    var _ = Object.create (null);
+let Shader = function () {
+    let _ = Object.create (null);
 
     _.POSITION_ATTRIBUTE = "POSITION_ATTRIBUTE";
     _.NORMAL_ATTRIBUTE = "NORMAL_ATTRIBUTE";
     _.TEXTURE_ATTRIBUTE = "TEXTURE_ATTRIBUTE";
 
-    var currentShader;
+    let currentShader;
 
     _.construct = function (vertexShaderUrl, fragmentShaderUrl, attributeMapping) {
-        var getSource = function (url) {
+        let getSource = function (url) {
             let request = new XMLHttpRequest ();
             request.open ("GET", url, false);
             request.send (null);
             return (request.status === 200) ? request.responseText : null;
         };
 
-        var compileShader = function (url, type) {
+        let compileShader = function (url, type) {
             let compiledShader = null;
             let src = getSource (url);
             if (src !== null) {
@@ -797,7 +822,7 @@ var Shader = function () {
         let fragmentShader = compileShader (fragmentShaderUrl, context.FRAGMENT_SHADER);
 
         // create the shader program and attach the components
-        var program = this.program = context.createProgram ();
+        let program = this.program = context.createProgram ();
         context.attachShader (program, vertexShader);
         context.attachShader (program, fragmentShader);
         context.linkProgram (program);
@@ -836,7 +861,7 @@ var Shader = function () {
         return this;
     };
 
-    var bindAttribute = function (which, buffer) {
+    let bindAttribute = function (which, buffer) {
         // not every shader uses every attribute, so don't bother to set them unless they will be used
         if (which in currentShader.attributes) {
             context.bindBuffer (context.ARRAY_BUFFER, buffer);
@@ -880,11 +905,11 @@ var Shader = function () {
 
     return _;
 } ();
-var ShaderParameter = function () {
-    var _ = Object.create (null);
+let ShaderParameter = function () {
+    let _ = Object.create (null);
 
     _.construct = function (program, i) {
-        var activeUniform = context.getActiveUniform (program, i);
+        let activeUniform = context.getActiveUniform (program, i);
         this.name = activeUniform.name;
         this.type = activeUniform.type;
         this.location = context.getUniformLocation (program, activeUniform.name);
@@ -938,8 +963,8 @@ var ShaderParameter = function () {
 
     return _;
 } ();
-var ShaderAttribute = function () {
-    var _ = Object.create (null);
+let ShaderAttribute = function () {
+    let _ = Object.create (null);
 
     _.construct = function (program, activeAttribute) {
         this.name = activeAttribute.name;
@@ -983,23 +1008,35 @@ var ShaderAttribute = function () {
 
     return _;
 } ();
-var Node = function () {
-    var _ = Object.create (null);
-    var EMPTY_SHAPE = {
-        draw: function () {
-        }
-    };
-    var EMPTY_STATE = function () {
+let Node = function () {
+    let _ = Object.create (null);
+
+    let nodes = Object.create (null);
+
+    let EMPTY_STATE = function () {};
+    let EMPTY_DRAW = function (nodeTransform) {};
+    let SHAPE_DRAW = function (nodeTransform) {
+        Shader.getCurrentShader ().setModelMatrix (nodeTransform);
+        this.shape.draw ();
     };
 
     _.construct = function (parameters) {
         if (typeof parameters !== "undefined") {
+            if ("name" in parameters) {
+                this.name = parameters.name;
+                nodes[this.name] = this;
+            }
             this.transform = ("transform" in parameters) ? parameters.transform : Float4x4.identity ();
-            this.shape = ("shape" in parameters) ? shapes[parameters.shape] : EMPTY_SHAPE;
             this.state = ("state" in parameters) ? parameters.state : EMPTY_STATE;
+            if ("shape" in parameters) {
+                this.shape = Shape.get (parameters.shape);
+                this.draw = SHAPE_DRAW;
+            } else {
+                this.draw = EMPTY_DRAW;
+            }
         } else {
             this.transform = Float4x4.identity ();
-            this.shape = EMPTY_SHAPE;
+            this.draw = EMPTY_DRAW;
             this.state = EMPTY_STATE;
         }
         this.children = [];
@@ -1007,10 +1044,9 @@ var Node = function () {
     };
 
     _.traverse = function (baseTransform) {
-        var nodeTransform = Float4x4.multiply (baseTransform, this.transform);
-        Shader.getCurrentShader ().setModelMatrix (nodeTransform);
+        let nodeTransform = Float4x4.multiply (baseTransform, this.transform);
         this.state ();
-        this.shape.draw ();
+        this.draw (nodeTransform);
         for (let child of this.children) {
             child.traverse (nodeTransform);
         }
@@ -1027,19 +1063,20 @@ var Node = function () {
     return _;
 } ();
 
-var scene = Node.new ();
-var Cloud = function () {
-    var _ = Object.create (Node);
+
+// XXX not sure this is really necessary to have here
+let scene = Node.new ();
+let Cloud = function () {
+    let _ = Object.create (Node);
 
     _.addPoint = function (point) {
-        var transform = Float4x4.translate (Float4x4.identity (), point);
+        let transform = Float4x4.translate (Float4x4.identity (), point);
         Float4x4.scale (transform, [0.025, 0.025, 0.025]);
-        Float4x4.translate (transform, [-0.5, -0.5, -0.5]);
-        var node = Node.new ({
+        //Float4x4.translate (transform, [-0.5, -0.5, -0.5]);
+        this.addChild (Node.new ({
             transform: transform,
             shape: "sphere"
-        });
-        this.addChild (node);
+        }));
     };
 
     _.new = function (parameters) {
@@ -1048,15 +1085,17 @@ var Cloud = function () {
 
     return _;
 } ();
-var Shape = function () {
-    var _ = Object.create (null);
-    var currentShape;
+let Shape = function () {
+    let _ = Object.create (null);
+
+    let shapes = Object.create (null);
+    let currentShape;
 
     _.construct = function (name, buffers) {
         this.name = name;
 
-        var makeBuffer = function (bufferType, source, itemSize) {
-            var buffer = context.createBuffer ();
+        let makeBuffer = function (bufferType, source, itemSize) {
+            let buffer = context.createBuffer ();
             context.bindBuffer (bufferType, buffer);
             context.bufferData (bufferType, source, context.STATIC_DRAW);
             buffer.itemSize = itemSize;
@@ -1188,26 +1227,17 @@ var Shape = function () {
         return false;
     };
 
-    /*
-    _.draw = function () {
-        if (this.setCurrentShape ()) {
-            context.bindBuffer (context.ARRAY_BUFFER, this.vertexBuffer);
-            context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
-            Shader.getCurrentShader ().bindAttributes ();
-        }
-        context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
-    };
-    */
-
     _.new = function (name, buffers) {
         return (shapes[name] = Object.create (_).construct (name, buffers ()));
     };
 
+    _.get = function (name) {
+        return shapes[name];
+    };
+
     return _;
 } ();
-
-var shapes = Object.create (null);
-var makeFacets = function (buffers) {
+let makeFacets = function (buffers) {
     let vertex = [];
     let normal = [];
     for (let face of buffers.face) {
@@ -1230,7 +1260,7 @@ var makeFacets = function (buffers) {
         normal: Utility.flatten (normal)
     };
 };
-var makeCube = function () {
+let makeCube = function () {
     return Shape.new ("cube", function () {
         return makeFacets ({
             vertex: [
@@ -1254,9 +1284,9 @@ var makeCube = function () {
         });
     });
 };
-var makeTetrahedron = function () {
+let makeTetrahedron = function () {
     return Shape.new ("tetrahedron", function () {
-        var overSqrt2 = 1 / Math.sqrt (2);
+        let overSqrt2 = 1 / Math.sqrt (2);
         return makeFacets ({
             vertex: [
                 [1, 0, -overSqrt2],
@@ -1273,30 +1303,30 @@ var makeTetrahedron = function () {
         });
     });
 };
-var makeSphere = function (subdivisions) {
+let makeSphere = function (subdivisions) {
     return Shape.new ("sphere", function () {
-        var overSqrt2 = 1 / Math.sqrt (2);
-        var vertices = [
+        let overSqrt2 = 1 / Math.sqrt (2);
+        let vertices = [
             Float3.normalize ([1, 0, -overSqrt2]),
             Float3.normalize ([-1, 0, -overSqrt2]),
             Float3.normalize ([0, 1, overSqrt2]),
             Float3.normalize ([0, -1, overSqrt2])
         ];
-        var indices = [
+        let indices = [
             [0, 1, 2],
             [1, 3, 2],
             [2, 3, 0],
             [3, 1, 0]
         ];
 
-        var subdivide = function () {
+        let subdivide = function () {
             // remove the triangle we want to subdivide, which is always the first one
-            var tri = indices.splice (0, 1)[0];
+            let tri = indices.splice (0, 1)[0];
 
             // compute three new vertices as the averages of each pair of vertices
-            var v0 = vertices.length; vertices.push (Float3.normalize (Float3.add (vertices[tri[0]], vertices[tri[1]])));
-            var v1 = vertices.length; vertices.push (Float3.normalize (Float3.add (vertices[tri[1]], vertices[tri[2]])));
-            var v2 = vertices.length; vertices.push (Float3.normalize (Float3.add (vertices[tri[2]], vertices[tri[0]])));
+            let v0 = vertices.length; vertices.push (Float3.normalize (Float3.add (vertices[tri[0]], vertices[tri[1]])));
+            let v1 = vertices.length; vertices.push (Float3.normalize (Float3.add (vertices[tri[1]], vertices[tri[2]])));
+            let v2 = vertices.length; vertices.push (Float3.normalize (Float3.add (vertices[tri[2]], vertices[tri[0]])));
 
             // add 4 new triangles to replace the one we removed
             indices.push ([tri[0], v0, v2]);
@@ -1323,7 +1353,7 @@ var makeSphere = function (subdivisions) {
         };
     });
 };
-var makeSquare = function () {
+let makeSquare = function () {
     return Shape.new ("square", function () {
         return makeFacets({
             vertex: [
@@ -1338,8 +1368,8 @@ var makeSquare = function () {
         });
     });
 };
-var Utility = function () {
-    var _ = Object.create (null);
+let Utility = function () {
+    let _ = Object.create (null);
 
     _.degreesToRadians = function (degrees) {
         return (degrees / 180) * Math.PI;
@@ -1358,7 +1388,7 @@ var Utility = function () {
     };
 
     _.flatten = function (array) {
-        var result = [];
+        let result = [];
         for (let element of array) {
             for (let value of element) {
                 result.push (value);

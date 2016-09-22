@@ -1,4 +1,4 @@
-var makeCube = function () {
+let makeCube = function () {
     return Shape.new ("cube", function () {
         return makeFacets ({
             vertex: [

@@ -2,19 +2,30 @@
 
 var currentAngle = 0;
 var draw = function (delta) {
+    // update the rotation around the scene
     currentAngle += (delta * 180);
+
+    // setup the view matrix
+    let viewMatrix = Float4x4.identity ();
+    Float4x4.rotate (viewMatrix, Utility.degreesToRadians (27.5), [ 1, 0, 0 ]);
+    Float4x4.translate (viewMatrix, [ 0, -1.5, -3.5 ]);
+    Float4x4.rotate (viewMatrix, Utility.degreesToRadians (currentAngle), [ 0, 1, 0 ]);
+    Float4x4.scale (viewMatrix, [ 2, 2, 2 ]);
+    Float4x4.translate (viewMatrix, [ -0.5, -0.5, -0.5 ]);
+    Shader.getCurrentShader ().setViewMatrix (viewMatrix);
 
     // draw the scene
     scene.traverse (Float4x4.identity ());
 };
 
 var buildScene = function (canvasId, points) {
-    Render.new (canvasId);
+    Render.new (canvasId).use ();
 
     makeCube ();
     makeSphere (3);
 
     scene = Node.new ({
+        name: "root",
         state: function () {
             // ordinarily, webGl will automatically present and clear when we return control to the event loop from this
             // function, but we overrode that to have explicit control. webGl still presents the buffer automatically, but the
@@ -29,22 +40,13 @@ var buildScene = function (canvasId, points) {
             // oh for &#^%'s sake, alpha blending should be standard
             context.blendFunc (context.SRC_ALPHA, context.ONE_MINUS_SRC_ALPHA);
             context.enable (context.BLEND);
-
-            // setup the view matrix
-            var viewMatrix = Float4x4.identity ();
-            Float4x4.rotate (viewMatrix, Utility.degreesToRadians (27.5), [ 1, 0, 0 ]);
-            Float4x4.translate (viewMatrix, [ 0, -1.5, -3.5 ]);
-            Float4x4.rotate (viewMatrix, Utility.degreesToRadians (currentAngle), [ 0, 1, 0 ]);
-            Float4x4.scale (viewMatrix, [ 2, 2, 2 ]);
-            Float4x4.translate (viewMatrix, [ -0.5, -0.5, -0.5 ]);
-            Shader.getCurrentShader ().setViewMatrix (viewMatrix);
         }
     });
 
-    var transform = Float4x4.identity ();
-    Float4x4.scale (transform, [ 0.5, 0.5, 0.5 ]);
+    let transform = Float4x4.scale (Float4x4.identity (), [ 0.5, 0.5, 0.5 ]);
     Float4x4.translate (transform, [ 1, 1, 1 ]);
-    var background = Node.new ({
+    let background = Node.new ({
+        name: "background",
         transform: transform,
         shape: "cube",
         state: function () {
@@ -56,7 +58,8 @@ var buildScene = function (canvasId, points) {
     });
     scene.addChild (background);
 
-    var cloud = Cloud.new ({
+    let cloud = Cloud.new ({
+        name: "cloud",
         state: function () {
             Shader.getCurrentShader ().setBlendAlpha (1.0);
             context.enable (context.DEPTH_TEST);
@@ -69,8 +72,8 @@ var buildScene = function (canvasId, points) {
     }
     scene.addChild (cloud);
 
-    var shader = Shader.new ("shaders/vertex-basic.glsl", "shaders/fragment-rgb.glsl");
-    var projectionMatrix = Float4x4.create ();
+    let shader = Shader.new ("shaders/vertex-basic.glsl", "shaders/fragment-rgb.glsl");
+    let projectionMatrix = Float4x4.create ();
     Float4x4.perspective (45, context.viewportWidth / context.viewportHeight, 0.1, 100.0, projectionMatrix);
     shader.setProjectionMatrix (projectionMatrix);
     shader.setBlendAlpha (1.0);

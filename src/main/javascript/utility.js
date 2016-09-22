@@ -1,5 +1,5 @@
-var Utility = function () {
-    var _ = Object.create (null);
+let Utility = function () {
+    let _ = Object.create (null);
 
     _.degreesToRadians = function (degrees) {
         return (degrees / 180) * Math.PI;
@@ -18,7 +18,7 @@ var Utility = function () {
     };
 
     _.flatten = function (array) {
-        var result = [];
+        let result = [];
         for (let element of array) {
             for (let value of element) {
                 result.push (value);

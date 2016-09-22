@@ -1,5 +1,5 @@
-var Float3 = function () {
-    var _ = FloatN (3);
+let Float3 = function () {
+    let _ = FloatN (3);
 
     _.cross = function (left, right, to) {
         to = (typeof to !== 'undefined') ? to : _.create ();

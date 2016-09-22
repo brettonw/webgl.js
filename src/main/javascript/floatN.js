@@ -1,5 +1,5 @@
-var FloatN = function (dim) {
-    var _ = Object.create (null);
+let FloatN = function (dim) {
+    let _ = Object.create (null);
 
     _.create = function () {
         return new glMatrixArrayType (dim);
@@ -12,9 +12,9 @@ var FloatN = function (dim) {
     // if 'to' is omitted, will create a new vector
     // returns 'to'
     eval (function () {
-        var str = "_.copy = function (from, to) { ";
+        let str = "_.copy = function (from, to) { ";
         str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
-        for (var i = 0; i < dim; ++i) {
+        for (let i = 0; i < dim; ++i) {
             str += "to[" + i + "] = from[" + i + "]; ";
         }
         str += "return to; ";
@@ -29,10 +29,10 @@ var FloatN = function (dim) {
     // if 'to' is omitted, will create a new vector
     // returns 'to'
     eval (function () {
-        var str = "_.point = function (from, to) {";
+        let str = "_.point = function (from, to) {";
         str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
-        var end = dim - 1;
-        for (var i = 0; i < end; ++i) {
+        let end = dim - 1;
+        for (let i = 0; i < end; ++i) {
             str += "to[" + i + "] = from[" + i + "]; ";
         }
         str += "to[" + end + "] = 1; ";
@@ -48,10 +48,10 @@ var FloatN = function (dim) {
     // if 'to' is omitted, will create a new vector
     // returns 'to'
     eval (function () {
-        var str = "_.vector = function (from, to) {";
+        let str = "_.vector = function (from, to) {";
         str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
-        var end = dim - 1;
-        for (var i = 0; i < end; ++i) {
+        let end = dim - 1;
+        for (let i = 0; i < end; ++i) {
             str += "to[" + i + "] = from[" + i + "]; ";
         }
         str += "to[" + end + "] = 0; ";
@@ -66,9 +66,9 @@ var FloatN = function (dim) {
     // computes the dot produce of 'left' and 'right'
     // returns the Float result
     eval (function () {
-        var str = "_.dot = function (left, right) {";
+        let str = "_.dot = function (left, right) {";
         str += "return (left[0] * right[0])";
-        for (var i = 1; i < dim; ++i) {
+        for (let i = 1; i < dim; ++i) {
             str += " + (left[" + i + "] * right[" + i + "])";
         }
         str += "; ";
@@ -100,9 +100,9 @@ var FloatN = function (dim) {
     // if 'to' is omitted, will create a new vector
     // returns 'to'
     eval (function () {
-        var str = "_.add = function (left, right, to) {";
+        let str = "_.add = function (left, right, to) {";
         str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
-        for (var i = 0; i < dim; ++i) {
+        for (let i = 0; i < dim; ++i) {
             str += "to[" + i + "] = left[" + i + "] + right[" + i + "]; ";
         }
         str += "return to; ";
@@ -118,9 +118,9 @@ var FloatN = function (dim) {
     // if 'to' is omitted, will create a new vector
     // returns 'to'
     eval (function () {
-        var str = "_.subtract = function (left, right, to) {";
+        let str = "_.subtract = function (left, right, to) {";
         str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
-        for (var i = 0; i < dim; ++i) {
+        for (let i = 0; i < dim; ++i) {
             str += "to[" + i + "] = left[" + i + "] - right[" + i + "]; ";
         }
         str += "return to; ";
@@ -136,9 +136,9 @@ var FloatN = function (dim) {
     // if 'to' is omitted, will create a new vector
     // returns 'to'
     eval (function () {
-        var str = "_.scale = function (from, scale, to) {";
+        let str = "_.scale = function (from, scale, to) {";
         str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
-        for (var i = 0; i < dim; ++i) {
+        for (let i = 0; i < dim; ++i) {
             str += "to[" + i + "] = from[" + i + "] * scale; ";
         }
         str += "return to; ";
@@ -154,18 +154,18 @@ var FloatN = function (dim) {
     // from: FloatN
     // returns the string representation of the from
     eval (function () {
-        var strRow = function (from) {
-            var str = "'(' + from[" + index (row, 0) + "]";
-            for (var column = 1; column < dim; ++column) {
+        let strRow = function (from) {
+            let str = "'(' + from[" + index (row, 0) + "]";
+            for (let column = 1; column < dim; ++column) {
                 str += " + ', ' + from[" + index (row, column) + "]";
             }
             str += " + ')'";
             return str;
         };
 
-        var str = "_.str = function (from) {";
+        let str = "_.str = function (from) {";
         str += "return '(' + from[0]";
-        for (var i = 1; i < dim; ++i) {
+        for (let i = 1; i < dim; ++i) {
             str += " + ', ' +  + from[" + i + "]";
         }
         str += " + ')'; ";
