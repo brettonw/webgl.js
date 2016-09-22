@@ -37,6 +37,7 @@ let Render = function () {
      * Static method to create and construct a new rendering context.
      *
      * @method new
+     * @static
      * @param {string} canvasId the id of the canvas element to use for the rendering context.
      * @return {Render}
      */

@@ -38,6 +38,7 @@ let Render = function () {
      * Static method to create and construct a new rendering context.
      *
      * @method new
+     * @static
      * @param {string} canvasId the id of the canvas element to use for the rendering context.
      * @return {Render}
      */
@@ -737,6 +738,11 @@ let Float4x4 = function () {
 
     return _;
 } ();
+/**
+ * A Vertex and Fragment "shader" pairing, and utilities for setting attributes and parameters.
+ *
+ * @class Shader
+ */
 let Shader = function () {
     let _ = Object.create (null);
 
@@ -744,23 +750,33 @@ let Shader = function () {
     _.NORMAL_ATTRIBUTE = "NORMAL_ATTRIBUTE";
     _.TEXTURE_ATTRIBUTE = "TEXTURE_ATTRIBUTE";
 
+    let shaders = Object.create (null);
     let currentShader;
 
-    _.construct = function (vertexShaderUrl, fragmentShaderUrl, attributeMapping) {
-        let getSource = function (url) {
+    /**
+     * The initializer for a shader.
+     *
+     * @method new
+     * @param {string} name name to retrieve this shader
+     * @param {string} vertexShaderUrl url to the vertex shader GLSL file
+     * @param {string} fragmentShaderUrl url to the fragment shader GLSL file
+     * @param {Object} attributeMapping maps POSITION, NORMAL, and TEXTURE attributes to the
+     * attribute names in the shader
+     * @return {Shader}
+     */
+    _.construct = function (name, vertexShaderUrl, fragmentShaderUrl, attributeMapping) {
+        this.name = name;
+
+        // internal function to fetch and compile a shader function
+        let fetchAndCompileShader = function (url, type) {
+            let compiledShader = null;
             let request = new XMLHttpRequest ();
             request.open ("GET", url, false);
             request.send (null);
-            return (request.status === 200) ? request.responseText : null;
-        };
-
-        let compileShader = function (url, type) {
-            let compiledShader = null;
-            let src = getSource (url);
-            if (src !== null) {
+            if (request.status === 200){
                 // type is one of (context.VERTEX_SHADER, context.FRAGMENT_SHADER)
                 let tmpShader = context.createShader (type);
-                context.shaderSource (tmpShader, src);
+                context.shaderSource (tmpShader, request.responseText);
                 context.compileShader (tmpShader);
                 if (!context.getShaderParameter (tmpShader, context.COMPILE_STATUS)) {
                     console.log (context.getShaderInfoLog (tmpShader));
@@ -772,8 +788,8 @@ let Shader = function () {
         };
 
         // fetch and compile the shader components
-        let vertexShader = compileShader (vertexShaderUrl, context.VERTEX_SHADER);
-        let fragmentShader = compileShader (fragmentShaderUrl, context.FRAGMENT_SHADER);
+        let vertexShader = fetchAndCompileShader (vertexShaderUrl, context.VERTEX_SHADER);
+        let fragmentShader = fetchAndCompileShader (fragmentShaderUrl, context.FRAGMENT_SHADER);
 
         // create the shader program and attach the components
         let program = this.program = context.createProgram ();
@@ -782,7 +798,7 @@ let Shader = function () {
         context.linkProgram (program);
         if (!context.getProgramParameter (program, context.LINK_STATUS)) {
             console.log ("Could not initialise shaders");
-            // do we need to delete it?
+            // XXX do we need to delete it?
         }
 
         // have to do this before collecting parameters, or else...
@@ -793,6 +809,7 @@ let Shader = function () {
             let shaderParameter = ShaderParameter.new (program, i);
             this["set" + Utility.uppercase (shaderParameter.name)] = function (value) {
                 shaderParameter.set (value);
+                return this;
             }
         }
 
@@ -824,22 +841,59 @@ let Shader = function () {
         return Shader;
     };
 
+    /**
+     * Bind the POSITION attribute to the given buffer.
+     *
+     * @method bindPositionAttribute
+     * @static
+     * @param {Object} buffer WebGL buffer to bind
+     * @return {Shader}
+     */
     _.bindPositionAttribute = function (buffer) {
         return bindAttribute(_.POSITION_ATTRIBUTE, buffer);
     };
 
+    /**
+     * Bind the NORMAL attribute to the given buffer.
+     *
+     * @method bindNormalAttribute
+     * @static
+     * @param {Object} buffer WebGL buffer to bind
+     * @return {Shader}
+     */
     _.bindNormalAttribute = function (buffer) {
         return bindAttribute(_.NORMAL_ATTRIBUTE, buffer);
     };
 
+    /**
+     * Bind the TEXTURE attribute to the given buffer.
+     *
+     * @method bindTextureAttribute
+     * @static
+     * @param {Object} buffer WebGL buffer to bind
+     * @return {Shader}
+     */
     _.bindTextureAttribute = function (buffer) {
         return bindAttribute(_.TEXTURE_ATTRIBUTE, buffer);
     };
 
+    /**
+     * Fetch the shader currently in use.
+     *
+     * @method getCurrentShader
+     * @static
+     * @return {Shader}
+     */
     _.getCurrentShader = function () {
         return currentShader;
     };
 
+    /**
+     * Set this as the current shader in the rendering context.
+     *
+     * @method use
+     * @return {Shader}  "this" to allow for chaining.
+     */
     _.use = function () {
         if (currentShader !== this) {
             currentShader = this;
@@ -848,13 +902,36 @@ let Shader = function () {
         return this;
     };
 
-    _.new = function (vertexShaderUrl, fragmentShaderUrl, attributeMapping) {
+    /**
+     * Static method to create and construct a new Shader.
+     *
+     * @method new
+     * @static
+     * @param {string} name name to retrieve this shader
+     * @param {string} vertexShaderUrl url to the vertex shader GLSL file
+     * @param {string} fragmentShaderUrl url to the fragment shader GLSL file
+     * @param {Object} attributeMapping maps POSITION, NORMAL, and TEXTURE attributes to the
+     * attribute names in the shader
+     * @return {Shader}
+     */
+    _.new = function (name, vertexShaderUrl, fragmentShaderUrl, attributeMapping) {
         attributeMapping = (typeof attributeMapping !== "undefined") ? attributeMapping : {
             POSITION_ATTRIBUTE: "inputPosition",
             NORMAL_ATTRIBUTE: "inputNormal",
             TEXTURE_ATTRIBUTE: "inputTexture"
         };
-        return Object.create (_).construct (vertexShaderUrl, fragmentShaderUrl, attributeMapping);
+        return (shaders[name] = Object.create (_).construct (name, vertexShaderUrl, fragmentShaderUrl, attributeMapping));
+    };
+
+    /**
+     * Fetch a shader by name.
+     *
+     * @method get
+     * @static
+     * @return {Shader}
+     */
+    _.get = function (name) {
+        return shaders[name];
     };
 
     return _;
@@ -1022,7 +1099,7 @@ let Node = function () {
 
             // children are special, the default is to include children, but we want a way to say
             // the current node is a leaf node, so { children: false } is the way to do that
-            if ((!("children" in parameters)) || (parameters.children == true)) {
+            if ((!("children" in parameters)) || (parameters.children != false)) {
                 this.children = [];
                 traverseFunctionIndex += HAS_CHILDREN;
             }
@@ -1178,6 +1255,7 @@ let Node = function () {
      * Static method to create and construct a new scene graph node.
      *
      * @method new
+     * @static
      * @param {Object} parameters an object with optional information to include in the node (see
      * "construct" for more information)
      * @return {Node}
@@ -1188,9 +1266,21 @@ let Node = function () {
 
     return _;
 } ();
+/**
+ * A Cloud, a scene graph node for displaying points in space.
+ *
+ * @class Cloud
+ */
 let Cloud = function () {
     let _ = Object.create (Node);
 
+    /**
+     * Add a point to the cloud
+     *
+     * @method addPoint
+     * @param {Float3} point the location of the new point.
+     * @return {Cloud} "this" to allow for chaining.
+     */
     _.addPoint = function (point) {
         let transform = Float4x4.multiply (Float4x4.scale ([0.025, 0.025, 0.025]), Float4x4.translate (point));
         this.addChild (Node.new ({
@@ -1198,9 +1288,21 @@ let Cloud = function () {
             shape: "sphere",
             children: false
         }));
+        return this;
     };
 
+    /**
+     * Static method to create and construct a new cloud node.
+     *
+     * @method new
+     * @static
+     * @param {Object} parameters an object with optional information to include in the node (see
+     * "Node.construct" for more information)
+     * @return {Cloud}
+     */
     _.new = function (parameters) {
+        // ensure that we have children enabled
+        parameters.children = true;
         return Object.create (_).construct (parameters);
     };
 

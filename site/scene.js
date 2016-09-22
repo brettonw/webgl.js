@@ -75,12 +75,12 @@ let buildScene = function (canvasId, points) {
     }
     scene.addChild (cloud);
 
-    let shader = Shader.new ("shaders/vertex-basic.glsl", "shaders/fragment-rgb.glsl");
     let projectionMatrix = Float4x4.create ();
     Float4x4.perspective (45, context.viewportWidth / context.viewportHeight, 0.1, 100.0, projectionMatrix);
-    shader.setProjectionMatrix (projectionMatrix);
-    shader.setBlendAlpha (1.0);
-    shader.use ();
+    Shader.new ("shaders/vertex-basic.glsl", "shaders/fragment-rgb.glsl")
+        .use ()
+        .setProjectionMatrix (projectionMatrix)
+        .setBlendAlpha (1.0);
 
     draw (0);
 };

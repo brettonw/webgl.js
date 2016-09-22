@@ -58,7 +58,7 @@ let Node = function () {
 
             // children are special, the default is to include children, but we want a way to say
             // the current node is a leaf node, so { children: false } is the way to do that
-            if ((!("children" in parameters)) || (parameters.children == true)) {
+            if ((!("children" in parameters)) || (parameters.children != false)) {
                 this.children = [];
                 traverseFunctionIndex += HAS_CHILDREN;
             }
@@ -214,6 +214,7 @@ let Node = function () {
      * Static method to create and construct a new scene graph node.
      *
      * @method new
+     * @static
      * @param {Object} parameters an object with optional information to include in the node (see
      * "construct" for more information)
      * @return {Node}

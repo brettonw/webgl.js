@@ -5,6 +5,15 @@
         "version": "1.0.0"
     },
     "files": {
+        "src/main/javascript/cloud.js": {
+            "name": "src/main/javascript/cloud.js",
+            "modules": {},
+            "classes": {
+                "Cloud": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
         "src/main/javascript/node.js": {
             "name": "src/main/javascript/node.js",
             "modules": {},
@@ -23,6 +32,15 @@
             "fors": {},
             "namespaces": {}
         },
+        "src/main/javascript/shader.js": {
+            "name": "src/main/javascript/shader.js",
+            "modules": {},
+            "classes": {
+                "Shader": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
         "src/main/javascript/utility.js": {
             "name": "src/main/javascript/utility.js",
             "modules": {},
@@ -35,6 +53,18 @@
     },
     "modules": {},
     "classes": {
+        "Cloud": {
+            "name": "Cloud",
+            "shortname": "Cloud",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src/main/javascript/cloud.js",
+            "line": 1,
+            "description": "A Cloud, a scene graph node for displaying points in space."
+        },
         "Node": {
             "name": "Node",
             "shortname": "Node",
@@ -59,6 +89,18 @@
             "line": 3,
             "description": "A Rendering context."
         },
+        "Shader": {
+            "name": "Shader",
+            "shortname": "Shader",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src/main/javascript/shader.js",
+            "line": 1,
+            "description": "A Vertex and Fragment \"shader\" pairing, and utilities for setting attributes and parameters."
+        },
         "Utility": {
             "name": "Utility",
             "shortname": "Utility",
@@ -74,6 +116,45 @@
     },
     "elements": {},
     "classitems": [
+        {
+            "file": "src/main/javascript/cloud.js",
+            "line": 9,
+            "description": "Add a point to the cloud",
+            "itemtype": "method",
+            "name": "addPoint",
+            "params": [
+                {
+                    "name": "point",
+                    "description": "the location of the new point.",
+                    "type": "Float3"
+                }
+            ],
+            "return": {
+                "description": "\"this\" to allow for chaining.",
+                "type": "Cloud"
+            },
+            "class": "Cloud"
+        },
+        {
+            "file": "src/main/javascript/cloud.js",
+            "line": 26,
+            "description": "Static method to create and construct a new cloud node.",
+            "itemtype": "method",
+            "name": "new",
+            "static": 1,
+            "params": [
+                {
+                    "name": "parameters",
+                    "description": "an object with optional information to include in the node (see\n\"Node.construct\" for more information)",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Cloud"
+            },
+            "class": "Cloud"
+        },
         {
             "file": "src/main/javascript/node.js",
             "line": 11,
@@ -149,6 +230,7 @@
             "description": "Static method to create and construct a new scene graph node.",
             "itemtype": "method",
             "name": "new",
+            "static": 1,
             "params": [
                 {
                     "name": "parameters",
@@ -195,6 +277,7 @@
             "description": "Static method to create and construct a new rendering context.",
             "itemtype": "method",
             "name": "new",
+            "static": 1,
             "params": [
                 {
                     "name": "canvasId",
@@ -207,6 +290,173 @@
                 "type": "Render"
             },
             "class": "Render"
+        },
+        {
+            "file": "src/main/javascript/shader.js",
+            "line": 16,
+            "description": "The initializer for a shader.",
+            "itemtype": "method",
+            "name": "new",
+            "params": [
+                {
+                    "name": "name",
+                    "description": "name to retrieve this shader",
+                    "type": "String"
+                },
+                {
+                    "name": "vertexShaderUrl",
+                    "description": "url to the vertex shader GLSL file",
+                    "type": "String"
+                },
+                {
+                    "name": "fragmentShaderUrl",
+                    "description": "url to the fragment shader GLSL file",
+                    "type": "String"
+                },
+                {
+                    "name": "attributeMapping",
+                    "description": "maps POSITION, NORMAL, and TEXTURE attributes to the\nattribute names in the shader",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Shader"
+            },
+            "class": "Shader"
+        },
+        {
+            "file": "src/main/javascript/shader.js",
+            "line": 104,
+            "description": "Bind the POSITION attribute to the given buffer.",
+            "itemtype": "method",
+            "name": "bindPositionAttribute",
+            "static": 1,
+            "params": [
+                {
+                    "name": "buffer",
+                    "description": "WebGL buffer to bind",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Shader"
+            },
+            "class": "Shader"
+        },
+        {
+            "file": "src/main/javascript/shader.js",
+            "line": 116,
+            "description": "Bind the NORMAL attribute to the given buffer.",
+            "itemtype": "method",
+            "name": "bindNormalAttribute",
+            "static": 1,
+            "params": [
+                {
+                    "name": "buffer",
+                    "description": "WebGL buffer to bind",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Shader"
+            },
+            "class": "Shader"
+        },
+        {
+            "file": "src/main/javascript/shader.js",
+            "line": 128,
+            "description": "Bind the TEXTURE attribute to the given buffer.",
+            "itemtype": "method",
+            "name": "bindTextureAttribute",
+            "static": 1,
+            "params": [
+                {
+                    "name": "buffer",
+                    "description": "WebGL buffer to bind",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Shader"
+            },
+            "class": "Shader"
+        },
+        {
+            "file": "src/main/javascript/shader.js",
+            "line": 140,
+            "description": "Fetch the shader currently in use.",
+            "itemtype": "method",
+            "name": "getCurrentShader",
+            "static": 1,
+            "return": {
+                "description": "",
+                "type": "Shader"
+            },
+            "class": "Shader"
+        },
+        {
+            "file": "src/main/javascript/shader.js",
+            "line": 151,
+            "description": "Set this as the current shader in the rendering context.",
+            "itemtype": "method",
+            "name": "use",
+            "return": {
+                "description": "\"this\" to allow for chaining.",
+                "type": "Shader"
+            },
+            "class": "Shader"
+        },
+        {
+            "file": "src/main/javascript/shader.js",
+            "line": 165,
+            "description": "Static method to create and construct a new Shader.",
+            "itemtype": "method",
+            "name": "new",
+            "static": 1,
+            "params": [
+                {
+                    "name": "name",
+                    "description": "name to retrieve this shader",
+                    "type": "String"
+                },
+                {
+                    "name": "vertexShaderUrl",
+                    "description": "url to the vertex shader GLSL file",
+                    "type": "String"
+                },
+                {
+                    "name": "fragmentShaderUrl",
+                    "description": "url to the fragment shader GLSL file",
+                    "type": "String"
+                },
+                {
+                    "name": "attributeMapping",
+                    "description": "maps POSITION, NORMAL, and TEXTURE attributes to the\nattribute names in the shader",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Shader"
+            },
+            "class": "Shader"
+        },
+        {
+            "file": "src/main/javascript/shader.js",
+            "line": 186,
+            "description": "Fetch a shader by name.",
+            "itemtype": "method",
+            "name": "get",
+            "static": 1,
+            "return": {
+                "description": "",
+                "type": "Shader"
+            },
+            "class": "Shader"
         },
         {
             "file": "src/main/javascript/utility.js",

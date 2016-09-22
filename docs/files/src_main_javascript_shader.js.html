@@ -1,14 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>src/main/javascript/shader.js - WebGL</title>
+    <link rel="stylesheet" href="">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="stylesheet" href="../assets/css/custom.css">
+    <link rel="stylesheet" href="../assets/css/lucid.css">
+    <link rel="stylesheet" href="../assets/vendor/bootstrap/css/bootstrap.css">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+</head>
+<body class="yui3-skin-sam">
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <h1 class="brand" style="padding: 10px 16px 10px; height: 20px; line-height: 20px; margin-left: 0;">
+            WebGL
+        </h1>
+	<div class="nav">
+            <li class="divider-vertical"></li>
+            <li>
+                <p class="navbar-text">
+                    API Docs for Version: <b>1.0.0</b>
+                </p>
+            </li>
+        </div>
+        <form class="navbar-form pull-right" style="line-height: 40px; height: 40px;">
+            <input style="margin-top: 0;" type="text" class="search-query" placeholder="Search for classes/modules..." data-obj='["classes/Cloud", "classes/Node", "classes/Render", "classes/Shader", "classes/Utility"]'>
+        </form>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="span3">
+<div>
+    <div id="sidebar">
+    <div id="classes">
+        <ul id="api-classes" class="nav nav-list">
+                <li><a href="../classes/Cloud.html">Cloud</a></li>
+                <li><a href="../classes/Node.html">Node</a></li>
+                <li><a href="../classes/Render.html">Render</a></li>
+                <li><a href="../classes/Shader.html">Shader</a></li>
+                <li><a href="../classes/Utility.html">Utility</a></li>
+        </ul>
+    </div>
+    </div>
+</div>
+        </div>
+        <div class="span9">
+    <form id="options-form" class="form-inline pull-right">
+        Show:
+        <label for="api-show-inherited" class="checkbox">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected" class="checkbox">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private" class="checkbox">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated" class="checkbox">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </form>
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+<div class="page-header">
+    <h1>src/main/javascript/shader.js <small>File</small></h1>
+</div>
+
+<div class="file">
+    <pre class="prettyprint linenums">
 /**
- * A Vertex and Fragment "shader" pairing, and utilities for setting attributes and parameters.
+ * A Vertex and Fragment &quot;shader&quot; pairing, and utilities for setting attributes and parameters.
  *
  * @class Shader
  */
 let Shader = function () {
     let _ = Object.create (null);
 
-    _.POSITION_ATTRIBUTE = "POSITION_ATTRIBUTE";
-    _.NORMAL_ATTRIBUTE = "NORMAL_ATTRIBUTE";
-    _.TEXTURE_ATTRIBUTE = "TEXTURE_ATTRIBUTE";
+    _.POSITION_ATTRIBUTE = &quot;POSITION_ATTRIBUTE&quot;;
+    _.NORMAL_ATTRIBUTE = &quot;NORMAL_ATTRIBUTE&quot;;
+    _.TEXTURE_ATTRIBUTE = &quot;TEXTURE_ATTRIBUTE&quot;;
 
     let shaders = Object.create (null);
     let currentShader;
@@ -31,7 +113,7 @@ let Shader = function () {
         let fetchAndCompileShader = function (url, type) {
             let compiledShader = null;
             let request = new XMLHttpRequest ();
-            request.open ("GET", url, false);
+            request.open (&quot;GET&quot;, url, false);
             request.send (null);
             if (request.status === 200){
                 // type is one of (context.VERTEX_SHADER, context.FRAGMENT_SHADER)
@@ -57,7 +139,7 @@ let Shader = function () {
         context.attachShader (program, fragmentShader);
         context.linkProgram (program);
         if (!context.getProgramParameter (program, context.LINK_STATUS)) {
-            LOG ("Could not initialise shaders");
+            LOG (&quot;Could not initialise shaders&quot;);
             // XXX do we need to delete it?
         }
 
@@ -65,9 +147,9 @@ let Shader = function () {
         context.useProgram (program);
 
         // add shader parameters
-        for (let i = 0, end = context.getProgramParameter (program, context.ACTIVE_UNIFORMS); i < end; i++) {
+        for (let i = 0, end = context.getProgramParameter (program, context.ACTIVE_UNIFORMS); i &lt; end; i++) {
             let shaderParameter = ShaderParameter.new (program, i);
-            this["set" + Utility.uppercase (shaderParameter.name)] = function (value) {
+            this[&quot;set&quot; + Utility.uppercase (shaderParameter.name)] = function (value) {
                 shaderParameter.set (value);
                 return this;
             }
@@ -81,7 +163,7 @@ let Shader = function () {
 
         // then we loop over the found active attributes, and map the ones we know about
         let attributes = this.attributes = Object.create (null);
-        for (let i = 0, end = context.getProgramParameter (program, context.ACTIVE_ATTRIBUTES); i < end; i++) {
+        for (let i = 0, end = context.getProgramParameter (program, context.ACTIVE_ATTRIBUTES); i &lt; end; i++) {
             let activeAttribute = context.getActiveAttrib (program, i);
             let name = activeAttribute.name;
             if (name in reverseAttributeMapping) {
@@ -93,7 +175,7 @@ let Shader = function () {
     };
 
     let bindAttribute = function (which, buffer) {
-        // not every shader uses every attribute, so don't bother to set them unless they will be used
+        // not every shader uses every attribute, so don&#x27;t bother to set them unless they will be used
         if (which in currentShader.attributes) {
             context.bindBuffer (context.ARRAY_BUFFER, buffer);
             currentShader.attributes[which].bind ();
@@ -152,7 +234,7 @@ let Shader = function () {
      * Set this as the current shader in the rendering context.
      *
      * @method use
-     * @return {Shader}  "this" to allow for chaining.
+     * @return {Shader}  &quot;this&quot; to allow for chaining.
      */
     _.use = function () {
         if (currentShader !== this) {
@@ -175,10 +257,10 @@ let Shader = function () {
      * @return {Shader}
      */
     _.new = function (name, vertexShaderUrl, fragmentShaderUrl, attributeMapping) {
-        attributeMapping = (typeof attributeMapping !== "undefined") ? attributeMapping : {
-            POSITION_ATTRIBUTE: "inputPosition",
-            NORMAL_ATTRIBUTE: "inputNormal",
-            TEXTURE_ATTRIBUTE: "inputTexture"
+        attributeMapping = (typeof attributeMapping !== &quot;undefined&quot;) ? attributeMapping : {
+            POSITION_ATTRIBUTE: &quot;inputPosition&quot;,
+            NORMAL_ATTRIBUTE: &quot;inputNormal&quot;,
+            TEXTURE_ATTRIBUTE: &quot;inputTexture&quot;
         };
         return (shaders[name] = Object.create (_).construct (name, vertexShaderUrl, fragmentShaderUrl, attributeMapping));
     };
@@ -196,3 +278,19 @@ let Shader = function () {
 
     return _;
 } ();
+
+    </pre>
+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/jquery/jquery-1.8.2.min.js"></script>
+<script src="../assets/vendor/bootstrap/js/bootstrap.js"></script>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script src="../assets/js/yuidoc-bootstrap.js"></script>
+<script>prettyPrint();</script>
+</body>
+</html>
