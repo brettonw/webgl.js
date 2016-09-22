@@ -26,7 +26,9 @@ YUIDoc only reads the comments, so it doesn't impose any code structure:
  
     npm install -g yuidoc
     
-It would be better if I could point it at a single file.
+It would be better if I could point it at a single file. Syntax reference at 
+http://yui.github.io/yuidoc/
+.
     
 I also tried:
 * JSDoc, which wanted very specific code structure, and wouldn't bend to my will, and

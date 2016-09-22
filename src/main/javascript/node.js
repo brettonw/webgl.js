@@ -22,7 +22,7 @@ let Node = function () {
      * * children: the node will have an array of children by default, but if the node is intended
      * to be a leaf, you can save the space and time associated with an empty list by setting this
      * value to "false".
-     * @returns {Node}
+     * @return {Node}
      */
     _.construct = function (parameters) {
         // we select the traverse function based on the feature requested for the node. these are

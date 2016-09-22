@@ -80,9 +80,8 @@
 
     <target name="js-document" depends="js-preprocess">
         <exec executable="yuidoc">
-            <arg value="-o"/>
-            <arg value="${docs-dir}"/>
-            <arg value="${source-dir}"/>
+            <arg value="-c"/>
+            <arg value="yuidoc.json"/>
         </exec>
     </target>
 

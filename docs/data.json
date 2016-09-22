@@ -1,5 +1,9 @@
 {
-    "project": {},
+    "project": {
+        "name": "WebGL",
+        "url": "webgl-render.azurewebsites.net",
+        "version": "1.0.0"
+    },
     "files": {
         "src/main/javascript/node.js": {
             "name": "src/main/javascript/node.js",
@@ -300,10 +304,5 @@
             "class": "Utility"
         }
     ],
-    "warnings": [
-        {
-            "message": "replacing incorrect tag: returns with return",
-            "line": " src/main/javascript/node.js:11"
-        }
-    ]
+    "warnings": []
 }
