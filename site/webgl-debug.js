@@ -356,6 +356,25 @@ let FloatNxN = function (dim) {
         return str;
     }());
 
+    // _.translate (translate, to)
+    // translate: FloatN
+    // to: FloatNxN
+    // sets the values of 'to' to a translation matrix
+    // if 'to' is omitted, will create a new matrix
+    // returns 'to'
+    eval(function () {
+        let end = dim - 1;
+        let str = "_.translate = function (translate, to) {";
+        str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
+        str += "_.identity (to); ";
+        for (let i = 0; i < end; ++i) {
+            str += "to[" + index(end, i) + "] = translate[" + i + "]; ";
+        }
+        str += "return to; ";
+        str += "}; ";
+        return str;
+    }());
+
     // _.str (from)
     // from: FloatNxN
     // returns the string representation of the matrix
@@ -487,6 +506,7 @@ let Float4x4 = function () {
         return c;
     };
 
+    /*
     _.translate = function (a, b, c) {
         let d = b[0], e = b[1];
         b = b[2];
@@ -516,6 +536,7 @@ let Float4x4 = function () {
         c[15] = i * d + o * e + r * b + a[15];
         return c;
     };
+    */
 
     _.rotate = function (a, b, c, d) {
         let e = c[0], g = c[1];
@@ -1038,7 +1059,7 @@ let Node = function () {
             },
             // 5 transform, shape
             function (transform) {
-                transform = Float4x4.multiply (transform, this.transform);
+                transform = Float4x4.multiply (this.transform, transform);
                 Shader.getCurrentShader ().setModelMatrix (transform);
                 this.shape.draw ();
             },
@@ -1146,8 +1167,7 @@ let Cloud = function () {
     let _ = Object.create (Node);
 
     _.addPoint = function (point) {
-        let transform = Float4x4.translate (Float4x4.identity (), point);
-        transform = Float4x4.multiply (Float4x4.scale ([0.025, 0.025, 0.025]), transform);
+        let transform = Float4x4.multiply (Float4x4.scale ([0.025, 0.025, 0.025]), Float4x4.translate (point));
         this.addChild (Node.new ({
             transform: transform,
             shape: "sphere",

@@ -114,6 +114,25 @@ let FloatNxN = function (dim) {
         return str;
     }());
 
+    // _.translate (translate, to)
+    // translate: FloatN
+    // to: FloatNxN
+    // sets the values of 'to' to a translation matrix
+    // if 'to' is omitted, will create a new matrix
+    // returns 'to'
+    eval(function () {
+        let end = dim - 1;
+        let str = "_.translate = function (translate, to) {";
+        str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
+        str += "_.identity (to); ";
+        for (let i = 0; i < end; ++i) {
+            str += "to[" + index(end, i) + "] = translate[" + i + "]; ";
+        }
+        str += "return to; ";
+        str += "}; ";
+        return str;
+    }());
+
     // _.str (from)
     // from: FloatNxN
     // returns the string representation of the matrix

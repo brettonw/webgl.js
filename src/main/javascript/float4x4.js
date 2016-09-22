@@ -102,6 +102,7 @@ let Float4x4 = function () {
         return c;
     };
 
+    /*
     _.translate = function (a, b, c) {
         let d = b[0], e = b[1];
         b = b[2];
@@ -131,6 +132,7 @@ let Float4x4 = function () {
         c[15] = i * d + o * e + r * b + a[15];
         return c;
     };
+    */
 
     _.rotate = function (a, b, c, d) {
         let e = c[0], g = c[1];

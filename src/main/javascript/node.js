@@ -66,7 +66,7 @@ let Node = function () {
             },
             // 5 transform, shape
             function (transform) {
-                transform = Float4x4.multiply (transform, this.transform);
+                transform = Float4x4.multiply (this.transform, transform);
                 Shader.getCurrentShader ().setModelMatrix (transform);
                 this.shape.draw ();
             },

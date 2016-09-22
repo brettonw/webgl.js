@@ -10,11 +10,10 @@ let draw = function (delta) {
     // setup the view matrix
     let viewMatrix = Float4x4.identity ();
     Float4x4.rotate (viewMatrix, Utility.degreesToRadians (27.5), [ 1, 0, 0 ]);
-    Float4x4.translate (viewMatrix, [ 0, -1.5, -3.5 ]);
+    viewMatrix  = Float4x4.multiply (Float4x4.translate ([ 0, -1.5, -3.5 ]), viewMatrix);
     Float4x4.rotate (viewMatrix, Utility.degreesToRadians (currentAngle), [ 0, 1, 0 ]);
-    let scaleMatrix = Float4x4.scale ([ 2, 2, 2 ]);
-    viewMatrix = Float4x4.multiply (scaleMatrix, viewMatrix);
-    Float4x4.translate (viewMatrix, [ -0.5, -0.5, -0.5 ]);
+    viewMatrix = Float4x4.multiply (Float4x4.scale ([ 2, 2, 2 ]), viewMatrix);
+    viewMatrix  = Float4x4.multiply (Float4x4.translate ([ -0.5, -0.5, -0.5 ]), viewMatrix);
     Shader.getCurrentShader ().setViewMatrix (viewMatrix);
 
     // draw the scene
@@ -47,8 +46,7 @@ let buildScene = function (canvasId, points) {
         }
     });
 
-    let transform = Float4x4.scale ([ 0.5, 0.5, 0.5 ]);
-    Float4x4.translate (transform, [ 1, 1, 1 ]);
+    let transform = Float4x4.multiply (Float4x4.translate ([ 1, 1, 1 ]), Float4x4.scale ([ 0.5, 0.5, 0.5 ]));
     let background = Node.new ({
         name: "background",
         transform: transform,
