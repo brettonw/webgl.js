@@ -80,16 +80,16 @@
 
 <div class="file">
     <pre class="code prettyprint linenums">
-var context;
-var render;
+let context;
+let render;
 
 /**
  * A Rendering context.
  *
  * @class Render
  */
-var Render = function () {
-    var _ = Object.create (null);
+let Render = function () {
+    let _ = Object.create (null);
 
     /**
      * The initializer for a rendering context.
@@ -107,7 +107,7 @@ var Render = function () {
         return this;
     };
 
-    _.set = function () {
+    _.use = function () {
         context = this.context;
         return this;
     };

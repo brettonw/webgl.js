@@ -1,7 +1,9 @@
 "use strict;"
 
-var currentAngle = 0;
-var draw = function (delta) {
+let scene;
+let currentAngle = 0;
+
+let draw = function (delta) {
     // update the rotation around the scene
     currentAngle += (delta * 180);
 
@@ -19,7 +21,7 @@ var draw = function (delta) {
     scene.traverse (Float4x4.identity ());
 };
 
-var buildScene = function (canvasId, points) {
+let buildScene = function (canvasId, points) {
     Render.new (canvasId).use ();
 
     makeCube ();
@@ -28,15 +30,16 @@ var buildScene = function (canvasId, points) {
     scene = Node.new ({
         name: "root",
         state: function () {
-            // ordinarily, webGl will automatically present and clear when we return control to the event loop from this
-            // function, but we overrode that to have explicit control. webGl still presents the buffer automatically, but the
-            // back buffer is not cleared until we do it...
+            // ordinarily, webGl will automatically present and clear when we return control to the
+            // event loop from the draw function, but we overrode that to have explicit control.
+            // webGl still presents the buffer automatically, but the back buffer is not cleared
+            // until we do it...
             context.clearColor (1.0, 1.0, 1.0, 1.0);
             context.clear (context.COLOR_BUFFER_BIT | context.DEPTH_BUFFER_BIT);
 
             // extensions I want for getting gradient infomation inside the fragment shaders
-            context.getExtension ("OES_standard_derivatives");
-            context.getExtension ("EXT_shader_texture_lod");
+            //context.getExtension ("OES_standard_derivatives");
+            //context.getExtension ("EXT_shader_texture_lod");
 
             // oh for &#^%'s sake, alpha blending should be standard
             context.blendFunc (context.SRC_ALPHA, context.ONE_MINUS_SRC_ALPHA);

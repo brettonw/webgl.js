@@ -1020,17 +1020,18 @@ let Node = function () {
         }
 
         // now make a traverse function depending on the included features
-        let INVALID_TRAVERSE = function (transform) {};
+        let INVALID_TRAVERSE = function (transform) { console.log ("WARNING: INVALID TRAVERSE"); };
+        console.log ("Node (" + this.getName () + "): traverse (" + traverseFunctionIndex + ")");
         this.traverse = [
             // 0 nothing
-            null,
-            // 1 transform
-            null,
-            // 2 state
-            null,
+            INVALID_TRAVERSE,
+            // 1 transform only
+            INVALID_TRAVERSE,
+            // 2 state only
+            INVALID_TRAVERSE,
             // 3 transform, state
-            null,
-            // 4 shape
+            INVALID_TRAVERSE,
+            // 4 shape only
             function (transform) {
                 Shader.getCurrentShader ().setModelMatrix (transform);
                 this.shape.draw ();
@@ -1054,7 +1055,7 @@ let Node = function () {
                 Shader.getCurrentShader ().setModelMatrix (transform);
                 this.shape.draw ();
             },
-            // 8 children
+            // 8 children only
             function (transform) {
                 for (let child of this.children) {
                     child.traverse (transform);
@@ -1120,19 +1121,19 @@ let Node = function () {
             }
         ][traverseFunctionIndex];
 
-
-        // sanity check, nodes must have either a shape to draw, or children
-        if (this.traverse === INVALID_TRAVERSE) {
-            console.log("WARNING: INVALID TRAVERSE");
-        }
-
-
-
         return this;
     };
 
     _.addChild = function (node) {
         this.children.push (node);
+    };
+
+    _.getName = function () {
+        return ("name" in this) ? this.name : "node";
+    };
+
+    _.get = function (name) {
+        return nodes[name];
     };
 
     _.new = function (parameters) {
@@ -1141,10 +1142,6 @@ let Node = function () {
 
     return _;
 } ();
-
-
-// XXX not sure this is really necessary to have here
-let scene = Node.new ();
 let Cloud = function () {
     let _ = Object.create (Node);
 
