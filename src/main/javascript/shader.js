@@ -8,6 +8,7 @@ let Shader = function () {
 
     /**
      * The name for the standard POSITION buffer attribute in a shader
+     * @element POSITION_ATTRIBUTE
      * @type {string}
      * @final
      */
@@ -15,6 +16,7 @@ let Shader = function () {
 
     /**
      * The name for the standard NORMAL buffer attribute in a shader
+     * @element NORMAL_ATTRIBUTE
      * @type {string}
      * @final
      */
@@ -22,6 +24,7 @@ let Shader = function () {
 
     /**
      * The name for the standard TEXTURE buffer attribute in a shader
+     * @element TEXTURE_ATTRIBUTE
      * @type {string}
      * @final
      */

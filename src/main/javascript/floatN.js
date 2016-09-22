@@ -152,21 +152,13 @@ let FloatN = function (dim) {
 
     // _.str (from)
     // from: FloatN
-    // returns the string representation of the from
+    // returns the string representation of the from (to 7 significant digits), about 10 miles at
+    // 1/16" resolution
     eval (function () {
-        let strRow = function (from) {
-            let str = "'(' + from[" + index (row, 0) + "]";
-            for (let column = 1; column < dim; ++column) {
-                str += " + ', ' + from[" + index (row, column) + "]";
-            }
-            str += " + ')'";
-            return str;
-        };
-
         let str = "_.str = function (from) {";
         str += "return '(' + from[0]";
         for (let i = 1; i < dim; ++i) {
-            str += " + ', ' +  + from[" + i + "]";
+            str += " + ', ' +  + from[" + i + "].toFixed (7)";
         }
         str += " + ')'; ";
         str += "}; ";
@@ -176,3 +168,26 @@ let FloatN = function (dim) {
     return _;
 };
 
+let Float2 = function () {
+    let _ = FloatN (2);
+    return _;
+} ();
+
+let Float3 = function () {
+    let _ = FloatN (3);
+
+    _.cross = function (left, right, to) {
+        to = (typeof to !== 'undefined') ? to : _.create ();
+        to[0] = (left[1] * right[2]) - (left[2] * right[1]);
+        to[1] = (left[2] * right[0]) - (left[0] * right[2]);
+        to[2] = (left[0] * right[1]) - (left[1] * right[0]);
+        return to;
+    };
+
+    return _;
+} ();
+
+let Float4 = function () {
+    let _ = FloatN (4);
+    return _;
+} ();

@@ -9,6 +9,10 @@ YUI.add("yuidoc-meta", function(Y) {
     ],
     "modules": [],
     "allModules": [],
-    "elements": []
+    "elements": [
+        "NORMAL_ATTRIBUTE",
+        "POSITION_ATTRIBUTE",
+        "TEXTURE_ATTRIBUTE"
+    ]
 } };
 });
