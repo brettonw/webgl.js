@@ -746,8 +746,25 @@ let Float4x4 = function () {
 let Shader = function () {
     let _ = Object.create (null);
 
+    /**
+     * The name for the standard POSITION buffer attribute in a shader
+     * @type {string}
+     * @final
+     */
     _.POSITION_ATTRIBUTE = "POSITION_ATTRIBUTE";
+
+    /**
+     * The name for the standard NORMAL buffer attribute in a shader
+     * @type {string}
+     * @final
+     */
     _.NORMAL_ATTRIBUTE = "NORMAL_ATTRIBUTE";
+
+    /**
+     * The name for the standard TEXTURE buffer attribute in a shader
+     * @type {string}
+     * @final
+     */
     _.TEXTURE_ATTRIBUTE = "TEXTURE_ATTRIBUTE";
 
     let shaders = Object.create (null);
@@ -892,7 +909,7 @@ let Shader = function () {
      * Set this as the current shader in the rendering context.
      *
      * @method use
-     * @return {Shader}  "this" to allow for chaining.
+     * @chainable
      */
     _.use = function () {
         if (currentShader !== this) {
@@ -900,6 +917,16 @@ let Shader = function () {
             context.useProgram (this.program);
         }
         return this;
+    };
+
+    /**
+     * Get the name of this shader
+     *
+     * @method getName
+     * @return {string} the name of this shader.
+     */
+    _.getName = function () {
+        return this.name;
     };
 
     /**
@@ -911,7 +938,10 @@ let Shader = function () {
      * @param {string} vertexShaderUrl url to the vertex shader GLSL file
      * @param {string} fragmentShaderUrl url to the fragment shader GLSL file
      * @param {Object} attributeMapping maps POSITION, NORMAL, and TEXTURE attributes to the
-     * attribute names in the shader
+     * attribute names in the shader. Defaults to:
+     * * POSITION_ATTRIBUTE: "inputPosition"
+     * * NORMAL_ATTRIBUTE: "inputNormal"
+     * * TEXTURE_ATTRIBUTE: "inputTexture"
      * @return {Shader}
      */
     _.new = function (name, vertexShaderUrl, fragmentShaderUrl, attributeMapping) {
@@ -1219,7 +1249,7 @@ let Node = function () {
      *
      * @method addChild
      * @param {Node} node the node to add as a child.
-     * @return {Node} "this" to allow for chaining.
+     * @chainable
      */
     _.addChild = function (node) {
         if ("children" in this) {
@@ -1279,7 +1309,7 @@ let Cloud = function () {
      *
      * @method addPoint
      * @param {Float3} point the location of the new point.
-     * @return {Cloud} "this" to allow for chaining.
+     * @chainable
      */
     _.addPoint = function (point) {
         let transform = Float4x4.multiply (Float4x4.scale ([0.025, 0.025, 0.025]), Float4x4.translate (point));

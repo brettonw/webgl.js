@@ -178,7 +178,7 @@ let Node = function () {
      *
      * @method addChild
      * @param {Node} node the node to add as a child.
-     * @return {Node} "this" to allow for chaining.
+     * @chainable
      */
     _.addChild = function (node) {
         if ("children" in this) {

@@ -11,7 +11,7 @@ let Cloud = function () {
      *
      * @method addPoint
      * @param {Float3} point the location of the new point.
-     * @return {Cloud} "this" to allow for chaining.
+     * @chainable
      */
     _.addPoint = function (point) {
         let transform = Float4x4.multiply (Float4x4.scale ([0.025, 0.025, 0.025]), Float4x4.translate (point));

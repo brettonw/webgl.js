@@ -129,10 +129,7 @@
                     "type": "Float3"
                 }
             ],
-            "return": {
-                "description": "\"this\" to allow for chaining.",
-                "type": "Cloud"
-            },
+            "chainable": 1,
             "class": "Cloud"
         },
         {
@@ -187,10 +184,7 @@
                     "type": "Node"
                 }
             ],
-            "return": {
-                "description": "\"this\" to allow for chaining.",
-                "type": "Node"
-            },
+            "chainable": 1,
             "class": "Node"
         },
         {
@@ -293,7 +287,31 @@
         },
         {
             "file": "src/main/javascript/shader.js",
+            "line": 9,
+            "description": "The name for the standard POSITION buffer attribute in a shader",
+            "type": "{string}",
+            "final": 1,
+            "class": "Shader"
+        },
+        {
+            "file": "src/main/javascript/shader.js",
             "line": 16,
+            "description": "The name for the standard NORMAL buffer attribute in a shader",
+            "type": "{string}",
+            "final": 1,
+            "class": "Shader"
+        },
+        {
+            "file": "src/main/javascript/shader.js",
+            "line": 23,
+            "description": "The name for the standard TEXTURE buffer attribute in a shader",
+            "type": "{string}",
+            "final": 1,
+            "class": "Shader"
+        },
+        {
+            "file": "src/main/javascript/shader.js",
+            "line": 33,
             "description": "The initializer for a shader.",
             "itemtype": "method",
             "name": "new",
@@ -327,7 +345,7 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 104,
+            "line": 121,
             "description": "Bind the POSITION attribute to the given buffer.",
             "itemtype": "method",
             "name": "bindPositionAttribute",
@@ -347,7 +365,7 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 116,
+            "line": 133,
             "description": "Bind the NORMAL attribute to the given buffer.",
             "itemtype": "method",
             "name": "bindNormalAttribute",
@@ -367,7 +385,7 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 128,
+            "line": 145,
             "description": "Bind the TEXTURE attribute to the given buffer.",
             "itemtype": "method",
             "name": "bindTextureAttribute",
@@ -387,7 +405,7 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 140,
+            "line": 157,
             "description": "Fetch the shader currently in use.",
             "itemtype": "method",
             "name": "getCurrentShader",
@@ -400,19 +418,28 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 151,
+            "line": 168,
             "description": "Set this as the current shader in the rendering context.",
             "itemtype": "method",
             "name": "use",
+            "chainable": 1,
+            "class": "Shader"
+        },
+        {
+            "file": "src/main/javascript/shader.js",
+            "line": 182,
+            "description": "Get the name of this shader",
+            "itemtype": "method",
+            "name": "getName",
             "return": {
-                "description": "\"this\" to allow for chaining.",
-                "type": "Shader"
+                "description": "the name of this shader.",
+                "type": "String"
             },
             "class": "Shader"
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 165,
+            "line": 192,
             "description": "Static method to create and construct a new Shader.",
             "itemtype": "method",
             "name": "new",
@@ -435,7 +462,7 @@
                 },
                 {
                     "name": "attributeMapping",
-                    "description": "maps POSITION, NORMAL, and TEXTURE attributes to the\nattribute names in the shader",
+                    "description": "maps POSITION, NORMAL, and TEXTURE attributes to the\nattribute names in the shader. Defaults to:\n* POSITION_ATTRIBUTE: \"inputPosition\"\n* NORMAL_ATTRIBUTE: \"inputNormal\"\n* TEXTURE_ATTRIBUTE: \"inputTexture\"",
                     "type": "Object"
                 }
             ],
@@ -447,7 +474,7 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 186,
+            "line": 216,
             "description": "Fetch a shader by name.",
             "itemtype": "method",
             "name": "get",
@@ -554,5 +581,18 @@
             "class": "Utility"
         }
     ],
-    "warnings": []
+    "warnings": [
+        {
+            "message": "Missing item type\nThe name for the standard POSITION buffer attribute in a shader",
+            "line": " src/main/javascript/shader.js:9"
+        },
+        {
+            "message": "Missing item type\nThe name for the standard NORMAL buffer attribute in a shader",
+            "line": " src/main/javascript/shader.js:16"
+        },
+        {
+            "message": "Missing item type\nThe name for the standard TEXTURE buffer attribute in a shader",
+            "line": " src/main/javascript/shader.js:23"
+        }
+    ]
 }

@@ -77,7 +77,7 @@ let buildScene = function (canvasId, points) {
 
     let projectionMatrix = Float4x4.create ();
     Float4x4.perspective (45, context.viewportWidth / context.viewportHeight, 0.1, 100.0, projectionMatrix);
-    Shader.new ("shaders/vertex-basic.glsl", "shaders/fragment-rgb.glsl")
+    Shader.new ("rgb", "shaders/vertex-basic.glsl", "shaders/fragment-rgb.glsl")
         .use ()
         .setProjectionMatrix (projectionMatrix)
         .setBlendAlpha (1.0);
