@@ -1,6 +1,5 @@
 "use strict;"
 let context;
-let render;
 
 /**
  * A Rendering context.
@@ -14,8 +13,8 @@ let Render = function () {
      * The initializer for a rendering context.
      *
      * @method construct
-     * @param {String} canvasId the id of the canvas element to use for the rendering context
-     * @return {Render} Returns an initialized rendering context
+     * @param {string} canvasId the id of the canvas element to use for the rendering context
+     * @return {Render}
      */
     _.construct = function (canvasId) {
         let canvas = this.canvas = document.getElementById (canvasId);
@@ -26,17 +25,21 @@ let Render = function () {
         return this;
     };
 
+    /**
+     * Set the global rendering context.
+     *
+     * @method use
+     */
     _.use = function () {
         context = this.context;
-        return this;
     };
 
     /**
      * Static method to create and construct a new rendering context.
      *
      * @method new
-     * @param {String} canvasId the id of the canvas element to use for the rendering context
-     * @return {Render} Returns an initialized rendering context
+     * @param {string} canvasId the id of the canvas element to use for the rendering context.
+     * @return {Render}
      */
     _.new = function (canvasId) {
         return (render = Object.create (_).construct (canvasId));
@@ -506,38 +509,6 @@ let Float4x4 = function () {
         return c;
     };
 
-    /*
-    _.translate = function (a, b, c) {
-        let d = b[0], e = b[1];
-        b = b[2];
-        if (!c || a == c) {
-            a[12] = a[0] * d + a[4] * e + a[8] * b + a[12];
-            a[13] = a[1] * d + a[5] * e + a[9] * b + a[13];
-            a[14] = a[2] * d + a[6] * e + a[10] * b + a[14];
-            a[15] = a[3] * d + a[7] * e + a[11] * b + a[15];
-            return a;
-        }
-        let g = a[0], f = a[1], h = a[2], i = a[3], j = a[4], k = a[5], l = a[6], o = a[7], m = a[8], n = a[9], p = a[10], r = a[11];
-        c[0] = g;
-        c[1] = f;
-        c[2] = h;
-        c[3] = i;
-        c[4] = j;
-        c[5] = k;
-        c[6] = l;
-        c[7] = o;
-        c[8] = m;
-        c[9] = n;
-        c[10] = p;
-        c[11] = r;
-        c[12] = g * d + j * e + m * b + a[12];
-        c[13] = f * d + k * e + n * b + a[13];
-        c[14] = h * d + l * e + p * b + a[14];
-        c[15] = i * d + o * e + r * b + a[15];
-        return c;
-    };
-    */
-
     _.rotate = function (a, b, c, d) {
         let e = c[0], g = c[1];
         c = c[2];
@@ -991,11 +962,32 @@ let ShaderAttribute = function () {
 
     return _;
 } ();
+/**
+ * A node in a scene graph.
+ *
+ * @class Node
+ */
 let Node = function () {
     let _ = Object.create (null);
 
     let nodes = Object.create (null);
 
+    /**
+     * The initializer for a scene graph node.
+     *
+     * @method construct
+     * @param {Object} parameters an object with optional information to include in the node. The
+     * possibilities are:
+     * * name {string}: nodes can be named if they need to be retrieved later.
+     * * transform {Float4x4}: a transformation matrix to apply before drawing or traversing children.
+     * * state {function}: a parameter-less function to call before drawing or traversing children.
+     * this function may set any render state needed.
+     * * shape {string}: the name of a shape to draw.
+     * * children: the node will have an array of children by default, but if the node is intended
+     * to be a leaf, you can save the space and time associated with an empty list by setting this
+     * value to "false".
+     * @returns {Node}
+     */
     _.construct = function (parameters) {
         // we select the traverse function based on the feature requested for the node. these are
         // the bit flags to indicate the features and the value we accumulate them into. note that
@@ -1145,18 +1137,51 @@ let Node = function () {
         return this;
     };
 
+    /**
+     * Add a child node (only applies to non-leaf nodes)
+     *
+     * @method addChild
+     * @param {Node} node the node to add as a child.
+     * @return {Node} "this" to allow for chaining.
+     */
     _.addChild = function (node) {
-        this.children.push (node);
+        if ("children" in this) {
+            this.children.push (node);
+        } else {
+            console.log ("ERROR: Attempting to add child (" + node.getName () + ") to node (" + this.getName () + ") that is a leaf.");
+        }
+        return this;
     };
 
+    /**
+     * Get the name of this node (if it has one)
+     *
+     * @method getName
+     * @return {string} the name of this node, or just "node".
+     */
     _.getName = function () {
         return ("name" in this) ? this.name : "node";
     };
 
+    /**
+     * Get a node by name
+     *
+     * @method get
+     * @param {string} name the name of the node to retrieve.
+     * @return {Node}
+     */
     _.get = function (name) {
         return nodes[name];
     };
 
+    /**
+     * Static method to create and construct a new scene graph node.
+     *
+     * @method new
+     * @param {Object} parameters an object with optional information to include in the node (see
+     * "construct" for more information)
+     * @return {Node}
+     */
     _.new = function (parameters) {
         return Object.create (_).construct (parameters);
     };
@@ -1464,25 +1489,65 @@ let makeSquare = function () {
         });
     });
 };
+/**
+ * A collection of utility functions.
+ *
+ * @class Utility
+ */
 let Utility = function () {
     let _ = Object.create (null);
 
+    /**
+     * Convert an angle measured in degrees to radians.
+     *
+     * @method degreesToRadians
+     * @param {float} degrees the degree measure to be converted
+     * @return {float}
+     */
     _.degreesToRadians = function (degrees) {
         return (degrees / 180) * Math.PI;
     };
 
+    /**
+     * Convert an angle measured in radians to degrees.
+     *
+     * @method radiansToDegrees
+     * @param {float} radians the radian measure to be converted
+     * @return {float}
+     */
     _.radiansToDegrees = function (radians) {
         return (radians / Math.PI) * 180;
     };
 
+    /**
+     * Make the first letter of a string be upper case.
+     *
+     * @method uppercase
+     * @param {string} string the text to convert to upper case
+     * @return {string}
+     */
     _.uppercase = function (string) {
         return string[0].toUpperCase () + string.slice (1);
     };
 
+    /**
+     * Make the first letter of a string be lower case.
+     *
+     * @method lowercase
+     * @param {string} string the text to convert to lower case
+     * @return {string}
+     */
     _.lowercase = function (string) {
         return string[0].toLowerCase () + string.slice (1);
     };
 
+    /**
+     * Convert an array of arrays to a single array of values (in order).
+     *
+     * @method flatten
+     * @param {Array} array the input array of arrays
+     * @return {Array}
+     */
     _.flatten = function (array) {
         let result = [];
         for (let element of array) {

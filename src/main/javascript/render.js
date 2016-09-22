@@ -1,5 +1,4 @@
 let context;
-let render;
 
 /**
  * A Rendering context.
@@ -13,8 +12,8 @@ let Render = function () {
      * The initializer for a rendering context.
      *
      * @method construct
-     * @param {String} canvasId the id of the canvas element to use for the rendering context
-     * @return {Render} Returns an initialized rendering context
+     * @param {string} canvasId the id of the canvas element to use for the rendering context
+     * @return {Render}
      */
     _.construct = function (canvasId) {
         let canvas = this.canvas = document.getElementById (canvasId);
@@ -25,17 +24,21 @@ let Render = function () {
         return this;
     };
 
+    /**
+     * Set the global rendering context.
+     *
+     * @method use
+     */
     _.use = function () {
         context = this.context;
-        return this;
     };
 
     /**
      * Static method to create and construct a new rendering context.
      *
      * @method new
-     * @param {String} canvasId the id of the canvas element to use for the rendering context
-     * @return {Render} Returns an initialized rendering context
+     * @param {string} canvasId the id of the canvas element to use for the rendering context.
+     * @return {Render}
      */
     _.new = function (canvasId) {
         return (render = Object.create (_).construct (canvasId));

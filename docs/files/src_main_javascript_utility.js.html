@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>src/main/javascript/render.js</title>
+    <title>src/main/javascript/utility.js</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -78,54 +78,77 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-<h1 class="file-heading">File: src/main/javascript/render.js</h1>
+<h1 class="file-heading">File: src/main/javascript/utility.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
-let context;
-
 /**
- * A Rendering context.
+ * A collection of utility functions.
  *
- * @class Render
+ * @class Utility
  */
-let Render = function () {
+let Utility = function () {
     let _ = Object.create (null);
 
     /**
-     * The initializer for a rendering context.
+     * Convert an angle measured in degrees to radians.
      *
-     * @method construct
-     * @param {string} canvasId the id of the canvas element to use for the rendering context
-     * @return {Render}
+     * @method degreesToRadians
+     * @param {float} degrees the degree measure to be converted
+     * @return {float}
      */
-    _.construct = function (canvasId) {
-        let canvas = this.canvas = document.getElementById (canvasId);
-        let context = this.context = canvas.getContext (&quot;webgl&quot;, { preserveDrawingBuffer: true });
-        context.viewportWidth = canvas.width;
-        context.viewportHeight = canvas.height;
-        context.viewport (0, 0, context.viewportWidth, context.viewportHeight);
-        return this;
+    _.degreesToRadians = function (degrees) {
+        return (degrees / 180) * Math.PI;
     };
 
     /**
-     * Set the global rendering context.
+     * Convert an angle measured in radians to degrees.
      *
-     * @method use
+     * @method radiansToDegrees
+     * @param {float} radians the radian measure to be converted
+     * @return {float}
      */
-    _.use = function () {
-        context = this.context;
+    _.radiansToDegrees = function (radians) {
+        return (radians / Math.PI) * 180;
     };
 
     /**
-     * Static method to create and construct a new rendering context.
+     * Make the first letter of a string be upper case.
      *
-     * @method new
-     * @param {string} canvasId the id of the canvas element to use for the rendering context.
-     * @return {Render}
+     * @method uppercase
+     * @param {string} string the text to convert to upper case
+     * @return {string}
      */
-    _.new = function (canvasId) {
-        return (render = Object.create (_).construct (canvasId));
+    _.uppercase = function (string) {
+        return string[0].toUpperCase () + string.slice (1);
+    };
+
+    /**
+     * Make the first letter of a string be lower case.
+     *
+     * @method lowercase
+     * @param {string} string the text to convert to lower case
+     * @return {string}
+     */
+    _.lowercase = function (string) {
+        return string[0].toLowerCase () + string.slice (1);
+    };
+
+    /**
+     * Convert an array of arrays to a single array of values (in order).
+     *
+     * @method flatten
+     * @param {Array} array the input array of arrays
+     * @return {Array}
+     */
+    _.flatten = function (array) {
+        let result = [];
+        for (let element of array) {
+            for (let value of element) {
+                result.push (value);
+            }
+        }
+        return result;
     };
 
     return _;

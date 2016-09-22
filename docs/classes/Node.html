@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Render</title>
+    <title>Node</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -78,12 +78,12 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-<h1>Render Class</h1>
+<h1>Node Class</h1>
 <div class="box meta">
 
 
         <div class="foundat">
-            Defined in: <a href="../files/src_main_javascript_render.js.html#l3"><code>src&#x2F;main&#x2F;javascript&#x2F;render.js:3</code></a>
+            Defined in: <a href="../files/src_main_javascript_node.js.html#l1"><code>src&#x2F;main&#x2F;javascript&#x2F;node.js:1</code></a>
         </div>
 
 
@@ -91,7 +91,7 @@
 
 
 <div class="box intro">
-    <p>A Rendering context.</p>
+    <p>A node in a scene graph.</p>
 
 </div>
 
@@ -112,15 +112,23 @@
 
                     <ul class="index-list methods">
                             <li class="index-item method">
+                                <a href="#method_addChild">addChild</a>
+
+                            </li>
+                            <li class="index-item method">
                                 <a href="#method_construct">construct</a>
 
                             </li>
                             <li class="index-item method">
-                                <a href="#method_new">new</a>
+                                <a href="#method_get">get</a>
 
                             </li>
                             <li class="index-item method">
-                                <a href="#method_use">use</a>
+                                <a href="#method_getName">getName</a>
+
+                            </li>
+                            <li class="index-item method">
+                                <a href="#method_new">new</a>
 
                             </li>
                     </ul>
@@ -133,19 +141,19 @@
             <div id="methods" class="api-class-tabpanel">
                 <h2 class="off-left">Methods</h2>
 
-<div id="method_construct" class="method item">
-    <h3 class="name"><code>construct</code></h3>
+<div id="method_addChild" class="method item">
+    <h3 class="name"><code>addChild</code></h3>
 
         <div class="args">
             <span class="paren">(</span><ul class="args-list inline commas">
                 <li class="arg">
-                        <code>canvasId</code>
+                        <code>node</code>
                 </li>
             </ul><span class="paren">)</span>
         </div>
 
         <span class="returns-inline">
-            <span class="type"><a href="../classes/Render.html" class="crosslink">Render</a></span>
+            <span class="type"><a href="../classes/Node.html" class="crosslink">Node</a></span>
         </span>
 
 
@@ -157,7 +165,7 @@
     <div class="meta">
                 <p>
                 Defined in
-        <a href="../files/src_main_javascript_render.js.html#l11"><code>src&#x2F;main&#x2F;javascript&#x2F;render.js:11</code></a>
+        <a href="../files/src_main_javascript_node.js.html#l176"><code>src&#x2F;main&#x2F;javascript&#x2F;node.js:176</code></a>
         </p>
 
 
@@ -165,7 +173,7 @@
     </div>
 
     <div class="description">
-        <p>The initializer for a rendering context.</p>
+        <p>Add a child node (only applies to non-leaf nodes)</p>
 
     </div>
 
@@ -174,12 +182,12 @@
 
             <ul class="params-list">
                 <li class="param">
-                        <code class="param-name">canvasId</code>
-                        <span class="type">String</span>
+                        <code class="param-name">node</code>
+                        <span class="type"><a href="../classes/Node.html" class="crosslink">Node</a></span>
 
 
                     <div class="param-description">
-                        <p>the id of the canvas element to use for the rendering context</p>
+                        <p>the node to add as a child.</p>
 
                     </div>
 
@@ -191,7 +199,191 @@
             <h4>Returns:</h4>
 
             <div class="returns-description">
-                        <span class="type"><a href="../classes/Render.html" class="crosslink">Render</a></span>:
+                        <span class="type"><a href="../classes/Node.html" class="crosslink">Node</a></span>:
+                    <p>&quot;this&quot; to allow for chaining.</p>
+
+            </div>
+        </div>
+
+
+</div>
+<div id="method_construct" class="method item">
+    <h3 class="name"><code>construct</code></h3>
+
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+                <li class="arg">
+                        <code>parameters</code>
+                </li>
+            </ul><span class="paren">)</span>
+        </div>
+
+        <span class="returns-inline">
+            <span class="type"><a href="../classes/Node.html" class="crosslink">Node</a></span>
+        </span>
+
+
+
+
+
+
+
+    <div class="meta">
+                <p>
+                Defined in
+        <a href="../files/src_main_javascript_node.js.html#l11"><code>src&#x2F;main&#x2F;javascript&#x2F;node.js:11</code></a>
+        </p>
+
+
+
+    </div>
+
+    <div class="description">
+        <p>The initializer for a scene graph node.</p>
+
+    </div>
+
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+                <li class="param">
+                        <code class="param-name">parameters</code>
+                        <span class="type">Object</span>
+
+
+                    <div class="param-description">
+                        <p>an object with optional information to include in the node. The
+possibilities are:</p>
+<ul>
+<li>name {string}: nodes can be named if they need to be retrieved later.</li>
+<li>transform {Float4x4}: a transformation matrix to apply before drawing or traversing children.</li>
+<li>state {function}: a parameter-less function to call before drawing or traversing children.
+this function may set any render state needed.</li>
+<li>shape {string}: the name of a shape to draw.</li>
+<li>children: the node will have an array of children by default, but if the node is intended
+to be a leaf, you can save the space and time associated with an empty list by setting this
+value to &quot;false&quot;.</li>
+</ul>
+
+                    </div>
+
+                </li>
+            </ul>
+        </div>
+
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                        <span class="type"><a href="../classes/Node.html" class="crosslink">Node</a></span>:
+            </div>
+        </div>
+
+
+</div>
+<div id="method_get" class="method item">
+    <h3 class="name"><code>get</code></h3>
+
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+                <li class="arg">
+                        <code>name</code>
+                </li>
+            </ul><span class="paren">)</span>
+        </div>
+
+        <span class="returns-inline">
+            <span class="type"><a href="../classes/Node.html" class="crosslink">Node</a></span>
+        </span>
+
+
+
+
+
+
+
+    <div class="meta">
+                <p>
+                Defined in
+        <a href="../files/src_main_javascript_node.js.html#l202"><code>src&#x2F;main&#x2F;javascript&#x2F;node.js:202</code></a>
+        </p>
+
+
+
+    </div>
+
+    <div class="description">
+        <p>Get a node by name</p>
+
+    </div>
+
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+                <li class="param">
+                        <code class="param-name">name</code>
+                        <span class="type">String</span>
+
+
+                    <div class="param-description">
+                        <p>the name of the node to retrieve.</p>
+
+                    </div>
+
+                </li>
+            </ul>
+        </div>
+
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                        <span class="type"><a href="../classes/Node.html" class="crosslink">Node</a></span>:
+            </div>
+        </div>
+
+
+</div>
+<div id="method_getName" class="method item">
+    <h3 class="name"><code>getName</code></h3>
+
+        <span class="paren">()</span>
+
+        <span class="returns-inline">
+            <span class="type">String</span>
+        </span>
+
+
+
+
+
+
+
+    <div class="meta">
+                <p>
+                Defined in
+        <a href="../files/src_main_javascript_node.js.html#l192"><code>src&#x2F;main&#x2F;javascript&#x2F;node.js:192</code></a>
+        </p>
+
+
+
+    </div>
+
+    <div class="description">
+        <p>Get the name of this node (if it has one)</p>
+
+    </div>
+
+
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                        <span class="type">String</span>:
+                    <p>the name of this node, or just &quot;node&quot;.</p>
+
             </div>
         </div>
 
@@ -203,13 +395,13 @@
         <div class="args">
             <span class="paren">(</span><ul class="args-list inline commas">
                 <li class="arg">
-                        <code>canvasId</code>
+                        <code>parameters</code>
                 </li>
             </ul><span class="paren">)</span>
         </div>
 
         <span class="returns-inline">
-            <span class="type"><a href="../classes/Render.html" class="crosslink">Render</a></span>
+            <span class="type"><a href="../classes/Node.html" class="crosslink">Node</a></span>
         </span>
 
 
@@ -221,7 +413,7 @@
     <div class="meta">
                 <p>
                 Defined in
-        <a href="../files/src_main_javascript_render.js.html#l36"><code>src&#x2F;main&#x2F;javascript&#x2F;render.js:36</code></a>
+        <a href="../files/src_main_javascript_node.js.html#l213"><code>src&#x2F;main&#x2F;javascript&#x2F;node.js:213</code></a>
         </p>
 
 
@@ -229,7 +421,7 @@
     </div>
 
     <div class="description">
-        <p>Static method to create and construct a new rendering context.</p>
+        <p>Static method to create and construct a new scene graph node.</p>
 
     </div>
 
@@ -238,12 +430,13 @@
 
             <ul class="params-list">
                 <li class="param">
-                        <code class="param-name">canvasId</code>
-                        <span class="type">String</span>
+                        <code class="param-name">parameters</code>
+                        <span class="type">Object</span>
 
 
                     <div class="param-description">
-                        <p>the id of the canvas element to use for the rendering context.</p>
+                        <p>an object with optional information to include in the node (see
+&quot;construct&quot; for more information)</p>
 
                     </div>
 
@@ -255,40 +448,9 @@
             <h4>Returns:</h4>
 
             <div class="returns-description">
-                        <span class="type"><a href="../classes/Render.html" class="crosslink">Render</a></span>:
+                        <span class="type"><a href="../classes/Node.html" class="crosslink">Node</a></span>:
             </div>
         </div>
-
-
-</div>
-<div id="method_use" class="method item">
-    <h3 class="name"><code>use</code></h3>
-
-        <span class="paren">()</span>
-
-
-
-
-
-
-
-
-    <div class="meta">
-                <p>
-                Defined in
-        <a href="../files/src_main_javascript_render.js.html#l27"><code>src&#x2F;main&#x2F;javascript&#x2F;render.js:27</code></a>
-        </p>
-
-
-
-    </div>
-
-    <div class="description">
-        <p>Set the global rendering context.</p>
-
-    </div>
-
-
 
 
 </div>

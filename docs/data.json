@@ -1,6 +1,15 @@
 {
     "project": {},
     "files": {
+        "src/main/javascript/node.js": {
+            "name": "src/main/javascript/node.js",
+            "modules": {},
+            "classes": {
+                "Node": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
         "src/main/javascript/render.js": {
             "name": "src/main/javascript/render.js",
             "modules": {},
@@ -9,10 +18,31 @@
             },
             "fors": {},
             "namespaces": {}
+        },
+        "src/main/javascript/utility.js": {
+            "name": "src/main/javascript/utility.js",
+            "modules": {},
+            "classes": {
+                "Utility": 1
+            },
+            "fors": {},
+            "namespaces": {}
         }
     },
     "modules": {},
     "classes": {
+        "Node": {
+            "name": "Node",
+            "shortname": "Node",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src/main/javascript/node.js",
+            "line": 1,
+            "description": "A node in a scene graph."
+        },
         "Render": {
             "name": "Render",
             "shortname": "Render",
@@ -22,15 +52,115 @@
             "plugin_for": [],
             "extension_for": [],
             "file": "src/main/javascript/render.js",
-            "line": 4,
+            "line": 3,
             "description": "A Rendering context."
+        },
+        "Utility": {
+            "name": "Utility",
+            "shortname": "Utility",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src/main/javascript/utility.js",
+            "line": 1,
+            "description": "A collection of utility functions."
         }
     },
     "elements": {},
     "classitems": [
         {
+            "file": "src/main/javascript/node.js",
+            "line": 11,
+            "description": "The initializer for a scene graph node.",
+            "itemtype": "method",
+            "name": "construct",
+            "params": [
+                {
+                    "name": "parameters",
+                    "description": "an object with optional information to include in the node. The\npossibilities are:\n* name {string}: nodes can be named if they need to be retrieved later.\n* transform {Float4x4}: a transformation matrix to apply before drawing or traversing children.\n* state {function}: a parameter-less function to call before drawing or traversing children.\nthis function may set any render state needed.\n* shape {string}: the name of a shape to draw.\n* children: the node will have an array of children by default, but if the node is intended\nto be a leaf, you can save the space and time associated with an empty list by setting this\nvalue to \"false\".",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Node"
+            },
+            "class": "Node"
+        },
+        {
+            "file": "src/main/javascript/node.js",
+            "line": 176,
+            "description": "Add a child node (only applies to non-leaf nodes)",
+            "itemtype": "method",
+            "name": "addChild",
+            "params": [
+                {
+                    "name": "node",
+                    "description": "the node to add as a child.",
+                    "type": "Node"
+                }
+            ],
+            "return": {
+                "description": "\"this\" to allow for chaining.",
+                "type": "Node"
+            },
+            "class": "Node"
+        },
+        {
+            "file": "src/main/javascript/node.js",
+            "line": 192,
+            "description": "Get the name of this node (if it has one)",
+            "itemtype": "method",
+            "name": "getName",
+            "return": {
+                "description": "the name of this node, or just \"node\".",
+                "type": "String"
+            },
+            "class": "Node"
+        },
+        {
+            "file": "src/main/javascript/node.js",
+            "line": 202,
+            "description": "Get a node by name",
+            "itemtype": "method",
+            "name": "get",
+            "params": [
+                {
+                    "name": "name",
+                    "description": "the name of the node to retrieve.",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Node"
+            },
+            "class": "Node"
+        },
+        {
+            "file": "src/main/javascript/node.js",
+            "line": 213,
+            "description": "Static method to create and construct a new scene graph node.",
+            "itemtype": "method",
+            "name": "new",
+            "params": [
+                {
+                    "name": "parameters",
+                    "description": "an object with optional information to include in the node (see\n\"construct\" for more information)",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Node"
+            },
+            "class": "Node"
+        },
+        {
             "file": "src/main/javascript/render.js",
-            "line": 12,
+            "line": 11,
             "description": "The initializer for a rendering context.",
             "itemtype": "method",
             "name": "construct",
@@ -42,30 +172,138 @@
                 }
             ],
             "return": {
-                "description": "Returns an initialized rendering context",
+                "description": "",
                 "type": "Render"
             },
             "class": "Render"
         },
         {
             "file": "src/main/javascript/render.js",
-            "line": 33,
+            "line": 27,
+            "description": "Set the global rendering context.",
+            "itemtype": "method",
+            "name": "use",
+            "class": "Render"
+        },
+        {
+            "file": "src/main/javascript/render.js",
+            "line": 36,
             "description": "Static method to create and construct a new rendering context.",
             "itemtype": "method",
             "name": "new",
             "params": [
                 {
                     "name": "canvasId",
-                    "description": "the id of the canvas element to use for the rendering context",
+                    "description": "the id of the canvas element to use for the rendering context.",
                     "type": "String"
                 }
             ],
             "return": {
-                "description": "Returns an initialized rendering context",
+                "description": "",
                 "type": "Render"
             },
             "class": "Render"
+        },
+        {
+            "file": "src/main/javascript/utility.js",
+            "line": 9,
+            "description": "Convert an angle measured in degrees to radians.",
+            "itemtype": "method",
+            "name": "degreesToRadians",
+            "params": [
+                {
+                    "name": "degrees",
+                    "description": "the degree measure to be converted",
+                    "type": "Float"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Float"
+            },
+            "class": "Utility"
+        },
+        {
+            "file": "src/main/javascript/utility.js",
+            "line": 20,
+            "description": "Convert an angle measured in radians to degrees.",
+            "itemtype": "method",
+            "name": "radiansToDegrees",
+            "params": [
+                {
+                    "name": "radians",
+                    "description": "the radian measure to be converted",
+                    "type": "Float"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Float"
+            },
+            "class": "Utility"
+        },
+        {
+            "file": "src/main/javascript/utility.js",
+            "line": 31,
+            "description": "Make the first letter of a string be upper case.",
+            "itemtype": "method",
+            "name": "uppercase",
+            "params": [
+                {
+                    "name": "string",
+                    "description": "the text to convert to upper case",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "String"
+            },
+            "class": "Utility"
+        },
+        {
+            "file": "src/main/javascript/utility.js",
+            "line": 42,
+            "description": "Make the first letter of a string be lower case.",
+            "itemtype": "method",
+            "name": "lowercase",
+            "params": [
+                {
+                    "name": "string",
+                    "description": "the text to convert to lower case",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "String"
+            },
+            "class": "Utility"
+        },
+        {
+            "file": "src/main/javascript/utility.js",
+            "line": 53,
+            "description": "Convert an array of arrays to a single array of values (in order).",
+            "itemtype": "method",
+            "name": "flatten",
+            "params": [
+                {
+                    "name": "array",
+                    "description": "the input array of arrays",
+                    "type": "Array"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Array"
+            },
+            "class": "Utility"
         }
     ],
-    "warnings": []
+    "warnings": [
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " src/main/javascript/node.js:11"
+        }
+    ]
 }

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Render</title>
+    <title>Utility</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -78,12 +78,12 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-<h1>Render Class</h1>
+<h1>Utility Class</h1>
 <div class="box meta">
 
 
         <div class="foundat">
-            Defined in: <a href="../files/src_main_javascript_render.js.html#l3"><code>src&#x2F;main&#x2F;javascript&#x2F;render.js:3</code></a>
+            Defined in: <a href="../files/src_main_javascript_utility.js.html#l1"><code>src&#x2F;main&#x2F;javascript&#x2F;utility.js:1</code></a>
         </div>
 
 
@@ -91,7 +91,7 @@
 
 
 <div class="box intro">
-    <p>A Rendering context.</p>
+    <p>A collection of utility functions.</p>
 
 </div>
 
@@ -112,15 +112,23 @@
 
                     <ul class="index-list methods">
                             <li class="index-item method">
-                                <a href="#method_construct">construct</a>
+                                <a href="#method_degreesToRadians">degreesToRadians</a>
 
                             </li>
                             <li class="index-item method">
-                                <a href="#method_new">new</a>
+                                <a href="#method_flatten">flatten</a>
 
                             </li>
                             <li class="index-item method">
-                                <a href="#method_use">use</a>
+                                <a href="#method_lowercase">lowercase</a>
+
+                            </li>
+                            <li class="index-item method">
+                                <a href="#method_radiansToDegrees">radiansToDegrees</a>
+
+                            </li>
+                            <li class="index-item method">
+                                <a href="#method_uppercase">uppercase</a>
 
                             </li>
                     </ul>
@@ -133,19 +141,19 @@
             <div id="methods" class="api-class-tabpanel">
                 <h2 class="off-left">Methods</h2>
 
-<div id="method_construct" class="method item">
-    <h3 class="name"><code>construct</code></h3>
+<div id="method_degreesToRadians" class="method item">
+    <h3 class="name"><code>degreesToRadians</code></h3>
 
         <div class="args">
             <span class="paren">(</span><ul class="args-list inline commas">
                 <li class="arg">
-                        <code>canvasId</code>
+                        <code>degrees</code>
                 </li>
             </ul><span class="paren">)</span>
         </div>
 
         <span class="returns-inline">
-            <span class="type"><a href="../classes/Render.html" class="crosslink">Render</a></span>
+            <span class="type">Float</span>
         </span>
 
 
@@ -157,7 +165,7 @@
     <div class="meta">
                 <p>
                 Defined in
-        <a href="../files/src_main_javascript_render.js.html#l11"><code>src&#x2F;main&#x2F;javascript&#x2F;render.js:11</code></a>
+        <a href="../files/src_main_javascript_utility.js.html#l9"><code>src&#x2F;main&#x2F;javascript&#x2F;utility.js:9</code></a>
         </p>
 
 
@@ -165,7 +173,7 @@
     </div>
 
     <div class="description">
-        <p>The initializer for a rendering context.</p>
+        <p>Convert an angle measured in degrees to radians.</p>
 
     </div>
 
@@ -174,12 +182,12 @@
 
             <ul class="params-list">
                 <li class="param">
-                        <code class="param-name">canvasId</code>
-                        <span class="type">String</span>
+                        <code class="param-name">degrees</code>
+                        <span class="type">Float</span>
 
 
                     <div class="param-description">
-                        <p>the id of the canvas element to use for the rendering context</p>
+                        <p>the degree measure to be converted</p>
 
                     </div>
 
@@ -191,25 +199,25 @@
             <h4>Returns:</h4>
 
             <div class="returns-description">
-                        <span class="type"><a href="../classes/Render.html" class="crosslink">Render</a></span>:
+                        <span class="type">Float</span>:
             </div>
         </div>
 
 
 </div>
-<div id="method_new" class="method item">
-    <h3 class="name"><code>new</code></h3>
+<div id="method_flatten" class="method item">
+    <h3 class="name"><code>flatten</code></h3>
 
         <div class="args">
             <span class="paren">(</span><ul class="args-list inline commas">
                 <li class="arg">
-                        <code>canvasId</code>
+                        <code>array</code>
                 </li>
             </ul><span class="paren">)</span>
         </div>
 
         <span class="returns-inline">
-            <span class="type"><a href="../classes/Render.html" class="crosslink">Render</a></span>
+            <span class="type">Array</span>
         </span>
 
 
@@ -221,7 +229,7 @@
     <div class="meta">
                 <p>
                 Defined in
-        <a href="../files/src_main_javascript_render.js.html#l36"><code>src&#x2F;main&#x2F;javascript&#x2F;render.js:36</code></a>
+        <a href="../files/src_main_javascript_utility.js.html#l53"><code>src&#x2F;main&#x2F;javascript&#x2F;utility.js:53</code></a>
         </p>
 
 
@@ -229,7 +237,7 @@
     </div>
 
     <div class="description">
-        <p>Static method to create and construct a new rendering context.</p>
+        <p>Convert an array of arrays to a single array of values (in order).</p>
 
     </div>
 
@@ -238,12 +246,12 @@
 
             <ul class="params-list">
                 <li class="param">
-                        <code class="param-name">canvasId</code>
-                        <span class="type">String</span>
+                        <code class="param-name">array</code>
+                        <span class="type">Array</span>
 
 
                     <div class="param-description">
-                        <p>the id of the canvas element to use for the rendering context.</p>
+                        <p>the input array of arrays</p>
 
                     </div>
 
@@ -255,17 +263,26 @@
             <h4>Returns:</h4>
 
             <div class="returns-description">
-                        <span class="type"><a href="../classes/Render.html" class="crosslink">Render</a></span>:
+                        <span class="type">Array</span>:
             </div>
         </div>
 
 
 </div>
-<div id="method_use" class="method item">
-    <h3 class="name"><code>use</code></h3>
+<div id="method_lowercase" class="method item">
+    <h3 class="name"><code>lowercase</code></h3>
 
-        <span class="paren">()</span>
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+                <li class="arg">
+                        <code>string</code>
+                </li>
+            </ul><span class="paren">)</span>
+        </div>
 
+        <span class="returns-inline">
+            <span class="type">String</span>
+        </span>
 
 
 
@@ -276,7 +293,7 @@
     <div class="meta">
                 <p>
                 Defined in
-        <a href="../files/src_main_javascript_render.js.html#l27"><code>src&#x2F;main&#x2F;javascript&#x2F;render.js:27</code></a>
+        <a href="../files/src_main_javascript_utility.js.html#l42"><code>src&#x2F;main&#x2F;javascript&#x2F;utility.js:42</code></a>
         </p>
 
 
@@ -284,11 +301,163 @@
     </div>
 
     <div class="description">
-        <p>Set the global rendering context.</p>
+        <p>Make the first letter of a string be lower case.</p>
 
     </div>
 
+        <div class="params">
+            <h4>Parameters:</h4>
 
+            <ul class="params-list">
+                <li class="param">
+                        <code class="param-name">string</code>
+                        <span class="type">String</span>
+
+
+                    <div class="param-description">
+                        <p>the text to convert to lower case</p>
+
+                    </div>
+
+                </li>
+            </ul>
+        </div>
+
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                        <span class="type">String</span>:
+            </div>
+        </div>
+
+
+</div>
+<div id="method_radiansToDegrees" class="method item">
+    <h3 class="name"><code>radiansToDegrees</code></h3>
+
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+                <li class="arg">
+                        <code>radians</code>
+                </li>
+            </ul><span class="paren">)</span>
+        </div>
+
+        <span class="returns-inline">
+            <span class="type">Float</span>
+        </span>
+
+
+
+
+
+
+
+    <div class="meta">
+                <p>
+                Defined in
+        <a href="../files/src_main_javascript_utility.js.html#l20"><code>src&#x2F;main&#x2F;javascript&#x2F;utility.js:20</code></a>
+        </p>
+
+
+
+    </div>
+
+    <div class="description">
+        <p>Convert an angle measured in radians to degrees.</p>
+
+    </div>
+
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+                <li class="param">
+                        <code class="param-name">radians</code>
+                        <span class="type">Float</span>
+
+
+                    <div class="param-description">
+                        <p>the radian measure to be converted</p>
+
+                    </div>
+
+                </li>
+            </ul>
+        </div>
+
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                        <span class="type">Float</span>:
+            </div>
+        </div>
+
+
+</div>
+<div id="method_uppercase" class="method item">
+    <h3 class="name"><code>uppercase</code></h3>
+
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+                <li class="arg">
+                        <code>string</code>
+                </li>
+            </ul><span class="paren">)</span>
+        </div>
+
+        <span class="returns-inline">
+            <span class="type">String</span>
+        </span>
+
+
+
+
+
+
+
+    <div class="meta">
+                <p>
+                Defined in
+        <a href="../files/src_main_javascript_utility.js.html#l31"><code>src&#x2F;main&#x2F;javascript&#x2F;utility.js:31</code></a>
+        </p>
+
+
+
+    </div>
+
+    <div class="description">
+        <p>Make the first letter of a string be upper case.</p>
+
+    </div>
+
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+                <li class="param">
+                        <code class="param-name">string</code>
+                        <span class="type">String</span>
+
+
+                    <div class="param-description">
+                        <p>the text to convert to upper case</p>
+
+                    </div>
+
+                </li>
+            </ul>
+        </div>
+
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                        <span class="type">String</span>:
+            </div>
+        </div>
 
 
 </div>

@@ -102,38 +102,6 @@ let Float4x4 = function () {
         return c;
     };
 
-    /*
-    _.translate = function (a, b, c) {
-        let d = b[0], e = b[1];
-        b = b[2];
-        if (!c || a == c) {
-            a[12] = a[0] * d + a[4] * e + a[8] * b + a[12];
-            a[13] = a[1] * d + a[5] * e + a[9] * b + a[13];
-            a[14] = a[2] * d + a[6] * e + a[10] * b + a[14];
-            a[15] = a[3] * d + a[7] * e + a[11] * b + a[15];
-            return a;
-        }
-        let g = a[0], f = a[1], h = a[2], i = a[3], j = a[4], k = a[5], l = a[6], o = a[7], m = a[8], n = a[9], p = a[10], r = a[11];
-        c[0] = g;
-        c[1] = f;
-        c[2] = h;
-        c[3] = i;
-        c[4] = j;
-        c[5] = k;
-        c[6] = l;
-        c[7] = o;
-        c[8] = m;
-        c[9] = n;
-        c[10] = p;
-        c[11] = r;
-        c[12] = g * d + j * e + m * b + a[12];
-        c[13] = f * d + k * e + n * b + a[13];
-        c[14] = h * d + l * e + p * b + a[14];
-        c[15] = i * d + o * e + r * b + a[15];
-        return c;
-    };
-    */
-
     _.rotate = function (a, b, c, d) {
         let e = c[0], g = c[1];
         c = c[2];
