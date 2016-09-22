@@ -26,7 +26,7 @@ let buildScene = function (canvasId, points) {
     makeCube ();
     makeSphere (3);
     makeRevolve ("cylinder", [[1, 1], [1, -1], [0.5, -1]], 36);
-    makeBall (36);
+    makeBall ("ball", 36);
 
     scene = Node.new ({
         name: "root",
@@ -58,7 +58,7 @@ let buildScene = function (canvasId, points) {
             context.enable (context.CULL_FACE);
             context.cullFace (context.FRONT);
         },
-        shape: "ball",
+        shape: "cube",
         children: false
     });
     scene.addChild (background);

@@ -67,5 +67,19 @@ let Utility = function () {
         return result;
     };
 
+    /**
+     * truncate a number to a specific precision, equivalent to discretization
+     *
+     * @method fixNum
+     * @param {float} number the number to discretize
+     * @param {integer} precision how many decimal places to force
+     * @return {number}
+     */
+    _.fixNum = function (number, precision) {
+        let fix = (typeof precision !== "undefined") ? precision : 7;
+        return Number.parseFloat (number.toFixed (fix));
+    };
+
+
     return _;
 } ();

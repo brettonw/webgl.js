@@ -132,7 +132,7 @@ let FloatN = function (dim) {
     // from: FloatN
     // scale: Float
     // to: FloatN
-    // sets the values of 'to' to a scaled version of 'vector'
+    // sets the values of 'to' to a scaled version of 'from'
     // if 'to' is omitted, will create a new vector
     // returns 'to'
     eval (function () {
@@ -140,6 +140,24 @@ let FloatN = function (dim) {
         str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
         for (let i = 0; i < dim; ++i) {
             str += "to[" + i + "] = from[" + i + "] * scale; ";
+        }
+        str += "return to; ";
+        str += "}; ";
+        return str;
+    } ());
+
+    // _.fixNum (from, precision, to)
+    // from: FloatN
+    // precision: int
+    // to: FloatN
+    // sets the values of 'to' to a fixed precision version of 'from'
+    // if 'to' is omitted, will create a new vector
+    // returns 'to'
+    eval (function () {
+        let str = "_.fixNum = function (from, precision, to) {";
+        str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
+        for (let i = 0; i < dim; ++i) {
+            str += "to[" + i + "] = Utility.fixNum (from[" + i + "], precision); ";
         }
         str += "return to; ";
         str += "}; ";

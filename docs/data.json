@@ -583,6 +583,30 @@
                 "type": "Array"
             },
             "class": "Utility"
+        },
+        {
+            "file": "src/main/javascript/utility.js",
+            "line": 70,
+            "description": "truncate a number to a specific precision, equivalent to discretization",
+            "itemtype": "method",
+            "name": "fixNum",
+            "params": [
+                {
+                    "name": "number",
+                    "description": "the number to discretize",
+                    "type": "Float"
+                },
+                {
+                    "name": "precision",
+                    "description": "how many decimal places to force",
+                    "type": "Integer"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Number"
+            },
+            "class": "Utility"
         }
     ],
     "warnings": []

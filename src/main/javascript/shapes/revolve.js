@@ -1,13 +1,5 @@
 let makeRevolve = function (name, outline, steps) {
     return Shape.new (name, function () {
-        var fixNum = function (number) {
-            return Number.parseFloat (number.toFixed (7));
-        };
-
-        var fixPt = function (x, y, z) {
-            return [fixNum (x), fixNum (y), fixNum (z)];
-        };
-
         // outline is an array of Float2, and the axis of revolution is x = 0, we make a number of
         // wedges, from top to bottom, to complete the revolution. for each wedge, we will check to
         // see if the first and last x component is at 0, and if so we will generate a triangle
@@ -25,10 +17,10 @@ let makeRevolve = function (name, outline, steps) {
                 let vm = outline[m];
                 let vn = outline[n];
 
-                let vm0 = fixPt (vm[0] * Math.cos (iAngle), vm[1], vm[0] * Math.sin (iAngle));
-                let vm1 = fixPt (vm[0] * Math.cos (jAngle), vm[1], vm[0] * Math.sin (jAngle));
-                let vn0 = fixPt (vn[0] * Math.cos (iAngle), vn[1], vn[0] * Math.sin (iAngle));
-                let vn1 = fixPt (vn[0] * Math.cos (jAngle), vn[1], vn[0] * Math.sin (jAngle));
+                let vm0 = Float3.fixNum ([vm[0] * Math.cos (iAngle), vm[1], vm[0] * Math.sin (iAngle)]);
+                let vm1 = Float3.fixNum ([vm[0] * Math.cos (jAngle), vm[1], vm[0] * Math.sin (jAngle)]);
+                let vn0 = Float3.fixNum ([vn[0] * Math.cos (iAngle), vn[1], vn[0] * Math.sin (iAngle)]);
+                let vn1 = Float3.fixNum ([vn[0] * Math.cos (jAngle), vn[1], vn[0] * Math.sin (jAngle)]);
 
                 if (vm[0] == 0) {
                     // the top cap should be a triangle

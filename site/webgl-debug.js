@@ -183,7 +183,7 @@ let FloatN = function (dim) {
     // from: FloatN
     // scale: Float
     // to: FloatN
-    // sets the values of 'to' to a scaled version of 'vector'
+    // sets the values of 'to' to a scaled version of 'from'
     // if 'to' is omitted, will create a new vector
     // returns 'to'
     eval (function () {
@@ -191,6 +191,24 @@ let FloatN = function (dim) {
         str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
         for (let i = 0; i < dim; ++i) {
             str += "to[" + i + "] = from[" + i + "] * scale; ";
+        }
+        str += "return to; ";
+        str += "}; ";
+        return str;
+    } ());
+
+    // _.fixNum (from, precision, to)
+    // from: FloatN
+    // precision: int
+    // to: FloatN
+    // sets the values of 'to' to a fixed precision version of 'from'
+    // if 'to' is omitted, will create a new vector
+    // returns 'to'
+    eval (function () {
+        let str = "_.fixNum = function (from, precision, to) {";
+        str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
+        for (let i = 0; i < dim; ++i) {
+            str += "to[" + i + "] = Utility.fixNum (from[" + i + "], precision); ";
         }
         str += "return to; ";
         str += "}; ";
@@ -1624,14 +1642,6 @@ let makeSquare = function () {
 };
 let makeRevolve = function (name, outline, steps) {
     return Shape.new (name, function () {
-        var fixNum = function (number) {
-            return Number.parseFloat (number.toFixed (7));
-        };
-
-        var fixPt = function (x, y, z) {
-            return [fixNum (x), fixNum (y), fixNum (z)];
-        };
-
         // outline is an array of Float2, and the axis of revolution is x = 0, we make a number of
         // wedges, from top to bottom, to complete the revolution. for each wedge, we will check to
         // see if the first and last x component is at 0, and if so we will generate a triangle
@@ -1649,10 +1659,10 @@ let makeRevolve = function (name, outline, steps) {
                 let vm = outline[m];
                 let vn = outline[n];
 
-                let vm0 = fixPt (vm[0] * Math.cos (iAngle), vm[1], vm[0] * Math.sin (iAngle));
-                let vm1 = fixPt (vm[0] * Math.cos (jAngle), vm[1], vm[0] * Math.sin (jAngle));
-                let vn0 = fixPt (vn[0] * Math.cos (iAngle), vn[1], vn[0] * Math.sin (iAngle));
-                let vn1 = fixPt (vn[0] * Math.cos (jAngle), vn[1], vn[0] * Math.sin (jAngle));
+                let vm0 = Float3.fixNum ([vm[0] * Math.cos (iAngle), vm[1], vm[0] * Math.sin (iAngle)]);
+                let vm1 = Float3.fixNum ([vm[0] * Math.cos (jAngle), vm[1], vm[0] * Math.sin (jAngle)]);
+                let vn0 = Float3.fixNum ([vn[0] * Math.cos (iAngle), vn[1], vn[0] * Math.sin (iAngle)]);
+                let vn1 = Float3.fixNum ([vn[0] * Math.cos (jAngle), vn[1], vn[0] * Math.sin (jAngle)]);
 
                 if (vm[0] == 0) {
                     // the top cap should be a triangle
@@ -1702,8 +1712,7 @@ let makeRevolve = function (name, outline, steps) {
         };
     });
 };
-let makeBall = function (steps) {
-
+let makeBall = function (name, steps) {
     // generate an outline, and then revolve it
     let outline = [];
     let stepAngle = Math.PI / steps;
@@ -1712,12 +1721,12 @@ let makeBall = function (steps) {
 
         // using an angle setup so that 0 is (0, 1), and Pi is (0, -1) means switching (x, y) so we
         // get an outline that can be revolved around the x=0 axis
-        outline.push ([Number.parseFloat (Math.sin (angle).toFixed(7)), Number.parseFloat (Math.cos (angle).toFixed(7))]);
+        outline.push (Float2.fixNum([Math.sin (angle), Math.cos (angle)]));
     }
 
     // revolve the surface, the outline is a half circle, so the revolved surface needs to be twice
     // as many steps to go all the way around
-    return makeRevolve("ball", outline, steps * 2);
+    return makeRevolve(name, outline, steps * 2);
 };
 /**
  * A collection of utility functions.
@@ -1787,6 +1796,20 @@ let Utility = function () {
         }
         return result;
     };
+
+    /**
+     * truncate a number to a specific precision, equivalent to discretization
+     *
+     * @method fixNum
+     * @param {float} number the number to discretize
+     * @param {integer} precision how many decimal places to force
+     * @return {number}
+     */
+    _.fixNum = function (number, precision) {
+        let fix = (typeof precision !== "undefined") ? precision : 7;
+        return Number.parseFloat (number.toFixed (fix));
+    };
+
 
     return _;
 } ();
