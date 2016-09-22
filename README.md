@@ -9,6 +9,7 @@ This project uses ant for building, with the "dev" target being the default:
     ant | ant dev | ant rel
 
 ### Build Dependencies
+* node/npm
 * gcc (for the C-preprocessor)
 * uglifyjs (for Minification)
 * yuidoc (for Documentation)
@@ -29,6 +30,10 @@ YUIDoc only reads the comments, so it doesn't impose any code structure:
 It would be better if I could point it at a single file. Syntax reference at 
 http://yui.github.io/yuidoc/
 .
+
+The theme is "lucid", from https://www.npmjs.com/package/yuidoc-lucid-theme
+
+    npm install -g yuidoc-lucid-theme
     
 I also tried:
 * JSDoc, which wanted very specific code structure, and wouldn't bend to my will, and
