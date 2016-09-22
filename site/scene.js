@@ -10,7 +10,8 @@ var draw = function (delta) {
     Float4x4.rotate (viewMatrix, Utility.degreesToRadians (27.5), [ 1, 0, 0 ]);
     Float4x4.translate (viewMatrix, [ 0, -1.5, -3.5 ]);
     Float4x4.rotate (viewMatrix, Utility.degreesToRadians (currentAngle), [ 0, 1, 0 ]);
-    Float4x4.scale (viewMatrix, [ 2, 2, 2 ]);
+    let scaleMatrix = Float4x4.scale ([ 2, 2, 2 ]);
+    viewMatrix = Float4x4.multiply (scaleMatrix, viewMatrix);
     Float4x4.translate (viewMatrix, [ -0.5, -0.5, -0.5 ]);
     Shader.getCurrentShader ().setViewMatrix (viewMatrix);
 
@@ -43,18 +44,19 @@ var buildScene = function (canvasId, points) {
         }
     });
 
-    let transform = Float4x4.scale (Float4x4.identity (), [ 0.5, 0.5, 0.5 ]);
+    let transform = Float4x4.scale ([ 0.5, 0.5, 0.5 ]);
     Float4x4.translate (transform, [ 1, 1, 1 ]);
     let background = Node.new ({
         name: "background",
         transform: transform,
-        shape: "cube",
         state: function () {
             Shader.getCurrentShader ().setBlendAlpha (0.85);
             context.disable (context.DEPTH_TEST);
             context.enable (context.CULL_FACE);
             context.cullFace (context.FRONT);
-        }
+        },
+        shape: "cube",
+        children: false
     });
     scene.addChild (background);
 

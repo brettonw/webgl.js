@@ -3,11 +3,11 @@ let Cloud = function () {
 
     _.addPoint = function (point) {
         let transform = Float4x4.translate (Float4x4.identity (), point);
-        Float4x4.scale (transform, [0.025, 0.025, 0.025]);
-        //Float4x4.translate (transform, [-0.5, -0.5, -0.5]);
+        transform = Float4x4.multiply (Float4x4.scale ([0.025, 0.025, 0.025]), transform);
         this.addChild (Node.new ({
             transform: transform,
-            shape: "sphere"
+            shape: "sphere",
+            children: false
         }));
     };
 

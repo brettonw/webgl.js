@@ -336,26 +336,25 @@ let FloatNxN = function (dim) {
         return str;
     } ());
 
-    /*
-     // _.scale (scale, to)
-     // scale: Float or FloatN
-     // to: FloatNxN
-     // sets the values of 'to' to a scale matrix
-     // if 'to' is omitted, will create a new matrix
-     // returns 'to'
-     eval(function () {
-     let str = "_.scale = function (scale, to) {";
-     str += "scale = Array.isArray(scale) ? scale : Array(dim).fill(scale); ";
-     str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
-     str += "_.identity (to); ";
-     for (let i = 0; i < dim; ++i) {
-     str += "to[" + index(i, i) + "] = scale[" + i + "]; ";
-     }
-     str += "return to; ";
-     str += "}; ";
-     return str;
-     }());
-     */
+    // _.scale (scale, to)
+    // scale: Float or FloatN
+    // to: FloatNxN
+    // sets the values of 'to' to a scale matrix
+    // if 'to' is omitted, will create a new matrix
+    // returns 'to'
+    eval(function () {
+        let end = dim - 1;
+        let str = "_.scale = function (scale, to) {";
+        str += "scale = Array.isArray(scale) ? scale : Array(" + end + ").fill(scale); ";
+        str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
+        str += "_.identity (to); ";
+        for (let i = 0; i < end; ++i) {
+            str += "to[" + index(i, i) + "] = scale[" + i + "]; ";
+        }
+        str += "return to; ";
+        str += "}; ";
+        return str;
+    }());
 
     // _.str (from)
     // from: FloatNxN
@@ -485,43 +484,6 @@ let Float4x4 = function () {
         c[1] = a[1] * d + a[5] * e + a[9] * g + a[13] * b;
         c[2] = a[2] * d + a[6] * e + a[10] * g + a[14] * b;
         c[3] = a[3] * d + a[7] * e + a[11] * g + a[15] * b;
-        return c;
-    };
-
-    _.scale = function (a, b, c) {
-        let d = b[0], e = b[1];
-        b = b[2];
-        if (!c || a == c) {
-            a[0] *= d;
-            a[1] *= d;
-            a[2] *= d;
-            a[3] *= d;
-            a[4] *= e;
-            a[5] *= e;
-            a[6] *= e;
-            a[7] *= e;
-            a[8] *= b;
-            a[9] *= b;
-            a[10] *= b;
-            a[11] *= b;
-            return a;
-        }
-        c[0] = a[0] * d;
-        c[1] = a[1] * d;
-        c[2] = a[2] * d;
-        c[3] = a[3] * d;
-        c[4] = a[4] * e;
-        c[5] = a[5] * e;
-        c[6] = a[6] * e;
-        c[7] = a[7] * e;
-        c[8] = a[8] * b;
-        c[9] = a[9] * b;
-        c[10] = a[10] * b;
-        c[11] = a[11] * b;
-        c[12] = a[12];
-        c[13] = a[13];
-        c[14] = a[14];
-        c[15] = a[15];
         return c;
     };
 
@@ -1013,43 +975,160 @@ let Node = function () {
 
     let nodes = Object.create (null);
 
-    let EMPTY_STATE = function () {};
-    let EMPTY_DRAW = function (nodeTransform) {};
-    let SHAPE_DRAW = function (nodeTransform) {
-        Shader.getCurrentShader ().setModelMatrix (nodeTransform);
-        this.shape.draw ();
-    };
-
     _.construct = function (parameters) {
+        // we select the traverse function based on the feature requested for the node. these are
+        // the bit flags to indicate the features and the value we accumulate them into. note that
+        // some combinations are invalid
+        let HAS_TRANSFORM = 1;
+        let HAS_STATE = 2;
+        let HAS_SHAPE = 4;
+        let HAS_CHILDREN = 8;
+        let traverseFunctionIndex = 0;
+
+        // collect the parameters, and accumulate the flags for the features
         if (typeof parameters !== "undefined") {
             if ("name" in parameters) {
                 this.name = parameters.name;
                 nodes[this.name] = this;
             }
-            this.transform = ("transform" in parameters) ? parameters.transform : Float4x4.identity ();
-            this.state = ("state" in parameters) ? parameters.state : EMPTY_STATE;
+
+             if ("transform" in parameters) {
+                 this.transform = parameters.transform;
+                 traverseFunctionIndex += HAS_TRANSFORM;
+             }
+
+            if ("state" in parameters) {
+                this.state = parameters.state;
+                traverseFunctionIndex += HAS_STATE;
+            }
+
             if ("shape" in parameters) {
                 this.shape = Shape.get (parameters.shape);
-                this.draw = SHAPE_DRAW;
-            } else {
-                this.draw = EMPTY_DRAW;
+                traverseFunctionIndex += HAS_SHAPE;
+            }
+
+            // children are special, the default is to include children, but we want a way to say
+            // the current node is a leaf node, so { children: false } is the way to do that
+            if ((!("children" in parameters)) || (parameters.children == true)) {
+                this.children = [];
+                traverseFunctionIndex += HAS_CHILDREN;
             }
         } else {
-            this.transform = Float4x4.identity ();
-            this.draw = EMPTY_DRAW;
-            this.state = EMPTY_STATE;
+            // default is just a parent node
+            this.children = [];
+            traverseFunctionIndex += HAS_CHILDREN;
         }
-        this.children = [];
-        return this;
-    };
 
-    _.traverse = function (baseTransform) {
-        let nodeTransform = Float4x4.multiply (baseTransform, this.transform);
-        this.state ();
-        this.draw (nodeTransform);
-        for (let child of this.children) {
-            child.traverse (nodeTransform);
+        // now make a traverse function depending on the included features
+        let INVALID_TRAVERSE = function (transform) {};
+        this.traverse = [
+            // 0 nothing
+            null,
+            // 1 transform
+            null,
+            // 2 state
+            null,
+            // 3 transform, state
+            null,
+            // 4 shape
+            function (transform) {
+                Shader.getCurrentShader ().setModelMatrix (transform);
+                this.shape.draw ();
+            },
+            // 5 transform, shape
+            function (transform) {
+                transform = Float4x4.multiply (transform, this.transform);
+                Shader.getCurrentShader ().setModelMatrix (transform);
+                this.shape.draw ();
+            },
+            // 6 state, shape
+            function (transform) {
+                this.state ();
+                Shader.getCurrentShader ().setModelMatrix (transform);
+                this.shape.draw ();
+            },
+            // 7 transform, state, shape
+            function (transform) {
+                this.state ();
+                transform = Float4x4.multiply (transform, this.transform);
+                Shader.getCurrentShader ().setModelMatrix (transform);
+                this.shape.draw ();
+            },
+            // 8 children
+            function (transform) {
+                for (let child of this.children) {
+                    child.traverse (transform);
+                }
+            },
+            // 9 transform, children
+            function (transform) {
+                transform = Float4x4.multiply (transform, this.transform);
+                for (let child of this.children) {
+                    child.traverse (transform);
+                }
+            },
+            // 10 state, children
+            function (transform) {
+                this.state ();
+                for (let child of this.children) {
+                    child.traverse (transform);
+                }
+            },
+            // 11 transform, state, children
+            function (transform) {
+                this.state ();
+                transform = Float4x4.multiply (transform, this.transform);
+                for (let child of this.children) {
+                    child.traverse (transform);
+                }
+            },
+            // 12 shape, children
+            function (transform) {
+                Shader.getCurrentShader ().setModelMatrix (transform);
+                this.shape.draw ();
+                for (let child of this.children) {
+                    child.traverse (transform);
+                }
+            },
+            // 13 transform, shape, children
+            function (transform) {
+                transform = Float4x4.multiply (transform, this.transform);
+                Shader.getCurrentShader ().setModelMatrix (transform);
+                this.shape.draw ();
+                for (let child of this.children) {
+                    child.traverse (transform);
+                }
+            },
+            // 14 state, shape, children
+            function (transform) {
+                this.state ();
+                Shader.getCurrentShader ().setModelMatrix (transform);
+                this.shape.draw ();
+                for (let child of this.children) {
+                    child.traverse (transform);
+                }
+            },
+            // 15 transform, state, shape, children
+            function (transform) {
+                this.state ();
+                transform = Float4x4.multiply (transform, this.transform);
+                Shader.getCurrentShader ().setModelMatrix (transform);
+                this.shape.draw ();
+                for (let child of this.children) {
+                    child.traverse (transform);
+                }
+            }
+        ][traverseFunctionIndex];
+
+
+        // sanity check, nodes must have either a shape to draw, or children
+        if (this.traverse === INVALID_TRAVERSE) {
+            console.log("WARNING: INVALID TRAVERSE");
         }
+
+
+
+        return this;
     };
 
     _.addChild = function (node) {
@@ -1071,11 +1150,11 @@ let Cloud = function () {
 
     _.addPoint = function (point) {
         let transform = Float4x4.translate (Float4x4.identity (), point);
-        Float4x4.scale (transform, [0.025, 0.025, 0.025]);
-        //Float4x4.translate (transform, [-0.5, -0.5, -0.5]);
+        transform = Float4x4.multiply (Float4x4.scale ([0.025, 0.025, 0.025]), transform);
         this.addChild (Node.new ({
             transform: transform,
-            shape: "sphere"
+            shape: "sphere",
+            children: false
         }));
     };
 
