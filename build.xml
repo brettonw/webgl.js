@@ -43,12 +43,15 @@
             <fileset dir="${source-dir}" includes="shader-attribute.js" />
             <fileset dir="${source-dir}" includes="node.js" />
             <fileset dir="${source-dir}" includes="cloud.js" />
-            <fileset dir="${source-dir}" includes="shape.js" />
-            <fileset dir="${source-dir}/shapes" includes="facets.js" />
-            <fileset dir="${source-dir}/shapes" includes="cube.js" />
-            <fileset dir="${source-dir}/shapes" includes="tetrahedron.js" />
+            <fileset dir="${source-dir}" includes="shape.js"/>
+            <fileset dir="${source-dir}" includes="shape-builder.js"/>
+            <fileset dir="${source-dir}/shapes" includes="primitive.js"/>
+            <fileset dir="${source-dir}/shapes" includes="tetrahedron.js"/>
+            <fileset dir="${source-dir}/shapes" includes="hexahedron.js" />
+            <fileset dir="${source-dir}/shapes" includes="octahedron.js"/>
+            <fileset dir="${source-dir}/shapes" includes="icosahedron.js"/>
+            <fileset dir="${source-dir}/shapes" includes="square.js"/>
             <fileset dir="${source-dir}/shapes" includes="sphere.js" />
-            <fileset dir="${source-dir}/shapes" includes="square.js" />
             <fileset dir="${source-dir}/shapes" includes="revolve.js" />
             <fileset dir="${source-dir}/shapes" includes="ball.js" />
             <fileset dir="${source-dir}" includes="utility.js" />

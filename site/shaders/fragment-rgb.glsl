@@ -1,15 +1,15 @@
 // standard declarations for gradient information and precision
-#extension GL_OES_standard_derivatives : enable
-#extension GL_EXT_shader_texture_lod : enable
+//#extension GL_OES_standard_derivatives : enable
+//#extension GL_EXT_shader_texture_lod : enable
 precision mediump float;
 
 uniform float blendAlpha;
 
-varying vec4 color;
+varying vec3 model;
 
 void main(void) {
 
-    gl_FragColor = color * blendAlpha;
+    gl_FragColor = vec4 (model, blendAlpha);
 
     /*
     // get the gradients

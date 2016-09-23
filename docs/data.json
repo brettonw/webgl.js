@@ -201,7 +201,7 @@
         },
         {
             "file": "src/main/javascript/node.js",
-            "line": 176,
+            "line": 180,
             "description": "Add a child node (only applies to non-leaf nodes)",
             "itemtype": "method",
             "name": "addChild",
@@ -217,7 +217,7 @@
         },
         {
             "file": "src/main/javascript/node.js",
-            "line": 192,
+            "line": 196,
             "description": "Get the name of this node (if it has one)",
             "itemtype": "method",
             "name": "getName",
@@ -229,7 +229,7 @@
         },
         {
             "file": "src/main/javascript/node.js",
-            "line": 202,
+            "line": 206,
             "description": "Get a node by name",
             "itemtype": "method",
             "name": "get",
@@ -248,7 +248,7 @@
         },
         {
             "file": "src/main/javascript/node.js",
-            "line": 213,
+            "line": 217,
             "description": "Static method to create and construct a new scene graph node.",
             "itemtype": "method",
             "name": "new",
@@ -349,7 +349,7 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 124,
+            "line": 125,
             "description": "Bind the POSITION attribute to the given buffer.",
             "itemtype": "method",
             "name": "bindPositionAttribute",
@@ -369,7 +369,7 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 136,
+            "line": 137,
             "description": "Bind the NORMAL attribute to the given buffer.",
             "itemtype": "method",
             "name": "bindNormalAttribute",
@@ -389,7 +389,7 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 148,
+            "line": 149,
             "description": "Bind the TEXTURE attribute to the given buffer.",
             "itemtype": "method",
             "name": "bindTextureAttribute",
@@ -409,7 +409,7 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 160,
+            "line": 161,
             "description": "Fetch the shader currently in use.",
             "itemtype": "method",
             "name": "getCurrentShader",
@@ -422,7 +422,7 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 171,
+            "line": 172,
             "description": "Set this as the current shader in the rendering context.",
             "itemtype": "method",
             "name": "use",
@@ -431,7 +431,7 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 185,
+            "line": 186,
             "description": "Get the name of this shader",
             "itemtype": "method",
             "name": "getName",
@@ -443,7 +443,7 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 195,
+            "line": 196,
             "description": "Static method to create and construct a new Shader.",
             "itemtype": "method",
             "name": "new",
@@ -478,7 +478,7 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 219,
+            "line": 220,
             "description": "Fetch a shader by name.",
             "itemtype": "method",
             "name": "get",

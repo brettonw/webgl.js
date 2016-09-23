@@ -115,6 +115,7 @@ let Shader = function () {
     let bindAttribute = function (which, buffer) {
         // not every shader uses every attribute, so don't bother to set them unless they will be used
         if (which in currentShader.attributes) {
+            //LOG ("Bind " + which);
             context.bindBuffer (context.ARRAY_BUFFER, buffer);
             currentShader.attributes[which].bind ();
         }

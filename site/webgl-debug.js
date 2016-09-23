@@ -937,6 +937,7 @@ let Shader = function () {
     let bindAttribute = function (which, buffer) {
         // not every shader uses every attribute, so don't bother to set them unless they will be used
         if (which in currentShader.attributes) {
+            //LOG ("Bind " + which);
             context.bindBuffer (context.ARRAY_BUFFER, buffer);
             currentShader.attributes[which].bind ();
         }
@@ -1244,7 +1245,9 @@ let Node = function () {
             // 5 transform, shape
             function (transform) {
                 transform = Float4x4.multiply (this.transform, transform);
-                Shader.getCurrentShader ().setModelMatrix (transform);
+                Shader.getCurrentShader ()
+                    .setModelMatrix (transform)
+                    .setNormalMatrix (Float4x4.transpose (Float4x4.inverse (transform)));
                 this.shape.draw ();
             },
             // 6 state, shape
@@ -1257,7 +1260,9 @@ let Node = function () {
             function (transform) {
                 this.state ();
                 transform = Float4x4.multiply (transform, this.transform);
-                Shader.getCurrentShader ().setModelMatrix (transform);
+                Shader.getCurrentShader ()
+                    .setModelMatrix (transform)
+                    .setNormalMatrix (Float4x4.transpose (Float4x4.inverse (transform)));
                 this.shape.draw ();
             },
             // 8 children only
@@ -1575,137 +1580,313 @@ let Shape = function () {
 
     return _;
 } ();
-let makeFacets = function (buffers) {
-    let vertex = [];
-    let normal = [];
-    for (let face of buffers.face) {
-        // get the first three vertices of the face to compute the normal
-        let a = buffers.vertex[face[0]];
-        let b = buffers.vertex[face[1]];
-        let c = buffers.vertex[face[2]];
-        let ab = Float3.normalize (Float3.subtract (b, a));
-        let bc = Float3.normalize (Float3.subtract (c, b));
-        let n = Float3.cross (ab, bc);
+let ShapeBuilder = function () {
+    let _ = Object.create (null);
 
-        // now loop over all of the points to add them to the vertices
-        for (let i = 0; i < face.length; ++i) {
-            vertex.push(buffers.vertex[face[i]]);
-            normal.push(n);
-        }
-    }
-    return {
-        position: Utility.flatten (vertex),
-        normal: Utility.flatten (normal)
+    _.construct = function (precision) {
+        this.precision = (typeof precision !== "undefined") ? precision : 7;
+        this.vertexIndex = Object.create (null);
+        this.vertices = [];
+        this.faces = [];
+        return this;
     };
-};
-let makeCube = function () {
-    return Shape.new ("cube", function () {
-        return makeFacets ({
-            vertex: [
-                [-1, -1, -1],
-                [-1, 1, -1],
-                [1, 1, -1],
-                [1, -1, -1],
-                [-1, -1, 1],
-                [-1, 1, 1],
-                [1, 1, 1],
-                [1, -1, 1]
-            ],
-            face: [
-                [0, 1, 2, 0, 2, 3], // Front face
-                [7, 6, 5, 7, 5, 4], // Back face
-                [1, 5, 6, 1, 6, 2], // Top face
-                [4, 0, 3, 4, 3, 7], // Bottom face
-                [4, 5, 1, 4, 1, 0], // Left face
-                [3, 2, 6, 3, 6, 7] // Right face
-            ]
-        });
-    });
-};
-let makeTetrahedron = function () {
-    return Shape.new ("tetrahedron", function () {
-        let overSqrt2 = 1 / Math.sqrt (2);
-        return makeFacets ({
-            vertex: [
-                [1, 0, -overSqrt2],
-                [-1, 0, -overSqrt2],
-                [0, 1, overSqrt2],
-                [0, -1, overSqrt2]
-            ],
-            face: [
-                [0, 1, 2],
-                [1, 3, 2],
-                [2, 3, 0],
-                [3, 1, 0]
-            ]
-        });
-    });
-};
-let makeSphere = function (subdivisions) {
-    return Shape.new ("sphere", function () {
-        let overSqrt2 = 1 / Math.sqrt (2);
-        let vertices = [
-            Float3.normalize ([1, 0, -overSqrt2]),
-            Float3.normalize ([-1, 0, -overSqrt2]),
-            Float3.normalize ([0, 1, overSqrt2]),
-            Float3.normalize ([0, -1, overSqrt2])
-        ];
-        let indices = [
-            [0, 1, 2],
-            [1, 3, 2],
-            [2, 3, 0],
-            [3, 1, 0]
-        ];
 
+    _.addVertex = function (vertex) {
+        let str = Float3.str(vertex);
+        if (str in this.vertexIndex) {
+            return this.vertexIndex[str];
+        } else {
+            let index = this.vertices.length;
+            this.vertices.push(vertex);
+            this.vertexIndex[str] = index;
+            return index;
+        }
+    };
+
+    _.addFace = function (face) {
+        this.faces.push(face);
+    };
+
+    _.makeBuffers = function () {
+        return {
+            position: Utility.flatten(this.vertices),
+            index: Utility.flatten(this.faces)
+        };
+    };
+
+    _.makeFacets = function () {
+        let vertex = [];
+        let normal = [];
+        for (let face of this.faces) {
+            // get the first three vertices of the face to compute the normal
+            let a = this.vertices[face[0]];
+            let b = this.vertices[face[1]];
+            let c = this.vertices[face[2]];
+            let ab = Float3.normalize(Float3.subtract(b, a));
+            let bc = Float3.normalize(Float3.subtract(c, b));
+            let n = Float3.cross(ab, bc);
+
+            // now loop over all of the points to add them to the vertices
+            for (let i = 0; i < face.length; ++i) {
+                vertex.push(this.vertices[face[i]]);
+                normal.push(n);
+            }
+        }
+        return {
+            position: Utility.flatten(vertex),
+            normal: Utility.flatten(normal)
+        };
+    };
+
+    _.new = function (precision) {
+        return Object.create (ShapeBuilder).construct (precision);
+    };
+
+    return _;
+} ();
+let Primitive = function () {
+    let _ = Object.create(null);
+
+    _.getShapeBuilder = function () {
+    };
+
+    _.makeFromBuilder = function (name, builder) {
+        name = (typeof name !== "undefined") ? name : this.name;
+        return Shape.new(name, function () {
+            return builder.makeFacets();
+        });
+    };
+
+    _.make = function (name) {
+        let builder = this.getShapeBuilder();
+        return this.makeFromBuilder(name, builder);
+    };
+
+    return _;
+}();
+let Tetrahedron = function () {
+    let _ = Object.create (Primitive);
+
+    _.name = "tetrahedron";
+
+    _.getShapeBuilder = function () {
+        let builder = ShapeBuilder.new ();
+        builder.addVertex([1, 1, 1]);
+        builder.addVertex([-1, 1, -1]);
+        builder.addVertex([-1, -1, 1]);
+        builder.addVertex([1, -1, -1]);
+
+        builder.addFace([0, 1, 2]);
+        builder.addFace([1, 3, 2]);
+        builder.addFace([2, 3, 0]);
+        builder.addFace([3, 1, 0]);
+
+        return builder;
+    };
+
+    return _;
+} ();
+let Hexahedron = function () {
+    let _ = Object.create(Primitive);
+
+    _.name = "cube";
+
+    _.getShapeBuilder = function () {
+        let builder = ShapeBuilder.new();
+
+        builder.addVertex([-1, -1, -1]);
+        builder.addVertex([-1, 1, -1]);
+        builder.addVertex([1, 1, -1]);
+        builder.addVertex([1, -1, -1]);
+        builder.addVertex([-1, -1, 1]);
+        builder.addVertex([-1, 1, 1]);
+        builder.addVertex([1, 1, 1]);
+        builder.addVertex([1, -1, 1]);
+
+        builder.addFace([0, 1, 2, 0, 2, 3]); // Front face
+        builder.addFace([7, 6, 5, 7, 5, 4]); // Back face
+        builder.addFace([1, 5, 6, 1, 6, 2]); // Top face
+        builder.addFace([4, 0, 3, 4, 3, 7]); // Bottom face
+        builder.addFace([4, 5, 1, 4, 1, 0]); // Left face
+        builder.addFace([3, 2, 6, 3, 6, 7]); // Right face
+
+        return builder;
+    };
+
+    return _;
+}();
+let Octahedron = function () {
+    let _ = Object.create(Primitive);
+
+    _.name = "octahedron";
+
+    _.getShapeBuilder = function () {
+        let builder = ShapeBuilder.new();
+
+        builder.addVertex([0, 1, 0]);
+        builder.addVertex([1, 0, 0]);
+        builder.addVertex([0, 0, 1]);
+        builder.addVertex([-1, 0, 0]);
+        builder.addVertex([0, 0, -1]);
+        builder.addVertex([0, -1, 0]);
+
+        builder.addFace([0, 2, 1]);
+        builder.addFace([0, 3, 2]);
+        builder.addFace([0, 4, 3]);
+        builder.addFace([0, 1, 4]);
+
+
+        builder.addFace([5, 1, 2]);
+        builder.addFace([5, 2, 3]);
+        builder.addFace([5, 3, 4]);
+        builder.addFace([5, 4, 1]);
+
+        return builder;
+    };
+
+    return _;
+}();
+let Icosahedron = function () {
+    let _ = Object.create(Primitive);
+
+    _.name = "icosahedron";
+
+    _.getShapeBuilder = function () {
+        let builder = ShapeBuilder.new();
+        let t = (1.0 + Math.sqrt(5.0)) / 2.0;
+        let s = 1 / t;
+        t = 1;
+
+        builder.addVertex([-s, t, 0]);
+        builder.addVertex([s, t, 0]);
+        builder.addVertex([-s, -t, 0]);
+        builder.addVertex([s, -t, 0]);
+
+        builder.addVertex([0, -s, t]);
+        builder.addVertex([0, s, t]);
+        builder.addVertex([0, -s, -t]);
+        builder.addVertex([0, s, -t]);
+
+        builder.addVertex([t, 0, -s]);
+        builder.addVertex([t, 0, s]);
+        builder.addVertex([-t, 0, -s]);
+        builder.addVertex([-t, 0, s]);
+
+        builder.addFace([0, 11, 5]);
+        builder.addFace([0, 5, 1]);
+        builder.addFace([0, 1, 7]);
+        builder.addFace([0, 7, 10]);
+        builder.addFace([0, 10, 11]);
+
+        builder.addFace([1, 5, 9]);
+        builder.addFace([5, 11, 4]);
+        builder.addFace([11, 10, 2]);
+        builder.addFace([10, 7, 6]);
+        builder.addFace([7, 1, 8]);
+
+        builder.addFace([3, 9, 4]);
+        builder.addFace([3, 4, 2]);
+        builder.addFace([3, 2, 6]);
+        builder.addFace([3, 6, 8]);
+        builder.addFace([3, 8, 9]);
+
+        builder.addFace([4, 9, 5]);
+        builder.addFace([2, 4, 11]);
+        builder.addFace([6, 2, 10]);
+        builder.addFace([8, 6, 7]);
+        builder.addFace([9, 8, 1]);
+
+        return builder;
+    };
+
+    return _;
+}();
+let Square = function () {
+    let _ = Object.create(Primitive);
+
+    _.name = "square";
+
+    _.getShapeBuilder = function () {
+        let builder = ShapeBuilder.new();
+
+        builder.addVertex([-1, -1, 0]);
+        builder.addVertex([-1, 1, 0]);
+        builder.addVertex([1, 1, 0]);
+        builder.addVertex([1, -1, 0]);
+
+        builder.addFace([2, 1, 3, 1, 0, 3]);
+
+        return builder;
+    };
+
+    return _;
+}();
+let Sphere = function () {
+    let _ = Object.create (Primitive);
+
+    _.name = "sphere";
+
+    _.parameters = {
+        baseShapeBuilderType: Icosahedron,
+        subdivisions: 4
+    };
+
+    _.getShapeBuilder = function () {
+        let builder = ShapeBuilder.new ();
+
+        let addVertex = function (vertex) {
+            return builder.addVertex (Float3.normalize (vertex));
+        }
+
+        let baseShapeBuilder = this.parameters.baseShapeBuilderType.getShapeBuilder ();
+
+        // add all the vertices and faces from the baseShapeBuilder into ours...
+        for (let vertex of baseShapeBuilder.vertices) {
+            addVertex (vertex);
+        }
+        let vertices = builder.vertices;
+        let faces = builder.faces = baseShapeBuilder.faces;
+
+        // function to subdivide a face
         let subdivide = function () {
             // remove the triangle we want to subdivide, which is always the first one
-            let tri = indices.splice (0, 1)[0];
+            let tri = faces.splice (0, 1)[0];
 
             // compute three new vertices as the averages of each pair of vertices
-            let v0 = vertices.length; vertices.push (Float3.normalize (Float3.add (vertices[tri[0]], vertices[tri[1]])));
-            let v1 = vertices.length; vertices.push (Float3.normalize (Float3.add (vertices[tri[1]], vertices[tri[2]])));
-            let v2 = vertices.length; vertices.push (Float3.normalize (Float3.add (vertices[tri[2]], vertices[tri[0]])));
+            let v0 = addVertex (Float3.add (vertices[tri[0]], vertices[tri[1]]));
+            let v1 = addVertex (Float3.add (vertices[tri[1]], vertices[tri[2]]));
+            let v2 = addVertex (Float3.add (vertices[tri[2]], vertices[tri[0]]));
 
             // add 4 new triangles to replace the one we removed
-            indices.push ([tri[0], v0, v2]);
-            indices.push ([tri[1], v1, v0]);
-            indices.push ([tri[2], v2, v1]);
-            indices.push ([v0, v1, v2]);
+            builder.addFace ([tri[0], v0, v2]);
+            builder.addFace ([tri[1], v1, v0]);
+            builder.addFace ([tri[2], v2, v1]);
+            builder.addFace ([v0, v1, v2]);
         };
 
         // subdivide the triangles we already defined, do this the requested number of times (3
         // seems to be the minimum for a spherical appearance)
-        for (let j = 0; j < subdivisions; ++j) {
-            for (let i = 0, iEnd = indices.length; i < iEnd; ++i) {
-                subdivide (0);
+        for (let j = 0; j < this.parameters.subdivisions; ++j) {
+            console.log ("Iteration " + j + " with " + vertices.length + " points in " + faces.length + " triangles");
+            for (let i = 0, faceCount = faces.length; i < faceCount; ++i) {
+                subdivide ();
             }
         }
+        console.log ("Finished sphere with " + vertices.length + " points in " + faces.length + " triangles");
+        return builder;
+    };
 
-        // report
-        console.log ("Sphere with " + indices.length + " triangles");
-
-        // flatten the vertices and indices
-        return {
-            position: Utility.flatten (vertices),
-            index: Utility.flatten (indices)
-        };
-    });
-};
-let makeSquare = function () {
-    return Shape.new ("square", function () {
-        return makeFacets({
-            vertex: [
-                [-1, -1, 0],
-                [-1, 1, 0],
-                [1, 1, 0],
-                [1, -1, 0]
-            ],
-            face: [
-                [2, 1, 3, 1, 0, 3]
-            ]
+    _.makeFromBuilder = function (name, builder) {
+        name = (typeof name !== "undefined") ? name : this.name;
+        return Shape.new (name, function () {
+            let buffers = builder.makeBuffers ();
+            buffers.normal = buffers.position;
+            return buffers;
         });
-    });
-};
+    };
+
+    return _;
+} ();
 let makeRevolve = function (name, outline, steps) {
     return Shape.new (name, function () {
         // outline is an array of Float2, and the axis of revolution is x = 0, we make a number of

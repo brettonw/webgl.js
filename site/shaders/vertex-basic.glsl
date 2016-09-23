@@ -1,17 +1,21 @@
 attribute vec3 inputPosition;
 attribute vec3 inputNormal;
-attribute vec3 inputTexture;
+attribute vec2 inputTexture;
 
 uniform mat4 modelMatrix;
+uniform mat4 normalMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 
-varying vec4 color;
+varying vec3 normal;
+varying vec2 texture;
+varying vec3 model;
 
 void main(void) {
     vec4 vertexPosition = vec4(inputPosition, 1.0);
     vec4 modelPosition = modelMatrix * vertexPosition;
     vec4 viewPosition = viewMatrix * modelPosition;
     gl_Position = projectionMatrix * viewPosition;
-    color = modelPosition;
+    model = modelPosition.xyz;
+    normal = normalize ((normalMatrix * vec4 (inputNormal, 0)).xyz);
 }

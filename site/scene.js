@@ -23,10 +23,15 @@ let draw = function (delta) {
 let buildScene = function (canvasId, points) {
     Render.new (canvasId).use ();
 
-    makeCube ();
-    makeSphere (3);
+    Sphere.parameters.subdivisions = 3;
+    Sphere.make ();
     makeRevolve ("cylinder", [[1, 1], [1, -1], [0.5, -1]], 36);
     makeBall ("ball", 36);
+    Tetrahedron.make();
+    Hexahedron.make();
+    Octahedron.make();
+    Icosahedron.make();
+    Square.make();
 
     scene = Node.new ({
         name: "root",
