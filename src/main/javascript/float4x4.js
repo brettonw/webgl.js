@@ -1,13 +1,79 @@
 let Float4x4 = function () {
     let _ = FloatNxN (4);
 
-    _.determinant = function (a) {
+    let index = function (row, column) {
+        return (row * 4) + column;
+    };
+
+    /*
+    //------------------------------------------------------------------------------
+    //	determinant of the 4x4 matrix_3d
+    //------------------------------------------------------------------------------
+        real	matrix_3d::Determinant (void) const																				//	compute the matrix_3d determinant
+            {																																								//	begin
+                return 	mat[0][0] * Cofactor (0, 0) +																					//	multiply the value by its cofactor
+        mat[0][1] * Cofactor (0, 1) +																					//	multiply the value by its cofactor and add the result to the current sum
+        mat[0][2] * Cofactor (0, 2) +																					//	multiply the value by its cofactor and add the result to the current sum
+        mat[0][3] * Cofactor (0, 3);																					//	multiply the value by its cofactor and add the result to the current sum
+    }																																								//	end
+
+    //------------------------------------------------------------------------------
+    //	invert the matrix_3d
+    //------------------------------------------------------------------------------
+        matrix_3d	matrix_3d::Inverse (void) const																				//	compute the matrix_3d inverse
+            {																																								//	begin
+                matrix_3d	inverse;																														//	new matrix_3d
+        real	det = Determinant ();																										//	compute the determinant
+        for (short i = 0; i < 4; i++)																									//	loop on the rows
+        for (short j = 0; j < 4; j++)																								//	loop on the columns
+        inverse.mat[j][i] = Cofactor (i, j) / det;																//	compute the inverse value for the current entry
+        return inverse;																																//	return the matrix_3d
+    }																																								//	end
+
+    */
+
+    let cofactor = function (from, i, j) {
+        // compute indices for a 3x3 matrix determinant
+        let v = [ [1, 2, 3], [0, 2, 3], [0, 1, 3], [0, 1, 2] ];
+        let vi = v[i], vj = v[j];
+
+        // compute that determinant
+        let value =
+            from[index (vi[0], vj[0])] * ((from[index (vi[1], vj[1])] * from[index (vi[2], vj[2])]) - (from[index (vi[1], vj[2])] * from[index (vi[2], vj[1])])) -
+            from[index (vi[0], vj[1])] * ((from[index (vi[1], vj[0])] * from[index (vi[2], vj[2])]) - (from[index (vi[1], vj[2])] * from[index (vi[2], vj[0])])) +
+            from[index (vi[0], vj[2])] * ((from[index (vi[1], vj[0])] * from[index (vi[2], vj[1])]) - (from[index (vi[1], vj[1])] * from[index (vi[2], vj[0])]));
+
+        // negative or positive
+        return ((i + j) & 1) ? -value : value;
+    };
+
+    _.determinant = function (from) {
+        let value =
+        (from[index (0, 0)] * cofactor (from, 0, 0)) +
+        (from[index (0, 1)] * cofactor (from, 0, 1)) +
+        (from[index (0, 2)] * cofactor (from, 0, 2)) +
+        (from[index (0, 3)] * cofactor (from, 0, 3));
+        return value;
+    };
+
+    _.inverse = function (from, to) {
+        to = (typeof to !== "undefined") ? to : this.create ();
+        let det = this.determinant(from);
+        for (let i = 0; i < 4; i++) {
+            for (let j = 0; j < 4; j++) {
+                to[index(j, i)] = cofactor (from, i, j) / det;
+            }
+        }
+        return to;
+    };
+
+    _.determinant_old = function (a) {
         let b = a[0], c = a[1], d = a[2], e = a[3], g = a[4], f = a[5], h = a[6], i = a[7], j = a[8], k = a[9], l = a[10], o = a[11], m = a[12], n = a[13], p = a[14];
         a = a[15];
         return m * k * h * e - j * n * h * e - m * f * l * e + g * n * l * e + j * f * p * e - g * k * p * e - m * k * d * i + j * n * d * i + m * c * l * i - b * n * l * i - j * c * p * i + b * k * p * i + m * f * d * o - g * n * d * o - m * c * h * o + b * n * h * o + g * c * p * o - b * f * p * o - j * f * d * a + g * k * d * a + j * c * h * a - b * k * h * a - g * c * l * a + b * f * l * a;
     };
 
-    _.inverse = function (a, b) {
+    _.inverse_old = function (a, b) {
         b || (b = a);
         let c = a[0], d = a[1], e = a[2], g = a[3], f = a[4], h = a[5], i = a[6], j = a[7], k = a[8], l = a[9], o = a[10], m = a[11], n = a[12], p = a[13], r = a[14], s = a[15], A = c * h - d * f, B = c * i - e * f, t = c * j - g * f, u = d * i - e * h, v = d * j - g * h, w = e * j - g * i, x = k * p - l * n, y = k * r - o * n, z = k * s - m * n, C = l * r - o * p, D = l * s - m * p, E = o * s - m * r, q = 1 / (A * E - B * D + t * C + u * z - v * y + w * x);
         b[0] = (h * E - i * D + j * C) * q;
