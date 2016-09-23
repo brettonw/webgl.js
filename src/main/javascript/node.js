@@ -96,7 +96,9 @@ let Node = function () {
             // 6 state, shape
             function (transform) {
                 this.state ();
-                Shader.getCurrentShader ().setModelMatrix (transform);
+                Shader.getCurrentShader ()
+                    .setModelMatrix (transform)
+                    .setNormalMatrix (Float4x4.transpose (Float4x4.inverse (transform)));
                 this.shape.draw ();
             },
             // 7 transform, state, shape
@@ -138,7 +140,9 @@ let Node = function () {
             },
             // 12 shape, children
             function (transform) {
-                Shader.getCurrentShader ().setModelMatrix (transform);
+                Shader.getCurrentShader ()
+                    .setModelMatrix (transform)
+                    .setNormalMatrix (Float4x4.transpose (Float4x4.inverse (transform)));
                 this.shape.draw ();
                 for (let child of this.children) {
                     child.traverse (transform);
@@ -147,7 +151,9 @@ let Node = function () {
             // 13 transform, shape, children
             function (transform) {
                 transform = Float4x4.multiply (transform, this.transform);
-                Shader.getCurrentShader ().setModelMatrix (transform);
+                Shader.getCurrentShader ()
+                    .setModelMatrix (transform)
+                    .setNormalMatrix (Float4x4.transpose (Float4x4.inverse (transform)));
                 this.shape.draw ();
                 for (let child of this.children) {
                     child.traverse (transform);
@@ -156,7 +162,9 @@ let Node = function () {
             // 14 state, shape, children
             function (transform) {
                 this.state ();
-                Shader.getCurrentShader ().setModelMatrix (transform);
+                Shader.getCurrentShader ()
+                    .setModelMatrix (transform)
+                    .setNormalMatrix (Float4x4.transpose (Float4x4.inverse (transform)));
                 this.shape.draw ();
                 for (let child of this.children) {
                     child.traverse (transform);
@@ -166,7 +174,9 @@ let Node = function () {
             function (transform) {
                 this.state ();
                 transform = Float4x4.multiply (transform, this.transform);
-                Shader.getCurrentShader ().setModelMatrix (transform);
+                Shader.getCurrentShader ()
+                    .setModelMatrix (transform)
+                    .setNormalMatrix (Float4x4.transpose (Float4x4.inverse (transform)));
                 this.shape.draw ();
                 for (let child of this.children) {
                     child.traverse (transform);

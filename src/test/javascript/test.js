@@ -36,9 +36,6 @@ var TestContainer = function () {
             viewMatrix = Float4x4.multiply (Float4x4.scale ([ 2, 2, 2 ]), viewMatrix);
             viewMatrix  = Float4x4.multiply (Float4x4.translate ([ -0.5, -0.5, -0.5 ]), viewMatrix);
 
-            let det = Float4x4.determinant(viewMatrix);
-            assertEquals("det == 7.999999251...", det, 7.99999925171984);
-
             let inverted = Float4x4.inverse(viewMatrix, Float4x4.create());
             let inverted2 = [
                 0.49240389466285706, 1.7235358695799619e-9, 0.08682408928871155, 0,

@@ -425,99 +425,35 @@ let FloatNxN = function (dim) {
 let Float4x4 = function () {
     let _ = FloatNxN (4);
 
-    let index = function (row, column) {
-        return (row * 4) + column;
-    };
-
-    /*
-    //------------------------------------------------------------------------------
-    //	determinant of the 4x4 matrix_3d
-    //------------------------------------------------------------------------------
-        real	matrix_3d::Determinant (void) const																				//	compute the matrix_3d determinant
-            {																																								//	begin
-                return 	mat[0][0] * Cofactor (0, 0) +																					//	multiply the value by its cofactor
-        mat[0][1] * Cofactor (0, 1) +																					//	multiply the value by its cofactor and add the result to the current sum
-        mat[0][2] * Cofactor (0, 2) +																					//	multiply the value by its cofactor and add the result to the current sum
-        mat[0][3] * Cofactor (0, 3);																					//	multiply the value by its cofactor and add the result to the current sum
-    }																																								//	end
-
-    //------------------------------------------------------------------------------
-    //	invert the matrix_3d
-    //------------------------------------------------------------------------------
-        matrix_3d	matrix_3d::Inverse (void) const																				//	compute the matrix_3d inverse
-            {																																								//	begin
-                matrix_3d	inverse;																														//	new matrix_3d
-        real	det = Determinant ();																										//	compute the determinant
-        for (short i = 0; i < 4; i++)																									//	loop on the rows
-        for (short j = 0; j < 4; j++)																								//	loop on the columns
-        inverse.mat[j][i] = Cofactor (i, j) / det;																//	compute the inverse value for the current entry
-        return inverse;																																//	return the matrix_3d
-    }																																								//	end
-
-    */
-
-    let cofactor = function (from, i, j) {
-        // compute indices for a 3x3 matrix determinant
-        let v = [ [1, 2, 3], [0, 2, 3], [0, 1, 3], [0, 1, 2] ];
-        let vi = v[i], vj = v[j];
-
-        // compute that determinant
-        let value =
-            from[index (vi[0], vj[0])] * ((from[index (vi[1], vj[1])] * from[index (vi[2], vj[2])]) - (from[index (vi[1], vj[2])] * from[index (vi[2], vj[1])])) -
-            from[index (vi[0], vj[1])] * ((from[index (vi[1], vj[0])] * from[index (vi[2], vj[2])]) - (from[index (vi[1], vj[2])] * from[index (vi[2], vj[0])])) +
-            from[index (vi[0], vj[2])] * ((from[index (vi[1], vj[0])] * from[index (vi[2], vj[1])]) - (from[index (vi[1], vj[1])] * from[index (vi[2], vj[0])]));
-
-        // negative or positive
-        return ((i + j) & 1) ? -value : value;
-    };
-
-    _.determinant = function (from) {
-        let value =
-        (from[index (0, 0)] * cofactor (from, 0, 0)) +
-        (from[index (0, 1)] * cofactor (from, 0, 1)) +
-        (from[index (0, 2)] * cofactor (from, 0, 2)) +
-        (from[index (0, 3)] * cofactor (from, 0, 3));
-        return value;
-    };
-
     _.inverse = function (from, to) {
+        // adapted from a bit of obfuscated, unwound, code
         to = (typeof to !== "undefined") ? to : this.create ();
-        let det = this.determinant(from);
-        for (let i = 0; i < 4; i++) {
-            for (let j = 0; j < 4; j++) {
-                to[index(j, i)] = cofactor (from, i, j) / det;
-            }
-        }
+        let A = from[0] * from[5] - from[1] * from[4], B = from[0] * from[6] - from[2] * from[4],
+            C = from[9] * from[14] - from[10] * from[13], D = from[9] * from[15] - from[11] * from[13],
+            E = from[10] * from[15] - from[11] * from[14], F = from[0] * from[7] - from[3] * from[4],
+            G = from[1] * from[6] - from[2] * from[5], H = from[1] * from[7] - from[3] * from[5],
+            K = from[2] * from[7] - from[3] * from[6], L = from[8] * from[13] - from[9] * from[12],
+            M = from[8] * from[14] - from[10] * from[12], N = from[8] * from[15] - from[11] * from[12],
+            Q = 1 / (A * E - B * D + F * C + G * N - H * M + K * L);
+        to[0] = (from[5] * E - from[6] * D + from[7] * C) * Q;
+        to[1] = (-from[1] * E + from[2] * D - from[3] * C) * Q;
+        to[2] = (from[13] * K - from[14] * H + from[15] * G) * Q;
+        to[3] = (-from[9] * K + from[10] * H - from[11] * G) * Q;
+        to[4] = (-from[4] * E + from[6] * N - from[7] * M) * Q;
+        to[5] = (from[0] * E - from[2] * N + from[3] * M) * Q;
+        to[6] = (-from[12] * K + from[14] * F - from[15] * B) * Q;
+        to[7] = (from[8] * K - from[10] * F + from[11] * B) * Q;
+        to[8] = (from[4] * D - from[5] * N + from[7] * L) * Q;
+        to[9] = (-from[0] * D + from[1] * N - from[3] * L) * Q;
+        to[10] = (from[12] * H - from[13] * F + from[15] * A) * Q;
+        to[11] = (-from[8] * H + from[9] * F - from[11] * A) * Q;
+        to[12] = (-from[4] * C + from[5] * M - from[6] * L) * Q;
+        to[13] = (from[0] * C - from[1] * M + from[2] * L) * Q;
+        to[14] = (-from[12] * G + from[13] * B - from[14] * A) * Q;
+        to[15] = (from[8] * G - from[9] * B + from[10] * A) * Q;
         return to;
     };
 
-    _.determinant_old = function (a) {
-        let b = a[0], c = a[1], d = a[2], e = a[3], g = a[4], f = a[5], h = a[6], i = a[7], j = a[8], k = a[9], l = a[10], o = a[11], m = a[12], n = a[13], p = a[14];
-        a = a[15];
-        return m * k * h * e - j * n * h * e - m * f * l * e + g * n * l * e + j * f * p * e - g * k * p * e - m * k * d * i + j * n * d * i + m * c * l * i - b * n * l * i - j * c * p * i + b * k * p * i + m * f * d * o - g * n * d * o - m * c * h * o + b * n * h * o + g * c * p * o - b * f * p * o - j * f * d * a + g * k * d * a + j * c * h * a - b * k * h * a - g * c * l * a + b * f * l * a;
-    };
-
-    _.inverse_old = function (a, b) {
-        b || (b = a);
-        let c = a[0], d = a[1], e = a[2], g = a[3], f = a[4], h = a[5], i = a[6], j = a[7], k = a[8], l = a[9], o = a[10], m = a[11], n = a[12], p = a[13], r = a[14], s = a[15], A = c * h - d * f, B = c * i - e * f, t = c * j - g * f, u = d * i - e * h, v = d * j - g * h, w = e * j - g * i, x = k * p - l * n, y = k * r - o * n, z = k * s - m * n, C = l * r - o * p, D = l * s - m * p, E = o * s - m * r, q = 1 / (A * E - B * D + t * C + u * z - v * y + w * x);
-        b[0] = (h * E - i * D + j * C) * q;
-        b[1] = (-d * E + e * D - g * C) * q;
-        b[2] = (p * w - r * v + s * u) * q;
-        b[3] = (-l * w + o * v - m * u) * q;
-        b[4] = (-f * E + i * z - j * y) * q;
-        b[5] = (c * E - e * z + g * y) * q;
-        b[6] = (-n * w + r * t - s * B) * q;
-        b[7] = (k * w - o * t + m * B) * q;
-        b[8] = (f * D - h * z + j * x) * q;
-        b[9] = (-c * D + d * z - g * x) * q;
-        b[10] = (n * v - p * t + s * A) * q;
-        b[11] = (-k * v + l * t - m * A) * q;
-        b[12] = (-f * C + h * y - i * x) * q;
-        b[13] = (c * C - d * y + e * x) * q;
-        b[14] = (-n * u + p * B - r * A) * q;
-        b[15] = (k * u - l * B + o * A) * q;
-        return b;
-    };
 
     _.toRotationMat = function (a, b) {
         b || (b = _.create ());
@@ -1253,7 +1189,9 @@ let Node = function () {
             // 6 state, shape
             function (transform) {
                 this.state ();
-                Shader.getCurrentShader ().setModelMatrix (transform);
+                Shader.getCurrentShader ()
+                    .setModelMatrix (transform)
+                    .setNormalMatrix (Float4x4.transpose (Float4x4.inverse (transform)));
                 this.shape.draw ();
             },
             // 7 transform, state, shape
@@ -1295,7 +1233,9 @@ let Node = function () {
             },
             // 12 shape, children
             function (transform) {
-                Shader.getCurrentShader ().setModelMatrix (transform);
+                Shader.getCurrentShader ()
+                    .setModelMatrix (transform)
+                    .setNormalMatrix (Float4x4.transpose (Float4x4.inverse (transform)));
                 this.shape.draw ();
                 for (let child of this.children) {
                     child.traverse (transform);
@@ -1304,7 +1244,9 @@ let Node = function () {
             // 13 transform, shape, children
             function (transform) {
                 transform = Float4x4.multiply (transform, this.transform);
-                Shader.getCurrentShader ().setModelMatrix (transform);
+                Shader.getCurrentShader ()
+                    .setModelMatrix (transform)
+                    .setNormalMatrix (Float4x4.transpose (Float4x4.inverse (transform)));
                 this.shape.draw ();
                 for (let child of this.children) {
                     child.traverse (transform);
@@ -1313,7 +1255,9 @@ let Node = function () {
             // 14 state, shape, children
             function (transform) {
                 this.state ();
-                Shader.getCurrentShader ().setModelMatrix (transform);
+                Shader.getCurrentShader ()
+                    .setModelMatrix (transform)
+                    .setNormalMatrix (Float4x4.transpose (Float4x4.inverse (transform)));
                 this.shape.draw ();
                 for (let child of this.children) {
                     child.traverse (transform);
@@ -1323,7 +1267,9 @@ let Node = function () {
             function (transform) {
                 this.state ();
                 transform = Float4x4.multiply (transform, this.transform);
-                Shader.getCurrentShader ().setModelMatrix (transform);
+                Shader.getCurrentShader ()
+                    .setModelMatrix (transform)
+                    .setNormalMatrix (Float4x4.transpose (Float4x4.inverse (transform)));
                 this.shape.draw ();
                 for (let child of this.children) {
                     child.traverse (transform);
@@ -2097,9 +2043,6 @@ var TestContainer = function () {
             Float4x4.rotate (viewMatrix, Utility.degreesToRadians (10), [ 0, 1, 0 ]);
             viewMatrix = Float4x4.multiply (Float4x4.scale ([ 2, 2, 2 ]), viewMatrix);
             viewMatrix = Float4x4.multiply (Float4x4.translate ([ -0.5, -0.5, -0.5 ]), viewMatrix);
-
-            let det = Float4x4.determinant(viewMatrix);
-            assertEquals("det == 7.999999251...", det, 7.99999925171984);
 
             let inverted = Float4x4.inverse(viewMatrix, Float4x4.create());
             let inverted2 = [
