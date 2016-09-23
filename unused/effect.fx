@@ -92,8 +92,8 @@ float3 specularLighting(PixelShaderCommon psc) {
 }
 
 float3 perturbedNormal(float3 normal, float2 uvCoordinate) {
-	// compute a perturbed normal in world space using the normal in model space. A generated 
-	// tangent space is used to perturb the model space normal vector, which is then transformed to 
+	// compute a perturbed normal in world space using the normal in model space. A generated
+	// tangent space is used to perturb the model space normal vector, which is then transformed to
 	// world space before being returned
 	float3 up = float3(0, 0, 1);
 	float3 right = cross(up, normal);
@@ -113,7 +113,7 @@ float4 pixelShader(PixelShaderInput input) : COLOR {
 	float3 daytimeLightColor = blend(psc.daytimeScale, float3 (1, 1, 1), float3 (1.0, 0.8, 0.6));
 	float3 daytimeColor = psc.daytimeScale * daytimeLightColor * tex2D(DaytimeTextureSampler, psc.uvCoordinate).rgb;
 
-	// add a bit of lighting in for the normal map, this blends the map a bit, otherwise it's a bit 
+	// add a bit of lighting in for the normal map, this blends the map a bit, otherwise it's a bit
 	// harsh looking. note this uses the INPUT normal vector, NOT the PSC corrected one, as it works
 	// in model space, not in world space
 	float3 N = perturbedNormal(input.normal, input.uvCoordinate);
@@ -133,7 +133,7 @@ float4 pixelShader(PixelShaderInput input) : COLOR {
 		finalColor += tex2D(GeoPoliticalBoundariesTextureSampler, psc.uvCoordinate).rgb * psc.cosViewNormalAngle * useGeopoliticalBoundariesOverlay;
 	}
 
-	// grids overlay everything, but we alpha blend them down in the range 0 .. 1 .. 0, multiplied 
+	// grids overlay everything, but we alpha blend them down in the range 0 .. 1 .. 0, multiplied
 	// to 8, clamped, and squared to make the falloff only happen in the poles. it is also scaled by
 	// the cosviewnormal angle to reduce aliasing
 	if (useGridOverlay > 0) {
@@ -156,7 +156,7 @@ float atmosphereDepth = 0.025;
 float4 pixelShaderAtmosphere(PixelShaderInput input) : COLOR {
 	PixelShaderCommon psc = computeCommon(input);
 
-	// compute an approximation to how much air the view vector goes through, so we can use that to 
+	// compute an approximation to how much air the view vector goes through, so we can use that to
 	// fog the pixel with the daytime blend color
 	float earthRadius = 1.0;
 	float totalRadius = earthRadius + atmosphereDepth;
@@ -174,14 +174,14 @@ float4 pixelShaderAtmosphere(PixelShaderInput input) : COLOR {
 	return float4 (daytimeLightColor, atmosphere);
 }
 
-technique Kramllah {
+technique Planet {
 	pass {
 		VertexShader = compile vs_4_0 vertexShader();
 		PixelShader = compile ps_4_0 pixelShader();
 	}
 }
 
-technique KramllahAtmosphere {
+technique Atmosphere {
 	pass {
 		AlphaBlendEnable = true;
 		SrcBlend = SRCALPHA;

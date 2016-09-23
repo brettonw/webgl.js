@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 
-namespace ADS.Modules.MonoGame3DScene.Models
+namespace Models
 {
     public class WrappedEffect : Effect, IEffectMatrices
     {
