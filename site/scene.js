@@ -23,10 +23,14 @@ let draw = function (delta) {
 let buildScene = function (canvasId, points) {
     Render.new (canvasId).use ();
 
-    makeCube ();
-    makeSphere (3);
+    Sphere.make ();
     makeRevolve ("cylinder", [[1, 1], [1, -1], [0.5, -1]], 36);
     makeBall ("ball", 36);
+    Tetrahedron.make();
+    Hexahedron.make();
+    Octahedron.make();
+    Icosahedron.make();
+    Square.make();
 
     scene = Node.new ({
         name: "root",
@@ -53,12 +57,12 @@ let buildScene = function (canvasId, points) {
         name: "background",
         transform: transform,
         state: function () {
-            Shader.getCurrentShader ().setBlendAlpha (0.85);
-            context.disable (context.DEPTH_TEST);
+            //Shader.getCurrentShader ().setBlendAlpha (0.85);
+            context.enable (context.DEPTH_TEST);
             context.enable (context.CULL_FACE);
-            context.cullFace (context.FRONT);
+            context.cullFace (context.BACK);
         },
-        shape: "cube",
+        shape: "sphere",
         children: false
     });
     scene.addChild (background);
@@ -79,7 +83,7 @@ let buildScene = function (canvasId, points) {
 
     let projectionMatrix = Float4x4.create ();
     Float4x4.perspective (45, context.viewportWidth / context.viewportHeight, 0.1, 100.0, projectionMatrix);
-    Shader.new ("rgb", "shaders/vertex-basic.glsl", "shaders/fragment-rgb.glsl")
+    Shader.new ("rgb", "shaders/vertex-basic.glsl", "shaders/fragment-lambertian.glsl")
         .use ()
         .setProjectionMatrix (projectionMatrix)
         .setBlendAlpha (1.0);

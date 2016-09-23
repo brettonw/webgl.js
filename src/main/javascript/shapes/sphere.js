@@ -1,50 +1,66 @@
-let makeSphere = function (subdivisions) {
-    return Shape.new ("sphere", function () {
-        let overSqrt2 = 1 / Math.sqrt (2);
-        let vertices = [
-            Float3.normalize ([1, 0, -overSqrt2]),
-            Float3.normalize ([-1, 0, -overSqrt2]),
-            Float3.normalize ([0, 1, overSqrt2]),
-            Float3.normalize ([0, -1, overSqrt2])
-        ];
-        let indices = [
-            [0, 1, 2],
-            [1, 3, 2],
-            [2, 3, 0],
-            [3, 1, 0]
-        ];
+let Sphere = function () {
+    let _ = Object.create (Primitive);
 
+    _.name = "sphere";
+
+    _.parameters = {
+        baseShapeBuilderType: Icosahedron,
+        subdivisions: 4
+    };
+
+    _.getShapeBuilder = function () {
+        let builder = ShapeBuilder.new ();
+
+        let addVertex = function (vertex) {
+            return builder.addVertex (Float3.normalize (vertex));
+        }
+
+        let baseShapeBuilder = this.parameters.baseShapeBuilderType.getShapeBuilder ();
+
+        // add all the vertices and faces from the baseShapeBuilder into ours...
+        for (let vertex of baseShapeBuilder.vertices) {
+            addVertex (vertex);
+        }
+        let vertices = builder.vertices;
+        let faces = builder.faces = baseShapeBuilder.faces;
+
+        // function to subdivide a face
         let subdivide = function () {
             // remove the triangle we want to subdivide, which is always the first one
-            let tri = indices.splice (0, 1)[0];
+            let tri = faces.splice (0, 1)[0];
 
             // compute three new vertices as the averages of each pair of vertices
-            let v0 = vertices.length; vertices.push (Float3.normalize (Float3.add (vertices[tri[0]], vertices[tri[1]])));
-            let v1 = vertices.length; vertices.push (Float3.normalize (Float3.add (vertices[tri[1]], vertices[tri[2]])));
-            let v2 = vertices.length; vertices.push (Float3.normalize (Float3.add (vertices[tri[2]], vertices[tri[0]])));
+            let v0 = addVertex (Float3.add (vertices[tri[0]], vertices[tri[1]]));
+            let v1 = addVertex (Float3.add (vertices[tri[1]], vertices[tri[2]]));
+            let v2 = addVertex (Float3.add (vertices[tri[2]], vertices[tri[0]]));
 
             // add 4 new triangles to replace the one we removed
-            indices.push ([tri[0], v0, v2]);
-            indices.push ([tri[1], v1, v0]);
-            indices.push ([tri[2], v2, v1]);
-            indices.push ([v0, v1, v2]);
+            builder.addFace ([tri[0], v0, v2]);
+            builder.addFace ([tri[1], v1, v0]);
+            builder.addFace ([tri[2], v2, v1]);
+            builder.addFace ([v0, v1, v2]);
         };
 
         // subdivide the triangles we already defined, do this the requested number of times (3
         // seems to be the minimum for a spherical appearance)
-        for (let j = 0; j < subdivisions; ++j) {
-            for (let i = 0, iEnd = indices.length; i < iEnd; ++i) {
-                subdivide (0);
+        for (let j = 0; j < this.parameters.subdivisions; ++j) {
+            LOG ("Iteration " + j + " with " + vertices.length + " points in " + faces.length + " triangles");
+            for (let i = 0, faceCount = faces.length; i < faceCount; ++i) {
+                subdivide ();
             }
         }
+        LOG ("Finished sphere with " + vertices.length + " points in " + faces.length + " triangles");
+        return builder;
+    };
 
-        // report
-        LOG ("Sphere with " + indices.length + " triangles");
+    _.makeFromBuilder = function (name, builder) {
+        name = (typeof name !== "undefined") ? name : this.name;
+        return Shape.new (name, function () {
+            let buffers = builder.makeBuffers ();
+            buffers.normal = buffers.position;
+            return buffers;
+        });
+    };
 
-        // flatten the vertices and indices
-        return {
-            position: Utility.flatten (vertices),
-            index: Utility.flatten (indices)
-        };
-    });
-};
+    return _;
+} ();
