@@ -3,18 +3,22 @@
 let scene;
 let currentAngle = 0;
 
+let standardParameters = Object.create(null);
+
 let draw = function (delta) {
     // update the rotation around the scene
     currentAngle += (delta * 180);
 
     // setup the view matrix
     let viewMatrix = Float4x4.identity ();
-    Float4x4.rotate (viewMatrix, Utility.degreesToRadians (27.5), [ 1, 0, 0 ]);
+    Float4x4.rotateX (viewMatrix, Utility.degreesToRadians (27.5));
     viewMatrix  = Float4x4.multiply (Float4x4.translate ([ 0, -1.5, -3.5 ]), viewMatrix);
-    Float4x4.rotate (viewMatrix, Utility.degreesToRadians (currentAngle), [ 0, 1, 0 ]);
+    Float4x4.rotateY (viewMatrix, Utility.degreesToRadians (currentAngle));
     viewMatrix = Float4x4.multiply (Float4x4.scale ([ 2, 2, 2 ]), viewMatrix);
     viewMatrix  = Float4x4.multiply (Float4x4.translate ([ -0.5, -0.5, -0.5 ]), viewMatrix);
-    Shader.getCurrentShader ().setViewMatrix (viewMatrix);
+
+    standardParameters.VIEW_MATRIX_PARAMETER = viewMatrix;
+    Shader.getCurrentShader ().setStandardParameters (standardParameters);
 
     // draw the scene
     scene.traverse (Float4x4.identity ());
@@ -58,7 +62,7 @@ let buildScene = function (canvasId, points) {
         name: "background",
         transform: transform,
         state: function () {
-            Shader.getCurrentShader ().setBlendAlpha (0.85);
+            Shader.getCurrentShader ().setOutputAlpha (0.85);
             context.disable (context.DEPTH_TEST);
             context.enable (context.CULL_FACE);
             context.cullFace (context.FRONT);
@@ -71,7 +75,7 @@ let buildScene = function (canvasId, points) {
     let cloud = Cloud.new ({
         name: "cloud",
         state: function () {
-            Shader.getCurrentShader ().setBlendAlpha (1.0);
+            Shader.getCurrentShader ().setOutputAlpha (1.0);
             context.enable (context.DEPTH_TEST);
             context.enable (context.CULL_FACE);
             context.cullFace (context.BACK);
@@ -85,9 +89,9 @@ let buildScene = function (canvasId, points) {
     let projectionMatrix = Float4x4.create ();
     Float4x4.perspective (45, context.viewportWidth / context.viewportHeight, 0.1, 100.0, projectionMatrix);
     Shader.new ("rgb", "shaders/vertex-basic.glsl", "shaders/fragment-rgb.glsl")
-        .use ()
-        .setProjectionMatrix (projectionMatrix)
-        .setBlendAlpha (1.0);
+        .use ();
+    standardParameters.PROJECTION_MATRIX_PARAMETER = projectionMatrix;
+    standardParameters.OUTPUT_ALPHA_PARAMETER = 1.0;
 
     draw (0);
 };

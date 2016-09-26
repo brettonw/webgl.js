@@ -1,30 +1,54 @@
+/**
+ * A (square) NxN matrix
+ *
+ * @class FloatNxN
+ */
 let FloatNxN = function (dim) {
     let _ = Object.create (null);
     let _FloatN = FloatN (dim);
     let size = dim * dim;
 
-    let index = function (row, column) {
+    let index = _.index = function (row, column) {
         return (row * dim) + column;
     };
 
+    let defineTo = function (to) {
+        to = (typeof to !== "undefined") ? to : "to";
+        return to + " = (typeof " + to + " !== 'undefined') ? " + to + " : _.create ();\n";
+    };
+
+    /**
+     * Create a new FloatNxN.
+     *
+     * @method create
+     * @static
+     * @return {FloatNxN}
+     */
     _.create = function () {
         return new glMatrixArrayType (size);
     };
 
-    // _.copy (from, to)
-    // from: FloatNxN
-    // to: FloatNxN
-    // copies the values of 'from' over to 'to'
-    // if 'to' is omitted, will create a new matrix
-    // returns 'to'
+    /**
+     * Copy contents from an array into a FloatNxN and return the result.
+     *
+     * @method copy
+     * @static
+     * @param {FloatNxN} from source.
+     * @param {FloatNxN} to destination. if 'to' is omitted, a new one will be created.
+     * @return {FloatNxN} returns 'to'.
+     */
     eval (function () {
-        let str = "_.copy = function (from, to) { ";
-        str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
-        for (let i = 0; i < size; ++i) {
-            str += "to[" + i + "] = from[" + i + "]; ";
+        let str = "_.copy = function (from, to) {\n";
+        str += defineTo ();
+        for (let row = 0; row < dim; ++row) {
+            for (let col = 0; col < dim; ++col) {
+                let i = index (row, col);
+                str += "to[" + i + "] = from[" + i + "]; ";
+            }
+            str += "\n";
         }
-        str += "return to; ";
-        str += "}; ";
+        str += "return to;\n";
+        str += "};\n";
         return str;
     } ());
 
@@ -34,15 +58,16 @@ let FloatNxN = function (dim) {
     // if 'to' is omitted, will create a new matrix
     // returns 'to'
     eval (function () {
-        let str = "_.identity = function (to) {";
-        str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
+        let str = "_.identity = function (to) {\n";
+        str += defineTo ();
         for (let row = 0; row < dim; ++row) {
             for (let column = 0; column < dim; ++column) {
                 str += "to[" + index (row, column) + "] = " + ((row == column) ? 1 : 0) + "; ";
             }
+            str += "\n";
         }
-        str += "return to; ";
-        str += "}; ";
+        str += "return to;\n";
+        str += "};\n";
         return str;
     } ());
 
@@ -53,15 +78,16 @@ let FloatNxN = function (dim) {
     // if 'to' is omitted, will create a new matrix
     // returns 'to'
     eval (function () {
-        let str = "_.transpose = function (from, to) {";
-        str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
+        let str = "_.transpose = function (from, to) {\n";
+        str += defineTo ();
         for (let row = 0; row < dim; ++row) {
             for (let column = 0; column < dim; ++column) {
                 str += "to[" + index (row, column) + "] = from[" + index (column, row) + "]; ";
             }
+            str += "\n";
         }
-        str += "return to; ";
-        str += "}; ";
+        str += "return to;\n";
+        str += "};\n";
         return str;
     } ());
 
@@ -78,19 +104,19 @@ let FloatNxN = function (dim) {
             for (let i = 1; i < dim; ++i) {
                 str += " + (left[" + index (r, i) + "] * right[" + index (i, c) + "])";
             }
-            str += "; ";
+            str += ";\n";
             return str;
         };
 
-        let str = "_.multiply = function (left, right, to) {";
-        str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
+        let str = "_.multiply = function (left, right, to) {\n";
+        str += defineTo ();
         for (let row = 0; row < dim; ++row) {
             for (let column = 0; column < dim; ++column) {
                 str += "to[" + index (row, column) + "] = " + rc (row, column);
             }
         }
-        str += "return to; ";
-        str += "}; ";
+        str += "return to;\n";
+        str += "};\n";
         return str;
     } ());
 
@@ -102,15 +128,15 @@ let FloatNxN = function (dim) {
     // returns 'to'
     eval(function () {
         let end = dim - 1;
-        let str = "_.scale = function (scale, to) {";
-        str += "scale = Array.isArray(scale) ? scale : Array(" + end + ").fill(scale); ";
-        str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
-        str += "_.identity (to); ";
+        let str = "_.scale = function (scale, to) {\n";
+        str += "scale = Array.isArray(scale) ? scale : Array(" + end + ").fill(scale);\n";
+        str += "to = _.identity (to);\n";
         for (let i = 0; i < end; ++i) {
             str += "to[" + index(i, i) + "] = scale[" + i + "]; ";
         }
-        str += "return to; ";
-        str += "}; ";
+        str += "\n";
+        str += "return to;\n";
+        str += "};\n";
         return str;
     }());
 
@@ -122,14 +148,14 @@ let FloatNxN = function (dim) {
     // returns 'to'
     eval(function () {
         let end = dim - 1;
-        let str = "_.translate = function (translate, to) {";
-        str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
-        str += "_.identity (to); ";
+        let str = "_.translate = function (translate, to) {\n";
+        str += "to = _.identity (to);\n";
         for (let i = 0; i < end; ++i) {
             str += "to[" + index(end, i) + "] = translate[" + i + "]; ";
         }
-        str += "return to; ";
-        str += "}; ";
+        str += "\n";
+        str += "return to;\n";
+        str += "};\n";
         return str;
     }());
 
@@ -146,14 +172,14 @@ let FloatNxN = function (dim) {
             return str;
         };
 
-        let str = "_.str = function (from) {";
+        let str = "_.str = function (from) {\n";
         str += "return ";
         str += strRow (0);
         for (let row = 1; row < dim; ++row) {
             str += " + ', ' + " + strRow (row);
         }
-        str += "; ";
-        str += "}; ";
+        str += ";\n";
+        str += "};\n";
         return str;
     } ());
 

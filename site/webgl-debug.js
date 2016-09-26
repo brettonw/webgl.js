@@ -260,33 +260,57 @@ let Float4 = function () {
     let _ = FloatN (4);
     return _;
 } ();
+/**
+ * A (square) NxN matrix
+ *
+ * @class FloatNxN
+ */
 let FloatNxN = function (dim) {
     let _ = Object.create (null);
     let _FloatN = FloatN (dim);
     let size = dim * dim;
 
-    let index = function (row, column) {
+    let index = _.index = function (row, column) {
         return (row * dim) + column;
     };
 
+    let defineTo = function (to) {
+        to = (typeof to !== "undefined") ? to : "to";
+        return to + " = (typeof " + to + " !== 'undefined') ? " + to + " : _.create ();\n";
+    };
+
+    /**
+     * Create a new FloatNxN.
+     *
+     * @method create
+     * @static
+     * @return {FloatNxN}
+     */
     _.create = function () {
         return new glMatrixArrayType (size);
     };
 
-    // _.copy (from, to)
-    // from: FloatNxN
-    // to: FloatNxN
-    // copies the values of 'from' over to 'to'
-    // if 'to' is omitted, will create a new matrix
-    // returns 'to'
+    /**
+     * Copy contents from an array into a FloatNxN and return the result.
+     *
+     * @method copy
+     * @static
+     * @param {FloatNxN} from source.
+     * @param {FloatNxN} to destination. if 'to' is omitted, a new one will be created.
+     * @return {FloatNxN} returns 'to'.
+     */
     eval (function () {
-        let str = "_.copy = function (from, to) { ";
-        str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
-        for (let i = 0; i < size; ++i) {
-            str += "to[" + i + "] = from[" + i + "]; ";
+        let str = "_.copy = function (from, to) {\n";
+        str += defineTo ();
+        for (let row = 0; row < dim; ++row) {
+            for (let col = 0; col < dim; ++col) {
+                let i = index (row, col);
+                str += "to[" + i + "] = from[" + i + "]; ";
+            }
+            str += "\n";
         }
-        str += "return to; ";
-        str += "}; ";
+        str += "return to;\n";
+        str += "};\n";
         return str;
     } ());
 
@@ -296,15 +320,16 @@ let FloatNxN = function (dim) {
     // if 'to' is omitted, will create a new matrix
     // returns 'to'
     eval (function () {
-        let str = "_.identity = function (to) {";
-        str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
+        let str = "_.identity = function (to) {\n";
+        str += defineTo ();
         for (let row = 0; row < dim; ++row) {
             for (let column = 0; column < dim; ++column) {
                 str += "to[" + index (row, column) + "] = " + ((row == column) ? 1 : 0) + "; ";
             }
+            str += "\n";
         }
-        str += "return to; ";
-        str += "}; ";
+        str += "return to;\n";
+        str += "};\n";
         return str;
     } ());
 
@@ -315,15 +340,16 @@ let FloatNxN = function (dim) {
     // if 'to' is omitted, will create a new matrix
     // returns 'to'
     eval (function () {
-        let str = "_.transpose = function (from, to) {";
-        str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
+        let str = "_.transpose = function (from, to) {\n";
+        str += defineTo ();
         for (let row = 0; row < dim; ++row) {
             for (let column = 0; column < dim; ++column) {
                 str += "to[" + index (row, column) + "] = from[" + index (column, row) + "]; ";
             }
+            str += "\n";
         }
-        str += "return to; ";
-        str += "}; ";
+        str += "return to;\n";
+        str += "};\n";
         return str;
     } ());
 
@@ -340,19 +366,19 @@ let FloatNxN = function (dim) {
             for (let i = 1; i < dim; ++i) {
                 str += " + (left[" + index (r, i) + "] * right[" + index (i, c) + "])";
             }
-            str += "; ";
+            str += ";\n";
             return str;
         };
 
-        let str = "_.multiply = function (left, right, to) {";
-        str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
+        let str = "_.multiply = function (left, right, to) {\n";
+        str += defineTo ();
         for (let row = 0; row < dim; ++row) {
             for (let column = 0; column < dim; ++column) {
                 str += "to[" + index (row, column) + "] = " + rc (row, column);
             }
         }
-        str += "return to; ";
-        str += "}; ";
+        str += "return to;\n";
+        str += "};\n";
         return str;
     } ());
 
@@ -364,15 +390,15 @@ let FloatNxN = function (dim) {
     // returns 'to'
     eval(function () {
         let end = dim - 1;
-        let str = "_.scale = function (scale, to) {";
-        str += "scale = Array.isArray(scale) ? scale : Array(" + end + ").fill(scale); ";
-        str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
-        str += "_.identity (to); ";
+        let str = "_.scale = function (scale, to) {\n";
+        str += "scale = Array.isArray(scale) ? scale : Array(" + end + ").fill(scale);\n";
+        str += "to = _.identity (to);\n";
         for (let i = 0; i < end; ++i) {
             str += "to[" + index(i, i) + "] = scale[" + i + "]; ";
         }
-        str += "return to; ";
-        str += "}; ";
+        str += "\n";
+        str += "return to;\n";
+        str += "};\n";
         return str;
     }());
 
@@ -384,14 +410,14 @@ let FloatNxN = function (dim) {
     // returns 'to'
     eval(function () {
         let end = dim - 1;
-        let str = "_.translate = function (translate, to) {";
-        str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
-        str += "_.identity (to); ";
+        let str = "_.translate = function (translate, to) {\n";
+        str += "to = _.identity (to);\n";
         for (let i = 0; i < end; ++i) {
             str += "to[" + index(end, i) + "] = translate[" + i + "]; ";
         }
-        str += "return to; ";
-        str += "}; ";
+        str += "\n";
+        str += "return to;\n";
+        str += "};\n";
         return str;
     }());
 
@@ -408,22 +434,29 @@ let FloatNxN = function (dim) {
             return str;
         };
 
-        let str = "_.str = function (from) {";
+        let str = "_.str = function (from) {\n";
         str += "return ";
         str += strRow (0);
         for (let row = 1; row < dim; ++row) {
             str += " + ', ' + " + strRow (row);
         }
-        str += "; ";
-        str += "}; ";
+        str += ";\n";
+        str += "};\n";
         return str;
     } ());
 
     return _;
 };
 
+/**
+ * A 4x4 matrix used as a 3D transformation
+ *
+ * @class Float4x4
+ * @extends FloatNxN
+ */
 let Float4x4 = function () {
-    let _ = FloatNxN (4);
+    let dim = 4;
+    let _ = FloatNxN (dim);
 
     _.inverse = function (from, to) {
         // adapted from a bit of obfuscated, unwound, code
@@ -455,72 +488,9 @@ let Float4x4 = function () {
     };
 
 
-    _.toRotationMat = function (a, b) {
-        b || (b = _.create ());
-        b[0] = a[0];
-        b[1] = a[1];
-        b[2] = a[2];
-        b[3] = a[3];
-        b[4] = a[4];
-        b[5] = a[5];
-        b[6] = a[6];
-        b[7] = a[7];
-        b[8] = a[8];
-        b[9] = a[9];
-        b[10] = a[10];
-        b[11] = a[11];
-        b[12] = 0;
-        b[13] = 0;
-        b[14] = 0;
-        b[15] = 1;
-        return b;
-    };
-
-    _.toMat3 = function (a, b) {
-        b || (b = mat3.create ());
-        b[0] = a[0];
-        b[1] = a[1];
-        b[2] = a[2];
-        b[3] = a[4];
-        b[4] = a[5];
-        b[5] = a[6];
-        b[6] = a[8];
-        b[7] = a[9];
-        b[8] = a[10];
-        return b;
-    };
-
-    _.toInverseMat3 = function (a, b) {
-        let c = a[0], d = a[1], e = a[2], g = a[4], f = a[5], h = a[6], i = a[8], j = a[9], k = a[10], l = k * f - h * j, o = -k * g + h * i, m = j * g - f * i, n = c * l + d * o + e * m;
-        if (!n)return null;
-        n = 1 / n;
-        b || (b = mat3.create ());
-        b[0] = l * n;
-        b[1] = (-k * d + e * j) * n;
-        b[2] = (h * d - e * f) * n;
-        b[3] = o * n;
-        b[4] = (k * c - e * i) * n;
-        b[5] = (-h * c + e * g) * n;
-        b[6] = m * n;
-        b[7] = (-j * c + d * i) * n;
-        b[8] = (f * c - d * g) * n;
-        return b;
-    };
-
-    _.multiplyVec3 = function (a, b, c) {
-        c || (c = b);
-        let d = b[0], e = b[1];
-        b = b[2];
-        c[0] = a[0] * d + a[4] * e + a[8] * b + a[12];
-        c[1] = a[1] * d + a[5] * e + a[9] * b + a[13];
-        c[2] = a[2] * d + a[6] * e + a[10] * b + a[14];
-        return c;
-    };
-
     _.multiplyVec4 = function (a, b, c) {
         c || (c = b);
-        let d = b[0], e = b[1], g = b[2];
-        b = b[3];
+        let d = b[0], e = b[1], g = b[2]; b = b[3];
         c[0] = a[0] * d + a[4] * e + a[8] * g + a[12] * b;
         c[1] = a[1] * d + a[5] * e + a[9] * g + a[13] * b;
         c[2] = a[2] * d + a[6] * e + a[10] * g + a[14] * b;
@@ -754,6 +724,161 @@ let Float4x4 = function () {
         return d;
     };
 
+    /**
+     * Bind the POSITION attribute to the given buffer.
+     *
+     * @method bindPositionAttribute
+     * @static
+     * @param {Object} buffer WebGL buffer to bind
+     * @return {Shader}
+     */
+    /*
+    eval (function () {
+        let index = _.index;
+        let str = "_.copy = function (from, to) { ";
+        str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
+        for (let i = 0; i < size; ++i) {
+            str += "to[" + i + "] = from[" + i + "]; ";
+        }
+        str += "return to; ";
+        str += "}; ";
+        return str;
+    } ());
+*/
+/*
+    matrix_3d	RotateX (real angle)																									//	build a transformation matrix_3d
+    {																																								//	begin
+        angle = DegreesToRadians (angle);																							//	convert degrees to radians
+        real	cosine = COS (angle),																										//	compute the cosine of the angle
+        sine = SIN (angle);																											//	compute the sine of the angle
+        matrix_3d	m (matrix_3d::identity);																						//	new identity matrix_3d
+        m (1, 1) = cosine;																														//	scale the y rotation by the cosine
+        m (2, 2) = cosine;																														//	scale the z rotation by the cosine
+        m (2, 1) = -sine;																															//	scale the y rotation by the -sine
+        m (1, 2) = sine;																															//	scale the z rotation by the sine
+        return m;																																			//	return the matrix_3d
+    }																																								//	end
+
+//------------------------------------------------------------------------------
+//	Transformation to rotate a point_3d about the y axis
+//------------------------------------------------------------------------------
+    matrix_3d	RotateY (real angle)																									//	build a transformation matrix_3d
+    {																																								//	begin
+        angle = DegreesToRadians (angle);																							//	convert degrees to radians
+        real	cosine = COS (angle),																										//	compute the cosine of the angle
+        sine = SIN (angle);																											//	compute the sine of the angle
+        matrix_3d	m (matrix_3d::identity);																						//	new identity matrix_3d
+        m (0, 0) = cosine;																														//	scale the x rotation by the cosine
+        m (2, 2) = cosine;																														//	scale the z rotation by the cosine
+        m (2, 0) = sine;																															//	scale the x rotation by the sine
+        m (0, 2) = -sine;																															//	scale the z rotation by the -sine
+        return m;																																			//	return the matrix_3d
+    }																																								//	end
+
+//------------------------------------------------------------------------------
+//	Transformation to rotate a point_3d about the z axis
+//------------------------------------------------------------------------------
+    matrix_3d	RotateZ (real angle)																									//	build a transformation matrix_3d
+    {																																								//	begin
+        angle = DegreesToRadians (angle);																							//	convert degrees to radians
+        real	cosine = COS (angle),																										//	compute the cosine of the angle
+        sine = SIN (angle);																												//	compute the sine of the angle
+        matrix_3d	m (matrix_3d::identity);																						//	new identity matrix_3d
+        m (0, 0) = cosine;																														//	scale the x rotation by the cosine
+        m (1, 1) = cosine;																														//	scale the y rotation by the cosine
+        m (1, 0) = -sine;																															//	scale the x rotation by the -sine
+        m (0, 1) = sine;																															//	scale the y rotation by the sine
+        return m;																																			//	return the matrix_3d
+    }																																								//	end
+
+//------------------------------------------------------------------------------
+//	Transformation to translate a point_3d by a specified amount
+//------------------------------------------------------------------------------
+    matrix_3d	Translate (real x, real y, real z)																		//	build a transformation matrix_3d
+    {																																								//	begin
+        matrix_3d	m (matrix_3d::identity);																						//	new identity matrix_3d
+        m (3, 0) = x;																																	//	translate the x axis
+        m (3, 1) = y;																																	//	translate the y axis
+        m (3, 2) = z;																																	//	translate the z axis
+        return m;																																			//	return the matrix_3d
+    }																																								//	end
+
+//------------------------------------------------------------------------------
+//	Transformation to scale a point_3d by a specified amount
+//------------------------------------------------------------------------------
+    matrix_3d	Scale (real x, real y, real z)																				//	build a transformation matrix_3d
+    {																																								//	begin
+        matrix_3d	m (matrix_3d::identity);																						//	new identity matrix_3d
+        m (0, 0) = x;																																	//	scale the x axis
+        m (1, 1) = y;																																	//	scale the y axis
+        m (2, 2) = z;																																	//	scale the z axis
+        return m;																																			//	return the matrix_3d
+    }																																								//	end
+
+//------------------------------------------------------------------------------
+//	Transformation to produce a perspective projection
+//------------------------------------------------------------------------------
+    matrix_3d	Perspective (real distance)																						//	build a transformation matrix_3d
+    {																																								//	begin
+        matrix_3d	m (matrix_3d::identity);																						//	new identity matrix_3d
+        m (2, 3) = R(-1.0) / distance;																								//	set the perspective factor to 1.0 / distance to the picture plane_3d
+        return m;																																			//	return the matrix_3d
+    }																																								//	end
+
+//------------------------------------------------------------------------------
+//	Transformation for rotating to an arbitrary normalized basis
+//------------------------------------------------------------------------------
+    matrix_3d	VectorMatrix (tuple_3d &n)																						//	build a vector_3d rotation matrix_3d
+    {																																								//	begin
+        vector_3d	t (n),																															//	copy it
+        w (n);
+        t[w.MinorAxis ()] = R(1.0);																										//	set the minor axis to 1.0
+        vector_3d	u = (t ^ w).Normalize (),																						//	compute a normal perpendicular vector_3d to w and t
+        v = w ^ u;																														//	compute a normal perpendicular vector_3d to w and u
+        matrix_3d	m (matrix_3d::identity);																						//	new identity matrix_3d
+        m (0, 0) = u[X];																															//	assign the first row
+        m (0, 1) = u[Y];
+        m (0, 2) = u[Z];
+
+        m (1, 0) = v[X];																															//	assign the second row
+        m (1, 1) = v[Y];
+        m (1, 2) = v[Z];
+
+        m (2, 0) = w[X];																															//	assign the third row
+        m (2, 1) = w[Y];
+        m (2, 2) = w[Z];
+        return m;																																			//	return the matrix_3d
+    }																																								//	end
+
+//------------------------------------------------------------------------------
+//	Transformation for rotating to an arbitrary basis at an arbitrary location
+//------------------------------------------------------------------------------
+    matrix_3d	ViewMatrix (const vector_3d &u, const vector_3d &v, const vector_3d &n, const point_3d &r)	//	build a viewing matrix_3d from a vector_3d set
+    {																																								//	begin
+        matrix_3d	m;																																	//	new matrix_3d
+        m (0, 0) = u[X];																															//	assign the first column
+        m (1, 0) = u[Y];
+        m (2, 0) = u[Z];
+        m (3, 0) = -(r | u);
+
+        m (0, 1) = v[X];																															//	assign the second column
+        m (1, 1) = v[Y];
+        m (2, 1) = v[Z];
+        m (3, 1) = -(r | v);
+
+        m (0, 2) = n[X];																															//	assign the third column
+        m (1, 2) = n[Y];
+        m (2, 2) = n[Z];
+        m (3, 2) = -(r | n);
+
+        m (0, 3) = R(0.0);																														//	assign the fourth column
+        m (1, 3) = R(0.0);
+        m (2, 3) = R(0.0);
+        m (3, 3) = R(1.0);
+        return m;																																			//	return the matrix_3d
+    }																																								//	end
+*/
+
     return _;
 } ();
 /**
@@ -765,7 +890,7 @@ let Shader = function () {
     let _ = Object.create (null);
 
     /**
-     * The name for the standard POSITION buffer attribute in a shader
+     * the name for the standard POSITION buffer attribute in a shader.
      * @element POSITION_ATTRIBUTE
      * @type {string}
      * @final
@@ -773,7 +898,7 @@ let Shader = function () {
     _.POSITION_ATTRIBUTE = "POSITION_ATTRIBUTE";
 
     /**
-     * The name for the standard NORMAL buffer attribute in a shader
+     * the name for the standard NORMAL buffer attribute in a shader.
      * @element NORMAL_ATTRIBUTE
      * @type {string}
      * @final
@@ -781,7 +906,7 @@ let Shader = function () {
     _.NORMAL_ATTRIBUTE = "NORMAL_ATTRIBUTE";
 
     /**
-     * The name for the standard TEXTURE buffer attribute in a shader
+     * the name for the standard TEXTURE buffer attribute in a shader.
      * @element TEXTURE_ATTRIBUTE
      * @type {string}
      * @final
@@ -792,17 +917,17 @@ let Shader = function () {
     let currentShader;
 
     /**
-     * The initializer for a shader.
+     * the initializer for a shader.
      *
      * @method new
      * @param {string} name name to retrieve this shader
      * @param {string} vertexShaderUrl url to the vertex shader GLSL file
      * @param {string} fragmentShaderUrl url to the fragment shader GLSL file
-     * @param {Object} attributeMapping maps POSITION, NORMAL, and TEXTURE attributes to the
-     * attribute names in the shader
+     * @param {Object} attributeMapping maps standard attribute names to the names used in the shader
+     * @param {Object} parameterMapping maps standard parameter names to the names used in the shader
      * @return {Shader}
      */
-    _.construct = function (name, vertexShaderUrl, fragmentShaderUrl, attributeMapping) {
+    _.construct = function (name, vertexShaderUrl, fragmentShaderUrl, attributeMapping, parameterMapping) {
         this.name = name;
 
         // internal function to fetch and compile a shader function
@@ -839,35 +964,57 @@ let Shader = function () {
             // XXX do we need to delete it?
         }
 
-        // have to do this before collecting parameters, or else...
+        // have to do this before collecting parameters and attributes, or else...
         context.useProgram (program);
 
-        // add shader parameters
+        // loop over the found active shader parameters providing setter methods for them, and map
+        // the ones we know about
+        let reverseParameterMapping = Utility.reverseMap(parameterMapping);
+        let standardParameterMapping = this.standardParameterMapping = Object.create (null);
         for (let i = 0, end = context.getProgramParameter (program, context.ACTIVE_UNIFORMS); i < end; i++) {
             let shaderParameter = ShaderParameter.new (program, i);
-            this["set" + Utility.uppercase (shaderParameter.name)] = function (value) {
+            let shaderParameterName = shaderParameter.name;
+            let setShaderParameterFunctionName = "set" + Utility.uppercase (shaderParameterName);
+            this[setShaderParameterFunctionName] = function (value) {
                 shaderParameter.set (value);
                 return this;
+            };
+
+            // if the shader parameter is in the standard mapping, add that
+            if (shaderParameterName in reverseParameterMapping) {
+                standardParameterMapping[reverseParameterMapping[shaderParameterName]] = setShaderParameterFunctionName;
             }
         }
 
-        // to add shader attributes, we start by reversing the mapping
-        let reverseAttributeMapping = Object.create (null);
-        reverseAttributeMapping[attributeMapping.POSITION_ATTRIBUTE] = _.POSITION_ATTRIBUTE;
-        reverseAttributeMapping[attributeMapping.NORMAL_ATTRIBUTE] = _.NORMAL_ATTRIBUTE;
-        reverseAttributeMapping[attributeMapping.TEXTURE_ATTRIBUTE] = _.TEXTURE_ATTRIBUTE;
-
-        // then we loop over the found active attributes, and map the ones we know about
+        // loop over the found active attributes, and map the ones we know about
+        let reverseAttributeMapping = Utility.reverseMap(attributeMapping);
         let attributes = this.attributes = Object.create (null);
         for (let i = 0, end = context.getProgramParameter (program, context.ACTIVE_ATTRIBUTES); i < end; i++) {
             let activeAttribute = context.getActiveAttrib (program, i);
-            let name = activeAttribute.name;
-            if (name in reverseAttributeMapping) {
-                attributes[reverseAttributeMapping[name]] = ShaderAttribute.new (program, activeAttribute);
+            let activeAttributeName = activeAttribute.name;
+            if (activeAttributeName in reverseAttributeMapping) {
+                attributes[reverseAttributeMapping[activeAttributeName]] = ShaderAttribute.new (program, activeAttribute);
             }
         }
 
         return this;
+    };
+
+    /**
+     * set the standard shader parameters in one call.
+     *
+     * @method setStandardParameters
+     * @param {Object} parameters a mapping of standard parameter names to values, as specified in
+     * the initialization of the shader
+     * @return {Shader}
+     */
+    _.setStandardParameters = function (parameters) {
+        let standardParameterMapping = this.standardParameterMapping;
+        for (let parameter in parameters) {
+            if (parameter in standardParameterMapping) {
+                this[standardParameterMapping[parameter]] (parameters[parameter]);
+            }
+        }
     };
 
     let bindAttribute = function (which, buffer) {
@@ -881,7 +1028,7 @@ let Shader = function () {
     };
 
     /**
-     * Bind the POSITION attribute to the given buffer.
+     * bind the POSITION attribute to the given buffer.
      *
      * @method bindPositionAttribute
      * @static
@@ -893,7 +1040,7 @@ let Shader = function () {
     };
 
     /**
-     * Bind the NORMAL attribute to the given buffer.
+     * bind the NORMAL attribute to the given buffer.
      *
      * @method bindNormalAttribute
      * @static
@@ -905,7 +1052,7 @@ let Shader = function () {
     };
 
     /**
-     * Bind the TEXTURE attribute to the given buffer.
+     * bind the TEXTURE attribute to the given buffer.
      *
      * @method bindTextureAttribute
      * @static
@@ -917,7 +1064,7 @@ let Shader = function () {
     };
 
     /**
-     * Fetch the shader currently in use.
+     * fetch the shader currently in use.
      *
      * @method getCurrentShader
      * @static
@@ -928,7 +1075,7 @@ let Shader = function () {
     };
 
     /**
-     * Set this as the current shader in the rendering context.
+     * set this as the current shader in the rendering context.
      *
      * @method use
      * @chainable
@@ -942,7 +1089,7 @@ let Shader = function () {
     };
 
     /**
-     * Get the name of this shader
+     * get the name of this shader
      *
      * @method getName
      * @return {string} the name of this shader.
@@ -952,7 +1099,7 @@ let Shader = function () {
     };
 
     /**
-     * Static method to create and construct a new Shader.
+     * static method to create and construct a new Shader.
      *
      * @method new
      * @static
@@ -960,23 +1107,52 @@ let Shader = function () {
      * @param {string} vertexShaderUrl url to the vertex shader GLSL file
      * @param {string} fragmentShaderUrl url to the fragment shader GLSL file
      * @param {Object} attributeMapping maps POSITION, NORMAL, and TEXTURE attributes to the
-     * attribute names in the shader. Defaults to:
+     * attribute names in the shader. This allows the engine to manage the attributes without
+     * forcing the shader author to use "standard" names for everything. Defaults to:
      * * POSITION_ATTRIBUTE: "inputPosition"
      * * NORMAL_ATTRIBUTE: "inputNormal"
      * * TEXTURE_ATTRIBUTE: "inputTexture"
+     * @param {Object} parameterMapping maps standard parameters to the parameter names in the
+     * shader. This allows the engine to manage setting the standard set of parameters on the shader
+     * without forcing the shader author to use "standard" names. Defaults to:
+     * * MODEL_MATRIX_PARAMETER: "modelMatrix"
+     * * VIEW_MATRIX_PARAMETER: "viewMatrix"
+     * * PROJECTION_MATRIX_PARAMETER: "projectionMatrix"
+     * * NORMAL_MATRIX_PARAMETER: "normalMatrix"
+     * * OUTPUT_ALPHA_PARAMETER: "outputAlpha"
      * @return {Shader}
      */
-    _.new = function (name, vertexShaderUrl, fragmentShaderUrl, attributeMapping) {
-        attributeMapping = (typeof attributeMapping !== "undefined") ? attributeMapping : {
-            POSITION_ATTRIBUTE: "inputPosition",
-            NORMAL_ATTRIBUTE: "inputNormal",
-            TEXTURE_ATTRIBUTE: "inputTexture"
-        };
-        return (shaders[name] = Object.create (_).construct (name, vertexShaderUrl, fragmentShaderUrl, attributeMapping));
+    _.new = function (name, vertexShaderUrl, fragmentShaderUrl, attributeMapping, parameterMapping) {
+        // default value for the vertex shader
+
+        // default value for the fragment shader
+        vertexShaderUrl = Utility.defaultValue (vertexShaderUrl, "shaders/vertex-basic.glsl");
+        fragmentShaderUrl = Utility.defaultValue (fragmentShaderUrl, "shaders/fragment-basic.glsl");
+
+        // default values for the attribute mapping
+        attributeMapping = Utility.defaultFunction (attributeMapping, function () {
+            return {
+                POSITION_ATTRIBUTE: "inputPosition",
+                NORMAL_ATTRIBUTE: "inputNormal",
+                TEXTURE_ATTRIBUTE: "inputTexture"
+            }
+        });
+
+        // default values for the parameter mapping
+        parameterMapping = Utility.defaultFunction (parameterMapping, function () {
+            return {
+                MODEL_MATRIX_PARAMETER: "modelMatrix",
+                VIEW_MATRIX_PARAMETER: "viewMatrix",
+                PROJECTION_MATRIX_PARAMETER: "projectionMatrix",
+                NORMAL_MATRIX_PARAMETER: "normalMatrix",
+                OUTPUT_ALPHA_PARAMETER: "outputAlpha"
+            }
+        });
+        return (shaders[name] = Object.create (_).construct (name, vertexShaderUrl, fragmentShaderUrl, attributeMapping, parameterMapping));
     };
 
     /**
-     * Fetch a shader by name.
+     * fetch a shader by name.
      *
      * @method get
      * @static
@@ -2003,6 +2179,44 @@ let Utility = function () {
         return Number.parseFloat (number.toFixed (fix));
     };
 
+    /**
+     * provide a default value if the requested value is undefined
+     *
+     * @method defaultValue
+     * @param {any} value the value to test for undefined
+     * @param {any} defaultValue the default value to provide if value is undefined
+     * @return {any}
+     */
+    _.defaultValue = function (value, defaultValue) {
+        return (typeof value !== "undefined") ? value : defaultValue;
+    };
+
+    /**
+     * provide a default value if the requested value is undefined by calling a function
+     *
+     * @method defaultFunction
+     * @param {any} value the value to test for undefined
+     * @param {function} defaultFunction the function to call if value is undefined
+     * @return {any}
+     */
+    _.defaultFunction = function (value, defaultFunction) {
+        return (typeof value !== "undefined") ? value : defaultFunction ();
+    };
+
+    /**
+     * create a reversed mapping from a given object (assumes 1:1 values)
+     *
+     * @method reverseMap
+     * @param {object} mapping the the object containing the mapping to be reversed
+     * @return {object}
+     */
+    _.reverseMap = function (mapping) {
+        let reverseMapping = Object.create(null);
+        for (let name in mapping) {
+            reverseMapping[mapping[name]] = name;
+        }
+        return reverseMapping;
+    };
 
     return _;
 } ();

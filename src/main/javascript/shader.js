@@ -7,7 +7,7 @@ let Shader = function () {
     let _ = Object.create (null);
 
     /**
-     * The name for the standard POSITION buffer attribute in a shader
+     * the name for the standard POSITION buffer attribute in a shader.
      * @element POSITION_ATTRIBUTE
      * @type {string}
      * @final
@@ -15,7 +15,7 @@ let Shader = function () {
     _.POSITION_ATTRIBUTE = "POSITION_ATTRIBUTE";
 
     /**
-     * The name for the standard NORMAL buffer attribute in a shader
+     * the name for the standard NORMAL buffer attribute in a shader.
      * @element NORMAL_ATTRIBUTE
      * @type {string}
      * @final
@@ -23,7 +23,7 @@ let Shader = function () {
     _.NORMAL_ATTRIBUTE = "NORMAL_ATTRIBUTE";
 
     /**
-     * The name for the standard TEXTURE buffer attribute in a shader
+     * the name for the standard TEXTURE buffer attribute in a shader.
      * @element TEXTURE_ATTRIBUTE
      * @type {string}
      * @final
@@ -34,17 +34,17 @@ let Shader = function () {
     let currentShader;
 
     /**
-     * The initializer for a shader.
+     * the initializer for a shader.
      *
      * @method new
      * @param {string} name name to retrieve this shader
      * @param {string} vertexShaderUrl url to the vertex shader GLSL file
      * @param {string} fragmentShaderUrl url to the fragment shader GLSL file
-     * @param {Object} attributeMapping maps POSITION, NORMAL, and TEXTURE attributes to the
-     * attribute names in the shader
+     * @param {Object} attributeMapping maps standard attribute names to the names used in the shader
+     * @param {Object} parameterMapping maps standard parameter names to the names used in the shader
      * @return {Shader}
      */
-    _.construct = function (name, vertexShaderUrl, fragmentShaderUrl, attributeMapping) {
+    _.construct = function (name, vertexShaderUrl, fragmentShaderUrl, attributeMapping, parameterMapping) {
         this.name = name;
 
         // internal function to fetch and compile a shader function
@@ -81,35 +81,57 @@ let Shader = function () {
             // XXX do we need to delete it?
         }
 
-        // have to do this before collecting parameters, or else...
+        // have to do this before collecting parameters and attributes, or else...
         context.useProgram (program);
 
-        // add shader parameters
+        // loop over the found active shader parameters providing setter methods for them, and map
+        // the ones we know about
+        let reverseParameterMapping = Utility.reverseMap(parameterMapping);
+        let standardParameterMapping = this.standardParameterMapping = Object.create (null);
         for (let i = 0, end = context.getProgramParameter (program, context.ACTIVE_UNIFORMS); i < end; i++) {
             let shaderParameter = ShaderParameter.new (program, i);
-            this["set" + Utility.uppercase (shaderParameter.name)] = function (value) {
+            let shaderParameterName = shaderParameter.name;
+            let setShaderParameterFunctionName = "set" + Utility.uppercase (shaderParameterName);
+            this[setShaderParameterFunctionName] = function (value) {
                 shaderParameter.set (value);
                 return this;
+            };
+
+            // if the shader parameter is in the standard mapping, add that
+            if (shaderParameterName in reverseParameterMapping) {
+                standardParameterMapping[reverseParameterMapping[shaderParameterName]] = setShaderParameterFunctionName;
             }
         }
 
-        // to add shader attributes, we start by reversing the mapping
-        let reverseAttributeMapping = Object.create (null);
-        reverseAttributeMapping[attributeMapping.POSITION_ATTRIBUTE] = _.POSITION_ATTRIBUTE;
-        reverseAttributeMapping[attributeMapping.NORMAL_ATTRIBUTE] = _.NORMAL_ATTRIBUTE;
-        reverseAttributeMapping[attributeMapping.TEXTURE_ATTRIBUTE] = _.TEXTURE_ATTRIBUTE;
-
-        // then we loop over the found active attributes, and map the ones we know about
+        // loop over the found active attributes, and map the ones we know about
+        let reverseAttributeMapping = Utility.reverseMap(attributeMapping);
         let attributes = this.attributes = Object.create (null);
         for (let i = 0, end = context.getProgramParameter (program, context.ACTIVE_ATTRIBUTES); i < end; i++) {
             let activeAttribute = context.getActiveAttrib (program, i);
-            let name = activeAttribute.name;
-            if (name in reverseAttributeMapping) {
-                attributes[reverseAttributeMapping[name]] = ShaderAttribute.new (program, activeAttribute);
+            let activeAttributeName = activeAttribute.name;
+            if (activeAttributeName in reverseAttributeMapping) {
+                attributes[reverseAttributeMapping[activeAttributeName]] = ShaderAttribute.new (program, activeAttribute);
             }
         }
 
         return this;
+    };
+
+    /**
+     * set the standard shader parameters in one call.
+     *
+     * @method setStandardParameters
+     * @param {Object} parameters a mapping of standard parameter names to values, as specified in
+     * the initialization of the shader
+     * @return {Shader}
+     */
+    _.setStandardParameters = function (parameters) {
+        let standardParameterMapping = this.standardParameterMapping;
+        for (let parameter in parameters) {
+            if (parameter in standardParameterMapping) {
+                this[standardParameterMapping[parameter]] (parameters[parameter]);
+            }
+        }
     };
 
     let bindAttribute = function (which, buffer) {
@@ -123,7 +145,7 @@ let Shader = function () {
     };
 
     /**
-     * Bind the POSITION attribute to the given buffer.
+     * bind the POSITION attribute to the given buffer.
      *
      * @method bindPositionAttribute
      * @static
@@ -135,7 +157,7 @@ let Shader = function () {
     };
 
     /**
-     * Bind the NORMAL attribute to the given buffer.
+     * bind the NORMAL attribute to the given buffer.
      *
      * @method bindNormalAttribute
      * @static
@@ -147,7 +169,7 @@ let Shader = function () {
     };
 
     /**
-     * Bind the TEXTURE attribute to the given buffer.
+     * bind the TEXTURE attribute to the given buffer.
      *
      * @method bindTextureAttribute
      * @static
@@ -159,7 +181,7 @@ let Shader = function () {
     };
 
     /**
-     * Fetch the shader currently in use.
+     * fetch the shader currently in use.
      *
      * @method getCurrentShader
      * @static
@@ -170,7 +192,7 @@ let Shader = function () {
     };
 
     /**
-     * Set this as the current shader in the rendering context.
+     * set this as the current shader in the rendering context.
      *
      * @method use
      * @chainable
@@ -184,7 +206,7 @@ let Shader = function () {
     };
 
     /**
-     * Get the name of this shader
+     * get the name of this shader
      *
      * @method getName
      * @return {string} the name of this shader.
@@ -194,7 +216,7 @@ let Shader = function () {
     };
 
     /**
-     * Static method to create and construct a new Shader.
+     * static method to create and construct a new Shader.
      *
      * @method new
      * @static
@@ -202,23 +224,52 @@ let Shader = function () {
      * @param {string} vertexShaderUrl url to the vertex shader GLSL file
      * @param {string} fragmentShaderUrl url to the fragment shader GLSL file
      * @param {Object} attributeMapping maps POSITION, NORMAL, and TEXTURE attributes to the
-     * attribute names in the shader. Defaults to:
+     * attribute names in the shader. This allows the engine to manage the attributes without
+     * forcing the shader author to use "standard" names for everything. Defaults to:
      * * POSITION_ATTRIBUTE: "inputPosition"
      * * NORMAL_ATTRIBUTE: "inputNormal"
      * * TEXTURE_ATTRIBUTE: "inputTexture"
+     * @param {Object} parameterMapping maps standard parameters to the parameter names in the
+     * shader. This allows the engine to manage setting the standard set of parameters on the shader
+     * without forcing the shader author to use "standard" names. Defaults to:
+     * * MODEL_MATRIX_PARAMETER: "modelMatrix"
+     * * VIEW_MATRIX_PARAMETER: "viewMatrix"
+     * * PROJECTION_MATRIX_PARAMETER: "projectionMatrix"
+     * * NORMAL_MATRIX_PARAMETER: "normalMatrix"
+     * * OUTPUT_ALPHA_PARAMETER: "outputAlpha"
      * @return {Shader}
      */
-    _.new = function (name, vertexShaderUrl, fragmentShaderUrl, attributeMapping) {
-        attributeMapping = (typeof attributeMapping !== "undefined") ? attributeMapping : {
-            POSITION_ATTRIBUTE: "inputPosition",
-            NORMAL_ATTRIBUTE: "inputNormal",
-            TEXTURE_ATTRIBUTE: "inputTexture"
-        };
-        return (shaders[name] = Object.create (_).construct (name, vertexShaderUrl, fragmentShaderUrl, attributeMapping));
+    _.new = function (name, vertexShaderUrl, fragmentShaderUrl, attributeMapping, parameterMapping) {
+        // default value for the vertex shader
+
+        // default value for the fragment shader
+        vertexShaderUrl = Utility.defaultValue (vertexShaderUrl, "shaders/vertex-basic.glsl");
+        fragmentShaderUrl = Utility.defaultValue (fragmentShaderUrl, "shaders/fragment-basic.glsl");
+
+        // default values for the attribute mapping
+        attributeMapping = Utility.defaultFunction (attributeMapping, function () {
+            return {
+                POSITION_ATTRIBUTE: "inputPosition",
+                NORMAL_ATTRIBUTE: "inputNormal",
+                TEXTURE_ATTRIBUTE: "inputTexture"
+            }
+        });
+
+        // default values for the parameter mapping
+        parameterMapping = Utility.defaultFunction (parameterMapping, function () {
+            return {
+                MODEL_MATRIX_PARAMETER: "modelMatrix",
+                VIEW_MATRIX_PARAMETER: "viewMatrix",
+                PROJECTION_MATRIX_PARAMETER: "projectionMatrix",
+                NORMAL_MATRIX_PARAMETER: "normalMatrix",
+                OUTPUT_ALPHA_PARAMETER: "outputAlpha"
+            }
+        });
+        return (shaders[name] = Object.create (_).construct (name, vertexShaderUrl, fragmentShaderUrl, attributeMapping, parameterMapping));
     };
 
     /**
-     * Fetch a shader by name.
+     * fetch a shader by name.
      *
      * @method get
      * @static

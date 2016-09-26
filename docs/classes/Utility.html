@@ -26,7 +26,7 @@
             </li>
         </div>
         <form class="navbar-form pull-right" style="line-height: 40px; height: 40px;">
-            <input style="margin-top: 0;" type="text" class="search-query" placeholder="Search for classes/modules..." data-obj='["classes/Cloud", "classes/Node", "classes/Render", "classes/Shader", "classes/Utility"]'>
+            <input style="margin-top: 0;" type="text" class="search-query" placeholder="Search for classes/modules..." data-obj='["classes/Cloud", "classes/Float4x4", "classes/FloatNxN", "classes/Node", "classes/Render", "classes/Shader", "classes/Utility"]'>
         </form>
     </div>
 </div>
@@ -38,6 +38,8 @@
     <div id="classes">
         <ul id="api-classes" class="nav nav-list">
                 <li><a href="../classes/Cloud.html">Cloud</a></li>
+                <li><a href="../classes/Float4x4.html">Float4x4</a></li>
+                <li><a href="../classes/FloatNxN.html">FloatNxN</a></li>
                 <li><a href="../classes/Node.html">Node</a></li>
                 <li><a href="../classes/Render.html">Render</a></li>
                 <li><a href="../classes/Shader.html">Shader</a></li>
@@ -96,11 +98,14 @@
 		<li>
 			<strong>Methods</strong>
 			<ul>
+				<li><a href="#method-defaultFunction"><span class="im">defaultFunction</span>(<span class="ia">value</span><span class="ia">defaultFunction</span>)</a></li>
+				<li><a href="#method-defaultValue"><span class="im">defaultValue</span>(<span class="ia">value</span><span class="ia">defaultValue</span>)</a></li>
 				<li><a href="#method-degreesToRadians"><span class="im">degreesToRadians</span>(<span class="ia">degrees</span>)</a></li>
 				<li><a href="#method-fixNum"><span class="im">fixNum</span>(<span class="ia">number</span><span class="ia">precision</span>)</a></li>
 				<li><a href="#method-flatten"><span class="im">flatten</span>(<span class="ia">array</span>)</a></li>
 				<li><a href="#method-lowercase"><span class="im">lowercase</span>(<span class="ia">string</span>)</a></li>
 				<li><a href="#method-radiansToDegrees"><span class="im">radiansToDegrees</span>(<span class="ia">radians</span>)</a></li>
+				<li><a href="#method-reverseMap"><span class="im">reverseMap</span>(<span class="ia">mapping</span>)</a></li>
 				<li><a href="#method-uppercase"><span class="im">uppercase</span>(<span class="ia">string</span>)</a></li>
 			</ul>
 		</li>
@@ -116,6 +121,148 @@
     <div id="methods" class="page-section">
         <h2 class="off-left">Methods</h2>
         <div class="item-list">
+<div id="method-defaultFunction" class="method item">
+	<div class="method-signature">
+	<span class="name"><code>defaultFunction</code></span>
+
+		<div class="args">
+			<span class="paren">(</span><ul class="args-list inline commas">
+				<li class="arg">
+						<code>value</code>
+				</li>
+				<li class="arg">
+						<code>defaultFunction</code>
+				</li>
+			</ul><span class="paren">)</span>
+		</div>
+		<span class="returns-inline">
+			<span class="type">Any</span>
+		</span>
+	</div>
+
+
+
+
+
+
+	<div class="meta">
+				<p>
+				Defined in
+		<a href="../files/src_main_javascript_utility.js.html#l95"><code>src&#x2F;main&#x2F;javascript&#x2F;utility.js:95</code></a>
+		</p>
+
+
+
+	</div>
+
+	<div class="description"><p>provide a default value if the requested value is undefined by calling a function</p>
+</div>
+
+		<div class="params">
+			<h4>Parameters:</h4>
+
+			<ul class="params-list">
+				<li class="param">
+						<code class="param-name">value</code>
+						<span class="type">Any</span>
+
+
+					<div class="param-description"><p>the value to test for undefined</p>
+</div>
+
+				</li>
+				<li class="param">
+						<code class="param-name">defaultFunction</code>
+						<span class="type">Function</span>
+
+
+					<div class="param-description"><p>the function to call if value is undefined</p>
+</div>
+
+				</li>
+			</ul>
+		</div>
+
+		<div class="returns">
+			<h4>Returns:</h4>
+
+			<div class="returns-description">
+						<span class="type">Any</span>
+			</div>
+		</div>
+
+</div>
+<div id="method-defaultValue" class="method item">
+	<div class="method-signature">
+	<span class="name"><code>defaultValue</code></span>
+
+		<div class="args">
+			<span class="paren">(</span><ul class="args-list inline commas">
+				<li class="arg">
+						<code>value</code>
+				</li>
+				<li class="arg">
+						<code>defaultValue</code>
+				</li>
+			</ul><span class="paren">)</span>
+		</div>
+		<span class="returns-inline">
+			<span class="type">Any</span>
+		</span>
+	</div>
+
+
+
+
+
+
+	<div class="meta">
+				<p>
+				Defined in
+		<a href="../files/src_main_javascript_utility.js.html#l83"><code>src&#x2F;main&#x2F;javascript&#x2F;utility.js:83</code></a>
+		</p>
+
+
+
+	</div>
+
+	<div class="description"><p>provide a default value if the requested value is undefined</p>
+</div>
+
+		<div class="params">
+			<h4>Parameters:</h4>
+
+			<ul class="params-list">
+				<li class="param">
+						<code class="param-name">value</code>
+						<span class="type">Any</span>
+
+
+					<div class="param-description"><p>the value to test for undefined</p>
+</div>
+
+				</li>
+				<li class="param">
+						<code class="param-name">defaultValue</code>
+						<span class="type">Any</span>
+
+
+					<div class="param-description"><p>the default value to provide if value is undefined</p>
+</div>
+
+				</li>
+			</ul>
+		</div>
+
+		<div class="returns">
+			<h4>Returns:</h4>
+
+			<div class="returns-description">
+						<span class="type">Any</span>
+			</div>
+		</div>
+
+</div>
 <div id="method-degreesToRadians" class="method item">
 	<div class="method-signature">
 	<span class="name"><code>degreesToRadians</code></span>
@@ -419,6 +566,65 @@
 
 			<div class="returns-description">
 						<span class="type">Float</span>
+			</div>
+		</div>
+
+</div>
+<div id="method-reverseMap" class="method item">
+	<div class="method-signature">
+	<span class="name"><code>reverseMap</code></span>
+
+		<div class="args">
+			<span class="paren">(</span><ul class="args-list inline commas">
+				<li class="arg">
+						<code>mapping</code>
+				</li>
+			</ul><span class="paren">)</span>
+		</div>
+		<span class="returns-inline">
+			<span class="type">Object</span>
+		</span>
+	</div>
+
+
+
+
+
+
+	<div class="meta">
+				<p>
+				Defined in
+		<a href="../files/src_main_javascript_utility.js.html#l107"><code>src&#x2F;main&#x2F;javascript&#x2F;utility.js:107</code></a>
+		</p>
+
+
+
+	</div>
+
+	<div class="description"><p>create a reversed mapping from a given object (assumes 1:1 values)</p>
+</div>
+
+		<div class="params">
+			<h4>Parameters:</h4>
+
+			<ul class="params-list">
+				<li class="param">
+						<code class="param-name">mapping</code>
+						<span class="type">Object</span>
+
+
+					<div class="param-description"><p>the the object containing the mapping to be reversed</p>
+</div>
+
+				</li>
+			</ul>
+		</div>
+
+		<div class="returns">
+			<h4>Returns:</h4>
+
+			<div class="returns-description">
+						<span class="type">Object</span>
 			</div>
 		</div>
 

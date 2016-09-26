@@ -14,6 +14,24 @@
             "fors": {},
             "namespaces": {}
         },
+        "src/main/javascript/float4x4.js": {
+            "name": "src/main/javascript/float4x4.js",
+            "modules": {},
+            "classes": {
+                "Float4x4": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/main/javascript/floatNxN.js": {
+            "name": "src/main/javascript/floatNxN.js",
+            "modules": {},
+            "classes": {
+                "FloatNxN": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
         "src/main/javascript/node.js": {
             "name": "src/main/javascript/node.js",
             "modules": {},
@@ -64,6 +82,31 @@
             "file": "src/main/javascript/cloud.js",
             "line": 1,
             "description": "A Cloud, a scene graph node for displaying points in space."
+        },
+        "Float4x4": {
+            "name": "Float4x4",
+            "shortname": "Float4x4",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src/main/javascript/float4x4.js",
+            "line": 1,
+            "description": "A 4x4 matrix used as a 3D transformation",
+            "extends": "FloatNxN"
+        },
+        "FloatNxN": {
+            "name": "FloatNxN",
+            "shortname": "FloatNxN",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src/main/javascript/floatNxN.js",
+            "line": 1,
+            "description": "A (square) NxN matrix"
         },
         "Node": {
             "name": "Node",
@@ -120,7 +163,7 @@
             "attributes": [],
             "file": "src/main/javascript/shader.js",
             "line": 9,
-            "description": "The name for the standard POSITION buffer attribute in a shader",
+            "description": "the name for the standard POSITION buffer attribute in a shader.",
             "type": "{string}",
             "final": 1
         },
@@ -129,7 +172,7 @@
             "attributes": [],
             "file": "src/main/javascript/shader.js",
             "line": 17,
-            "description": "The name for the standard NORMAL buffer attribute in a shader",
+            "description": "the name for the standard NORMAL buffer attribute in a shader.",
             "type": "{string}",
             "final": 1
         },
@@ -138,7 +181,7 @@
             "attributes": [],
             "file": "src/main/javascript/shader.js",
             "line": 25,
-            "description": "The name for the standard TEXTURE buffer attribute in a shader",
+            "description": "the name for the standard TEXTURE buffer attribute in a shader.",
             "type": "{string}",
             "final": 1
         }
@@ -179,6 +222,64 @@
                 "type": "Cloud"
             },
             "class": "Cloud"
+        },
+        {
+            "file": "src/main/javascript/float4x4.js",
+            "line": 277,
+            "description": "Bind the POSITION attribute to the given buffer.",
+            "itemtype": "method",
+            "name": "bindPositionAttribute",
+            "static": 1,
+            "params": [
+                {
+                    "name": "buffer",
+                    "description": "WebGL buffer to bind",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Shader"
+            },
+            "class": "Float4x4"
+        },
+        {
+            "file": "src/main/javascript/floatNxN.js",
+            "line": 20,
+            "description": "Create a new FloatNxN.",
+            "itemtype": "method",
+            "name": "create",
+            "static": 1,
+            "return": {
+                "description": "",
+                "type": "FloatNxN"
+            },
+            "class": "FloatNxN"
+        },
+        {
+            "file": "src/main/javascript/floatNxN.js",
+            "line": 31,
+            "description": "Copy contents from an array into a FloatNxN and return the result.",
+            "itemtype": "method",
+            "name": "copy",
+            "static": 1,
+            "params": [
+                {
+                    "name": "from",
+                    "description": "source.",
+                    "type": "FloatNxN"
+                },
+                {
+                    "name": "to",
+                    "description": "destination. if 'to' is omitted, a new one will be created.",
+                    "type": "FloatNxN"
+                }
+            ],
+            "return": {
+                "description": "returns 'to'.",
+                "type": "FloatNxN"
+            },
+            "class": "FloatNxN"
         },
         {
             "file": "src/main/javascript/node.js",
@@ -316,7 +417,7 @@
         {
             "file": "src/main/javascript/shader.js",
             "line": 36,
-            "description": "The initializer for a shader.",
+            "description": "the initializer for a shader.",
             "itemtype": "method",
             "name": "new",
             "params": [
@@ -337,7 +438,12 @@
                 },
                 {
                     "name": "attributeMapping",
-                    "description": "maps POSITION, NORMAL, and TEXTURE attributes to the\nattribute names in the shader",
+                    "description": "maps standard attribute names to the names used in the shader",
+                    "type": "Object"
+                },
+                {
+                    "name": "parameterMapping",
+                    "description": "maps standard parameter names to the names used in the shader",
                     "type": "Object"
                 }
             ],
@@ -349,8 +455,27 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 125,
-            "description": "Bind the POSITION attribute to the given buffer.",
+            "line": 120,
+            "description": "set the standard shader parameters in one call.",
+            "itemtype": "method",
+            "name": "setStandardParameters",
+            "params": [
+                {
+                    "name": "parameters",
+                    "description": "a mapping of standard parameter names to values, as specified in\nthe initialization of the shader",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Shader"
+            },
+            "class": "Shader"
+        },
+        {
+            "file": "src/main/javascript/shader.js",
+            "line": 147,
+            "description": "bind the POSITION attribute to the given buffer.",
             "itemtype": "method",
             "name": "bindPositionAttribute",
             "static": 1,
@@ -369,8 +494,8 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 137,
-            "description": "Bind the NORMAL attribute to the given buffer.",
+            "line": 159,
+            "description": "bind the NORMAL attribute to the given buffer.",
             "itemtype": "method",
             "name": "bindNormalAttribute",
             "static": 1,
@@ -389,8 +514,8 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 149,
-            "description": "Bind the TEXTURE attribute to the given buffer.",
+            "line": 171,
+            "description": "bind the TEXTURE attribute to the given buffer.",
             "itemtype": "method",
             "name": "bindTextureAttribute",
             "static": 1,
@@ -409,8 +534,8 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 161,
-            "description": "Fetch the shader currently in use.",
+            "line": 183,
+            "description": "fetch the shader currently in use.",
             "itemtype": "method",
             "name": "getCurrentShader",
             "static": 1,
@@ -422,8 +547,8 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 172,
-            "description": "Set this as the current shader in the rendering context.",
+            "line": 194,
+            "description": "set this as the current shader in the rendering context.",
             "itemtype": "method",
             "name": "use",
             "chainable": 1,
@@ -431,8 +556,8 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 186,
-            "description": "Get the name of this shader",
+            "line": 208,
+            "description": "get the name of this shader",
             "itemtype": "method",
             "name": "getName",
             "return": {
@@ -443,8 +568,8 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 196,
-            "description": "Static method to create and construct a new Shader.",
+            "line": 218,
+            "description": "static method to create and construct a new Shader.",
             "itemtype": "method",
             "name": "new",
             "static": 1,
@@ -466,7 +591,12 @@
                 },
                 {
                     "name": "attributeMapping",
-                    "description": "maps POSITION, NORMAL, and TEXTURE attributes to the\nattribute names in the shader. Defaults to:\n* POSITION_ATTRIBUTE: \"inputPosition\"\n* NORMAL_ATTRIBUTE: \"inputNormal\"\n* TEXTURE_ATTRIBUTE: \"inputTexture\"",
+                    "description": "maps POSITION, NORMAL, and TEXTURE attributes to the\nattribute names in the shader. This allows the engine to manage the attributes without\nforcing the shader author to use \"standard\" names for everything. Defaults to:\n* POSITION_ATTRIBUTE: \"inputPosition\"\n* NORMAL_ATTRIBUTE: \"inputNormal\"\n* TEXTURE_ATTRIBUTE: \"inputTexture\"",
+                    "type": "Object"
+                },
+                {
+                    "name": "parameterMapping",
+                    "description": "maps standard parameters to the parameter names in the\nshader. This allows the engine to manage setting the standard set of parameters on the shader\nwithout forcing the shader author to use \"standard\" names. Defaults to:\n* MODEL_MATRIX_PARAMETER: \"modelMatrix\"\n* VIEW_MATRIX_PARAMETER: \"viewMatrix\"\n* PROJECTION_MATRIX_PARAMETER: \"projectionMatrix\"\n* NORMAL_MATRIX_PARAMETER: \"normalMatrix\"\n* OUTPUT_ALPHA_PARAMETER: \"outputAlpha\"",
                     "type": "Object"
                 }
             ],
@@ -478,8 +608,8 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 220,
-            "description": "Fetch a shader by name.",
+            "line": 271,
+            "description": "fetch a shader by name.",
             "itemtype": "method",
             "name": "get",
             "static": 1,
@@ -605,6 +735,73 @@
             "return": {
                 "description": "",
                 "type": "Number"
+            },
+            "class": "Utility"
+        },
+        {
+            "file": "src/main/javascript/utility.js",
+            "line": 83,
+            "description": "provide a default value if the requested value is undefined",
+            "itemtype": "method",
+            "name": "defaultValue",
+            "params": [
+                {
+                    "name": "value",
+                    "description": "the value to test for undefined",
+                    "type": "Any"
+                },
+                {
+                    "name": "defaultValue",
+                    "description": "the default value to provide if value is undefined",
+                    "type": "Any"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Any"
+            },
+            "class": "Utility"
+        },
+        {
+            "file": "src/main/javascript/utility.js",
+            "line": 95,
+            "description": "provide a default value if the requested value is undefined by calling a function",
+            "itemtype": "method",
+            "name": "defaultFunction",
+            "params": [
+                {
+                    "name": "value",
+                    "description": "the value to test for undefined",
+                    "type": "Any"
+                },
+                {
+                    "name": "defaultFunction",
+                    "description": "the function to call if value is undefined",
+                    "type": "Function"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Any"
+            },
+            "class": "Utility"
+        },
+        {
+            "file": "src/main/javascript/utility.js",
+            "line": 107,
+            "description": "create a reversed mapping from a given object (assumes 1:1 values)",
+            "itemtype": "method",
+            "name": "reverseMap",
+            "params": [
+                {
+                    "name": "mapping",
+                    "description": "the the object containing the mapping to be reversed",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Object"
             },
             "class": "Utility"
         }

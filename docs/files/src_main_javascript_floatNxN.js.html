@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>src/main/javascript/floatNxN.js - WebGL</title>
+    <link rel="stylesheet" href="">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="stylesheet" href="../assets/css/custom.css">
+    <link rel="stylesheet" href="../assets/css/lucid.css">
+    <link rel="stylesheet" href="../assets/vendor/bootstrap/css/bootstrap.css">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+</head>
+<body class="yui3-skin-sam">
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <h1 class="brand" style="padding: 10px 16px 10px; height: 20px; line-height: 20px; margin-left: 0;">
+            WebGL
+        </h1>
+	<div class="nav">
+            <li class="divider-vertical"></li>
+            <li>
+                <p class="navbar-text">
+                    API Docs for Version: <b>1.0.0</b>
+                </p>
+            </li>
+        </div>
+        <form class="navbar-form pull-right" style="line-height: 40px; height: 40px;">
+            <input style="margin-top: 0;" type="text" class="search-query" placeholder="Search for classes/modules..." data-obj='["classes/Cloud", "classes/Float4x4", "classes/FloatNxN", "classes/Node", "classes/Render", "classes/Shader", "classes/Utility"]'>
+        </form>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="span3">
+<div>
+    <div id="sidebar">
+    <div id="classes">
+        <ul id="api-classes" class="nav nav-list">
+                <li><a href="../classes/Cloud.html">Cloud</a></li>
+                <li><a href="../classes/Float4x4.html">Float4x4</a></li>
+                <li><a href="../classes/FloatNxN.html">FloatNxN</a></li>
+                <li><a href="../classes/Node.html">Node</a></li>
+                <li><a href="../classes/Render.html">Render</a></li>
+                <li><a href="../classes/Shader.html">Shader</a></li>
+                <li><a href="../classes/Utility.html">Utility</a></li>
+        </ul>
+    </div>
+    </div>
+</div>
+        </div>
+        <div class="span9">
+    <form id="options-form" class="form-inline pull-right">
+        Show:
+        <label for="api-show-inherited" class="checkbox">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected" class="checkbox">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private" class="checkbox">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated" class="checkbox">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </form>
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+<div class="page-header">
+    <h1>src/main/javascript/floatNxN.js <small>File</small></h1>
+</div>
+
+<div class="file">
+    <pre class="prettyprint linenums">
+/**
+ * A (square) NxN matrix
+ *
+ * @class FloatNxN
+ */
+let FloatNxN = function (dim) {
+    let _ = Object.create (null);
+    let _FloatN = FloatN (dim);
+    let size = dim * dim;
+
+    let index = _.index = function (row, column) {
+        return (row * dim) + column;
+    };
+
+    let defineTo = function (to) {
+        to = (typeof to !== &quot;undefined&quot;) ? to : &quot;to&quot;;
+        return to + &quot; = (typeof &quot; + to + &quot; !== &#x27;undefined&#x27;) ? &quot; + to + &quot; : _.create ();\n&quot;;
+    };
+
+    /**
+     * Create a new FloatNxN.
+     *
+     * @method create
+     * @static
+     * @return {FloatNxN}
+     */
+    _.create = function () {
+        return new glMatrixArrayType (size);
+    };
+
+    /**
+     * Copy contents from an array into a FloatNxN and return the result.
+     *
+     * @method copy
+     * @static
+     * @param {FloatNxN} from source.
+     * @param {FloatNxN} to destination. if &#x27;to&#x27; is omitted, a new one will be created.
+     * @return {FloatNxN} returns &#x27;to&#x27;.
+     */
+    eval (function () {
+        let str = &quot;_.copy = function (from, to) {\n&quot;;
+        str += defineTo ();
+        for (let row = 0; row &lt; dim; ++row) {
+            for (let col = 0; col &lt; dim; ++col) {
+                let i = index (row, col);
+                str += &quot;to[&quot; + i + &quot;] = from[&quot; + i + &quot;]; &quot;;
+            }
+            str += &quot;\n&quot;;
+        }
+        str += &quot;return to;\n&quot;;
+        str += &quot;};\n&quot;;
+        return str;
+    } ());
+
+    // _.identity (to)
+    // to: FloatNxN
+    // sets the values of &#x27;to&#x27; to an identity matrix
+    // if &#x27;to&#x27; is omitted, will create a new matrix
+    // returns &#x27;to&#x27;
+    eval (function () {
+        let str = &quot;_.identity = function (to) {\n&quot;;
+        str += defineTo ();
+        for (let row = 0; row &lt; dim; ++row) {
+            for (let column = 0; column &lt; dim; ++column) {
+                str += &quot;to[&quot; + index (row, column) + &quot;] = &quot; + ((row == column) ? 1 : 0) + &quot;; &quot;;
+            }
+            str += &quot;\n&quot;;
+        }
+        str += &quot;return to;\n&quot;;
+        str += &quot;};\n&quot;;
+        return str;
+    } ());
+
+    // _.transpose (from, to)
+    // from: FloatNxN
+    // to: FloatNxN
+    // transposes the values of &#x27;from&#x27; over to &#x27;to&#x27;
+    // if &#x27;to&#x27; is omitted, will create a new matrix
+    // returns &#x27;to&#x27;
+    eval (function () {
+        let str = &quot;_.transpose = function (from, to) {\n&quot;;
+        str += defineTo ();
+        for (let row = 0; row &lt; dim; ++row) {
+            for (let column = 0; column &lt; dim; ++column) {
+                str += &quot;to[&quot; + index (row, column) + &quot;] = from[&quot; + index (column, row) + &quot;]; &quot;;
+            }
+            str += &quot;\n&quot;;
+        }
+        str += &quot;return to;\n&quot;;
+        str += &quot;};\n&quot;;
+        return str;
+    } ());
+
+    // _.multiply (left, right, to)
+    // left: FloatNxN
+    // right: FloatNxN
+    // to: FloatNxN
+    // populates &#x27;to&#x27; with the result of matrix multiplication of &#x27;left&#x27; and &#x27;right&#x27;
+    // if &#x27;to&#x27; is omitted, will create a new matrix
+    // returns &#x27;to&#x27;
+    eval (function () {
+        let rc = function (r, c) {
+            let str = &quot;(left[&quot; + index (r, 0) + &quot;] * right[&quot; + index (0, c) + &quot;])&quot;;
+            for (let i = 1; i &lt; dim; ++i) {
+                str += &quot; + (left[&quot; + index (r, i) + &quot;] * right[&quot; + index (i, c) + &quot;])&quot;;
+            }
+            str += &quot;;\n&quot;;
+            return str;
+        };
+
+        let str = &quot;_.multiply = function (left, right, to) {\n&quot;;
+        str += defineTo ();
+        for (let row = 0; row &lt; dim; ++row) {
+            for (let column = 0; column &lt; dim; ++column) {
+                str += &quot;to[&quot; + index (row, column) + &quot;] = &quot; + rc (row, column);
+            }
+        }
+        str += &quot;return to;\n&quot;;
+        str += &quot;};\n&quot;;
+        return str;
+    } ());
+
+    // _.scale (scale, to)
+    // scale: Float or FloatN
+    // to: FloatNxN
+    // sets the values of &#x27;to&#x27; to a scale matrix
+    // if &#x27;to&#x27; is omitted, will create a new matrix
+    // returns &#x27;to&#x27;
+    eval(function () {
+        let end = dim - 1;
+        let str = &quot;_.scale = function (scale, to) {\n&quot;;
+        str += &quot;scale = Array.isArray(scale) ? scale : Array(&quot; + end + &quot;).fill(scale);\n&quot;;
+        str += &quot;to = _.identity (to);\n&quot;;
+        for (let i = 0; i &lt; end; ++i) {
+            str += &quot;to[&quot; + index(i, i) + &quot;] = scale[&quot; + i + &quot;]; &quot;;
+        }
+        str += &quot;\n&quot;;
+        str += &quot;return to;\n&quot;;
+        str += &quot;};\n&quot;;
+        return str;
+    }());
+
+    // _.translate (translate, to)
+    // translate: FloatN
+    // to: FloatNxN
+    // sets the values of &#x27;to&#x27; to a translation matrix
+    // if &#x27;to&#x27; is omitted, will create a new matrix
+    // returns &#x27;to&#x27;
+    eval(function () {
+        let end = dim - 1;
+        let str = &quot;_.translate = function (translate, to) {\n&quot;;
+        str += &quot;to = _.identity (to);\n&quot;;
+        for (let i = 0; i &lt; end; ++i) {
+            str += &quot;to[&quot; + index(end, i) + &quot;] = translate[&quot; + i + &quot;]; &quot;;
+        }
+        str += &quot;\n&quot;;
+        str += &quot;return to;\n&quot;;
+        str += &quot;};\n&quot;;
+        return str;
+    }());
+
+    // _.str (from)
+    // from: FloatNxN
+    // returns the string representation of the matrix
+    eval (function () {
+        let strRow = function (row) {
+            let str = &quot;&#x27;(&#x27; + from[&quot; + index (row, 0) + &quot;]&quot;;
+            for (let column = 1; column &lt; dim; ++column) {
+                str += &quot; + &#x27;, &#x27; + from[&quot; + index (row, column) + &quot;]&quot;;
+            }
+            str += &quot; + &#x27;)&#x27;&quot;;
+            return str;
+        };
+
+        let str = &quot;_.str = function (from) {\n&quot;;
+        str += &quot;return &quot;;
+        str += strRow (0);
+        for (let row = 1; row &lt; dim; ++row) {
+            str += &quot; + &#x27;, &#x27; + &quot; + strRow (row);
+        }
+        str += &quot;;\n&quot;;
+        str += &quot;};\n&quot;;
+        return str;
+    } ());
+
+    return _;
+};
+
+
+    </pre>
+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/jquery/jquery-1.8.2.min.js"></script>
+<script src="../assets/vendor/bootstrap/js/bootstrap.js"></script>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script src="../assets/js/yuidoc-bootstrap.js"></script>
+<script>prettyPrint();</script>
+</body>
+</html>

@@ -80,6 +80,44 @@ let Utility = function () {
         return Number.parseFloat (number.toFixed (fix));
     };
 
+    /**
+     * provide a default value if the requested value is undefined
+     *
+     * @method defaultValue
+     * @param {any} value the value to test for undefined
+     * @param {any} defaultValue the default value to provide if value is undefined
+     * @return {any}
+     */
+    _.defaultValue = function (value, defaultValue) {
+        return (typeof value !== "undefined") ? value : defaultValue;
+    };
+
+    /**
+     * provide a default value if the requested value is undefined by calling a function
+     *
+     * @method defaultFunction
+     * @param {any} value the value to test for undefined
+     * @param {function} defaultFunction the function to call if value is undefined
+     * @return {any}
+     */
+    _.defaultFunction = function (value, defaultFunction) {
+        return (typeof value !== "undefined") ? value : defaultFunction ();
+    };
+
+    /**
+     * create a reversed mapping from a given object (assumes 1:1 values)
+     *
+     * @method reverseMap
+     * @param {object} mapping the the object containing the mapping to be reversed
+     * @return {object}
+     */
+    _.reverseMap = function (mapping) {
+        let reverseMapping = Object.create(null);
+        for (let name in mapping) {
+            reverseMapping[mapping[name]] = name;
+        }
+        return reverseMapping;
+    };
 
     return _;
 } ();

@@ -1,3 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>src/main/javascript/float4x4.js - WebGL</title>
+    <link rel="stylesheet" href="">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="stylesheet" href="../assets/css/custom.css">
+    <link rel="stylesheet" href="../assets/css/lucid.css">
+    <link rel="stylesheet" href="../assets/vendor/bootstrap/css/bootstrap.css">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+</head>
+<body class="yui3-skin-sam">
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <h1 class="brand" style="padding: 10px 16px 10px; height: 20px; line-height: 20px; margin-left: 0;">
+            WebGL
+        </h1>
+	<div class="nav">
+            <li class="divider-vertical"></li>
+            <li>
+                <p class="navbar-text">
+                    API Docs for Version: <b>1.0.0</b>
+                </p>
+            </li>
+        </div>
+        <form class="navbar-form pull-right" style="line-height: 40px; height: 40px;">
+            <input style="margin-top: 0;" type="text" class="search-query" placeholder="Search for classes/modules..." data-obj='["classes/Cloud", "classes/Float4x4", "classes/FloatNxN", "classes/Node", "classes/Render", "classes/Shader", "classes/Utility"]'>
+        </form>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="span3">
+<div>
+    <div id="sidebar">
+    <div id="classes">
+        <ul id="api-classes" class="nav nav-list">
+                <li><a href="../classes/Cloud.html">Cloud</a></li>
+                <li><a href="../classes/Float4x4.html">Float4x4</a></li>
+                <li><a href="../classes/FloatNxN.html">FloatNxN</a></li>
+                <li><a href="../classes/Node.html">Node</a></li>
+                <li><a href="../classes/Render.html">Render</a></li>
+                <li><a href="../classes/Shader.html">Shader</a></li>
+                <li><a href="../classes/Utility.html">Utility</a></li>
+        </ul>
+    </div>
+    </div>
+</div>
+        </div>
+        <div class="span9">
+    <form id="options-form" class="form-inline pull-right">
+        Show:
+        <label for="api-show-inherited" class="checkbox">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected" class="checkbox">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private" class="checkbox">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated" class="checkbox">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </form>
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+<div class="page-header">
+    <h1>src/main/javascript/float4x4.js <small>File</small></h1>
+</div>
+
+<div class="file">
+    <pre class="prettyprint linenums">
 /**
  * A 4x4 matrix used as a 3D transformation
  *
@@ -10,7 +94,7 @@ let Float4x4 = function () {
 
     _.inverse = function (from, to) {
         // adapted from a bit of obfuscated, unwound, code
-        to = (typeof to !== "undefined") ? to : this.create ();
+        to = (typeof to !== &quot;undefined&quot;) ? to : this.create ();
         let A = from[0] * from[5] - from[1] * from[4], B = from[0] * from[6] - from[2] * from[4],
             C = from[9] * from[14] - from[10] * from[13], D = from[9] * from[15] - from[11] * from[13],
             E = from[10] * from[15] - from[11] * from[14], F = from[0] * from[7] - from[3] * from[4],
@@ -227,7 +311,7 @@ let Float4x4 = function () {
         let f = c[0], h = c[1], i = c[2];
         c = b[1];
         let j = b[2];
-        if (e == b[0] && g == c && a == j)return _.identity (d);
+        if (e == b[0] &amp;&amp; g == c &amp;&amp; a == j)return _.identity (d);
         let k, l, o, m;
         c = e - b[0];
         j = g - b[1];
@@ -285,13 +369,13 @@ let Float4x4 = function () {
     /*
     eval (function () {
         let index = _.index;
-        let str = "_.copy = function (from, to) { ";
-        str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
-        for (let i = 0; i < size; ++i) {
-            str += "to[" + i + "] = from[" + i + "]; ";
+        let str = &quot;_.copy = function (from, to) { &quot;;
+        str += &quot;to = (typeof to !== &#x27;undefined&#x27;) ? to : _.create (); &quot;;
+        for (let i = 0; i &lt; size; ++i) {
+            str += &quot;to[&quot; + i + &quot;] = from[&quot; + i + &quot;]; &quot;;
         }
-        str += "return to; ";
-        str += "}; ";
+        str += &quot;return to; &quot;;
+        str += &quot;}; &quot;;
         return str;
     } ());
 */
@@ -378,7 +462,7 @@ let Float4x4 = function () {
 //------------------------------------------------------------------------------
 //	Transformation for rotating to an arbitrary normalized basis
 //------------------------------------------------------------------------------
-    matrix_3d	VectorMatrix (tuple_3d &n)																						//	build a vector_3d rotation matrix_3d
+    matrix_3d	VectorMatrix (tuple_3d &amp;n)																						//	build a vector_3d rotation matrix_3d
     {																																								//	begin
         vector_3d	t (n),																															//	copy it
         w (n);
@@ -403,7 +487,7 @@ let Float4x4 = function () {
 //------------------------------------------------------------------------------
 //	Transformation for rotating to an arbitrary basis at an arbitrary location
 //------------------------------------------------------------------------------
-    matrix_3d	ViewMatrix (const vector_3d &u, const vector_3d &v, const vector_3d &n, const point_3d &r)	//	build a viewing matrix_3d from a vector_3d set
+    matrix_3d	ViewMatrix (const vector_3d &amp;u, const vector_3d &amp;v, const vector_3d &amp;n, const point_3d &amp;r)	//	build a viewing matrix_3d from a vector_3d set
     {																																								//	begin
         matrix_3d	m;																																	//	new matrix_3d
         m (0, 0) = u[X];																															//	assign the first column
@@ -431,3 +515,19 @@ let Float4x4 = function () {
 
     return _;
 } ();
+
+    </pre>
+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/jquery/jquery-1.8.2.min.js"></script>
+<script src="../assets/vendor/bootstrap/js/bootstrap.js"></script>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script src="../assets/js/yuidoc-bootstrap.js"></script>
+<script>prettyPrint();</script>
+</body>
+</html>

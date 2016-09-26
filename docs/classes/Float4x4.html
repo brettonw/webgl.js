@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Cloud - WebGL</title>
+    <title>Float4x4 - WebGL</title>
     <link rel="stylesheet" href="">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -77,16 +77,21 @@
                 <div id="docs-main">
                     <div class="content">
 <div class="page-header">
-    <h1>Cloud</h1>
+    <h1>Float4x4</h1>
 </div>
 
 
+	<div class="well well-small">
+        <div class="extends">
+            Extends <a href="../classes/FloatNxN.html" class="crosslink">FloatNxN</a>
+        </div>
+    </div>
 
 
 
 
 <div class="yuidoc-class-description">
-<p>A Cloud, a scene graph node for displaying points in space.</p>
+<p>A 4x4 matrix used as a 3D transformation</p>
 
 </div>
 
@@ -95,19 +100,13 @@
 <div id="class-toc" class="page-section">
 	<h2>Table of Contents</h2>
     <ul>
-		<li>
-			<strong>Methods</strong>
-			<ul>
-				<li><a href="#method-addPoint"><span class="im">addPoint</span>(<span class="ia">point</span>)</a></li>
-			</ul>
-		</li>
 
 
 
 		<li>
 			<strong>Static Methods</strong>
 			<ul>
-				<li><a href="#method-new"><span class="im">Cloud.new</span>(<span class="ia">parameters</span>)</a></li>
+				<li><a href="#method-bindPositionAttribute"><span class="im">Float4x4.bindPositionAttribute</span>(<span class="ia">buffer</span>)</a></li>
 			</ul>
 		</li>
 	</ul>
@@ -116,61 +115,6 @@
 <!-- details -->
 
 
-    <div id="methods" class="page-section">
-        <h2 class="off-left">Methods</h2>
-        <div class="item-list">
-<div id="method-addPoint" class="method item">
-	<div class="method-signature">
-	<span class="name"><code>addPoint</code></span>
-
-		<div class="args">
-			<span class="paren">(</span><ul class="args-list inline commas">
-				<li class="arg">
-						<code>point</code>
-				</li>
-			</ul><span class="paren">)</span>
-		</div>
-	</div>
-
-
-
-
-		<span class="flag chainable">chainable</span>
-
-
-	<div class="meta">
-				<p>
-				Defined in
-		<a href="../files/src_main_javascript_cloud.js.html#l9"><code>src&#x2F;main&#x2F;javascript&#x2F;cloud.js:9</code></a>
-		</p>
-
-
-
-	</div>
-
-	<div class="description"><p>Add a point to the cloud</p>
-</div>
-
-		<div class="params">
-			<h4>Parameters:</h4>
-
-			<ul class="params-list">
-				<li class="param">
-						<code class="param-name">point</code>
-						<span class="type">Float3</span>
-
-
-					<div class="param-description"><p>the location of the new point.</p>
-</div>
-
-				</li>
-			</ul>
-		</div>
-
-
-</div>
-        </div>
-    </div>
 
 
 
@@ -178,19 +122,19 @@
     <div id="static-methods" class="page-section">
         <h2 class="off-left">Static Methods</h2>
         <div class="item-list">
-<div id="method-new" class="method item">
+<div id="method-bindPositionAttribute" class="method item">
 	<div class="method-signature">
-	<span class="name"><code>Cloud.new</code></span>
+	<span class="name"><code>Float4x4.bindPositionAttribute</code></span>
 
 		<div class="args">
 			<span class="paren">(</span><ul class="args-list inline commas">
 				<li class="arg">
-						<code>parameters</code>
+						<code>buffer</code>
 				</li>
 			</ul><span class="paren">)</span>
 		</div>
 		<span class="returns-inline">
-			<span class="type"><a href="../classes/Cloud.html" class="crosslink">Cloud</a></span>
+			<span class="type"><a href="../classes/Shader.html" class="crosslink">Shader</a></span>
 		</span>
 	</div>
 
@@ -202,14 +146,14 @@
 	<div class="meta">
 				<p>
 				Defined in
-		<a href="../files/src_main_javascript_cloud.js.html#l26"><code>src&#x2F;main&#x2F;javascript&#x2F;cloud.js:26</code></a>
+		<a href="../files/src_main_javascript_float4x4.js.html#l277"><code>src&#x2F;main&#x2F;javascript&#x2F;float4x4.js:277</code></a>
 		</p>
 
 
 
 	</div>
 
-	<div class="description"><p>Static method to create and construct a new cloud node.</p>
+	<div class="description"><p>Bind the POSITION attribute to the given buffer.</p>
 </div>
 
 		<div class="params">
@@ -217,12 +161,11 @@
 
 			<ul class="params-list">
 				<li class="param">
-						<code class="param-name">parameters</code>
+						<code class="param-name">buffer</code>
 						<span class="type">Object</span>
 
 
-					<div class="param-description"><p>an object with optional information to include in the node (see
-"Node.construct" for more information)</p>
+					<div class="param-description"><p>WebGL buffer to bind</p>
 </div>
 
 				</li>
@@ -233,7 +176,7 @@
 			<h4>Returns:</h4>
 
 			<div class="returns-description">
-						<span class="type"><a href="../classes/Cloud.html" class="crosslink">Cloud</a></span>
+						<span class="type"><a href="../classes/Shader.html" class="crosslink">Shader</a></span>
 			</div>
 		</div>
 

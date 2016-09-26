@@ -26,7 +26,7 @@
             </li>
         </div>
         <form class="navbar-form pull-right" style="line-height: 40px; height: 40px;">
-            <input style="margin-top: 0;" type="text" class="search-query" placeholder="Search for classes/modules..." data-obj='["classes/Cloud", "classes/Node", "classes/Render", "classes/Shader", "classes/Utility"]'>
+            <input style="margin-top: 0;" type="text" class="search-query" placeholder="Search for classes/modules..." data-obj='["classes/Cloud", "classes/Float4x4", "classes/FloatNxN", "classes/Node", "classes/Render", "classes/Shader", "classes/Utility"]'>
         </form>
     </div>
 </div>
@@ -38,6 +38,8 @@
     <div id="classes">
         <ul id="api-classes" class="nav nav-list">
                 <li><a href="../classes/Cloud.html">Cloud</a></li>
+                <li><a href="../classes/Float4x4.html">Float4x4</a></li>
+                <li><a href="../classes/FloatNxN.html">FloatNxN</a></li>
                 <li><a href="../classes/Node.html">Node</a></li>
                 <li><a href="../classes/Render.html">Render</a></li>
                 <li><a href="../classes/Shader.html">Shader</a></li>
@@ -162,6 +164,44 @@ let Utility = function () {
         return Number.parseFloat (number.toFixed (fix));
     };
 
+    /**
+     * provide a default value if the requested value is undefined
+     *
+     * @method defaultValue
+     * @param {any} value the value to test for undefined
+     * @param {any} defaultValue the default value to provide if value is undefined
+     * @return {any}
+     */
+    _.defaultValue = function (value, defaultValue) {
+        return (typeof value !== &quot;undefined&quot;) ? value : defaultValue;
+    };
+
+    /**
+     * provide a default value if the requested value is undefined by calling a function
+     *
+     * @method defaultFunction
+     * @param {any} value the value to test for undefined
+     * @param {function} defaultFunction the function to call if value is undefined
+     * @return {any}
+     */
+    _.defaultFunction = function (value, defaultFunction) {
+        return (typeof value !== &quot;undefined&quot;) ? value : defaultFunction ();
+    };
+
+    /**
+     * create a reversed mapping from a given object (assumes 1:1 values)
+     *
+     * @method reverseMap
+     * @param {object} mapping the the object containing the mapping to be reversed
+     * @return {object}
+     */
+    _.reverseMap = function (mapping) {
+        let reverseMapping = Object.create(null);
+        for (let name in mapping) {
+            reverseMapping[mapping[name]] = name;
+        }
+        return reverseMapping;
+    };
 
     return _;
 } ();

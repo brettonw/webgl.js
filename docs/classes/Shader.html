@@ -26,7 +26,7 @@
             </li>
         </div>
         <form class="navbar-form pull-right" style="line-height: 40px; height: 40px;">
-            <input style="margin-top: 0;" type="text" class="search-query" placeholder="Search for classes/modules..." data-obj='["classes/Cloud", "classes/Node", "classes/Render", "classes/Shader", "classes/Utility"]'>
+            <input style="margin-top: 0;" type="text" class="search-query" placeholder="Search for classes/modules..." data-obj='["classes/Cloud", "classes/Float4x4", "classes/FloatNxN", "classes/Node", "classes/Render", "classes/Shader", "classes/Utility"]'>
         </form>
     </div>
 </div>
@@ -38,6 +38,8 @@
     <div id="classes">
         <ul id="api-classes" class="nav nav-list">
                 <li><a href="../classes/Cloud.html">Cloud</a></li>
+                <li><a href="../classes/Float4x4.html">Float4x4</a></li>
+                <li><a href="../classes/FloatNxN.html">FloatNxN</a></li>
                 <li><a href="../classes/Node.html">Node</a></li>
                 <li><a href="../classes/Render.html">Render</a></li>
                 <li><a href="../classes/Shader.html">Shader</a></li>
@@ -97,7 +99,8 @@
 			<strong>Methods</strong>
 			<ul>
 				<li><a href="#method-getName"><span class="im">getName</span>()</a></li>
-				<li><a href="#method-new"><span class="im">new</span>(<span class="ia">name</span><span class="ia">vertexShaderUrl</span><span class="ia">fragmentShaderUrl</span><span class="ia">attributeMapping</span>)</a></li>
+				<li><a href="#method-new"><span class="im">new</span>(<span class="ia">name</span><span class="ia">vertexShaderUrl</span><span class="ia">fragmentShaderUrl</span><span class="ia">attributeMapping</span><span class="ia">parameterMapping</span>)</a></li>
+				<li><a href="#method-setStandardParameters"><span class="im">setStandardParameters</span>(<span class="ia">parameters</span>)</a></li>
 				<li><a href="#method-use"><span class="im">use</span>()</a></li>
 			</ul>
 		</li>
@@ -112,7 +115,7 @@
 				<li><a href="#method-bindTextureAttribute"><span class="im">Shader.bindTextureAttribute</span>(<span class="ia">buffer</span>)</a></li>
 				<li><a href="#method-get"><span class="im">Shader.get</span>()</a></li>
 				<li><a href="#method-getCurrentShader"><span class="im">Shader.getCurrentShader</span>()</a></li>
-				<li><a href="#method-new"><span class="im">Shader.new</span>(<span class="ia">name</span><span class="ia">vertexShaderUrl</span><span class="ia">fragmentShaderUrl</span><span class="ia">attributeMapping</span>)</a></li>
+				<li><a href="#method-new"><span class="im">Shader.new</span>(<span class="ia">name</span><span class="ia">vertexShaderUrl</span><span class="ia">fragmentShaderUrl</span><span class="ia">attributeMapping</span><span class="ia">parameterMapping</span>)</a></li>
 			</ul>
 		</li>
 	</ul>
@@ -142,14 +145,14 @@
 	<div class="meta">
 				<p>
 				Defined in
-		<a href="../files/src_main_javascript_shader.js.html#l186"><code>src&#x2F;main&#x2F;javascript&#x2F;shader.js:186</code></a>
+		<a href="../files/src_main_javascript_shader.js.html#l208"><code>src&#x2F;main&#x2F;javascript&#x2F;shader.js:208</code></a>
 		</p>
 
 
 
 	</div>
 
-	<div class="description"><p>Get the name of this shader</p>
+	<div class="description"><p>get the name of this shader</p>
 </div>
 
 
@@ -182,6 +185,9 @@
 				<li class="arg">
 						<code>attributeMapping</code>
 				</li>
+				<li class="arg">
+						<code>parameterMapping</code>
+				</li>
 			</ul><span class="paren">)</span>
 		</div>
 		<span class="returns-inline">
@@ -204,7 +210,7 @@
 
 	</div>
 
-	<div class="description"><p>The initializer for a shader.</p>
+	<div class="description"><p>the initializer for a shader.</p>
 </div>
 
 		<div class="params">
@@ -243,8 +249,76 @@
 						<span class="type">Object</span>
 
 
-					<div class="param-description"><p>maps POSITION, NORMAL, and TEXTURE attributes to the
-attribute names in the shader</p>
+					<div class="param-description"><p>maps standard attribute names to the names used in the shader</p>
+</div>
+
+				</li>
+				<li class="param">
+						<code class="param-name">parameterMapping</code>
+						<span class="type">Object</span>
+
+
+					<div class="param-description"><p>maps standard parameter names to the names used in the shader</p>
+</div>
+
+				</li>
+			</ul>
+		</div>
+
+		<div class="returns">
+			<h4>Returns:</h4>
+
+			<div class="returns-description">
+						<span class="type"><a href="../classes/Shader.html" class="crosslink">Shader</a></span>
+			</div>
+		</div>
+
+</div>
+<div id="method-setStandardParameters" class="method item">
+	<div class="method-signature">
+	<span class="name"><code>setStandardParameters</code></span>
+
+		<div class="args">
+			<span class="paren">(</span><ul class="args-list inline commas">
+				<li class="arg">
+						<code>parameters</code>
+				</li>
+			</ul><span class="paren">)</span>
+		</div>
+		<span class="returns-inline">
+			<span class="type"><a href="../classes/Shader.html" class="crosslink">Shader</a></span>
+		</span>
+	</div>
+
+
+
+
+
+
+	<div class="meta">
+				<p>
+				Defined in
+		<a href="../files/src_main_javascript_shader.js.html#l120"><code>src&#x2F;main&#x2F;javascript&#x2F;shader.js:120</code></a>
+		</p>
+
+
+
+	</div>
+
+	<div class="description"><p>set the standard shader parameters in one call.</p>
+</div>
+
+		<div class="params">
+			<h4>Parameters:</h4>
+
+			<ul class="params-list">
+				<li class="param">
+						<code class="param-name">parameters</code>
+						<span class="type">Object</span>
+
+
+					<div class="param-description"><p>a mapping of standard parameter names to values, as specified in
+the initialization of the shader</p>
 </div>
 
 				</li>
@@ -276,14 +350,14 @@ attribute names in the shader</p>
 	<div class="meta">
 				<p>
 				Defined in
-		<a href="../files/src_main_javascript_shader.js.html#l172"><code>src&#x2F;main&#x2F;javascript&#x2F;shader.js:172</code></a>
+		<a href="../files/src_main_javascript_shader.js.html#l194"><code>src&#x2F;main&#x2F;javascript&#x2F;shader.js:194</code></a>
 		</p>
 
 
 
 	</div>
 
-	<div class="description"><p>Set this as the current shader in the rendering context.</p>
+	<div class="description"><p>set this as the current shader in the rendering context.</p>
 </div>
 
 
@@ -322,14 +396,14 @@ attribute names in the shader</p>
 	<div class="meta">
 				<p>
 				Defined in
-		<a href="../files/src_main_javascript_shader.js.html#l137"><code>src&#x2F;main&#x2F;javascript&#x2F;shader.js:137</code></a>
+		<a href="../files/src_main_javascript_shader.js.html#l159"><code>src&#x2F;main&#x2F;javascript&#x2F;shader.js:159</code></a>
 		</p>
 
 
 
 	</div>
 
-	<div class="description"><p>Bind the NORMAL attribute to the given buffer.</p>
+	<div class="description"><p>bind the NORMAL attribute to the given buffer.</p>
 </div>
 
 		<div class="params">
@@ -381,14 +455,14 @@ attribute names in the shader</p>
 	<div class="meta">
 				<p>
 				Defined in
-		<a href="../files/src_main_javascript_shader.js.html#l125"><code>src&#x2F;main&#x2F;javascript&#x2F;shader.js:125</code></a>
+		<a href="../files/src_main_javascript_shader.js.html#l147"><code>src&#x2F;main&#x2F;javascript&#x2F;shader.js:147</code></a>
 		</p>
 
 
 
 	</div>
 
-	<div class="description"><p>Bind the POSITION attribute to the given buffer.</p>
+	<div class="description"><p>bind the POSITION attribute to the given buffer.</p>
 </div>
 
 		<div class="params">
@@ -440,14 +514,14 @@ attribute names in the shader</p>
 	<div class="meta">
 				<p>
 				Defined in
-		<a href="../files/src_main_javascript_shader.js.html#l149"><code>src&#x2F;main&#x2F;javascript&#x2F;shader.js:149</code></a>
+		<a href="../files/src_main_javascript_shader.js.html#l171"><code>src&#x2F;main&#x2F;javascript&#x2F;shader.js:171</code></a>
 		</p>
 
 
 
 	</div>
 
-	<div class="description"><p>Bind the TEXTURE attribute to the given buffer.</p>
+	<div class="description"><p>bind the TEXTURE attribute to the given buffer.</p>
 </div>
 
 		<div class="params">
@@ -493,14 +567,14 @@ attribute names in the shader</p>
 	<div class="meta">
 				<p>
 				Defined in
-		<a href="../files/src_main_javascript_shader.js.html#l220"><code>src&#x2F;main&#x2F;javascript&#x2F;shader.js:220</code></a>
+		<a href="../files/src_main_javascript_shader.js.html#l271"><code>src&#x2F;main&#x2F;javascript&#x2F;shader.js:271</code></a>
 		</p>
 
 
 
 	</div>
 
-	<div class="description"><p>Fetch a shader by name.</p>
+	<div class="description"><p>fetch a shader by name.</p>
 </div>
 
 
@@ -531,14 +605,14 @@ attribute names in the shader</p>
 	<div class="meta">
 				<p>
 				Defined in
-		<a href="../files/src_main_javascript_shader.js.html#l161"><code>src&#x2F;main&#x2F;javascript&#x2F;shader.js:161</code></a>
+		<a href="../files/src_main_javascript_shader.js.html#l183"><code>src&#x2F;main&#x2F;javascript&#x2F;shader.js:183</code></a>
 		</p>
 
 
 
 	</div>
 
-	<div class="description"><p>Fetch the shader currently in use.</p>
+	<div class="description"><p>fetch the shader currently in use.</p>
 </div>
 
 
@@ -569,6 +643,9 @@ attribute names in the shader</p>
 				<li class="arg">
 						<code>attributeMapping</code>
 				</li>
+				<li class="arg">
+						<code>parameterMapping</code>
+				</li>
 			</ul><span class="paren">)</span>
 		</div>
 		<span class="returns-inline">
@@ -584,14 +661,14 @@ attribute names in the shader</p>
 	<div class="meta">
 				<p>
 				Defined in
-		<a href="../files/src_main_javascript_shader.js.html#l196"><code>src&#x2F;main&#x2F;javascript&#x2F;shader.js:196</code></a>
+		<a href="../files/src_main_javascript_shader.js.html#l218"><code>src&#x2F;main&#x2F;javascript&#x2F;shader.js:218</code></a>
 		</p>
 
 
 
 	</div>
 
-	<div class="description"><p>Static method to create and construct a new Shader.</p>
+	<div class="description"><p>static method to create and construct a new Shader.</p>
 </div>
 
 		<div class="params">
@@ -631,11 +708,30 @@ attribute names in the shader</p>
 
 
 					<div class="param-description"><p>maps POSITION, NORMAL, and TEXTURE attributes to the
-attribute names in the shader. Defaults to:</p>
+attribute names in the shader. This allows the engine to manage the attributes without
+forcing the shader author to use "standard" names for everything. Defaults to:</p>
 <ul>
 <li>POSITION_ATTRIBUTE: "inputPosition"</li>
 <li>NORMAL_ATTRIBUTE: "inputNormal"</li>
 <li>TEXTURE_ATTRIBUTE: "inputTexture"</li>
+</ul>
+</div>
+
+				</li>
+				<li class="param">
+						<code class="param-name">parameterMapping</code>
+						<span class="type">Object</span>
+
+
+					<div class="param-description"><p>maps standard parameters to the parameter names in the
+shader. This allows the engine to manage setting the standard set of parameters on the shader
+without forcing the shader author to use "standard" names. Defaults to:</p>
+<ul>
+<li>MODEL_MATRIX_PARAMETER: "modelMatrix"</li>
+<li>VIEW_MATRIX_PARAMETER: "viewMatrix"</li>
+<li>PROJECTION_MATRIX_PARAMETER: "projectionMatrix"</li>
+<li>NORMAL_MATRIX_PARAMETER: "normalMatrix"</li>
+<li>OUTPUT_ALPHA_PARAMETER: "outputAlpha"</li>
 </ul>
 </div>
 
