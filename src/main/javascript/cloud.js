@@ -7,15 +7,13 @@ let Cloud = function () {
     let _ = Object.create (Node);
 
     /**
-     * the initializer for a shader.
+     * the initializer for a cloud.
      *
-     * @method new
-     * @param {string} name name to retrieve this shader
-     * @param {string} vertexShaderUrl url to the vertex shader GLSL file
-     * @param {string} fragmentShaderUrl url to the fragment shader GLSL file
-     * @param {Object} attributeMapping maps standard attribute names to the names used in the shader
-     * @param {Object} parameterMapping maps standard parameter names to the names used in the shader
-     * @return {Shader}
+     * @method construct
+     * @param {Object} parameters an object with optional information for the cloud node, including:
+     * * pointShape: (default = "sphere2")
+     * * pointSize: (default = 0.02)
+     * @return {Cloud}
      */
     _.construct = function (parameters) {
         // call the superclass constructor on this object
@@ -23,7 +21,7 @@ let Cloud = function () {
 
         // look to see if the user has provided a point shape or size to use
         this.pointShape =  ("pointShape" in parameters) ? parameters.pointShape : "sphere2";
-        this.pointSize =  ("pointSize" in parameters) ? parameters.pointSize : [0.02, 0.02, 0.02];
+        this.pointSize =  ("pointSize" in parameters) ? parameters.pointSize : 0.02;
 
         return this;
     };

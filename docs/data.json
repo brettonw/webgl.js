@@ -190,45 +190,25 @@
         {
             "file": "src/main/javascript/cloud.js",
             "line": 9,
-            "description": "the initializer for a shader.",
+            "description": "the initializer for a cloud.",
             "itemtype": "method",
-            "name": "new",
+            "name": "construct",
             "params": [
                 {
-                    "name": "name",
-                    "description": "name to retrieve this shader",
-                    "type": "String"
-                },
-                {
-                    "name": "vertexShaderUrl",
-                    "description": "url to the vertex shader GLSL file",
-                    "type": "String"
-                },
-                {
-                    "name": "fragmentShaderUrl",
-                    "description": "url to the fragment shader GLSL file",
-                    "type": "String"
-                },
-                {
-                    "name": "attributeMapping",
-                    "description": "maps standard attribute names to the names used in the shader",
-                    "type": "Object"
-                },
-                {
-                    "name": "parameterMapping",
-                    "description": "maps standard parameter names to the names used in the shader",
+                    "name": "parameters",
+                    "description": "an object with optional information for the cloud node, including:\n* pointShape: (default = \"sphere2\")\n* pointSize: (default = 0.02)",
                     "type": "Object"
                 }
             ],
             "return": {
                 "description": "",
-                "type": "Shader"
+                "type": "Cloud"
             },
             "class": "Cloud"
         },
         {
             "file": "src/main/javascript/cloud.js",
-            "line": 31,
+            "line": 29,
             "description": "add a point to the cloud.",
             "itemtype": "method",
             "name": "addPoint",
@@ -244,7 +224,7 @@
         },
         {
             "file": "src/main/javascript/cloud.js",
-            "line": 48,
+            "line": 46,
             "description": "static method to create and construct a new cloud node.",
             "itemtype": "method",
             "name": "new",
@@ -474,7 +454,7 @@
             "line": 36,
             "description": "the initializer for a shader.",
             "itemtype": "method",
-            "name": "new",
+            "name": "construct",
             "params": [
                 {
                     "name": "name",

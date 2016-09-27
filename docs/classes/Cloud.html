@@ -99,7 +99,7 @@
 			<strong>Methods</strong>
 			<ul>
 				<li><a href="#method-addPoint"><span class="im">addPoint</span>(<span class="ia">point</span>)</a></li>
-				<li><a href="#method-new"><span class="im">new</span>(<span class="ia">name</span><span class="ia">vertexShaderUrl</span><span class="ia">fragmentShaderUrl</span><span class="ia">attributeMapping</span><span class="ia">parameterMapping</span>)</a></li>
+				<li><a href="#method-construct"><span class="im">construct</span>(<span class="ia">parameters</span>)</a></li>
 			</ul>
 		</li>
 
@@ -142,7 +142,7 @@
 	<div class="meta">
 				<p>
 				Defined in
-		<a href="../files/src_main_javascript_cloud.js.html#l31"><code>src&#x2F;main&#x2F;javascript&#x2F;cloud.js:31</code></a>
+		<a href="../files/src_main_javascript_cloud.js.html#l29"><code>src&#x2F;main&#x2F;javascript&#x2F;cloud.js:29</code></a>
 		</p>
 
 
@@ -170,31 +170,19 @@
 
 
 </div>
-<div id="method-new" class="method item">
+<div id="method-construct" class="method item">
 	<div class="method-signature">
-	<span class="name"><code>new</code></span>
+	<span class="name"><code>construct</code></span>
 
 		<div class="args">
 			<span class="paren">(</span><ul class="args-list inline commas">
 				<li class="arg">
-						<code>name</code>
-				</li>
-				<li class="arg">
-						<code>vertexShaderUrl</code>
-				</li>
-				<li class="arg">
-						<code>fragmentShaderUrl</code>
-				</li>
-				<li class="arg">
-						<code>attributeMapping</code>
-				</li>
-				<li class="arg">
-						<code>parameterMapping</code>
+						<code>parameters</code>
 				</li>
 			</ul><span class="paren">)</span>
 		</div>
 		<span class="returns-inline">
-			<span class="type"><a href="../classes/Shader.html" class="crosslink">Shader</a></span>
+			<span class="type"><a href="../classes/Cloud.html" class="crosslink">Cloud</a></span>
 		</span>
 	</div>
 
@@ -213,7 +201,7 @@
 
 	</div>
 
-	<div class="description"><p>the initializer for a shader.</p>
+	<div class="description"><p>the initializer for a cloud.</p>
 </div>
 
 		<div class="params">
@@ -221,47 +209,15 @@
 
 			<ul class="params-list">
 				<li class="param">
-						<code class="param-name">name</code>
-						<span class="type">String</span>
-
-
-					<div class="param-description"><p>name to retrieve this shader</p>
-</div>
-
-				</li>
-				<li class="param">
-						<code class="param-name">vertexShaderUrl</code>
-						<span class="type">String</span>
-
-
-					<div class="param-description"><p>url to the vertex shader GLSL file</p>
-</div>
-
-				</li>
-				<li class="param">
-						<code class="param-name">fragmentShaderUrl</code>
-						<span class="type">String</span>
-
-
-					<div class="param-description"><p>url to the fragment shader GLSL file</p>
-</div>
-
-				</li>
-				<li class="param">
-						<code class="param-name">attributeMapping</code>
+						<code class="param-name">parameters</code>
 						<span class="type">Object</span>
 
 
-					<div class="param-description"><p>maps standard attribute names to the names used in the shader</p>
-</div>
-
-				</li>
-				<li class="param">
-						<code class="param-name">parameterMapping</code>
-						<span class="type">Object</span>
-
-
-					<div class="param-description"><p>maps standard parameter names to the names used in the shader</p>
+					<div class="param-description"><p>an object with optional information for the cloud node, including:</p>
+<ul>
+<li>pointShape: (default = "sphere2")</li>
+<li>pointSize: (default = 0.02)</li>
+</ul>
 </div>
 
 				</li>
@@ -272,7 +228,7 @@
 			<h4>Returns:</h4>
 
 			<div class="returns-description">
-						<span class="type"><a href="../classes/Shader.html" class="crosslink">Shader</a></span>
+						<span class="type"><a href="../classes/Cloud.html" class="crosslink">Cloud</a></span>
 			</div>
 		</div>
 
@@ -310,7 +266,7 @@
 	<div class="meta">
 				<p>
 				Defined in
-		<a href="../files/src_main_javascript_cloud.js.html#l48"><code>src&#x2F;main&#x2F;javascript&#x2F;cloud.js:48</code></a>
+		<a href="../files/src_main_javascript_cloud.js.html#l46"><code>src&#x2F;main&#x2F;javascript&#x2F;cloud.js:46</code></a>
 		</p>
 
 
