@@ -11,3 +11,7 @@
 #define DEBUGGER
 
 #endif
+
+// default values...
+#define DEFAULT_VALUE(value, defaultValue) (typeof value !== "undefined") ? value : defaultValue
+#define DEFAULT_FUNCTION(value, defaultFunction) (typeof value !== "undefined") ? value : defaultFunction ()

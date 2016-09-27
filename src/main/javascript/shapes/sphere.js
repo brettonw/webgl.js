@@ -13,7 +13,7 @@ let Sphere = function () {
 
         let addVertex = function (vertex) {
             return builder.addVertex (Float3.normalize (vertex));
-        }
+        };
 
         let baseShapeBuilder = this.parameters.baseShapeBuilderType.getShapeBuilder ();
 
@@ -54,12 +54,17 @@ let Sphere = function () {
     };
 
     _.makeFromBuilder = function (name, builder) {
-        name = (typeof name !== "undefined") ? name : this.name;
+        name = DEFAULT_VALUE(name, this.name);
         return Shape.new (name, function () {
             let buffers = builder.makeBuffers ();
             buffers.normal = buffers.position;
             return buffers;
         });
+    };
+
+    _.makeN = function (n) {
+        this.parameters.subdivisions = n;
+        this.make (this.name + n);
     };
 
     return _;

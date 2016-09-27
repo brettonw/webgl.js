@@ -17,10 +17,24 @@ let Render = function () {
      */
     _.construct = function (canvasId) {
         let canvas = this.canvas = document.getElementById (canvasId);
-        let context = this.context = canvas.getContext ("webgl", { preserveDrawingBuffer: true });
+        context = this.context = canvas.getContext ("webgl", { preserveDrawingBuffer: true });
         context.viewportWidth = canvas.width;
         context.viewportHeight = canvas.height;
         context.viewport (0, 0, context.viewportWidth, context.viewportHeight);
+
+        // create the basic shader by default
+        Shader.new ("basic");
+
+        // make some shapes we might use
+        Tetrahedron.make();
+        Hexahedron.make();
+        Octahedron.make();
+        Icosahedron.make();
+        Square.make();
+        Sphere.makeN(2);
+        Sphere.makeN(3);
+        Sphere.makeN(5);
+
         return this;
     };
 

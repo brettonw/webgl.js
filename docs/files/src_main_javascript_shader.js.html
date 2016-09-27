@@ -327,8 +327,8 @@ let Shader = function () {
         // default value for the vertex shader
 
         // default value for the fragment shader
-        vertexShaderUrl = Utility.defaultValue (vertexShaderUrl, &quot;shaders/vertex-basic.glsl&quot;);
-        fragmentShaderUrl = Utility.defaultValue (fragmentShaderUrl, &quot;shaders/fragment-basic.glsl&quot;);
+        vertexShaderUrl = DEFAULT_VALUE(vertexShaderUrl, &quot;http://webgl-render.azurewebsites.net/site/shaders/vertex-basic.glsl&quot;);
+        fragmentShaderUrl = DEFAULT_VALUE(fragmentShaderUrl, &quot;http://webgl-render.azurewebsites.net/site/shaders/fragment-basic.glsl&quot;);
 
         // default values for the attribute mapping
         attributeMapping = Utility.defaultFunction (attributeMapping, function () {
@@ -365,6 +365,7 @@ let Shader = function () {
 
     return _;
 } ();
+
 
     </pre>
 </div>

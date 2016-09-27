@@ -2,7 +2,7 @@ let ShapeBuilder = function () {
     let _ = Object.create (null);
 
     _.construct = function (precision) {
-        this.precision = (typeof precision !== "undefined") ?  precision : 7;
+        this.precision = DEFAULT_VALUE(precision, 7);
         this.vertexIndex = Object.create (null);
         this.vertices = [];
         this.faces = [];
@@ -26,6 +26,7 @@ let ShapeBuilder = function () {
     };
 
     _.makeBuffers = function () {
+        LOG(this.vertices.length + " vertices for " + this.faces.length + " faces");
         return {
             position: Utility.flatten(this.vertices),
             index: Utility.flatten(this.faces)

@@ -9,7 +9,7 @@ let Node = function () {
     let nodes = Object.create (null);
 
     /**
-     * The initializer for a scene graph node.
+     * the initializer for a scene graph node.
      *
      * @method construct
      * @param {Object} parameters an object with optional information to include in the node. The
@@ -69,7 +69,10 @@ let Node = function () {
         }
 
         // now make a traverse function depending on the included features
-        let INVALID_TRAVERSE = function (transform) { LOG ("WARNING: INVALID TRAVERSE"); };
+        let INVALID_TRAVERSE = function (transform) {
+            LOG ("WARNING: INVALID TRAVERSE");
+            return this;
+        };
         LOG ("Node (" + this.getName () + "): traverse (" + traverseFunctionIndex + ")");
         this.traverse = [
             // 0 nothing
@@ -84,6 +87,7 @@ let Node = function () {
             function (standardParameters) {
                 Shader.getCurrentShader ().setStandardParameters (standardParameters);
                 this.shape.draw ();
+                return this;
             },
             // 5 transform, shape
             function (standardParameters) {
@@ -91,6 +95,7 @@ let Node = function () {
                 standardParameters.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardParameters.MODEL_MATRIX_PARAMETER));
                 Shader.getCurrentShader ().setStandardParameters (standardParameters);
                 this.shape.draw ();
+                return this;
             },
             // 6 state, shape
             function (standardParameters) {
@@ -98,6 +103,7 @@ let Node = function () {
                 standardParameters.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardParameters.MODEL_MATRIX_PARAMETER));
                 Shader.getCurrentShader ().setStandardParameters (standardParameters);
                 this.shape.draw ();
+                return this;
             },
             // 7 transform, state, shape
             function (standardParameters) {
@@ -106,6 +112,7 @@ let Node = function () {
                 standardParameters.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardParameters.MODEL_MATRIX_PARAMETER));
                 Shader.getCurrentShader ().setStandardParameters (standardParameters);
                 this.shape.draw ();
+                return this;
             },
             // 8 children only
             function (standardParameters) {
@@ -114,6 +121,7 @@ let Node = function () {
                     standardParameters.MODEL_MATRIX_PARAMETER = modelMatrix;
                     child.traverse (standardParameters);
                 }
+                return this;
             },
             // 9 transform, children
             function (standardParameters) {
@@ -122,6 +130,7 @@ let Node = function () {
                     standardParameters.MODEL_MATRIX_PARAMETER = modelMatrix;
                     child.traverse (standardParameters);
                 }
+                return this;
             },
             // 10 state, children
             function (standardParameters) {
@@ -131,6 +140,7 @@ let Node = function () {
                     standardParameters.MODEL_MATRIX_PARAMETER = modelMatrix;
                     child.traverse (standardParameters);
                 }
+                return this;
             },
             // 11 transform, state, children
             function (standardParameters) {
@@ -140,6 +150,7 @@ let Node = function () {
                     standardParameters.MODEL_MATRIX_PARAMETER = modelMatrix;
                     child.traverse (standardParameters);
                 }
+                return this;
             },
             // 12 shape, children
             function (standardParameters) {
@@ -151,6 +162,7 @@ let Node = function () {
                     standardParameters.MODEL_MATRIX_PARAMETER = modelMatrix;
                     child.traverse (standardParameters);
                 }
+                return this;
             },
             // 13 transform, shape, children
             function (standardParameters) {
@@ -162,6 +174,7 @@ let Node = function () {
                     standardParameters.MODEL_MATRIX_PARAMETER = modelMatrix;
                     child.traverse (standardParameters);
                 }
+                return this;
             },
             // 14 state, shape, children
             function (standardParameters) {
@@ -174,6 +187,7 @@ let Node = function () {
                     standardParameters.MODEL_MATRIX_PARAMETER = modelMatrix;
                     child.traverse (standardParameters);
                 }
+                return this;
             },
             // 15 transform, state, shape, children
             function (standardParameters) {
@@ -186,6 +200,7 @@ let Node = function () {
                     standardParameters.MODEL_MATRIX_PARAMETER = modelMatrix;
                     child.traverse (standardParameters);
                 }
+                return this;
             }
         ][traverseFunctionIndex];
 
@@ -193,7 +208,7 @@ let Node = function () {
     };
 
     /**
-     * Add a child node (only applies to non-leaf nodes)
+     * add a child node (only applies to non-leaf nodes).
      *
      * @method addChild
      * @param {Node} node the node to add as a child.
@@ -209,7 +224,19 @@ let Node = function () {
     };
 
     /**
-     * Get the name of this node (if it has one)
+     * render this node and its contents.
+     *
+     * @method traverse
+     * @param {Object} standardParameters the container for standard parameters, as documented in
+     * Shader
+     * @chainable
+     */
+    _.traverse = function (standardParameters) {
+        return this;
+    }
+
+    /**
+     * get the name of this node (if it has one).
      *
      * @method getName
      * @return {string} the name of this node, or just "node".
@@ -219,7 +246,7 @@ let Node = function () {
     };
 
     /**
-     * Get a node by name
+     * get a node by name.
      *
      * @method get
      * @param {string} name the name of the node to retrieve.
@@ -230,7 +257,7 @@ let Node = function () {
     };
 
     /**
-     * Static method to create and construct a new scene graph node.
+     * static method to create and construct a new scene graph node.
      *
      * @method new
      * @static

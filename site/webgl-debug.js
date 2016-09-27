@@ -1,4 +1,7 @@
 "use strict;"
+// default values...
+
+
 let context;
 
 /**
@@ -18,10 +21,24 @@ let Render = function () {
      */
     _.construct = function (canvasId) {
         let canvas = this.canvas = document.getElementById (canvasId);
-        let context = this.context = canvas.getContext ("webgl", { preserveDrawingBuffer: true });
+        context = this.context = canvas.getContext ("webgl", { preserveDrawingBuffer: true });
         context.viewportWidth = canvas.width;
         context.viewportHeight = canvas.height;
         context.viewport (0, 0, context.viewportWidth, context.viewportHeight);
+
+        // create the basic shader by default
+        Shader.new ("basic");
+
+        // make some shapes we might use
+        Tetrahedron.make();
+        Hexahedron.make();
+        Octahedron.make();
+        Icosahedron.make();
+        Square.make();
+        Sphere.makeN(2);
+        Sphere.makeN(3);
+        Sphere.makeN(5);
+
         return this;
     };
 
@@ -246,7 +263,7 @@ let Float3 = function () {
     let _ = FloatN (3);
 
     _.cross = function (left, right, to) {
-        to = (typeof to !== 'undefined') ? to : _.create ();
+        to = (typeof to !== "undefined") ? to : _.create ();
         to[0] = (left[1] * right[2]) - (left[2] * right[1]);
         to[1] = (left[2] * right[0]) - (left[0] * right[2]);
         to[2] = (left[0] * right[1]) - (left[1] * right[0]);
@@ -460,7 +477,7 @@ let Float4x4 = function () {
 
     _.inverse = function (from, to) {
         // adapted from a bit of obfuscated, unwound, code
-        to = (typeof to !== "undefined") ? to : this.create ();
+        to = (typeof to !== "undefined") ? to : _.create ();
         let A = from[0] * from[5] - from[1] * from[4], B = from[0] * from[6] - from[2] * from[4],
             C = from[9] * from[14] - from[10] * from[13], D = from[9] * from[15] - from[11] * from[13],
             E = from[10] * from[15] - from[11] * from[14], F = from[0] * from[7] - from[3] * from[4],
@@ -620,26 +637,26 @@ let Float4x4 = function () {
         return c;
     };
 
-    _.frustum = function (a, b, c, d, e, g, f) {
-        f || (f = _.create ());
+    _.frustum = function (a, b, c, d, e, g, to) {
+        to = (typeof to !== "undefined") ? to : _.create ();
         let h = b - a, i = d - c, j = g - e;
-        f[0] = e * 2 / h;
-        f[1] = 0;
-        f[2] = 0;
-        f[3] = 0;
-        f[4] = 0;
-        f[5] = e * 2 / i;
-        f[6] = 0;
-        f[7] = 0;
-        f[8] = (b + a) / h;
-        f[9] = (d + c) / i;
-        f[10] = -(g + e) / j;
-        f[11] = -1;
-        f[12] = 0;
-        f[13] = 0;
-        f[14] = -(g * e * 2) / j;
-        f[15] = 0;
-        return f;
+        to[0] = e * 2 / h;
+        to[1] = 0;
+        to[2] = 0;
+        to[3] = 0;
+        to[4] = 0;
+        to[5] = e * 2 / i;
+        to[6] = 0;
+        to[7] = 0;
+        to[8] = (b + a) / h;
+        to[9] = (d + c) / i;
+        to[10] = -(g + e) / j;
+        to[11] = -1;
+        to[12] = 0;
+        to[13] = 0;
+        to[14] = -(g * e * 2) / j;
+        to[15] = 0;
+        return to;
     };
 
     _.perspective = function (a, b, c, d, e) {
@@ -648,36 +665,36 @@ let Float4x4 = function () {
         return _.frustum (-b, b, -a, a, c, d, e);
     };
 
-    _.ortho = function (a, b, c, d, e, g, f) {
-        f || (f = _.create ());
+    _.ortho = function (a, b, c, d, e, g, to) {
+        to = (typeof to !== "undefined") ? to : _.create ();
         let h = b - a, i = d - c, j = g - e;
-        f[0] = 2 / h;
-        f[1] = 0;
-        f[2] = 0;
-        f[3] = 0;
-        f[4] = 0;
-        f[5] = 2 / i;
-        f[6] = 0;
-        f[7] = 0;
-        f[8] = 0;
-        f[9] = 0;
-        f[10] = -2 / j;
-        f[11] = 0;
-        f[12] = -(a + b) / h;
-        f[13] = -(d + c) / i;
-        f[14] = -(g + e) / j;
-        f[15] = 1;
-        return f;
+        to[0] = 2 / h;
+        to[1] = 0;
+        to[2] = 0;
+        to[3] = 0;
+        to[4] = 0;
+        to[5] = 2 / i;
+        to[6] = 0;
+        to[7] = 0;
+        to[8] = 0;
+        to[9] = 0;
+        to[10] = -2 / j;
+        to[11] = 0;
+        to[12] = -(a + b) / h;
+        to[13] = -(d + c) / i;
+        to[14] = -(g + e) / j;
+        to[15] = 1;
+        return to;
     };
 
-    _.lookAt = function (a, b, c, d) {
-        d || (d = _.create ());
+    _.lookAt = function (a, b, c, to) {
+        to = (typeof to !== "undefined") ? to : _.create ();
         let e = a[0], g = a[1];
         a = a[2];
         let f = c[0], h = c[1], i = c[2];
         c = b[1];
         let j = b[2];
-        if (e == b[0] && g == c && a == j)return _.identity (d);
+        if (e == b[0] && g == c && a == j)return _.identity (to);
         let k, l, o, m;
         c = e - b[0];
         j = g - b[1];
@@ -704,24 +721,24 @@ let Float4x4 = function () {
             l *= m;
             o *= m
         } else o = l = h = 0;
-        d[0] = k;
-        d[1] = h;
-        d[2] = c;
-        d[3] = 0;
-        d[4] = i;
-        d[5] = l;
-        d[6] = j;
-        d[7] = 0;
-        d[8] = f;
-        d[9] =
+        to[0] = k;
+        to[1] = h;
+        to[2] = c;
+        to[3] = 0;
+        to[4] = i;
+        to[5] = l;
+        to[6] = j;
+        to[7] = 0;
+        to[8] = f;
+        to[9] =
             o;
-        d[10] = b;
-        d[11] = 0;
-        d[12] = -(k * e + i * g + f * a);
-        d[13] = -(h * e + l * g + o * a);
-        d[14] = -(c * e + j * g + b * a);
-        d[15] = 1;
-        return d;
+        to[10] = b;
+        to[11] = 0;
+        to[12] = -(k * e + i * g + f * a);
+        to[13] = -(h * e + l * g + o * a);
+        to[14] = -(c * e + j * g + b * a);
+        to[15] = 1;
+        return to;
     };
 
     /**
@@ -1126,8 +1143,8 @@ let Shader = function () {
         // default value for the vertex shader
 
         // default value for the fragment shader
-        vertexShaderUrl = Utility.defaultValue (vertexShaderUrl, "shaders/vertex-basic.glsl");
-        fragmentShaderUrl = Utility.defaultValue (fragmentShaderUrl, "shaders/fragment-basic.glsl");
+        vertexShaderUrl = (typeof vertexShaderUrl !== "undefined") ? vertexShaderUrl : "http://webgl-render.azurewebsites.net/site/shaders/vertex-basic.glsl";
+        fragmentShaderUrl = (typeof fragmentShaderUrl !== "undefined") ? fragmentShaderUrl : "http://webgl-render.azurewebsites.net/site/shaders/fragment-basic.glsl";
 
         // default values for the attribute mapping
         attributeMapping = Utility.defaultFunction (attributeMapping, function () {
@@ -1164,6 +1181,7 @@ let Shader = function () {
 
     return _;
 } ();
+
 let ShaderParameter = function () {
     let _ = Object.create (null);
 
@@ -1282,7 +1300,7 @@ let Node = function () {
     let nodes = Object.create (null);
 
     /**
-     * The initializer for a scene graph node.
+     * the initializer for a scene graph node.
      *
      * @method construct
      * @param {Object} parameters an object with optional information to include in the node. The
@@ -1342,7 +1360,10 @@ let Node = function () {
         }
 
         // now make a traverse function depending on the included features
-        let INVALID_TRAVERSE = function (transform) { console.log ("WARNING: INVALID TRAVERSE"); };
+        let INVALID_TRAVERSE = function (transform) {
+            console.log ("WARNING: INVALID TRAVERSE");
+            return this;
+        };
         console.log ("Node (" + this.getName () + "): traverse (" + traverseFunctionIndex + ")");
         this.traverse = [
             // 0 nothing
@@ -1357,6 +1378,7 @@ let Node = function () {
             function (standardParameters) {
                 Shader.getCurrentShader ().setStandardParameters (standardParameters);
                 this.shape.draw ();
+                return this;
             },
             // 5 transform, shape
             function (standardParameters) {
@@ -1364,6 +1386,7 @@ let Node = function () {
                 standardParameters.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardParameters.MODEL_MATRIX_PARAMETER));
                 Shader.getCurrentShader ().setStandardParameters (standardParameters);
                 this.shape.draw ();
+                return this;
             },
             // 6 state, shape
             function (standardParameters) {
@@ -1371,6 +1394,7 @@ let Node = function () {
                 standardParameters.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardParameters.MODEL_MATRIX_PARAMETER));
                 Shader.getCurrentShader ().setStandardParameters (standardParameters);
                 this.shape.draw ();
+                return this;
             },
             // 7 transform, state, shape
             function (standardParameters) {
@@ -1379,6 +1403,7 @@ let Node = function () {
                 standardParameters.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardParameters.MODEL_MATRIX_PARAMETER));
                 Shader.getCurrentShader ().setStandardParameters (standardParameters);
                 this.shape.draw ();
+                return this;
             },
             // 8 children only
             function (standardParameters) {
@@ -1387,6 +1412,7 @@ let Node = function () {
                     standardParameters.MODEL_MATRIX_PARAMETER = modelMatrix;
                     child.traverse (standardParameters);
                 }
+                return this;
             },
             // 9 transform, children
             function (standardParameters) {
@@ -1395,6 +1421,7 @@ let Node = function () {
                     standardParameters.MODEL_MATRIX_PARAMETER = modelMatrix;
                     child.traverse (standardParameters);
                 }
+                return this;
             },
             // 10 state, children
             function (standardParameters) {
@@ -1404,6 +1431,7 @@ let Node = function () {
                     standardParameters.MODEL_MATRIX_PARAMETER = modelMatrix;
                     child.traverse (standardParameters);
                 }
+                return this;
             },
             // 11 transform, state, children
             function (standardParameters) {
@@ -1413,6 +1441,7 @@ let Node = function () {
                     standardParameters.MODEL_MATRIX_PARAMETER = modelMatrix;
                     child.traverse (standardParameters);
                 }
+                return this;
             },
             // 12 shape, children
             function (standardParameters) {
@@ -1424,6 +1453,7 @@ let Node = function () {
                     standardParameters.MODEL_MATRIX_PARAMETER = modelMatrix;
                     child.traverse (standardParameters);
                 }
+                return this;
             },
             // 13 transform, shape, children
             function (standardParameters) {
@@ -1435,6 +1465,7 @@ let Node = function () {
                     standardParameters.MODEL_MATRIX_PARAMETER = modelMatrix;
                     child.traverse (standardParameters);
                 }
+                return this;
             },
             // 14 state, shape, children
             function (standardParameters) {
@@ -1447,6 +1478,7 @@ let Node = function () {
                     standardParameters.MODEL_MATRIX_PARAMETER = modelMatrix;
                     child.traverse (standardParameters);
                 }
+                return this;
             },
             // 15 transform, state, shape, children
             function (standardParameters) {
@@ -1459,6 +1491,7 @@ let Node = function () {
                     standardParameters.MODEL_MATRIX_PARAMETER = modelMatrix;
                     child.traverse (standardParameters);
                 }
+                return this;
             }
         ][traverseFunctionIndex];
 
@@ -1466,7 +1499,7 @@ let Node = function () {
     };
 
     /**
-     * Add a child node (only applies to non-leaf nodes)
+     * add a child node (only applies to non-leaf nodes).
      *
      * @method addChild
      * @param {Node} node the node to add as a child.
@@ -1482,7 +1515,19 @@ let Node = function () {
     };
 
     /**
-     * Get the name of this node (if it has one)
+     * render this node and its contents.
+     *
+     * @method traverse
+     * @param {Object} standardParameters the container for standard parameters, as documented in
+     * Shader
+     * @chainable
+     */
+    _.traverse = function (standardParameters) {
+        return this;
+    }
+
+    /**
+     * get the name of this node (if it has one).
      *
      * @method getName
      * @return {string} the name of this node, or just "node".
@@ -1492,7 +1537,7 @@ let Node = function () {
     };
 
     /**
-     * Get a node by name
+     * get a node by name.
      *
      * @method get
      * @param {string} name the name of the node to retrieve.
@@ -1503,7 +1548,7 @@ let Node = function () {
     };
 
     /**
-     * Static method to create and construct a new scene graph node.
+     * static method to create and construct a new scene graph node.
      *
      * @method new
      * @static
@@ -1525,6 +1570,15 @@ let Node = function () {
 let Cloud = function () {
     let _ = Object.create (Node);
 
+    _.construct = function (parameters) {
+        let sup = Object.getPrototypeOf(_);
+        sup.construct.call(this, parameters);
+
+        this.pointShape = ("pointShape" in parameters) ? parameters.pointShape : "sphere2";
+
+        return this;
+    };
+
     /**
      * Add a point to the cloud
      *
@@ -1536,7 +1590,7 @@ let Cloud = function () {
         let transform = Float4x4.multiply (Float4x4.scale ([0.025, 0.025, 0.025]), Float4x4.translate (point));
         this.addChild (Node.new ({
             transform: transform,
-            shape: "sphere",
+            shape: this.pointShape,
             children: false
         }));
         return this;
@@ -1739,6 +1793,7 @@ let ShapeBuilder = function () {
     };
 
     _.makeBuffers = function () {
+        console.log (this.vertices.length + " vertices for " + this.faces.length + " faces");
         return {
             position: Utility.flatten(this.vertices),
             index: Utility.flatten(this.faces)
@@ -1967,7 +2022,7 @@ let Sphere = function () {
 
         let addVertex = function (vertex) {
             return builder.addVertex (Float3.normalize (vertex));
-        }
+        };
 
         let baseShapeBuilder = this.parameters.baseShapeBuilderType.getShapeBuilder ();
 
@@ -2016,10 +2071,17 @@ let Sphere = function () {
         });
     };
 
+    _.makeN = function (n) {
+        this.parameters.subdivisions = n;
+        this.make (this.name + n);
+    };
+
     return _;
 } ();
 let makeRevolve = function (name, outline, steps) {
     return Shape.new (name, function () {
+        let builder = ShapeBuilder.new ();
+
         // outline is an array of Float2, and the axis of revolution is x = 0, we make a number of
         // wedges, from top to bottom, to complete the revolution. for each wedge, we will check to
         // see if the first and last x component is at 0, and if so we will generate a triangle
@@ -2042,29 +2104,41 @@ let makeRevolve = function (name, outline, steps) {
                 let vn0 = Float3.fixNum ([vn[0] * Math.cos (iAngle), vn[1], vn[0] * Math.sin (iAngle)]);
                 let vn1 = Float3.fixNum ([vn[0] * Math.cos (jAngle), vn[1], vn[0] * Math.sin (jAngle)]);
 
+                let vm0i = builder.addVertex(vm0);
+                let vm1i = builder.addVertex(vm1);
+                let vn0i = builder.addVertex(vn0);
+                let vn1i = builder.addVertex(vn1);
+
                 if (vm[0] == 0) {
                     // the top cap should be a triangle
                     vertices.push (vm0);
                     vertices.push (vn1);
                     vertices.push (vn0);
+                    builder.addFace([vm0i, vn1i, vn0i]);
                 } else if (vn[0] == 0) {
                     // the bottom cap should be a triangle
                     vertices.push (vn0);
                     vertices.push (vm0);
                     vertices.push (vm1);
+                    builder.addFace([vn0i, vm0i, vm1i]);
                 } else {
                     // the sweep is a quad (normal case)
                     vertices.push (vm0);
                     vertices.push (vn1);
                     vertices.push (vn0);
+                    builder.addFace([vm0i, vn1i, vn0i]);
 
                     vertices.push (vn1);
                     vertices.push (vm0);
                     vertices.push (vm1);
+                    builder.addFace([vn1i, vm0i, vm1i]);
                 }
             }
         }
-        console.log ("Revolved " + vertices.length + " points, for " + (vertices.length / 3) + " triangles.")
+
+        return builder.makeBuffers();
+        /*
+        LOG ("Revolved " + vertices.length + " points, for " + (vertices.length / 3) + " triangles.")
 
         // convert the triangle list to a point list with an index
         let pointIndex = Object.create (null);
@@ -2081,13 +2155,14 @@ let makeRevolve = function (name, outline, steps) {
                 pointIndex[str] = index;
             }
         }
-        console.log ("Reduced to " + points.length + " points.");
+        LOG ("Reduced to " + points.length + " points.");
 
         // return the flattened vertices, and indices
         return {
             position: Utility.flatten (points),
             index: indices
         };
+        */
     });
 };
 let makeBall = function (name, steps) {
@@ -2189,7 +2264,8 @@ let Utility = function () {
     };
 
     /**
-     * provide a default value if the requested value is undefined
+     * provide a default value if the requested value is undefined. this is
+     * here because the macro doesn't handle multiline values.
      *
      * @method defaultValue
      * @param {any} value the value to test for undefined
@@ -2201,7 +2277,8 @@ let Utility = function () {
     };
 
     /**
-     * provide a default value if the requested value is undefined by calling a function
+     * provide a default value if the requested value is undefined by calling a function. this is
+     * here because the macro doesn't handle multiline values.
      *
      * @method defaultFunction
      * @param {any} value the value to test for undefined

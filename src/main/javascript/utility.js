@@ -76,12 +76,13 @@ let Utility = function () {
      * @return {number}
      */
     _.fixNum = function (number, precision) {
-        let fix = (typeof precision !== "undefined") ? precision : 7;
+        let fix = DEFAULT_VALUE(precision, 7);
         return Number.parseFloat (number.toFixed (fix));
     };
 
     /**
-     * provide a default value if the requested value is undefined
+     * provide a default value if the requested value is undefined. this is
+     * here because the macro doesn't handle multiline values.
      *
      * @method defaultValue
      * @param {any} value the value to test for undefined
@@ -89,11 +90,12 @@ let Utility = function () {
      * @return {any}
      */
     _.defaultValue = function (value, defaultValue) {
-        return (typeof value !== "undefined") ? value : defaultValue;
+        return DEFAULT_VALUE(value, defaultValue);
     };
 
     /**
-     * provide a default value if the requested value is undefined by calling a function
+     * provide a default value if the requested value is undefined by calling a function. this is
+     * here because the macro doesn't handle multiline values.
      *
      * @method defaultFunction
      * @param {any} value the value to test for undefined
@@ -101,7 +103,7 @@ let Utility = function () {
      * @return {any}
      */
     _.defaultFunction = function (value, defaultFunction) {
-        return (typeof value !== "undefined") ? value : defaultFunction ();
+        return DEFAULT_FUNCTION(value, defaultFunction);
     };
 
     /**

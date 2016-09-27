@@ -6,6 +6,15 @@
 let Cloud = function () {
     let _ = Object.create (Node);
 
+    _.construct = function (parameters) {
+        let sup = Object.getPrototypeOf(_);
+        sup.construct.call(this, parameters);
+
+        this.pointShape =  ("pointShape" in parameters) ? parameters.pointShape : "sphere2";
+
+        return this;
+    };
+
     /**
      * Add a point to the cloud
      *
@@ -17,7 +26,7 @@ let Cloud = function () {
         let transform = Float4x4.multiply (Float4x4.scale ([0.025, 0.025, 0.025]), Float4x4.translate (point));
         this.addChild (Node.new ({
             transform: transform,
-            shape: "sphere",
+            shape: this.pointShape,
             children: false
         }));
         return this;

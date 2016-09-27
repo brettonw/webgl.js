@@ -26,15 +26,10 @@ let draw = function (delta) {
 let buildScene = function (canvasId, points) {
     Render.new (canvasId).use ();
 
-    Sphere.parameters.subdivisions = 3;
-    Sphere.make ();
+    /*
     makeRevolve ("cylinder", [[1, 1], [1, -1], [0.5, -1]], 36);
     makeBall ("ball", 36);
-    Tetrahedron.make();
-    Hexahedron.make();
-    Octahedron.make();
-    Icosahedron.make();
-    Square.make();
+    */
 
     scene = Node.new ({
         name: "root",
@@ -74,6 +69,7 @@ let buildScene = function (canvasId, points) {
 
     let cloud = Cloud.new ({
         name: "cloud",
+        pointShape: "sphere2",
         state: function (standardParameters) {
             Shader.get ("basic").use ();
             standardParameters.OUTPUT_ALPHA_PARAMETER = 1.0;
@@ -93,7 +89,6 @@ let buildScene = function (canvasId, points) {
     standardParameters.OUTPUT_ALPHA_PARAMETER = 1.0;
 
     Shader.new ("rgb", "shaders/vertex-basic.glsl", "shaders/fragment-rgb.glsl");
-    Shader.new ("basic", "shaders/vertex-basic.glsl", "shaders/fragment-basic.glsl");
 
     draw (0);
 };

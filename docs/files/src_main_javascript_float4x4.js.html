@@ -94,7 +94,7 @@ let Float4x4 = function () {
 
     _.inverse = function (from, to) {
         // adapted from a bit of obfuscated, unwound, code
-        to = (typeof to !== &quot;undefined&quot;) ? to : this.create ();
+        to = DEFAULT_FUNCTION(to, _.create);
         let A = from[0] * from[5] - from[1] * from[4], B = from[0] * from[6] - from[2] * from[4],
             C = from[9] * from[14] - from[10] * from[13], D = from[9] * from[15] - from[11] * from[13],
             E = from[10] * from[15] - from[11] * from[14], F = from[0] * from[7] - from[3] * from[4],
@@ -254,26 +254,26 @@ let Float4x4 = function () {
         return c;
     };
 
-    _.frustum = function (a, b, c, d, e, g, f) {
-        f || (f = _.create ());
+    _.frustum = function (a, b, c, d, e, g, to) {
+        to = DEFAULT_FUNCTION(to, _.create);
         let h = b - a, i = d - c, j = g - e;
-        f[0] = e * 2 / h;
-        f[1] = 0;
-        f[2] = 0;
-        f[3] = 0;
-        f[4] = 0;
-        f[5] = e * 2 / i;
-        f[6] = 0;
-        f[7] = 0;
-        f[8] = (b + a) / h;
-        f[9] = (d + c) / i;
-        f[10] = -(g + e) / j;
-        f[11] = -1;
-        f[12] = 0;
-        f[13] = 0;
-        f[14] = -(g * e * 2) / j;
-        f[15] = 0;
-        return f;
+        to[0] = e * 2 / h;
+        to[1] = 0;
+        to[2] = 0;
+        to[3] = 0;
+        to[4] = 0;
+        to[5] = e * 2 / i;
+        to[6] = 0;
+        to[7] = 0;
+        to[8] = (b + a) / h;
+        to[9] = (d + c) / i;
+        to[10] = -(g + e) / j;
+        to[11] = -1;
+        to[12] = 0;
+        to[13] = 0;
+        to[14] = -(g * e * 2) / j;
+        to[15] = 0;
+        return to;
     };
 
     _.perspective = function (a, b, c, d, e) {
@@ -282,36 +282,36 @@ let Float4x4 = function () {
         return _.frustum (-b, b, -a, a, c, d, e);
     };
 
-    _.ortho = function (a, b, c, d, e, g, f) {
-        f || (f = _.create ());
+    _.ortho = function (a, b, c, d, e, g, to) {
+        to = DEFAULT_FUNCTION(to, _.create);
         let h = b - a, i = d - c, j = g - e;
-        f[0] = 2 / h;
-        f[1] = 0;
-        f[2] = 0;
-        f[3] = 0;
-        f[4] = 0;
-        f[5] = 2 / i;
-        f[6] = 0;
-        f[7] = 0;
-        f[8] = 0;
-        f[9] = 0;
-        f[10] = -2 / j;
-        f[11] = 0;
-        f[12] = -(a + b) / h;
-        f[13] = -(d + c) / i;
-        f[14] = -(g + e) / j;
-        f[15] = 1;
-        return f;
+        to[0] = 2 / h;
+        to[1] = 0;
+        to[2] = 0;
+        to[3] = 0;
+        to[4] = 0;
+        to[5] = 2 / i;
+        to[6] = 0;
+        to[7] = 0;
+        to[8] = 0;
+        to[9] = 0;
+        to[10] = -2 / j;
+        to[11] = 0;
+        to[12] = -(a + b) / h;
+        to[13] = -(d + c) / i;
+        to[14] = -(g + e) / j;
+        to[15] = 1;
+        return to;
     };
 
-    _.lookAt = function (a, b, c, d) {
-        d || (d = _.create ());
+    _.lookAt = function (a, b, c, to) {
+        to = DEFAULT_FUNCTION(to, _.create);
         let e = a[0], g = a[1];
         a = a[2];
         let f = c[0], h = c[1], i = c[2];
         c = b[1];
         let j = b[2];
-        if (e == b[0] &amp;&amp; g == c &amp;&amp; a == j)return _.identity (d);
+        if (e == b[0] &amp;&amp; g == c &amp;&amp; a == j)return _.identity (to);
         let k, l, o, m;
         c = e - b[0];
         j = g - b[1];
@@ -338,24 +338,24 @@ let Float4x4 = function () {
             l *= m;
             o *= m
         } else o = l = h = 0;
-        d[0] = k;
-        d[1] = h;
-        d[2] = c;
-        d[3] = 0;
-        d[4] = i;
-        d[5] = l;
-        d[6] = j;
-        d[7] = 0;
-        d[8] = f;
-        d[9] =
+        to[0] = k;
+        to[1] = h;
+        to[2] = c;
+        to[3] = 0;
+        to[4] = i;
+        to[5] = l;
+        to[6] = j;
+        to[7] = 0;
+        to[8] = f;
+        to[9] =
             o;
-        d[10] = b;
-        d[11] = 0;
-        d[12] = -(k * e + i * g + f * a);
-        d[13] = -(h * e + l * g + o * a);
-        d[14] = -(c * e + j * g + b * a);
-        d[15] = 1;
-        return d;
+        to[10] = b;
+        to[11] = 0;
+        to[12] = -(k * e + i * g + f * a);
+        to[13] = -(h * e + l * g + o * a);
+        to[14] = -(c * e + j * g + b * a);
+        to[15] = 1;
+        return to;
     };
 
     /**
