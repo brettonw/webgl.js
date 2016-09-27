@@ -189,8 +189,47 @@
     "classitems": [
         {
             "file": "src/main/javascript/cloud.js",
-            "line": 18,
-            "description": "Add a point to the cloud",
+            "line": 9,
+            "description": "the initializer for a shader.",
+            "itemtype": "method",
+            "name": "new",
+            "params": [
+                {
+                    "name": "name",
+                    "description": "name to retrieve this shader",
+                    "type": "String"
+                },
+                {
+                    "name": "vertexShaderUrl",
+                    "description": "url to the vertex shader GLSL file",
+                    "type": "String"
+                },
+                {
+                    "name": "fragmentShaderUrl",
+                    "description": "url to the fragment shader GLSL file",
+                    "type": "String"
+                },
+                {
+                    "name": "attributeMapping",
+                    "description": "maps standard attribute names to the names used in the shader",
+                    "type": "Object"
+                },
+                {
+                    "name": "parameterMapping",
+                    "description": "maps standard parameter names to the names used in the shader",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Shader"
+            },
+            "class": "Cloud"
+        },
+        {
+            "file": "src/main/javascript/cloud.js",
+            "line": 31,
+            "description": "add a point to the cloud.",
             "itemtype": "method",
             "name": "addPoint",
             "params": [
@@ -205,8 +244,8 @@
         },
         {
             "file": "src/main/javascript/cloud.js",
-            "line": 35,
-            "description": "Static method to create and construct a new cloud node.",
+            "line": 48,
+            "description": "static method to create and construct a new cloud node.",
             "itemtype": "method",
             "name": "new",
             "static": 1,
