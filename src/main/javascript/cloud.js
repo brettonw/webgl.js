@@ -23,7 +23,7 @@ let Cloud = function () {
      * @chainable
      */
     _.addPoint = function (point) {
-        let transform = Float4x4.multiply (Float4x4.scale ([0.025, 0.025, 0.025]), Float4x4.translate (point));
+        let transform = Float4x4.multiply (Float4x4.scale ([0.02, 0.02, 0.02]), Float4x4.translate (point));
         this.addChild (Node.new ({
             transform: transform,
             shape: this.pointShape,

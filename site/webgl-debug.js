@@ -1599,7 +1599,7 @@ let Cloud = function () {
      * @chainable
      */
     _.addPoint = function (point) {
-        let transform = Float4x4.multiply (Float4x4.scale ([0.025, 0.025, 0.025]), Float4x4.translate (point));
+        let transform = Float4x4.multiply (Float4x4.scale ([0.02, 0.02, 0.02]), Float4x4.translate (point));
         this.addChild (Node.new ({
             transform: transform,
             shape: this.pointShape,
@@ -2123,6 +2123,8 @@ let makeRevolve = function (name, outline, steps) {
             N.push (Float2.normalize (acPerp));
         };
 
+        // loop over the outline points to compute a normal for each one, we use a vector that is
+        // perpendicular to the segment ac as the normal.
         let length = outline.length - 1;
         if (Float2.equals (outline[0], outline[outline.length - 1])) {
             // the shape is closed, so we want to wrap around
