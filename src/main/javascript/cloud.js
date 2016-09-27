@@ -44,6 +44,19 @@ let Cloud = function () {
     };
 
     /**
+     * add multiple points to the cloud.
+     *
+     * @method addPoints
+     * @param {Array} points an array of Float3 points to be added.
+     * @chainable
+     */
+    _.addPoints = function (points) {
+        for (let point of points) {
+            this.addPoint(point);
+        }
+    }
+
+    /**
      * static method to create and construct a new cloud node.
      *
      * @method new

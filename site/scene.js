@@ -76,9 +76,7 @@ let buildScene = function (canvasId, points) {
             context.cullFace (context.BACK);
         }
     });
-    for (let point of points) {
-        cloud.addPoint (point);
-    }
+    cloud.addPoints (points);
     scene.addChild (cloud);
 
     let projectionMatrix = Float4x4.create ();

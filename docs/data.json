@@ -225,6 +225,22 @@
         {
             "file": "src/main/javascript/cloud.js",
             "line": 46,
+            "description": "add multiple points to the cloud.",
+            "itemtype": "method",
+            "name": "addPoints",
+            "params": [
+                {
+                    "name": "points",
+                    "description": "an array of Float3 points to be added.",
+                    "type": "Array"
+                }
+            ],
+            "chainable": 1,
+            "class": "Cloud"
+        },
+        {
+            "file": "src/main/javascript/cloud.js",
+            "line": 59,
             "description": "static method to create and construct a new cloud node.",
             "itemtype": "method",
             "name": "new",
