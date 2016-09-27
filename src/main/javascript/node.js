@@ -81,105 +81,110 @@ let Node = function () {
             // 3 transform, state
             INVALID_TRAVERSE,
             // 4 shape only
-            function (transform) {
-                Shader.getCurrentShader ().setModelMatrix (transform);
+            function (standardParameters) {
+                Shader.getCurrentShader ().setStandardParameters (standardParameters);
                 this.shape.draw ();
             },
             // 5 transform, shape
-            function (transform) {
-                transform = Float4x4.multiply (this.transform, transform);
-                Shader.getCurrentShader ()
-                    .setModelMatrix (transform)
-                    .setNormalMatrix (Float4x4.transpose (Float4x4.inverse (transform)));
+            function (standardParameters) {
+                standardParameters.MODEL_MATRIX_PARAMETER = Float4x4.multiply (this.transform, standardParameters.MODEL_MATRIX_PARAMETER);
+                standardParameters.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardParameters.MODEL_MATRIX_PARAMETER));
+                Shader.getCurrentShader ().setStandardParameters (standardParameters);
                 this.shape.draw ();
             },
             // 6 state, shape
-            function (transform) {
-                this.state ();
-                Shader.getCurrentShader ()
-                    .setModelMatrix (transform)
-                    .setNormalMatrix (Float4x4.transpose (Float4x4.inverse (transform)));
+            function (standardParameters) {
+                this.state (standardParameters);
+                standardParameters.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardParameters.MODEL_MATRIX_PARAMETER));
+                Shader.getCurrentShader ().setStandardParameters (standardParameters);
                 this.shape.draw ();
             },
             // 7 transform, state, shape
-            function (transform) {
-                this.state ();
-                transform = Float4x4.multiply (transform, this.transform);
-                Shader.getCurrentShader ()
-                    .setModelMatrix (transform)
-                    .setNormalMatrix (Float4x4.transpose (Float4x4.inverse (transform)));
+            function (standardParameters) {
+                this.state (standardParameters);
+                standardParameters.MODEL_MATRIX_PARAMETER = Float4x4.multiply (this.transform, standardParameters.MODEL_MATRIX_PARAMETER);
+                standardParameters.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardParameters.MODEL_MATRIX_PARAMETER));
+                Shader.getCurrentShader ().setStandardParameters (standardParameters);
                 this.shape.draw ();
             },
             // 8 children only
-            function (transform) {
+            function (standardParameters) {
+                let modelMatrix = standardParameters.MODEL_MATRIX_PARAMETER;
                 for (let child of this.children) {
-                    child.traverse (transform);
+                    standardParameters.MODEL_MATRIX_PARAMETER = modelMatrix;
+                    child.traverse (standardParameters);
                 }
             },
             // 9 transform, children
-            function (transform) {
-                transform = Float4x4.multiply (transform, this.transform);
+            function (standardParameters) {
+                let modelMatrix = Float4x4.multiply (this.transform, standardParameters.MODEL_MATRIX_PARAMETER);
                 for (let child of this.children) {
-                    child.traverse (transform);
+                    standardParameters.MODEL_MATRIX_PARAMETER = modelMatrix;
+                    child.traverse (standardParameters);
                 }
             },
             // 10 state, children
-            function (transform) {
-                this.state ();
+            function (standardParameters) {
+                this.state (standardParameters);
+                let modelMatrix = standardParameters.MODEL_MATRIX_PARAMETER;
                 for (let child of this.children) {
-                    child.traverse (transform);
+                    standardParameters.MODEL_MATRIX_PARAMETER = modelMatrix;
+                    child.traverse (standardParameters);
                 }
             },
             // 11 transform, state, children
-            function (transform) {
-                this.state ();
-                transform = Float4x4.multiply (transform, this.transform);
+            function (standardParameters) {
+                this.state (standardParameters);
+                let modelMatrix = Float4x4.multiply (this.transform, standardParameters.MODEL_MATRIX_PARAMETER);
                 for (let child of this.children) {
-                    child.traverse (transform);
+                    standardParameters.MODEL_MATRIX_PARAMETER = modelMatrix;
+                    child.traverse (standardParameters);
                 }
             },
             // 12 shape, children
-            function (transform) {
-                Shader.getCurrentShader ()
-                    .setModelMatrix (transform)
-                    .setNormalMatrix (Float4x4.transpose (Float4x4.inverse (transform)));
+            function (standardParameters) {
+                let modelMatrix = standardParameters.MODEL_MATRIX_PARAMETER;
+                standardParameters.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardParameters.MODEL_MATRIX_PARAMETER));
+                Shader.getCurrentShader ().setStandardParameters (standardParameters);
                 this.shape.draw ();
                 for (let child of this.children) {
-                    child.traverse (transform);
+                    standardParameters.MODEL_MATRIX_PARAMETER = modelMatrix;
+                    child.traverse (standardParameters);
                 }
             },
             // 13 transform, shape, children
-            function (transform) {
-                transform = Float4x4.multiply (transform, this.transform);
-                Shader.getCurrentShader ()
-                    .setModelMatrix (transform)
-                    .setNormalMatrix (Float4x4.transpose (Float4x4.inverse (transform)));
+            function (standardParameters) {
+                let modelMatrix = standardParameters.MODEL_MATRIX_PARAMETER = Float4x4.multiply (this.transform, standardParameters.MODEL_MATRIX_PARAMETER);
+                standardParameters.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardParameters.MODEL_MATRIX_PARAMETER));
+                Shader.getCurrentShader ().setStandardParameters (standardParameters);
                 this.shape.draw ();
                 for (let child of this.children) {
-                    child.traverse (transform);
+                    standardParameters.MODEL_MATRIX_PARAMETER = modelMatrix;
+                    child.traverse (standardParameters);
                 }
             },
             // 14 state, shape, children
-            function (transform) {
-                this.state ();
-                Shader.getCurrentShader ()
-                    .setModelMatrix (transform)
-                    .setNormalMatrix (Float4x4.transpose (Float4x4.inverse (transform)));
+            function (standardParameters) {
+                this.state (standardParameters);
+                let modelMatrix = standardParameters.MODEL_MATRIX_PARAMETER;
+                standardParameters.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardParameters.MODEL_MATRIX_PARAMETER));
+                Shader.getCurrentShader ().setStandardParameters (standardParameters);
                 this.shape.draw ();
                 for (let child of this.children) {
-                    child.traverse (transform);
+                    standardParameters.MODEL_MATRIX_PARAMETER = modelMatrix;
+                    child.traverse (standardParameters);
                 }
             },
             // 15 transform, state, shape, children
-            function (transform) {
-                this.state ();
-                transform = Float4x4.multiply (transform, this.transform);
-                Shader.getCurrentShader ()
-                    .setModelMatrix (transform)
-                    .setNormalMatrix (Float4x4.transpose (Float4x4.inverse (transform)));
+            function (standardParameters) {
+                this.state (standardParameters);
+                let modelMatrix = standardParameters.MODEL_MATRIX_PARAMETER = Float4x4.multiply (this.transform, standardParameters.MODEL_MATRIX_PARAMETER);
+                standardParameters.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardParameters.MODEL_MATRIX_PARAMETER));
+                Shader.getCurrentShader ().setStandardParameters (standardParameters);
                 this.shape.draw ();
                 for (let child of this.children) {
-                    child.traverse (transform);
+                    standardParameters.MODEL_MATRIX_PARAMETER = modelMatrix;
+                    child.traverse (standardParameters);
                 }
             }
         ][traverseFunctionIndex];

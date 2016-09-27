@@ -302,7 +302,7 @@
         },
         {
             "file": "src/main/javascript/node.js",
-            "line": 190,
+            "line": 195,
             "description": "Add a child node (only applies to non-leaf nodes)",
             "itemtype": "method",
             "name": "addChild",
@@ -318,7 +318,7 @@
         },
         {
             "file": "src/main/javascript/node.js",
-            "line": 206,
+            "line": 211,
             "description": "Get the name of this node (if it has one)",
             "itemtype": "method",
             "name": "getName",
@@ -330,7 +330,7 @@
         },
         {
             "file": "src/main/javascript/node.js",
-            "line": 216,
+            "line": 221,
             "description": "Get a node by name",
             "itemtype": "method",
             "name": "get",
@@ -349,7 +349,7 @@
         },
         {
             "file": "src/main/javascript/node.js",
-            "line": 227,
+            "line": 232,
             "description": "Static method to create and construct a new scene graph node.",
             "itemtype": "method",
             "name": "new",

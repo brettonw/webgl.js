@@ -16,12 +16,11 @@ let draw = function (delta) {
     Float4x4.rotateY (viewMatrix, Utility.degreesToRadians (currentAngle));
     viewMatrix = Float4x4.multiply (Float4x4.scale ([ 2, 2, 2 ]), viewMatrix);
     viewMatrix  = Float4x4.multiply (Float4x4.translate ([ -0.5, -0.5, -0.5 ]), viewMatrix);
-
     standardParameters.VIEW_MATRIX_PARAMETER = viewMatrix;
-    Shader.getCurrentShader ().setStandardParameters (standardParameters);
+    standardParameters.MODEL_MATRIX_PARAMETER = Float4x4.identity ();;
 
     // draw the scene
-    scene.traverse (Float4x4.identity ());
+    scene.traverse (standardParameters);
 };
 
 let buildScene = function (canvasId, points) {
@@ -39,7 +38,7 @@ let buildScene = function (canvasId, points) {
 
     scene = Node.new ({
         name: "root",
-        state: function () {
+        state: function (standardParameters) {
             // ordinarily, webGl will automatically present and clear when we return control to the
             // event loop from the draw function, but we overrode that to have explicit control.
             // webGl still presents the buffer automatically, but the back buffer is not cleared
@@ -61,8 +60,9 @@ let buildScene = function (canvasId, points) {
     let background = Node.new ({
         name: "background",
         transform: transform,
-        state: function () {
-            Shader.getCurrentShader ().setOutputAlpha (0.85);
+        state: function (standardParameters) {
+            Shader.get ("rgb").use ();
+            standardParameters.OUTPUT_ALPHA_PARAMETER = 0.85;
             context.disable (context.DEPTH_TEST);
             context.enable (context.CULL_FACE);
             context.cullFace (context.FRONT);
@@ -74,8 +74,9 @@ let buildScene = function (canvasId, points) {
 
     let cloud = Cloud.new ({
         name: "cloud",
-        state: function () {
-            Shader.getCurrentShader ().setOutputAlpha (1.0);
+        state: function (standardParameters) {
+            Shader.get ("basic").use ();
+            standardParameters.OUTPUT_ALPHA_PARAMETER = 1.0;
             context.enable (context.DEPTH_TEST);
             context.enable (context.CULL_FACE);
             context.cullFace (context.BACK);
@@ -88,10 +89,11 @@ let buildScene = function (canvasId, points) {
 
     let projectionMatrix = Float4x4.create ();
     Float4x4.perspective (45, context.viewportWidth / context.viewportHeight, 0.1, 100.0, projectionMatrix);
-    Shader.new ("rgb", "shaders/vertex-basic.glsl", "shaders/fragment-rgb.glsl")
-        .use ();
     standardParameters.PROJECTION_MATRIX_PARAMETER = projectionMatrix;
     standardParameters.OUTPUT_ALPHA_PARAMETER = 1.0;
+
+    Shader.new ("rgb", "shaders/vertex-basic.glsl", "shaders/fragment-rgb.glsl");
+    Shader.new ("basic", "shaders/vertex-basic.glsl", "shaders/fragment-basic.glsl");
 
     draw (0);
 };
