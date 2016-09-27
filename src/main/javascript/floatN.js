@@ -118,13 +118,14 @@ let FloatN = function (dim) {
     // if 'to' is omitted, will create a new vector
     // returns 'to'
     eval (function () {
-        let str = "_.subtract = function (left, right, to) {";
-        str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
+        let str = "_.subtract = function (left, right, to) {\n";
+        str += "to = (typeof to !== 'undefined') ? to : _.create ();\n";
         for (let i = 0; i < dim; ++i) {
             str += "to[" + i + "] = left[" + i + "] - right[" + i + "]; ";
         }
-        str += "return to; ";
-        str += "}; ";
+        str += "\n";
+        str += "return to;\n";
+        str += "};\n";
         return str;
     } ());
 
@@ -183,11 +184,22 @@ let FloatN = function (dim) {
         return str;
     } ());
 
+    _.equals = function (left, right) {
+        return _.str (left) == _.str (right);
+    };
+
     return _;
 };
 
 let Float2 = function () {
     let _ = FloatN (2);
+
+    _.perpendicular = function (from, to) {
+        to = DEFAULT_FUNCTION(to, _.create);
+        to[0] = from[1]; to[1] = -from[0];
+        return to;
+    };
+
     return _;
 } ();
 

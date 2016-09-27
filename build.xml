@@ -54,6 +54,8 @@
             <fileset dir="${source-dir}/shapes" includes="sphere.js" />
             <fileset dir="${source-dir}/shapes" includes="revolve.js" />
             <fileset dir="${source-dir}/shapes" includes="ball.js" />
+            <fileset dir="${source-dir}/shapes" includes="extrude.js" />
+            <fileset dir="${source-dir}/shapes" includes="triangulate.js" />
             <fileset dir="${source-dir}" includes="utility.js" />
         </concat>
     </target>

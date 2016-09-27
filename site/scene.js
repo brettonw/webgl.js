@@ -26,10 +26,8 @@ let draw = function (delta) {
 let buildScene = function (canvasId, points) {
     Render.new (canvasId).use ();
 
-    /*
     makeRevolve ("cylinder", [[1, 1], [1, -1], [0.5, -1]], 36);
     makeBall ("ball", 36);
-    */
 
     scene = Node.new ({
         name: "root",

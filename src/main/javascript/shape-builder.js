@@ -6,6 +6,7 @@ let ShapeBuilder = function () {
         this.vertexIndex = Object.create (null);
         this.vertices = [];
         this.faces = [];
+        this.normals = [];
         return this;
     };
 
@@ -21,16 +22,33 @@ let ShapeBuilder = function () {
         }
     };
 
+    _.addVertexNormal = function (vertex, normal) {
+        let str = Float3.str(vertex) + Float3.str(normal);
+        if (str in this.vertexIndex) {
+            return this.vertexIndex[str];
+        } else {
+            let index = this.vertices.length;
+            this.vertices.push(vertex);
+            this.normals.push (normal);
+            this.vertexIndex[str] = index;
+            return index;
+        }
+    };
+
     _.addFace = function (face) {
         this.faces.push(face);
     };
 
     _.makeBuffers = function () {
         LOG(this.vertices.length + " vertices for " + this.faces.length + " faces");
-        return {
+        let result = {
             position: Utility.flatten(this.vertices),
             index: Utility.flatten(this.faces)
         };
+        if (this.normals.length > 0) {
+            result.normal = Utility.flatten(this.normals);
+        }
+        return result;
     };
 
     _.makeFacets = function () {
