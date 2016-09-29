@@ -61,7 +61,7 @@ let buildScene = function (points) {
             context.enable (context.CULL_FACE);
             context.cullFace (context.BACK);
         },
-        shape: "ball",
+        shape: "cube",
         children: false
     });
     scene.addChild (background);

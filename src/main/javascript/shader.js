@@ -75,6 +75,13 @@ let Shader = function () {
         let program = this.program = context.createProgram ();
         context.attachShader (program, vertexShader);
         context.attachShader (program, fragmentShader);
+
+        // force a binding of attribute 0 to the position attribute (which SHOULD always be present)
+        // this avoids a performance penalty incurred if a randomly assigned attribute is on index 0
+        // but is not used by a particular shape (like a normals buffer).
+        context.bindAttribLocation(program, 0, attributeMapping.POSITION_ATTRIBUTE);
+
+        // link the program and check that it succeeded
         context.linkProgram (program);
         if (!context.getProgramParameter (program, context.LINK_STATUS)) {
             LOG ("Could not initialise shaders");
@@ -181,6 +188,20 @@ let Shader = function () {
     };
 
     /**
+     * disable the enabled buffers.
+     *
+     * @method bindTextureAttribute
+     * @static
+     * @param {Object} buffer WebGL buffer to bind
+     * @return {Shader}
+     */
+    _.unbind = function () {
+        for (let attribute in this.attributes) {
+            this.attributes[attribute].unbind ();
+        }
+    };
+
+    /**
      * fetch the shader currently in use.
      *
      * @method getCurrentShader
@@ -199,6 +220,9 @@ let Shader = function () {
      */
     _.use = function () {
         if (currentShader !== this) {
+            if (typeof currentShader !== "undefined") {
+                currentShader.unbind ();
+            }
             currentShader = this;
             context.useProgram (this.program);
         }

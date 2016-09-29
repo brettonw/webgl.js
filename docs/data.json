@@ -506,7 +506,7 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 120,
+            "line": 127,
             "description": "set the standard shader parameters in one call.",
             "itemtype": "method",
             "name": "setStandardParameters",
@@ -525,7 +525,7 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 147,
+            "line": 154,
             "description": "bind the POSITION attribute to the given buffer.",
             "itemtype": "method",
             "name": "bindPositionAttribute",
@@ -545,7 +545,7 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 159,
+            "line": 166,
             "description": "bind the NORMAL attribute to the given buffer.",
             "itemtype": "method",
             "name": "bindNormalAttribute",
@@ -565,7 +565,7 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 171,
+            "line": 178,
             "description": "bind the TEXTURE attribute to the given buffer.",
             "itemtype": "method",
             "name": "bindTextureAttribute",
@@ -585,7 +585,27 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 183,
+            "line": 190,
+            "description": "disable the enabled buffers.",
+            "itemtype": "method",
+            "name": "bindTextureAttribute",
+            "static": 1,
+            "params": [
+                {
+                    "name": "buffer",
+                    "description": "WebGL buffer to bind",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Shader"
+            },
+            "class": "Shader"
+        },
+        {
+            "file": "src/main/javascript/shader.js",
+            "line": 204,
             "description": "fetch the shader currently in use.",
             "itemtype": "method",
             "name": "getCurrentShader",
@@ -598,7 +618,7 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 194,
+            "line": 215,
             "description": "set this as the current shader in the rendering context.",
             "itemtype": "method",
             "name": "use",
@@ -607,7 +627,7 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 208,
+            "line": 232,
             "description": "get the name of this shader",
             "itemtype": "method",
             "name": "getName",
@@ -619,7 +639,7 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 218,
+            "line": 242,
             "description": "static method to create and construct a new Shader.",
             "itemtype": "method",
             "name": "new",
@@ -659,7 +679,7 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 271,
+            "line": 295,
             "description": "fetch a shader by name.",
             "itemtype": "method",
             "name": "get",
