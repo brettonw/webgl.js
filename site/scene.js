@@ -23,10 +23,12 @@ let draw = function (delta) {
     scene.traverse (standardParameters);
 };
 
-let buildScene = function (canvasId, points) {
-    Render.new (canvasId).use ();
+let buildScene = function (points) {
 
-    makeRevolve ("cylinder", [[1, 1], [1, -1], [0.5, -1]], 36);
+    makeRevolve ("cylinder",
+        [[ 1.0,  1.0], [ 1.0, -1.0], [ 1.0, -1.0], [ 0.8, -1.0], [ 0.8, -1.0], [ 0.8,  1.0], [ 0.8,  1.0], [ 1.0,  1.0]],
+        [[ 1.0,  0.0], [ 1.0,  0.0], [ 0.0, -1.0], [ 0.0, -1.0], [-1.0,  0.0], [-1.0,  0.0], [ 0.0,  1.0], [ 0.0,  1.0]],
+        36);
     makeBall ("ball", 36);
 
     scene = Node.new ({
@@ -54,37 +56,21 @@ let buildScene = function (canvasId, points) {
         name: "background",
         transform: transform,
         state: function (standardParameters) {
-            Shader.get ("rgb").use ();
-            standardParameters.OUTPUT_ALPHA_PARAMETER = 0.85;
-            context.disable (context.DEPTH_TEST);
-            context.enable (context.CULL_FACE);
-            context.cullFace (context.FRONT);
-        },
-        shape: "cube",
-        children: false
-    });
-    scene.addChild (background);
-
-    let cloud = Cloud.new ({
-        name: "cloud",
-        pointShape: "sphere2",
-        state: function (standardParameters) {
             Shader.get ("basic").use ();
-            standardParameters.OUTPUT_ALPHA_PARAMETER = 1.0;
             context.enable (context.DEPTH_TEST);
             context.enable (context.CULL_FACE);
             context.cullFace (context.BACK);
-        }
+        },
+        shape: "ball",
+        children: false
     });
-    cloud.addPoints (points);
-    scene.addChild (cloud);
+    scene.addChild (background);
 
     let projectionMatrix = Float4x4.create ();
     Float4x4.perspective (45, context.viewportWidth / context.viewportHeight, 0.1, 100.0, projectionMatrix);
     standardParameters.PROJECTION_MATRIX_PARAMETER = projectionMatrix;
     standardParameters.OUTPUT_ALPHA_PARAMETER = 1.0;
 
-    Shader.new ("rgb", "shaders/vertex-basic.glsl", "shaders/fragment-rgb.glsl");
 
     draw (0);
 };

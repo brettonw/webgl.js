@@ -43,7 +43,7 @@ let Shape = function () {
         }
 
         if ("texture" in buffers) {
-            this.normalBuffer = makeBuffer (context.ARRAY_BUFFER, new Float32Array (buffers.texture), 2);
+            this.textureBuffer = makeBuffer (context.ARRAY_BUFFER, new Float32Array (buffers.texture), 2);
             drawFunctionIndex += HAS_TEXTURE;
         }
 

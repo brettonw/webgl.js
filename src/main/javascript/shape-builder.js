@@ -7,6 +7,7 @@ let ShapeBuilder = function () {
         this.vertices = [];
         this.faces = [];
         this.normals = [];
+        this.texture = [];
         return this;
     };
 
@@ -35,6 +36,33 @@ let ShapeBuilder = function () {
         }
     };
 
+    _.addVertexTexture = function (vertex, texture) {
+        let str = Float3.str(vertex) + Float2.str(texture);
+        if (str in this.vertexIndex) {
+            return this.vertexIndex[str];
+        } else {
+            let index = this.vertices.length;
+            this.vertices.push(vertex);
+            this.texture.push (texture);
+            this.vertexIndex[str] = index;
+            return index;
+        }
+    };
+
+    _.addVertexNormalTexture = function (vertex, normal, texture) {
+        let str = Float3.str(vertex) + Float3.str(normal) + Float2.str(texture);
+        if (str in this.vertexIndex) {
+            return this.vertexIndex[str];
+        } else {
+            let index = this.vertices.length;
+            this.vertices.push(vertex);
+            this.normals.push (normal);
+            this.texture.push (texture);
+            this.vertexIndex[str] = index;
+            return index;
+        }
+    };
+
     _.addFace = function (face) {
         this.faces.push(face);
     };
@@ -47,6 +75,9 @@ let ShapeBuilder = function () {
         };
         if (this.normals.length > 0) {
             result.normal = Utility.flatten(this.normals);
+        }
+        if (this.texture.length > 0) {
+            result.texture = Utility.flatten(this.texture);
         }
         return result;
     };

@@ -1694,7 +1694,7 @@ let Shape = function () {
         }
 
         if ("texture" in buffers) {
-            this.normalBuffer = makeBuffer (context.ARRAY_BUFFER, new Float32Array (buffers.texture), 2);
+            this.textureBuffer = makeBuffer (context.ARRAY_BUFFER, new Float32Array (buffers.texture), 2);
             drawFunctionIndex += HAS_TEXTURE;
         }
 
@@ -1810,6 +1810,7 @@ let ShapeBuilder = function () {
         this.vertices = [];
         this.faces = [];
         this.normals = [];
+        this.texture = [];
         return this;
     };
 
@@ -1838,6 +1839,33 @@ let ShapeBuilder = function () {
         }
     };
 
+    _.addVertexTexture = function (vertex, texture) {
+        let str = Float3.str(vertex) + Float2.str(texture);
+        if (str in this.vertexIndex) {
+            return this.vertexIndex[str];
+        } else {
+            let index = this.vertices.length;
+            this.vertices.push(vertex);
+            this.texture.push (texture);
+            this.vertexIndex[str] = index;
+            return index;
+        }
+    };
+
+    _.addVertexNormalTexture = function (vertex, normal, texture) {
+        let str = Float3.str(vertex) + Float3.str(normal) + Float2.str(texture);
+        if (str in this.vertexIndex) {
+            return this.vertexIndex[str];
+        } else {
+            let index = this.vertices.length;
+            this.vertices.push(vertex);
+            this.normals.push (normal);
+            this.texture.push (texture);
+            this.vertexIndex[str] = index;
+            return index;
+        }
+    };
+
     _.addFace = function (face) {
         this.faces.push(face);
     };
@@ -1850,6 +1878,9 @@ let ShapeBuilder = function () {
         };
         if (this.normals.length > 0) {
             result.normal = Utility.flatten(this.normals);
+        }
+        if (this.texture.length > 0) {
+            result.texture = Utility.flatten(this.texture);
         }
         return result;
     };
@@ -2132,80 +2163,91 @@ let Sphere = function () {
 
     return _;
 } ();
-let makeRevolve = function (name, outline, steps) {
-    return Shape.new (name, function () {
-        // outline is an array of Float2, and the axis of revolution is x = 0, we make a number of
-        // wedges, from top to bottom, to complete the revolution. for each wedge, we will check to
-        // see if the first and last x component is at 0, and if so we will generate a triangle
-        // instead of a quad for that part of the wedge
+let makeRevolve = function (name, outline, normal, steps) {
+    // outline is an array of Float2, and the axis of revolution is x = 0, we make a number of
+    // wedges, from top to bottom, to complete the revolution.
 
+    let epsilon = 1.0e-6;
+    let last = outline.length - 1;
+
+    // make sure we have normals, generating a default set if necessary
+    normal = Utility.defaultFunction (normal, function () {
         // variable and function to capture the computed normals
         let N = [];
         let pushNormal = function (a, c) {
             let ac = Float2.subtract (a, c);
-            let acPerp = Float2.perpendicular(ac);
+            let acPerp = Float2.perpendicular (ac);
             N.push (Float2.normalize (acPerp));
         };
 
         // loop over the outline points to compute a normal for each one, we use a vector that is
         // perpendicular to the segment ac as the normal.
-        let length = outline.length - 1;
-        if (Float2.equals (outline[0], outline[outline.length - 1])) {
+        if (Float2.equals (outline[0], outline[last])) {
             // the shape is closed, so we want to wrap around
             for (b = 0; b < length; ++b) {
-                let a = outline[((b - 1) + length) % length];
-                let c = outline[(b + 1) % length];
-                pushNormal(a, c);
+                let a = outline[((b - 1) + last) % last];
+                let c = outline[(b + 1) % last];
+                pushNormal (a, c);
             }
         } else {
             // the shape is open, so we double the first and last points for the normals
             // XXX there might be better ways to do this...
-            for (b = 0; b <= length; ++b) {
+            for (b = 0; b <= last; ++b) {
                 let a = outline[(b == 0) ? b : b - 1];
-                let c = outline[(b == length) ? b : b + 1];
-                pushNormal(a, c);
+                let c = outline[(b == last) ? b : b + 1];
+                pushNormal (a, c);
             }
         }
+        return N;
+    });
 
-        // outline is an array of Float2, and the axis of revolution is x = 0, we make a number of
-        // wedges, from top to bottom, to complete the revolution. for each wedge, we will check to
-        // see if the first and last x component is at 0, and if so we will generate a triangle
-        // instead of a quad for that part of the wedge
-
+    return Shape.new (name, function () {
         // compute the steps we need to make to build the rotated shape
         let builder = ShapeBuilder.new ();
-        let stepAngle = (2 * Math.PI) / steps;
+        let stepAngle = (2.0 * Math.PI) / steps;
         for (let i = 0; i < steps; ++i) {
             // this could be just i + 1, but doing the modulus might help prevent a crack
-            let j = (i + 1) % steps;
+            let j = i + 1;
             let iAngle = i * stepAngle, iCosAngle = Math.cos (iAngle), iSinAngle = Math.sin (iAngle);
-            let jAngle = j * stepAngle, jCosAngle = Math.cos (jAngle), jSinAngle = Math.sin (jAngle);
-            for (let m = 0, end = outline.length - 1; m < end; ++m) {
+            let jAngle = (j % steps) * stepAngle, jCosAngle = Math.cos (jAngle), jSinAngle = Math.sin (jAngle);
+            for (let m = 0; m < last; ++m) {
                 // the line segment mn is now going to be swept over the angle range ij
                 let n = m + 1;
-                let vm = outline[m], nm = N[m];
-                let vn = outline[n], nn = N[n];
+                let vm = outline[m], nm = normal[m];
+                let vn = outline[n], nn = normal[n];
 
-                // if both end points are at the origin, we should skip revolving this segment
-                if (!((vm[0] == 0) && (vn[0] == 0))) {
-
-                    let vm0 = builder.addVertexNormal ([vm[0] * iCosAngle, vm[1], vm[0] * iSinAngle], [nm[0] * iCosAngle, nm[1], nm[0] * iSinAngle]);
-                    let vn0 = builder.addVertexNormal ([vn[0] * iCosAngle, vn[1], vn[0] * iSinAngle], [nn[0] * iCosAngle, nn[1], nn[0] * iSinAngle]);
-
-                    if (vm[0] == 0) {
-                        // the top cap should be a triangle
-                        let vn1 = builder.addVertexNormal ([vn[0] * jCosAngle, vn[1], vn[0] * jSinAngle], [nn[0] * jCosAngle, nn[1], nn[0] * jSinAngle]);
-                        builder.addFace ([vm0, vn1, vn0]);
-                    } else if (vn[0] == 0) {
-                        // the bottom cap should be a triangle
-                        let vm1 = builder.addVertexNormal ([vm[0] * jCosAngle, vm[1], vm[0] * jSinAngle], [nm[0] * jCosAngle, nm[1], nm[0] * jSinAngle]);
-                        builder.addFace ([vn0, vm0, vm1]);
-                    } else {
-                        // the sweep is a quad (normal case)
-                        let vm1 = builder.addVertexNormal ([vm[0] * jCosAngle, vm[1], vm[0] * jSinAngle], [nm[0] * jCosAngle, nm[1], nm[0] * jSinAngle]);
-                        let vn1 = builder.addVertexNormal ([vn[0] * jCosAngle, vn[1], vn[0] * jSinAngle], [nn[0] * jCosAngle, nn[1], nn[0] * jSinAngle]);
-                        builder.addFace ([vm0, vn1, vn0]);
-                        builder.addFace ([vn1, vm0, vm1]);
+                // we allow degenerate faces by duplicating vertices in the outline, if the length
+                // between the two components is below the threshold, we skip this facet altogether.
+                if (Float2.norm (vm, vn) > epsilon) {
+                    // for each facet of the wedge, it's either a degenerate segment, an upward
+                    // facing triangle, a downward facing triangle, or a quad.
+                    let facetType = ((vm[0] < epsilon) ? 0 : 2) + ((vn[0] < epsilon) ? 0 : 1);
+                    switch (facetType) {
+                        case 0: // degenerate, emit nothing
+                            break;
+                        case 1: { // top cap, emit 1 triangle
+                            let vim = builder.addVertexNormalTexture ([0, vm[1], 0], [nm[0] * iCosAngle, nm[1], nm[0] * iSinAngle], [i / steps, m / last]);
+                            let vin = builder.addVertexNormalTexture ([vn[0] * iCosAngle, vn[1], vn[0] * iSinAngle], [nn[0] * iCosAngle, nn[1], nn[0] * iSinAngle], [i / steps, n / last]);
+                            let vjn = builder.addVertexNormalTexture ([vn[0] * jCosAngle, vn[1], vn[0] * jSinAngle], [nn[0] * jCosAngle, nn[1], nn[0] * jSinAngle], [j / steps, n / last]);
+                            builder.addFace ([vim, vjn, vin]);
+                            break;
+                        }
+                        case 2: { // bottom cap, emit 1 triangle
+                            let vim = builder.addVertexNormalTexture ([vm[0] * iCosAngle, vm[1], vm[0] * iSinAngle], [nm[0] * iCosAngle, nm[1], nm[0] * iSinAngle], [i / steps, m / last]);
+                            let vjm = builder.addVertexNormalTexture ([vm[0] * jCosAngle, vm[1], vm[0] * jSinAngle], [nm[0] * jCosAngle, nm[1], nm[0] * jSinAngle], [j / steps, m / last]);
+                            let vin = builder.addVertexNormalTexture ([0, vn[1], 0], [nn[0] * iCosAngle, nn[1], nn[0] * iSinAngle], [i / steps, n / last]);
+                            builder.addFace ([vim, vjm, vin]);
+                            break;
+                        }
+                        case 3: { // quad, emit 2 triangles
+                            let vim = builder.addVertexNormalTexture ([vm[0] * iCosAngle, vm[1], vm[0] * iSinAngle], [nm[0] * iCosAngle, nm[1], nm[0] * iSinAngle], [i / steps, m / last]);
+                            let vin = builder.addVertexNormalTexture ([vn[0] * iCosAngle, vn[1], vn[0] * iSinAngle], [nn[0] * iCosAngle, nn[1], nn[0] * iSinAngle], [i / steps, n / last]);
+                            let vjm = builder.addVertexNormalTexture ([vm[0] * jCosAngle, vm[1], vm[0] * jSinAngle], [nm[0] * jCosAngle, nm[1], nm[0] * jSinAngle], [j / steps, m / last]);
+                            let vjn = builder.addVertexNormalTexture ([vn[0] * jCosAngle, vn[1], vn[0] * jSinAngle], [nn[0] * jCosAngle, nn[1], nn[0] * jSinAngle], [j / steps, n / last]);
+                            builder.addFace ([vim, vjm, vjn]);
+                            builder.addFace ([vim, vjn, vin]);
+                            break;
+                        }
                     }
                 }
             }
@@ -2217,18 +2259,21 @@ let makeRevolve = function (name, outline, steps) {
 let makeBall = function (name, steps) {
     // generate an outline, and then revolve it
     let outline = [];
+    let normal = [];
     let stepAngle = Math.PI / steps;
     for (let i = 0; i <= steps; ++i) {
         let angle = stepAngle * i;
 
         // using an angle setup so that 0 is (0, 1), and Pi is (0, -1) means switching (x, y) so we
         // get an outline that can be revolved around the x=0 axis
-        outline.push (Float2.fixNum([Math.sin (angle), Math.cos (angle)]));
+        let value = Float2.fixNum([Math.sin (angle), Math.cos (angle)]);
+        outline.push (value);
+        normal.push (value);
     }
 
     // revolve the surface, the outline is a half circle, so the revolved surface needs to be twice
     // as many steps to go all the way around
-    return makeRevolve(name, outline, steps * 2);
+    return makeRevolve(name, outline, normal, steps * 2);
 };
 /**
  * A collection of utility functions.

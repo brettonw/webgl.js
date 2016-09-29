@@ -18,4 +18,5 @@ void main(void) {
     gl_Position = projectionMatrix * viewPosition;
     model = modelPosition.xyz;
     normal = normalize ((normalMatrix * vec4 (inputNormal, 0)).xyz);
+    texture = inputTexture;
 }
