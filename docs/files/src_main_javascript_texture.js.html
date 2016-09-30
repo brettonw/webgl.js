@@ -86,6 +86,7 @@ let Texture = function () {
     let _ = Object.create (null);
 
     let textures = Object.create (null);
+    let afExtension;
 
     _.construct  = function (name, parameters) {
         this.name = name;
@@ -98,12 +99,12 @@ let Texture = function () {
             context.texImage2D (context.TEXTURE_2D, 0, context.RGBA, context.RGBA, context.UNSIGNED_BYTE, image);
             context.texParameteri (context.TEXTURE_2D, context.TEXTURE_MAG_FILTER, context.LINEAR);
             context.texParameteri (context.TEXTURE_2D, context.TEXTURE_MIN_FILTER, context.LINEAR_MIPMAP_LINEAR);
-            let extension = context.getExtension (&quot;EXT_texture_filter_anisotropic&quot;);
-            let max = Math.min (context.getParameter(extension.MAX_TEXTURE_MAX_ANISOTROPY_EXT), 4);
-            context.texParameterf(context.TEXTURE_2D, extension.TEXTURE_MAX_ANISOTROPY_EXT, max);
+            context.texParameterf(context.TEXTURE_2D, afExtension.TEXTURE_MAX_ANISOTROPY_EXT, parameters.anisotropicFiltering);
             context.generateMipmap (context.TEXTURE_2D);
             context.bindTexture (context.TEXTURE_2D, null);
-            parameters.onReady (scope);
+            if (&quot;onReady&quot; in parameters) {
+                parameters.onReady (scope);
+            }
         };
         image.src = parameters.url;
 
@@ -111,6 +112,9 @@ let Texture = function () {
     };
 
     _.new = function (name, parameters) {
+        afExtension = DEFAULT_FUNCTION (afExtension, function () { return context.getExtension (&quot;EXT_texture_filter_anisotropic&quot;) });
+        // make sure anisotropic filtering is defined, and has a reasonable default value
+        parameters.anisotropicFiltering = Math.min (context.getParameter(afExtension.MAX_TEXTURE_MAX_ANISOTROPY_EXT), (&quot;anisotropicFiltering&quot; in parameters)? parameters.anisotropicFiltering : 4);
         return (textures[name] = Object.create (_).construct (name, parameters));
     };
 
