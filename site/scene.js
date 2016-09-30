@@ -11,11 +11,11 @@ let draw = function (delta) {
 
     // setup the view matrix
     let viewMatrix = Float4x4.identity ();
-    Float4x4.rotateX (viewMatrix, Utility.degreesToRadians (27.5));
-    viewMatrix  = Float4x4.multiply (Float4x4.translate ([ 0, -1.5, -3.5 ]), viewMatrix);
+    //Float4x4.rotateX (viewMatrix, Utility.degreesToRadians (27.5));
+    viewMatrix  = Float4x4.multiply (Float4x4.translate ([ 0, 0, -5.0 ]), viewMatrix);
     Float4x4.rotateY (viewMatrix, Utility.degreesToRadians (currentAngle));
-    viewMatrix = Float4x4.multiply (Float4x4.scale ([ 2, 2, 2 ]), viewMatrix);
-    viewMatrix  = Float4x4.multiply (Float4x4.translate ([ -0.5, -0.5, -0.5 ]), viewMatrix);
+    //viewMatrix = Float4x4.multiply (Float4x4.scale ([ 2, 2, 2 ]), viewMatrix);
+    //viewMatrix  = Float4x4.multiply (Float4x4.translate ([ -0.5, -0.5, -0.5 ]), viewMatrix);
     standardParameters.VIEW_MATRIX_PARAMETER = viewMatrix;
     standardParameters.MODEL_MATRIX_PARAMETER = Float4x4.identity ();;
 
@@ -50,10 +50,21 @@ let buildScene = function (points) {
         }
     });
 
-    let transform = Float4x4.multiply (Float4x4.translate ([ 1, 1, 1 ]), Float4x4.scale ([ 0.5, 0.5, 0.5 ]));
-    let background = Node.new ({
-        name: "background",
-        transform: transform,
+    let starfield = Node.new ({
+        name: "starfield",
+        transform: Float4x4.scale (-20),
+        state: function (standardParameters) {
+            Shader.get ("basic").use ();
+            context.disable (context.DEPTH_TEST);
+            standardParameters.TEXTURE_SAMPLER = "starfield";
+        },
+        shape: "ball",
+        children: false
+    });
+    scene.addChild (starfield);
+
+    let earth = Node.new ({
+        name: "earth",
         state: function (standardParameters) {
             Shader.get ("basic").use ();
             context.enable (context.DEPTH_TEST);
@@ -64,7 +75,7 @@ let buildScene = function (points) {
         shape: "ball",
         children: false
     });
-    scene.addChild (background);
+    scene.addChild (earth);
 
     let projectionMatrix = Float4x4.create ();
     Float4x4.perspective (45, context.viewportWidth / context.viewportHeight, 0.1, 100.0, projectionMatrix);
