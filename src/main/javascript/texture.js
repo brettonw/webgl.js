@@ -14,6 +14,9 @@ let Texture = function () {
             context.texImage2D (context.TEXTURE_2D, 0, context.RGBA, context.RGBA, context.UNSIGNED_BYTE, image);
             context.texParameteri (context.TEXTURE_2D, context.TEXTURE_MAG_FILTER, context.LINEAR);
             context.texParameteri (context.TEXTURE_2D, context.TEXTURE_MIN_FILTER, context.LINEAR_MIPMAP_LINEAR);
+            let extension = context.getExtension ("EXT_texture_filter_anisotropic");
+            let max = Math.min (context.getParameter(extension.MAX_TEXTURE_MAX_ANISOTROPY_EXT), 4);
+            context.texParameterf(context.TEXTURE_2D, extension.TEXTURE_MAX_ANISOTROPY_EXT, max);
             context.generateMipmap (context.TEXTURE_2D);
             context.bindTexture (context.TEXTURE_2D, null);
             parameters.onReady (scope);

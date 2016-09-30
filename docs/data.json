@@ -699,7 +699,7 @@
         },
         {
             "file": "src/main/javascript/texture.js",
-            "line": 30,
+            "line": 33,
             "description": "fetch a texture by name.",
             "itemtype": "method",
             "name": "get",
