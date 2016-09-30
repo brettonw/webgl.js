@@ -26,7 +26,7 @@
             </li>
         </div>
         <form class="navbar-form pull-right" style="line-height: 40px; height: 40px;">
-            <input style="margin-top: 0;" type="text" class="search-query" placeholder="Search for classes/modules..." data-obj='["classes/Cloud", "classes/Float4x4", "classes/FloatNxN", "classes/Node", "classes/Render", "classes/Shader", "classes/Utility"]'>
+            <input style="margin-top: 0;" type="text" class="search-query" placeholder="Search for classes/modules..." data-obj='["classes/Cloud", "classes/Float4x4", "classes/FloatNxN", "classes/Loader", "classes/Node", "classes/Render", "classes/Shader", "classes/Utility"]'>
         </form>
     </div>
 </div>
@@ -40,6 +40,7 @@
                 <li><a href="../classes/Cloud.html">Cloud</a></li>
                 <li><a href="../classes/Float4x4.html">Float4x4</a></li>
                 <li><a href="../classes/FloatNxN.html">FloatNxN</a></li>
+                <li><a href="../classes/Loader.html">Loader</a></li>
                 <li><a href="../classes/Node.html">Node</a></li>
                 <li><a href="../classes/Render.html">Render</a></li>
                 <li><a href="../classes/Shader.html">Shader</a></li>
@@ -88,7 +89,7 @@ let Texture = function () {
     let textures = Object.create (null);
     let afExtension;
 
-    _.construct  = function (name, parameters) {
+    _.construct  = function (name, parameters, onReady) {
         this.name = name;
 
         let texture = this.texture = context.createTexture();
@@ -102,20 +103,30 @@ let Texture = function () {
             context.texParameterf(context.TEXTURE_2D, afExtension.TEXTURE_MAX_ANISOTROPY_EXT, parameters.anisotropicFiltering);
             context.generateMipmap (context.TEXTURE_2D);
             context.bindTexture (context.TEXTURE_2D, null);
-            if (&quot;onReady&quot; in parameters) {
-                parameters.onReady (scope);
-            }
+
+            // call the onReady handler
+            onReady.notify (scope);
         };
         image.src = parameters.url;
 
         return this;
     };
 
-    _.new = function (name, parameters) {
+    /**
+     * static method to create and construct a new Shader.
+     *
+     * @method new
+     * @static
+     * @param {string} name the name to use to refer to this texture
+     * @param {Object} parameters textture construction parameters
+     * @param {Object} onReady an object specifying the scope and callback to call when ready
+     * @return {Texture}
+     */
+    _.new = function (name, parameters, onReady) {
         afExtension = DEFAULT_FUNCTION (afExtension, function () { return context.getExtension (&quot;EXT_texture_filter_anisotropic&quot;) });
         // make sure anisotropic filtering is defined, and has a reasonable default value
         parameters.anisotropicFiltering = Math.min (context.getParameter(afExtension.MAX_TEXTURE_MAX_ANISOTROPY_EXT), (&quot;anisotropicFiltering&quot; in parameters)? parameters.anisotropicFiltering : 4);
-        return (textures[name] = Object.create (_).construct (name, parameters));
+        return (textures[name] = Object.create (_).construct (name, parameters, onReady));
     };
 
     /**
@@ -123,6 +134,7 @@ let Texture = function () {
      *
      * @method get
      * @static
+     * @param {string} name the name of the texture to return
      * @return {Texture}
      */
     _.get = function (name) {

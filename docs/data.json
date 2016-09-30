@@ -32,6 +32,15 @@
             "fors": {},
             "namespaces": {}
         },
+        "src/main/javascript/loader.js": {
+            "name": "src/main/javascript/loader.js",
+            "modules": {},
+            "classes": {
+                "Loader": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
         "src/main/javascript/node.js": {
             "name": "src/main/javascript/node.js",
             "modules": {},
@@ -114,6 +123,18 @@
             "file": "src/main/javascript/floatNxN.js",
             "line": 1,
             "description": "A (square) NxN matrix"
+        },
+        "Loader": {
+            "name": "Loader",
+            "shortname": "Loader",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src/main/javascript/loader.js",
+            "line": 1,
+            "description": "A loader for external assets."
         },
         "Node": {
             "name": "Node",
@@ -322,6 +343,45 @@
                 "type": "FloatNxN"
             },
             "class": "FloatNxN"
+        },
+        {
+            "file": "src/main/javascript/loader.js",
+            "line": 11,
+            "description": "the initializer for a loader.",
+            "itemtype": "method",
+            "name": "construct",
+            "params": [
+                {
+                    "name": "onReady",
+                    "description": "an object specifying the scope and callback to call when ready",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Loader"
+            },
+            "class": "Loader"
+        },
+        {
+            "file": "src/main/javascript/loader.js",
+            "line": 49,
+            "description": "static method to create and construct a new Shader.",
+            "itemtype": "method",
+            "name": "new",
+            "static": 1,
+            "params": [
+                {
+                    "name": "onReady",
+                    "description": "an object specifying the scope and callback to call when ready",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Loader"
+            },
+            "class": "Loader"
         },
         {
             "file": "src/main/javascript/node.js",
@@ -699,11 +759,48 @@
         },
         {
             "file": "src/main/javascript/texture.js",
-            "line": 37,
+            "line": 30,
+            "description": "static method to create and construct a new Shader.",
+            "itemtype": "method",
+            "name": "new",
+            "static": 1,
+            "params": [
+                {
+                    "name": "name",
+                    "description": "the name to use to refer to this texture",
+                    "type": "String"
+                },
+                {
+                    "name": "parameters",
+                    "description": "textture construction parameters",
+                    "type": "Object"
+                },
+                {
+                    "name": "onReady",
+                    "description": "an object specifying the scope and callback to call when ready",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Texture"
+            },
+            "class": "Utility"
+        },
+        {
+            "file": "src/main/javascript/texture.js",
+            "line": 47,
             "description": "fetch a texture by name.",
             "itemtype": "method",
             "name": "get",
             "static": 1,
+            "params": [
+                {
+                    "name": "name",
+                    "description": "the name of the texture to return",
+                    "type": "String"
+                }
+            ],
             "return": {
                 "description": "",
                 "type": "Texture"

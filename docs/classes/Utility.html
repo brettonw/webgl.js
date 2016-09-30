@@ -26,7 +26,7 @@
             </li>
         </div>
         <form class="navbar-form pull-right" style="line-height: 40px; height: 40px;">
-            <input style="margin-top: 0;" type="text" class="search-query" placeholder="Search for classes/modules..." data-obj='["classes/Cloud", "classes/Float4x4", "classes/FloatNxN", "classes/Node", "classes/Render", "classes/Shader", "classes/Utility"]'>
+            <input style="margin-top: 0;" type="text" class="search-query" placeholder="Search for classes/modules..." data-obj='["classes/Cloud", "classes/Float4x4", "classes/FloatNxN", "classes/Loader", "classes/Node", "classes/Render", "classes/Shader", "classes/Utility"]'>
         </form>
     </div>
 </div>
@@ -40,6 +40,7 @@
                 <li><a href="../classes/Cloud.html">Cloud</a></li>
                 <li><a href="../classes/Float4x4.html">Float4x4</a></li>
                 <li><a href="../classes/FloatNxN.html">FloatNxN</a></li>
+                <li><a href="../classes/Loader.html">Loader</a></li>
                 <li><a href="../classes/Node.html">Node</a></li>
                 <li><a href="../classes/Render.html">Render</a></li>
                 <li><a href="../classes/Shader.html">Shader</a></li>
@@ -115,7 +116,8 @@
 		<li>
 			<strong>Static Methods</strong>
 			<ul>
-				<li><a href="#method-get"><span class="im">Utility.get</span>()</a></li>
+				<li><a href="#method-get"><span class="im">Utility.get</span>(<span class="ia">name</span>)</a></li>
+				<li><a href="#method-new"><span class="im">Utility.new</span>(<span class="ia">name</span><span class="ia">parameters</span><span class="ia">onReady</span>)</a></li>
 			</ul>
 		</li>
 	</ul>
@@ -709,7 +711,13 @@ here because the macro doesn't handle multiline values.</p>
 	<div class="method-signature">
 	<span class="name"><code>Utility.get</code></span>
 
-		<span class="paren">()</span>
+		<div class="args">
+			<span class="paren">(</span><ul class="args-list inline commas">
+				<li class="arg">
+						<code>name</code>
+				</li>
+			</ul><span class="paren">)</span>
+		</div>
 		<span class="returns-inline">
 			<span class="type">Texture</span>
 		</span>
@@ -723,7 +731,7 @@ here because the macro doesn't handle multiline values.</p>
 	<div class="meta">
 				<p>
 				Defined in
-		<a href="../files/src_main_javascript_texture.js.html#l37"><code>src&#x2F;main&#x2F;javascript&#x2F;texture.js:37</code></a>
+		<a href="../files/src_main_javascript_texture.js.html#l47"><code>src&#x2F;main&#x2F;javascript&#x2F;texture.js:47</code></a>
 		</p>
 
 
@@ -733,6 +741,104 @@ here because the macro doesn't handle multiline values.</p>
 	<div class="description"><p>fetch a texture by name.</p>
 </div>
 
+		<div class="params">
+			<h4>Parameters:</h4>
+
+			<ul class="params-list">
+				<li class="param">
+						<code class="param-name">name</code>
+						<span class="type">String</span>
+
+
+					<div class="param-description"><p>the name of the texture to return</p>
+</div>
+
+				</li>
+			</ul>
+		</div>
+
+		<div class="returns">
+			<h4>Returns:</h4>
+
+			<div class="returns-description">
+						<span class="type">Texture</span>
+			</div>
+		</div>
+
+</div>
+<div id="method-new" class="method item">
+	<div class="method-signature">
+	<span class="name"><code>Utility.new</code></span>
+
+		<div class="args">
+			<span class="paren">(</span><ul class="args-list inline commas">
+				<li class="arg">
+						<code>name</code>
+				</li>
+				<li class="arg">
+						<code>parameters</code>
+				</li>
+				<li class="arg">
+						<code>onReady</code>
+				</li>
+			</ul><span class="paren">)</span>
+		</div>
+		<span class="returns-inline">
+			<span class="type">Texture</span>
+		</span>
+	</div>
+
+
+
+
+
+
+	<div class="meta">
+				<p>
+				Defined in
+		<a href="../files/src_main_javascript_texture.js.html#l30"><code>src&#x2F;main&#x2F;javascript&#x2F;texture.js:30</code></a>
+		</p>
+
+
+
+	</div>
+
+	<div class="description"><p>static method to create and construct a new Shader.</p>
+</div>
+
+		<div class="params">
+			<h4>Parameters:</h4>
+
+			<ul class="params-list">
+				<li class="param">
+						<code class="param-name">name</code>
+						<span class="type">String</span>
+
+
+					<div class="param-description"><p>the name to use to refer to this texture</p>
+</div>
+
+				</li>
+				<li class="param">
+						<code class="param-name">parameters</code>
+						<span class="type">Object</span>
+
+
+					<div class="param-description"><p>textture construction parameters</p>
+</div>
+
+				</li>
+				<li class="param">
+						<code class="param-name">onReady</code>
+						<span class="type">Object</span>
+
+
+					<div class="param-description"><p>an object specifying the scope and callback to call when ready</p>
+</div>
+
+				</li>
+			</ul>
+		</div>
 
 		<div class="returns">
 			<h4>Returns:</h4>

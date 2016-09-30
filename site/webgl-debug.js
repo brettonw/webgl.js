@@ -2,6 +2,87 @@
 // default values...
 
 
+let OnReady = function () {
+    let _ = Object.create (null);
+
+    _.construct = function (scope, callback) {
+        this.scope = scope;
+        this.callback = callback;
+        return this;
+    };
+
+    _.notify = function (parameter) {
+        this.callback.call (this.scope, parameter);
+    };
+
+    _.new = function (scope, callback) {
+        return Object.create (_).construct(scope, callback);
+    };
+
+    return _;
+} ();
+/**
+ * A loader for external assets.
+ *
+ * @class Loader
+ */
+let Loader = function () {
+    let _ = Object.create (null);
+
+    let items = [];
+
+    /**
+     * the initializer for a loader.
+     *
+     * @method construct
+     * @param {Object} onReady an object specifying the scope and callback to call when ready
+     * @return {Loader}
+     */
+    _.construct = function (onReady) {
+        this.onReady = onReady;
+        return this;
+    };
+
+    _.addItem = function (type, name, parameters) {
+        let item = { type: type, name: name, parameters: parameters };
+        items.push (item);
+    };
+
+    _.finish = function (finishedItem) {
+        if (finishedItem === this.pendingItem) {
+            // clear the pending item, and go
+            delete this.pendingItem;
+            this.go ();
+        } else {
+            console.log ("WHAT'S UP WILLIS?");
+        }
+    };
+
+    _.go = function () {
+        if (items.length > 0) {
+            // have work to do, kick off a fetch
+            let item = items.shift ();
+            this.pendingItem = item.type.new (item.name, item.parameters, OnReady.new (this, this.finish));
+        } else {
+            // all done, inform our waiting handler
+            this.onReady.notify (this);
+        }
+    };
+
+    /**
+     * static method to create and construct a new Shader.
+     *
+     * @method new
+     * @static
+     * @param {Object} onReady an object specifying the scope and callback to call when ready
+     * @return {Loader}
+     */
+    _.new = function (onReady) {
+        return Object.create (_).construct (onReady);
+    };
+
+    return _;
+} ();
 let context;
 
 /**
@@ -1370,7 +1451,7 @@ let Texture = function () {
     let textures = Object.create (null);
     let afExtension;
 
-    _.construct = function (name, parameters) {
+    _.construct = function (name, parameters, onReady) {
         this.name = name;
 
         let texture = this.texture = context.createTexture();
@@ -1384,20 +1465,30 @@ let Texture = function () {
             context.texParameterf(context.TEXTURE_2D, afExtension.TEXTURE_MAX_ANISOTROPY_EXT, parameters.anisotropicFiltering);
             context.generateMipmap (context.TEXTURE_2D);
             context.bindTexture (context.TEXTURE_2D, null);
-            if ("onReady" in parameters) {
-                parameters.onReady (scope);
-            }
+
+            // call the onReady handler
+            onReady.notify (scope);
         };
         image.src = parameters.url;
 
         return this;
     };
 
-    _.new = function (name, parameters) {
+    /**
+     * static method to create and construct a new Shader.
+     *
+     * @method new
+     * @static
+     * @param {string} name the name to use to refer to this texture
+     * @param {Object} parameters textture construction parameters
+     * @param {Object} onReady an object specifying the scope and callback to call when ready
+     * @return {Texture}
+     */
+    _.new = function (name, parameters, onReady) {
         afExtension = (typeof afExtension !== "undefined") ? afExtension : function () { return context.getExtension ("EXT_texture_filter_anisotropic") } ();
         // make sure anisotropic filtering is defined, and has a reasonable default value
         parameters.anisotropicFiltering = Math.min (context.getParameter(afExtension.MAX_TEXTURE_MAX_ANISOTROPY_EXT), ("anisotropicFiltering" in parameters)? parameters.anisotropicFiltering : 4);
-        return (textures[name] = Object.create (_).construct (name, parameters));
+        return (textures[name] = Object.create (_).construct (name, parameters, onReady));
     };
 
     /**
@@ -1405,6 +1496,7 @@ let Texture = function () {
      *
      * @method get
      * @static
+     * @param {string} name the name of the texture to return
      * @return {Texture}
      */
     _.get = function (name) {

@@ -33,6 +33,8 @@
         <concat destfile="${target-dir}/${concat-target}">
             <!-- file order is important -->
             <fileset dir="${source-dir}" includes="macros.js" />
+            <fileset dir="${source-dir}" includes="onready.js" />
+            <fileset dir="${source-dir}" includes="loader.js" />
             <fileset dir="${source-dir}" includes="render.js" />
             <fileset dir="${source-dir}" includes="types.js" />
             <fileset dir="${source-dir}" includes="floatN.js" />

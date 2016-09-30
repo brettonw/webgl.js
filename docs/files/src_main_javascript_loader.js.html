@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Float4x4 - WebGL</title>
+    <title>src/main/javascript/loader.js - WebGL</title>
     <link rel="stylesheet" href="">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -78,112 +78,76 @@
                 <div id="docs-main">
                     <div class="content">
 <div class="page-header">
-    <h1>Float4x4</h1>
+    <h1>src/main/javascript/loader.js <small>File</small></h1>
 </div>
 
+<div class="file">
+    <pre class="prettyprint linenums">
+/**
+ * A loader for external assets.
+ *
+ * @class Loader
+ */
+let Loader = function () {
+    let _ = Object.create (null);
 
-	<div class="well well-small">
-        <div class="extends">
-            Extends <a href="../classes/FloatNxN.html" class="crosslink">FloatNxN</a>
-        </div>
-    </div>
+    let items = [];
 
+    /**
+     * the initializer for a loader.
+     *
+     * @method construct
+     * @param {Object} onReady an object specifying the scope and callback to call when ready
+     * @return {Loader}
+     */
+    _.construct = function (onReady) {
+        this.onReady = onReady;
+        return this;
+    };
 
+    _.addItem = function (type, name, parameters) {
+        let item = { type: type, name: name, parameters: parameters };
+        items.push (item);
+    };
 
+    _.finish = function (finishedItem) {
+        if (finishedItem === this.pendingItem) {
+            // clear the pending item, and go
+            delete this.pendingItem;
+            this.go ();
+        } else {
+            LOG (&quot;WHAT&#x27;S UP WILLIS?&quot;);
+        }
+    };
 
-<div class="yuidoc-class-description">
-<p>A 4x4 matrix used as a 3D transformation</p>
+    _.go = function () {
+        if (items.length &gt; 0) {
+            // have work to do, kick off a fetch
+            let item = items.shift ();
+            this.pendingItem = item.type.new (item.name, item.parameters, OnReady.new (this, this.finish));
+        } else {
+            // all done, inform our waiting handler
+            this.onReady.notify (this);
+        }
+    };
 
+    /**
+     * static method to create and construct a new Shader.
+     *
+     * @method new
+     * @static
+     * @param {Object} onReady an object specifying the scope and callback to call when ready
+     * @return {Loader}
+     */
+    _.new = function (onReady) {
+        return Object.create (_).construct (onReady);
+    };
+
+    return _;
+} ();
+
+    </pre>
 </div>
-
-<!-- table of contents -->
-
-<div id="class-toc" class="page-section">
-	<h2>Table of Contents</h2>
-    <ul>
-
-
-
-		<li>
-			<strong>Static Methods</strong>
-			<ul>
-				<li><a href="#method-bindPositionAttribute"><span class="im">Float4x4.bindPositionAttribute</span>(<span class="ia">buffer</span>)</a></li>
-			</ul>
-		</li>
-	</ul>
-</div>
-
-<!-- details -->
-
-
-
-
-
-
-    <div id="static-methods" class="page-section">
-        <h2 class="off-left">Static Methods</h2>
-        <div class="item-list">
-<div id="method-bindPositionAttribute" class="method item">
-	<div class="method-signature">
-	<span class="name"><code>Float4x4.bindPositionAttribute</code></span>
-
-		<div class="args">
-			<span class="paren">(</span><ul class="args-list inline commas">
-				<li class="arg">
-						<code>buffer</code>
-				</li>
-			</ul><span class="paren">)</span>
-		</div>
-		<span class="returns-inline">
-			<span class="type"><a href="../classes/Shader.html" class="crosslink">Shader</a></span>
-		</span>
-	</div>
-
-
-
-
-
-
-	<div class="meta">
-				<p>
-				Defined in
-		<a href="../files/src_main_javascript_float4x4.js.html#l277"><code>src&#x2F;main&#x2F;javascript&#x2F;float4x4.js:277</code></a>
-		</p>
-
-
-
-	</div>
-
-	<div class="description"><p>Bind the POSITION attribute to the given buffer.</p>
-</div>
-
-		<div class="params">
-			<h4>Parameters:</h4>
-
-			<ul class="params-list">
-				<li class="param">
-						<code class="param-name">buffer</code>
-						<span class="type">Object</span>
-
-
-					<div class="param-description"><p>WebGL buffer to bind</p>
-</div>
-
-				</li>
-			</ul>
-		</div>
-
-		<div class="returns">
-			<h4>Returns:</h4>
-
-			<div class="returns-description">
-						<span class="type"><a href="../classes/Shader.html" class="crosslink">Shader</a></span>
-			</div>
-		</div>
-
-</div>
-        </div>
-    </div>
                     </div>
                 </div>
             </div>

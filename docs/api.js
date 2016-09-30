@@ -4,6 +4,7 @@ YUI.add("yuidoc-meta", function(Y) {
         "Cloud",
         "Float4x4",
         "FloatNxN",
+        "Loader",
         "Node",
         "Render",
         "Shader",
