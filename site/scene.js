@@ -37,7 +37,7 @@ let buildScene = function (points) {
             // event loop from the draw function, but we overrode that to have explicit control.
             // webGl still presents the buffer automatically, but the back buffer is not cleared
             // until we do it...
-            context.clearColor (1.0, 1.0, 1.0, 1.0);
+            context.clearColor (0.0, 0.0, 0.0, 1.0);
             context.clear (context.COLOR_BUFFER_BIT | context.DEPTH_BUFFER_BIT);
 
             // extensions I want for getting gradient infomation inside the fragment shaders

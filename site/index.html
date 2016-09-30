@@ -19,6 +19,12 @@
             // replace the basic shader with mine (for testing)
             let basic = Shader.new ("basic", "shaders/vertex-basic.glsl", "shaders/fragment-basic.glsl");
 
+            // starmaps: https://svs.gsfc.nasa.gov/3895
+            // earth night textures: http://visibleearth.nasa.gov/view.php?id=79765
+            // earth day textures: http://visibleearth.nasa.gov/view_cat.php?categoryID=1484&p=1
+            // earth cloud textures: http://visibleearth.nasa.gov/view.php?id=57747
+            // realtime cloud coverage: http://weather.msfc.nasa.gov/GOES/getsatellite.html
+
             Texture.new ({
                 url:"textures/night.201210x4096x2048.png",
                 onReady: function (texture) {
