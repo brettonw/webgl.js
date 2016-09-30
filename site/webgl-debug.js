@@ -958,6 +958,7 @@ let Shader = function () {
      */
     _.construct = function (name, vertexShaderUrl, fragmentShaderUrl, attributeMapping, parameterMapping) {
         this.name = name;
+        console.log ("Shader: " + this.name);
 
         // internal function to fetch and compile a shader function
         let fetchAndCompileShader = function (url, type) {
@@ -996,7 +997,7 @@ let Shader = function () {
         // link the program and check that it succeeded
         context.linkProgram (program);
         if (!context.getProgramParameter (program, context.LINK_STATUS)) {
-            console.log ("Could not initialise shaders");
+            console.log ("Could not initialise shader");
             // XXX do we need to delete it?
         }
 
@@ -1173,6 +1174,7 @@ let Shader = function () {
      * * PROJECTION_MATRIX_PARAMETER: "projectionMatrix"
      * * NORMAL_MATRIX_PARAMETER: "normalMatrix"
      * * OUTPUT_ALPHA_PARAMETER: "outputAlpha"
+     * * TEXTURE_SAMPLER: "textureSampler"
      * @return {Shader}
      */
     _.new = function (name, vertexShaderUrl, fragmentShaderUrl, attributeMapping, parameterMapping) {
@@ -1198,7 +1200,8 @@ let Shader = function () {
                 VIEW_MATRIX_PARAMETER: "viewMatrix",
                 PROJECTION_MATRIX_PARAMETER: "projectionMatrix",
                 NORMAL_MATRIX_PARAMETER: "normalMatrix",
-                OUTPUT_ALPHA_PARAMETER: "outputAlpha"
+                OUTPUT_ALPHA_PARAMETER: "outputAlpha",
+                TEXTURE_SAMPLER: "textureSampler"
             }
         });
         return (shaders[name] = Object.create (_).construct (name, vertexShaderUrl, fragmentShaderUrl, attributeMapping, parameterMapping));
@@ -1226,7 +1229,8 @@ let ShaderParameter = function () {
         this.name = activeUniform.name;
         this.type = activeUniform.type;
         this.location = context.getUniformLocation (program, activeUniform.name);
-        this.lastValue = "XXXXX";
+        this.lastValue = "Invalid last value to force refresh on first load.";
+        console.log ("Shader parameter: " + this.name + " (type 0x" + this.type.toString(16) + ")");
         return this;
     };
 
@@ -1269,6 +1273,13 @@ let ShaderParameter = function () {
                 case 0x8B5C:
                     context.uniformMatrix4fv (this.location, false, value);
                     break;
+
+                case 0x8B5E:
+                    // I wonder if this will need to be unbound
+                    context.activeTexture (context.TEXTURE0);
+                    context.bindTexture (context.TEXTURE_2D, Texture.get (value).texture);
+                    context.uniform1i (this.location, 0);
+                    break;
             }
             this.lastValue = value;
         }
@@ -1287,6 +1298,7 @@ let ShaderAttribute = function () {
         this.name = activeAttribute.name;
         this.type = activeAttribute.type;
         this.location = context.getAttribLocation (program, this.name);
+        console.log ("Shader attribute: " + this.name + " at index " + this.location + " (type 0x" + this.type.toString(16) + ")");
 
         // set the bind function
         switch (this.type) {
@@ -1355,7 +1367,11 @@ let ShaderAttribute = function () {
 let Texture = function () {
     let _ = Object.create (null);
 
-    _.construct = function (parameters) {
+    let textures = Object.create (null);
+
+    _.construct = function (name, parameters) {
+        this.name = name;
+
         let texture = this.texture = context.createTexture();
         let image = new Image();
         let scope = this;
@@ -1363,24 +1379,29 @@ let Texture = function () {
             context.bindTexture (context.TEXTURE_2D, texture);
             context.texImage2D (context.TEXTURE_2D, 0, context.RGBA, context.RGBA, context.UNSIGNED_BYTE, image);
             context.texParameteri (context.TEXTURE_2D, context.TEXTURE_MAG_FILTER, context.LINEAR);
-            context.texParameteri (context.TEXTURE_2D, context.TEXTURE_MIN_FILTER, context.LINEAR_MIPMAP_NEAREST);
+            context.texParameteri (context.TEXTURE_2D, context.TEXTURE_MIN_FILTER, context.LINEAR_MIPMAP_LINEAR);
             context.generateMipmap (context.TEXTURE_2D);
             context.bindTexture (context.TEXTURE_2D, null);
             parameters.onReady (scope);
-        }
+        };
         image.src = parameters.url;
 
         return this;
     };
 
-    _.set = function (shader) {
-        context.activeTexture (context.TEXTURE0);
-        context.bindTexture (context.TEXTURE_2D, this.texture);
-        context.uniform1i (context.getUniformLocation (shader.program, "textureSampler"), 0);
+    _.new = function (name, parameters) {
+        return (textures[name] = Object.create (_).construct (name, parameters));
     };
 
-    _.new = function (parameters) {
-        return Object.create (_).construct (parameters);
+    /**
+     * fetch a texture by name.
+     *
+     * @method get
+     * @static
+     * @return {Texture}
+     */
+    _.get = function (name) {
+        return textures[name];
     };
 
     return _;
@@ -2221,6 +2242,7 @@ let Sphere = function () {
 
         // subdivide the triangles we already defined, do this the requested number of times (3
         // seems to be the minimum for a spherical appearance)
+        console.log ("Build sphere...");
         for (let j = 0; j < this.parameters.subdivisions; ++j) {
             console.log ("Iteration " + j + " with " + vertices.length + " points in " + faces.length + " triangles");
             for (let i = 0, faceCount = faces.length; i < faceCount; ++i) {
@@ -2287,6 +2309,7 @@ let makeRevolve = function (name, outline, normal, steps) {
 
     return Shape.new (name, function () {
         // compute the steps we need to make to build the rotated shape
+        console.log ("Make revolved outline");
         let builder = ShapeBuilder.new ();
         let stepAngle = (-2.0 * Math.PI) / steps;
         for (let i = 0; i < steps; ++i) {
@@ -2341,6 +2364,7 @@ let makeRevolve = function (name, outline, normal, steps) {
     });
 };
 let makeBall = function (name, steps) {
+    console.log ("Make ball...");
     // generate an outline, and then revolve it
     let outline = [];
     let normal = [];

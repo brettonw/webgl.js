@@ -59,6 +59,7 @@ let buildScene = function (points) {
             context.enable (context.DEPTH_TEST);
             context.enable (context.CULL_FACE);
             context.cullFace (context.BACK);
+            standardParameters.TEXTURE_SAMPLER = "earth";
         },
         shape: "ball",
         children: false

@@ -59,6 +59,13 @@
             "fors": {},
             "namespaces": {}
         },
+        "src/main/javascript/texture.js": {
+            "name": "src/main/javascript/texture.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
         "src/main/javascript/utility.js": {
             "name": "src/main/javascript/utility.js",
             "modules": {},
@@ -506,7 +513,7 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 127,
+            "line": 128,
             "description": "set the standard shader parameters in one call.",
             "itemtype": "method",
             "name": "setStandardParameters",
@@ -525,7 +532,7 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 154,
+            "line": 155,
             "description": "bind the POSITION attribute to the given buffer.",
             "itemtype": "method",
             "name": "bindPositionAttribute",
@@ -545,7 +552,7 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 166,
+            "line": 167,
             "description": "bind the NORMAL attribute to the given buffer.",
             "itemtype": "method",
             "name": "bindNormalAttribute",
@@ -565,7 +572,7 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 178,
+            "line": 179,
             "description": "bind the TEXTURE attribute to the given buffer.",
             "itemtype": "method",
             "name": "bindTextureAttribute",
@@ -585,7 +592,7 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 190,
+            "line": 191,
             "description": "disable the enabled buffers.",
             "itemtype": "method",
             "name": "bindTextureAttribute",
@@ -605,7 +612,7 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 204,
+            "line": 205,
             "description": "fetch the shader currently in use.",
             "itemtype": "method",
             "name": "getCurrentShader",
@@ -618,7 +625,7 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 215,
+            "line": 216,
             "description": "set this as the current shader in the rendering context.",
             "itemtype": "method",
             "name": "use",
@@ -627,7 +634,7 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 232,
+            "line": 233,
             "description": "get the name of this shader",
             "itemtype": "method",
             "name": "getName",
@@ -639,7 +646,7 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 242,
+            "line": 243,
             "description": "static method to create and construct a new Shader.",
             "itemtype": "method",
             "name": "new",
@@ -667,7 +674,7 @@
                 },
                 {
                     "name": "parameterMapping",
-                    "description": "maps standard parameters to the parameter names in the\nshader. This allows the engine to manage setting the standard set of parameters on the shader\nwithout forcing the shader author to use \"standard\" names. Defaults to:\n* MODEL_MATRIX_PARAMETER: \"modelMatrix\"\n* VIEW_MATRIX_PARAMETER: \"viewMatrix\"\n* PROJECTION_MATRIX_PARAMETER: \"projectionMatrix\"\n* NORMAL_MATRIX_PARAMETER: \"normalMatrix\"\n* OUTPUT_ALPHA_PARAMETER: \"outputAlpha\"",
+                    "description": "maps standard parameters to the parameter names in the\nshader. This allows the engine to manage setting the standard set of parameters on the shader\nwithout forcing the shader author to use \"standard\" names. Defaults to:\n* MODEL_MATRIX_PARAMETER: \"modelMatrix\"\n* VIEW_MATRIX_PARAMETER: \"viewMatrix\"\n* PROJECTION_MATRIX_PARAMETER: \"projectionMatrix\"\n* NORMAL_MATRIX_PARAMETER: \"normalMatrix\"\n* OUTPUT_ALPHA_PARAMETER: \"outputAlpha\"\n* TEXTURE_SAMPLER: \"textureSampler\"",
                     "type": "Object"
                 }
             ],
@@ -679,7 +686,7 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 295,
+            "line": 298,
             "description": "fetch a shader by name.",
             "itemtype": "method",
             "name": "get",
@@ -689,6 +696,19 @@
                 "type": "Shader"
             },
             "class": "Shader"
+        },
+        {
+            "file": "src/main/javascript/texture.js",
+            "line": 30,
+            "description": "fetch a texture by name.",
+            "itemtype": "method",
+            "name": "get",
+            "static": 1,
+            "return": {
+                "description": "",
+                "type": "Texture"
+            },
+            "class": "Utility"
         },
         {
             "file": "src/main/javascript/utility.js",

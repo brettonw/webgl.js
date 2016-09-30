@@ -38,6 +38,7 @@ let makeRevolve = function (name, outline, normal, steps) {
 
     return Shape.new (name, function () {
         // compute the steps we need to make to build the rotated shape
+        LOG ("Make revolved outline");
         let builder = ShapeBuilder.new ();
         let stepAngle = (-2.0 * Math.PI) / steps;
         for (let i = 0; i < steps; ++i) {

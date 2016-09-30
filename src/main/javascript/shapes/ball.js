@@ -1,4 +1,5 @@
 let makeBall = function (name, steps) {
+    LOG ("Make ball...");
     // generate an outline, and then revolve it
     let outline = [];
     let normal = [];

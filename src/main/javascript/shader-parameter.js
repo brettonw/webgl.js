@@ -6,7 +6,8 @@ let ShaderParameter = function () {
         this.name = activeUniform.name;
         this.type = activeUniform.type;
         this.location = context.getUniformLocation (program, activeUniform.name);
-        this.lastValue = "XXXXX";
+        this.lastValue = "Invalid last value to force refresh on first load.";
+        LOG ("Shader parameter: " + this.name + " (type 0x" + this.type.toString(16) + ")");
         return this;
     };
 
@@ -48,6 +49,13 @@ let ShaderParameter = function () {
                     break;
                 case 0x8B5C:
                     context.uniformMatrix4fv (this.location, false, value);
+                    break;
+
+                case 0x8B5E:
+                    // I wonder if this will need to be unbound
+                    context.activeTexture (context.TEXTURE0);
+                    context.bindTexture (context.TEXTURE_2D, Texture.get (value).texture);
+                    context.uniform1i (this.location, 0);
                     break;
             }
             this.lastValue = value;

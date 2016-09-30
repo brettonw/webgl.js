@@ -5,6 +5,7 @@ let ShaderAttribute = function () {
         this.name = activeAttribute.name;
         this.type = activeAttribute.type;
         this.location = context.getAttribLocation (program, this.name);
+        LOG ("Shader attribute: " + this.name + " at index " + this.location + " (type 0x" + this.type.toString(16) + ")");
 
         // set the bind function
         switch (this.type) {

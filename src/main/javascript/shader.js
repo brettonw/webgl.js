@@ -46,6 +46,7 @@ let Shader = function () {
      */
     _.construct = function (name, vertexShaderUrl, fragmentShaderUrl, attributeMapping, parameterMapping) {
         this.name = name;
+        LOG ("Shader: " + this.name);
 
         // internal function to fetch and compile a shader function
         let fetchAndCompileShader = function (url, type) {
@@ -84,7 +85,7 @@ let Shader = function () {
         // link the program and check that it succeeded
         context.linkProgram (program);
         if (!context.getProgramParameter (program, context.LINK_STATUS)) {
-            LOG ("Could not initialise shaders");
+            LOG ("Could not initialise shader");
             // XXX do we need to delete it?
         }
 
@@ -261,6 +262,7 @@ let Shader = function () {
      * * PROJECTION_MATRIX_PARAMETER: "projectionMatrix"
      * * NORMAL_MATRIX_PARAMETER: "normalMatrix"
      * * OUTPUT_ALPHA_PARAMETER: "outputAlpha"
+     * * TEXTURE_SAMPLER: "textureSampler"
      * @return {Shader}
      */
     _.new = function (name, vertexShaderUrl, fragmentShaderUrl, attributeMapping, parameterMapping) {
@@ -286,7 +288,8 @@ let Shader = function () {
                 VIEW_MATRIX_PARAMETER: "viewMatrix",
                 PROJECTION_MATRIX_PARAMETER: "projectionMatrix",
                 NORMAL_MATRIX_PARAMETER: "normalMatrix",
-                OUTPUT_ALPHA_PARAMETER: "outputAlpha"
+                OUTPUT_ALPHA_PARAMETER: "outputAlpha",
+                TEXTURE_SAMPLER: "textureSampler"
             }
         });
         return (shaders[name] = Object.create (_).construct (name, vertexShaderUrl, fragmentShaderUrl, attributeMapping, parameterMapping));
