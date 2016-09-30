@@ -15,16 +15,26 @@
         var onBodyLoad = function () {
             MouseTracker.new ("render-canvas");
             Render.new ("render-canvas");
-            //Shader.new ("rgb", "shaders/vertex-basic.glsl", "shaders/fragment-rgb.glsl");
 
-            buildScene ([
-                [0.5, 0.45, 0.65],
-                [0.75, 0.75, 0.75],
-                [0.75, 0.5, 0.75],
-                [0.75, 0.5, 0.5],
-                [0.25, 0.25, 0.25],
-                [0.9, 0.25, 0.25]
-            ]);
+            // replace the basic shader with mine (for testing)
+            let basic = Shader.new ("basic", "shaders/vertex-basic.glsl", "shaders/fragment-basic.glsl");
+
+            Texture.new ({
+                url:"textures/night.201210x4096x2048.png",
+                onReady: function (texture) {
+                    // XXX temporary
+                    texture.set (basic);
+
+                    buildScene ([
+                        [0.5, 0.45, 0.65],
+                        [0.75, 0.75, 0.75],
+                        [0.75, 0.5, 0.75],
+                        [0.75, 0.5, 0.5],
+                        [0.25, 0.25, 0.25],
+                        [0.9, 0.25, 0.25]
+                    ]);
+                }
+            });
         };
     </script>
 </head>

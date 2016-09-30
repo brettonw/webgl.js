@@ -24,7 +24,6 @@ let draw = function (delta) {
 };
 
 let buildScene = function (points) {
-
     makeRevolve ("cylinder",
         [[ 1.0,  1.0], [ 1.0, -1.0], [ 1.0, -1.0], [ 0.8, -1.0], [ 0.8, -1.0], [ 0.8,  1.0], [ 0.8,  1.0], [ 1.0,  1.0]],
         [[ 1.0,  0.0], [ 1.0,  0.0], [ 0.0, -1.0], [ 0.0, -1.0], [-1.0,  0.0], [-1.0,  0.0], [ 0.0,  1.0], [ 0.0,  1.0]],
@@ -61,7 +60,7 @@ let buildScene = function (points) {
             context.enable (context.CULL_FACE);
             context.cullFace (context.BACK);
         },
-        shape: "cube",
+        shape: "ball",
         children: false
     });
     scene.addChild (background);

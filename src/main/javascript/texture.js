@@ -2,22 +2,27 @@ let Texture = function () {
     let _ = Object.create (null);
 
     _.construct  = function (parameters) {
-
-        let texture = this.texture = gl.createTexture();
+        let texture = this.texture = context.createTexture();
         let image = new Image();
-        image.onload = function() { handleTextureLoaded(cubeImage, cubeTexture); }
-        image.src = "cubetexture.png";
-
-        function handleTextureLoaded(image, texture) {
-            gl.bindTexture(gl.TEXTURE_2D, texture);
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
-            gl.generateMipmap(gl.TEXTURE_2D);
-            gl.bindTexture(gl.TEXTURE_2D, null);
+        let scope = this;
+        image.onload = function() {
+            context.bindTexture (context.TEXTURE_2D, texture);
+            context.texImage2D (context.TEXTURE_2D, 0, context.RGBA, context.RGBA, context.UNSIGNED_BYTE, image);
+            context.texParameteri (context.TEXTURE_2D, context.TEXTURE_MAG_FILTER, context.LINEAR);
+            context.texParameteri (context.TEXTURE_2D, context.TEXTURE_MIN_FILTER, context.LINEAR_MIPMAP_NEAREST);
+            context.generateMipmap (context.TEXTURE_2D);
+            context.bindTexture (context.TEXTURE_2D, null);
+            parameters.onReady (scope);
         }
+        image.src = parameters.url;
 
         return this;
+    };
+
+    _.set = function (shader) {
+        context.activeTexture (context.TEXTURE0);
+        context.bindTexture (context.TEXTURE_2D, this.texture);
+        context.uniform1i (context.getUniformLocation (shader.program, "textureSampler"), 0);
     };
 
     _.new = function (parameters) {

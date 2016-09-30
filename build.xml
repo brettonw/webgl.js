@@ -41,7 +41,8 @@
             <fileset dir="${source-dir}" includes="shader.js" />
             <fileset dir="${source-dir}" includes="shader-parameter.js" />
             <fileset dir="${source-dir}" includes="shader-attribute.js" />
-            <fileset dir="${source-dir}" includes="node.js" />
+            <fileset dir="${source-dir}" includes="texture.js"/>
+            <fileset dir="${source-dir}" includes="node.js"/>
             <fileset dir="${source-dir}" includes="cloud.js" />
             <fileset dir="${source-dir}" includes="shape.js"/>
             <fileset dir="${source-dir}" includes="shape-builder.js"/>
