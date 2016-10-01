@@ -8,12 +8,14 @@
     <link rel="stylesheet" href="style.css" />
 
     <script type="text/javascript" src="webgl-debug.js"></script>
-    <script type="text/javascript" src="mouse-tracker.js"></script>
+    <script type="text/javascript" src="../src/main/javascript/mouse-tracker.js"></script>
     <script type="text/javascript" src="scene.js"></script>
 
     <script type="text/javascript">
         var onBodyLoad = function () {
-            MouseTracker.new ("render-canvas");
+            MouseTracker.new ("render-canvas", OnReady.new (null, function (deltaPosition) {
+                draw (deltaPosition);
+            }));
             Render.new ("render-canvas");
 
             // replace the basic shader with mine (for testing)

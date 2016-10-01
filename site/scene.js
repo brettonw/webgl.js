@@ -1,19 +1,31 @@
 "use strict;"
 
 let scene;
-let currentAngle = 0;
+let currentPosition = [0, 0];
 
 let standardParameters = Object.create(null);
 
-let draw = function (delta) {
-    // update the rotation around the scene
-    currentAngle += (delta * 180);
+let draw = function (deltaPosition) {
+    // update the current position and clamp or wrap accordingly
+    currentPosition = Float2.add (currentPosition, deltaPosition);
+    while (currentPosition[0] > 1) {
+        currentPosition[0] -= 2;
+    }
+    while (currentPosition[0] < -1) {
+        currentPosition[0] += 2;
+    }
+    currentPosition[1] = Math.min (currentPosition[1], 0.9);
+    currentPosition[1] = Math.max (currentPosition[1], -0.9);
+
+    // compute the view parameters as up or down, and left or right
+    let upAngle = currentPosition[1] * Math.PI * 0.5;
+    let viewOffset = Float2.scale ([Math.cos (upAngle), Math.sin (upAngle)], -5);
 
     // setup the view matrix
     let viewMatrix = Float4x4.identity ();
-    Float4x4.rotateX (viewMatrix, Utility.degreesToRadians (10));
-    viewMatrix  = Float4x4.multiply (Float4x4.translate ([ 0, -1, -5.0 ]), viewMatrix);
-    Float4x4.rotateY (viewMatrix, Utility.degreesToRadians (currentAngle));
+    Float4x4.rotateX (viewMatrix, upAngle);
+    viewMatrix  = Float4x4.multiply (Float4x4.translate ([0, viewOffset[1], viewOffset[0]]), viewMatrix);
+    Float4x4.rotateY (viewMatrix,currentPosition[0] * Math.PI);
     //viewMatrix = Float4x4.multiply (Float4x4.scale ([ 2, 2, 2 ]), viewMatrix);
     //viewMatrix  = Float4x4.multiply (Float4x4.translate ([ -0.5, -0.5, -0.5 ]), viewMatrix);
     standardParameters.VIEW_MATRIX_PARAMETER = viewMatrix;
@@ -52,7 +64,7 @@ let buildScene = function (points) {
 
     let starfield = Node.new ({
         name: "starfield",
-        transform: Float4x4.multiply(Float4x4.rotateX (Float4x4.identity (), Math.PI), Float4x4.scale ([-150, -150, -150])),
+        transform: Float4x4.multiply(Float4x4.rotateX (Float4x4.identity (), Math.PI), Float4x4.scale (-190)),
         state: function (standardParameters) {
             Shader.get ("basic").use ();
             context.disable (context.DEPTH_TEST);
@@ -67,7 +79,6 @@ let buildScene = function (points) {
 
     let constellations = Node.new ({
         name: "constellations",
-        transform: Float4x4.multiply (Float4x4.rotateX (Float4x4.identity (), Math.PI), Float4x4.scale ([-150, -150, -150])),
         state: function (standardParameters) {
             Shader.get ("overlay").use ();
             context.disable (context.DEPTH_TEST);
@@ -79,7 +90,7 @@ let buildScene = function (points) {
         shape: "ball",
         children: false
     });
-    scene.addChild (constellations);
+    starfield.addChild (constellations);
 
     let earth = Node.new ({
         name: "earth",
@@ -101,5 +112,5 @@ let buildScene = function (points) {
     standardParameters.OUTPUT_ALPHA_PARAMETER = 1.0;
 
 
-    draw (0);
+    draw ([0, 0]);
 };
