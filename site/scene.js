@@ -52,16 +52,33 @@ let buildScene = function (points) {
 
     let starfield = Node.new ({
         name: "starfield",
-        transform: Float4x4.scale (-20),
+        transform: Float4x4.multiply(Float4x4.rotateX (Float4x4.identity (), Math.PI), Float4x4.scale ([-150, -150, -150])),
         state: function (standardParameters) {
             Shader.get ("basic").use ();
             context.disable (context.DEPTH_TEST);
+            context.enable (context.CULL_FACE);
+            context.cullFace (context.BACK);
+            standardParameters.OUTPUT_ALPHA_PARAMETER = 1.0;
             standardParameters.TEXTURE_SAMPLER = "starfield";
+        },
+        shape: "ball"
+    });
+    scene.addChild (starfield);
+
+    let constellations = Node.new ({
+        name: "constellations",
+        state: function (standardParameters) {
+            Shader.get ("basic").use ();
+            context.disable (context.DEPTH_TEST);
+            context.enable (context.CULL_FACE);
+            context.cullFace (context.BACK);
+            standardParameters.OUTPUT_ALPHA_PARAMETER = 0.25;
+            standardParameters.TEXTURE_SAMPLER = "constellations";
         },
         shape: "ball",
         children: false
     });
-    scene.addChild (starfield);
+    starfield.addChild (constellations);
 
     let earth = Node.new ({
         name: "earth",
@@ -70,15 +87,15 @@ let buildScene = function (points) {
             context.enable (context.DEPTH_TEST);
             context.enable (context.CULL_FACE);
             context.cullFace (context.BACK);
+            standardParameters.OUTPUT_ALPHA_PARAMETER = 1.0;
             standardParameters.TEXTURE_SAMPLER = "earth";
         },
-        shape: "ball",
-        children: false
+        shape: "ball"
     });
     scene.addChild (earth);
 
     let projectionMatrix = Float4x4.create ();
-    Float4x4.perspective (45, context.viewportWidth / context.viewportHeight, 0.1, 100.0, projectionMatrix);
+    Float4x4.perspective (60, context.viewportWidth / context.viewportHeight, 0.1, 200.0, projectionMatrix);
     standardParameters.PROJECTION_MATRIX_PARAMETER = projectionMatrix;
     standardParameters.OUTPUT_ALPHA_PARAMETER = 1.0;
 

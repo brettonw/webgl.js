@@ -1047,7 +1047,7 @@ let Shader = function () {
             let request = new XMLHttpRequest ();
             request.open ("GET", url, false);
             request.send (null);
-            if (request.status === 200){
+            if (request.status === 200) {
                 // type is one of (context.VERTEX_SHADER, context.FRAGMENT_SHADER)
                 let tmpShader = context.createShader (type);
                 context.shaderSource (tmpShader, request.responseText);
@@ -1073,7 +1073,7 @@ let Shader = function () {
         // force a binding of attribute 0 to the position attribute (which SHOULD always be present)
         // this avoids a performance penalty incurred if a randomly assigned attribute is on index 0
         // but is not used by a particular shape (like a normals buffer).
-        context.bindAttribLocation(program, 0, attributeMapping.POSITION_ATTRIBUTE);
+        context.bindAttribLocation (program, 0, attributeMapping.POSITION_ATTRIBUTE);
 
         // link the program and check that it succeeded
         context.linkProgram (program);
@@ -1087,7 +1087,7 @@ let Shader = function () {
 
         // loop over the found active shader parameters providing setter methods for them, and map
         // the ones we know about
-        let reverseParameterMapping = Utility.reverseMap(parameterMapping);
+        let reverseParameterMapping = Utility.reverseMap (parameterMapping);
         let standardParameterMapping = this.standardParameterMapping = Object.create (null);
         for (let i = 0, end = context.getProgramParameter (program, context.ACTIVE_UNIFORMS); i < end; i++) {
             let shaderParameter = ShaderParameter.new (program, i);
@@ -1105,7 +1105,7 @@ let Shader = function () {
         }
 
         // loop over the found active attributes, and map the ones we know about
-        let reverseAttributeMapping = Utility.reverseMap(attributeMapping);
+        let reverseAttributeMapping = Utility.reverseMap (attributeMapping);
         let attributes = this.attributes = Object.create (null);
         for (let i = 0, end = context.getProgramParameter (program, context.ACTIVE_ATTRIBUTES); i < end; i++) {
             let activeAttribute = context.getActiveAttrib (program, i);
@@ -1154,7 +1154,7 @@ let Shader = function () {
      * @return {Shader}
      */
     _.bindPositionAttribute = function (buffer) {
-        return bindAttribute(_.POSITION_ATTRIBUTE, buffer);
+        return bindAttribute (_.POSITION_ATTRIBUTE, buffer);
     };
 
     /**
@@ -1166,7 +1166,7 @@ let Shader = function () {
      * @return {Shader}
      */
     _.bindNormalAttribute = function (buffer) {
-        return bindAttribute(_.NORMAL_ATTRIBUTE, buffer);
+        return bindAttribute (_.NORMAL_ATTRIBUTE, buffer);
     };
 
     /**
@@ -1178,7 +1178,7 @@ let Shader = function () {
      * @return {Shader}
      */
     _.bindTextureAttribute = function (buffer) {
-        return bindAttribute(_.TEXTURE_ATTRIBUTE, buffer);
+        return bindAttribute (_.TEXTURE_ATTRIBUTE, buffer);
     };
 
     /**
@@ -1215,7 +1215,7 @@ let Shader = function () {
     _.use = function () {
         if (currentShader !== this) {
             if (typeof currentShader !== "undefined") {
-                currentShader.unbind ();
+                //currentShader.unbind ();
             }
             currentShader = this;
             context.useProgram (this.program);
@@ -1911,77 +1911,109 @@ let Shape = function () {
         this.draw = [
             // 0 vertex only
             function () {
-                if (this.setCurrentShape ()) {
-                    Shader.bindPositionAttribute (this.positionBuffer);
+                try {
+                    if (this.setCurrentShape ()) {
+                        Shader.bindPositionAttribute (this.positionBuffer);
+                    }
+                    context.drawArrays (context.TRIANGLES, 0, this.positionBuffer.numItems);
+                } catch (err) {
+                    console.log (err.message);
                 }
-                context.drawArrays(context.TRIANGLES, 0, this.positionBuffer.numItems);
             },
             // 1 vertex, normal
             function () {
-                if (this.setCurrentShape ()) {
-                    Shader
-                        .bindPositionAttribute (this.positionBuffer)
-                        .bindNormalAttribute (this.normalBuffer);
+                try {
+                    if (this.setCurrentShape ()) {
+                        Shader
+                            .bindPositionAttribute (this.positionBuffer)
+                            .bindNormalAttribute (this.normalBuffer);
+                    }
+                    context.drawArrays (context.TRIANGLES, 0, this.positionBuffer.numItems);
+                } catch (err) {
+                    console.log (err.message);
                 }
-                context.drawArrays(context.TRIANGLES, 0, this.positionBuffer.numItems);
             },
             // 2 vertex, texture
             function () {
-                if (this.setCurrentShape ()) {
-                    Shader
-                        .bindPositionAttribute (this.positionBuffer)
-                        .bindTextureAttribute (this.textureBuffer);
+                try {
+                    if (this.setCurrentShape ()) {
+                        Shader
+                            .bindPositionAttribute (this.positionBuffer)
+                            .bindTextureAttribute (this.textureBuffer);
+                    }
+                    context.drawArrays (context.TRIANGLES, 0, this.positionBuffer.numItems);
+                } catch (err) {
+                    console.log (err.message);
                 }
-                context.drawArrays(context.TRIANGLES, 0, this.positionBuffer.numItems);
             },
             // 3 vertex, normal, texture
             function () {
-                if (this.setCurrentShape ()) {
-                    Shader
-                        .bindPositionAttribute (this.positionBuffer)
-                        .bindNormalAttribute (this.normalBuffer)
-                        .bindTextureAttribute (this.textureBuffer);
+                try {
+                    if (this.setCurrentShape ()) {
+                        Shader
+                            .bindPositionAttribute (this.positionBuffer)
+                            .bindNormalAttribute (this.normalBuffer)
+                            .bindTextureAttribute (this.textureBuffer);
+                    }
+                    context.drawArrays (context.TRIANGLES, 0, this.positionBuffer.numItems);
+                } catch (err) {
+                    console.log (err.message);
                 }
-                context.drawArrays(context.TRIANGLES, 0, this.positionBuffer.numItems);
             },
             // 4 vertex, index
             function () {
-                if (this.setCurrentShape ()) {
-                    Shader.bindPositionAttribute (this.positionBuffer);
-                    context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
+                try {
+                    if (this.setCurrentShape ()) {
+                        Shader.bindPositionAttribute (this.positionBuffer);
+                        context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
+                    }
+                    context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
+                } catch (err) {
+                    console.log (err.message);
                 }
-                context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
             },
             // 5 vertex, normal, index
             function () {
-                if (this.setCurrentShape ()) {
-                    Shader
-                        .bindPositionAttribute (this.positionBuffer)
-                        .bindNormalAttribute (this.normalBuffer);
-                    context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
+                try {
+                    if (this.setCurrentShape ()) {
+                        Shader
+                            .bindPositionAttribute (this.positionBuffer)
+                            .bindNormalAttribute (this.normalBuffer);
+                        context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
+                    }
+                    context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
+                } catch (err) {
+                    console.log (err.message);
                 }
-                context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
             },
             // 6 vertex, texture, index
             function () {
-                if (this.setCurrentShape ()) {
-                    Shader
-                        .bindPositionAttribute (this.positionBuffer)
-                        .bindTextureAttribute (this.textureBuffer);
-                    context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
+                try {
+                    if (this.setCurrentShape ()) {
+                        Shader
+                            .bindPositionAttribute (this.positionBuffer)
+                            .bindTextureAttribute (this.textureBuffer);
+                        context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
+                    }
+                    context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
+                } catch (err) {
+                    console.log (err.message);
                 }
-                context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
             },
             // 7 vertex, normal, texture, index
             function () {
-                if (this.setCurrentShape ()) {
-                    Shader
-                        .bindPositionAttribute (this.positionBuffer)
-                        .bindNormalAttribute (this.normalBuffer)
-                        .bindTextureAttribute (this.textureBuffer);
-                    context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
+                try {
+                    if (this.setCurrentShape ()) {
+                        Shader
+                            .bindPositionAttribute (this.positionBuffer)
+                            .bindNormalAttribute (this.normalBuffer)
+                            .bindTextureAttribute (this.textureBuffer);
+                        context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
+                    }
+                    context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
+                } catch (err) {
+                    console.log (err.message);
                 }
-                context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
             },
         ][drawFunctionIndex];
 
@@ -1989,11 +2021,14 @@ let Shape = function () {
     };
 
     _.setCurrentShape = function () {
+        return true;
+        /*
         if (currentShape !== this) {
             currentShape = this;
             return true;
         }
         return false;
+        */
     };
 
     _.new = function (name, buffers) {

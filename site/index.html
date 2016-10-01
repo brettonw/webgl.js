@@ -17,7 +17,8 @@
             Render.new ("render-canvas");
 
             // replace the basic shader with mine (for testing)
-            let basic = Shader.new ("basic", "shaders/vertex-basic.glsl", "shaders/fragment-basic.glsl");
+            Shader.new ("basic", "shaders/vertex-basic.glsl", "shaders/fragment-basic.glsl");
+            Shader.new ("overlay", "shaders/vertex-basic.glsl", "shaders/fragment-overlay.glsl");
 
             // starmaps: https://svs.gsfc.nasa.gov/3895
             // earth night textures: http://visibleearth.nasa.gov/view.php?id=79765
@@ -37,7 +38,8 @@
             }));
 
             loader.addItem (Texture, "earth", {url:"textures/earth.png" });
-            loader.addItem (Texture, "starfield", {url:"textures/starfield.png" });
+            loader.addItem (Texture, "starfield", { url: "textures/starfield.png" });
+            loader.addItem (Texture, "constellations", { url: "textures/constellations.png" });
             loader.go ();
         };
     </script>
