@@ -11,8 +11,8 @@ let draw = function (delta) {
 
     // setup the view matrix
     let viewMatrix = Float4x4.identity ();
-    Float4x4.rotateX (viewMatrix, Utility.degreesToRadians (90));
-    viewMatrix  = Float4x4.multiply (Float4x4.translate ([ 0, -5, -1.0 ]), viewMatrix);
+    Float4x4.rotateX (viewMatrix, Utility.degreesToRadians (10));
+    viewMatrix  = Float4x4.multiply (Float4x4.translate ([ 0, -1, -5.0 ]), viewMatrix);
     Float4x4.rotateY (viewMatrix, Utility.degreesToRadians (currentAngle));
     //viewMatrix = Float4x4.multiply (Float4x4.scale ([ 2, 2, 2 ]), viewMatrix);
     //viewMatrix  = Float4x4.multiply (Float4x4.translate ([ -0.5, -0.5, -0.5 ]), viewMatrix);
@@ -67,18 +67,19 @@ let buildScene = function (points) {
 
     let constellations = Node.new ({
         name: "constellations",
+        transform: Float4x4.multiply (Float4x4.rotateX (Float4x4.identity (), Math.PI), Float4x4.scale ([-150, -150, -150])),
         state: function (standardParameters) {
-            Shader.get ("basic").use ();
+            Shader.get ("overlay").use ();
             context.disable (context.DEPTH_TEST);
             context.enable (context.CULL_FACE);
             context.cullFace (context.BACK);
-            standardParameters.OUTPUT_ALPHA_PARAMETER = 0.25;
+            standardParameters.OUTPUT_ALPHA_PARAMETER = 0.5;
             standardParameters.TEXTURE_SAMPLER = "constellations";
         },
         shape: "ball",
         children: false
     });
-    starfield.addChild (constellations);
+    scene.addChild (constellations);
 
     let earth = Node.new ({
         name: "earth",

@@ -759,7 +759,7 @@
         },
         {
             "file": "src/main/javascript/texture.js",
-            "line": 31,
+            "line": 35,
             "description": "static method to create and construct a new Shader.",
             "itemtype": "method",
             "name": "new",
@@ -789,7 +789,7 @@
         },
         {
             "file": "src/main/javascript/texture.js",
-            "line": 48,
+            "line": 52,
             "description": "fetch a texture by name.",
             "itemtype": "method",
             "name": "get",
