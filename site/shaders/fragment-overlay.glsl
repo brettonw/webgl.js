@@ -9,6 +9,6 @@ varying vec2 texture;
 
 void main(void) {
     vec3 textureColor = texture2D(textureSampler, texture).rgb;
-    float alpha = (sqrt (dot (textureColor, textureColor)) / 1.7320508) * outputAlpha;
+    float alpha = outputAlpha * dot (textureColor, textureColor) / 3.0;
     gl_FragColor = vec4 (textureColor, alpha);
 }

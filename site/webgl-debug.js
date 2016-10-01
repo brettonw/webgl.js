@@ -1316,7 +1316,8 @@ let ShaderParameter = function () {
     };
 
     _.set = function (value) {
-        if (value !== this.lastValue) {
+        //if (value !== this.lastValue) {
+        if (true) {
             // see https://www.khronos.org/registry/webgl/specs/latest/1.0/#5.1 (5.14) for explanation
             switch (this.type) {
                 case 0x1404:

@@ -11,8 +11,8 @@ let draw = function (delta) {
 
     // setup the view matrix
     let viewMatrix = Float4x4.identity ();
-    //Float4x4.rotateX (viewMatrix, Utility.degreesToRadians (27.5));
-    viewMatrix  = Float4x4.multiply (Float4x4.translate ([ 0, 0, -5.0 ]), viewMatrix);
+    Float4x4.rotateX (viewMatrix, Utility.degreesToRadians (90));
+    viewMatrix  = Float4x4.multiply (Float4x4.translate ([ 0, -5, -1.0 ]), viewMatrix);
     Float4x4.rotateY (viewMatrix, Utility.degreesToRadians (currentAngle));
     //viewMatrix = Float4x4.multiply (Float4x4.scale ([ 2, 2, 2 ]), viewMatrix);
     //viewMatrix  = Float4x4.multiply (Float4x4.translate ([ -0.5, -0.5, -0.5 ]), viewMatrix);
