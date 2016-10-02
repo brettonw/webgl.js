@@ -766,7 +766,7 @@
         },
         {
             "file": "src/main/javascript/texture.js",
-            "line": 35,
+            "line": 38,
             "description": "static method to create and construct a new Texture.",
             "itemtype": "method",
             "name": "new",
@@ -796,7 +796,7 @@
         },
         {
             "file": "src/main/javascript/texture.js",
-            "line": 52,
+            "line": 55,
             "description": "fetch a texture by name.",
             "itemtype": "method",
             "name": "get",

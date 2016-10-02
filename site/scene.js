@@ -35,7 +35,7 @@ let draw = function (deltaPosition) {
     scene.traverse (standardUniforms);
 };
 
-let buildScene = function (points) {
+let buildScene = function () {
     makeRevolve ("cylinder",
         [[ 1.0,  1.0], [ 1.0, -1.0], [ 1.0, -1.0], [ 0.8, -1.0], [ 0.8, -1.0], [ 0.8,  1.0], [ 0.8,  1.0], [ 1.0,  1.0]],
         [[ 1.0,  0.0], [ 1.0,  0.0], [ 0.0, -1.0], [ 0.0, -1.0], [-1.0,  0.0], [-1.0,  0.0], [ 0.0,  1.0], [ 0.0,  1.0]],

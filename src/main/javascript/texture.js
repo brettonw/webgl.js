@@ -24,7 +24,10 @@ let Texture = function () {
             }
             context.bindTexture (context.TEXTURE_2D, null);
 
-            // call the onReady handler
+            // set the texture in the textures
+            textures[name] = scope;
+
+                // call the onReady handler
             onReady.notify (scope);
         };
         image.src = parameters.url;
@@ -46,7 +49,7 @@ let Texture = function () {
         afExtension = DEFAULT_FUNCTION (afExtension, function () { return context.getExtension ("EXT_texture_filter_anisotropic") });
         // make sure anisotropic filtering is defined, and has a reasonable default value
         parameters.anisotropicFiltering = Math.min (context.getParameter(afExtension.MAX_TEXTURE_MAX_ANISOTROPY_EXT), ("anisotropicFiltering" in parameters)? parameters.anisotropicFiltering : 4);
-        return (textures[name] = Object.create (_).construct (name, parameters, onReady));
+        return Object.create (_).construct (name, parameters, onReady);
     };
 
     /**
