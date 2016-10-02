@@ -23,7 +23,7 @@
             // earth cloud textures: http://visibleearth.nasa.gov/view.php?id=57747
             // realtime cloud coverage: http://weather.msfc.nasa.gov/GOES/getsatellite.html
 
-            let loader = Loader.new (OnReady.new (null, function (x) {
+            let loader = Loader.new ({ onFinishedAll: OnReady.new (null, function (x) {
                 Program.new ("basic", { vertexShader: "vertex-basic", fragmentShader: "fragment-basic" });
                 Program.new ("overlay", { vertexShader: "vertex-basic", fragmentShader: "fragment-overlay" });
 
@@ -31,7 +31,9 @@
 
                 // update the textures....
                 setTimeout (function () {
-                    let loader2 = Loader.new (OnReady.new (null, function (x) { }));
+                    let loader2 = Loader.new ({ onFinishedItem: OnReady.new (null, function (x) {
+                        draw ([0, 0]);
+                    })});
                     loader2.addItem (Texture, "earth-day", { url: "textures/earth-day.png", generateMipMap: true });
                     loader2.addItem (Texture, "earth-night", { url: "textures/earth-night.png", generateMipMap: true });
                     loader2.addItem (Texture, "starfield", { url: "textures/starfield.png" });
@@ -39,7 +41,7 @@
                     loader2.addItem (Texture, "moon", { url: "textures/moon.png", generateMipMap: true });
                     loader2.go ();
                 }, 1000);
-            }));
+            })});
 
             loader.addItem (Shader, "vertex-basic", { url:"shaders/vertex-basic.glsl", type: context.VERTEX_SHADER });
             loader.addItem (Shader, "fragment-basic", { url:"shaders/fragment-basic.glsl", type: context.FRAGMENT_SHADER });

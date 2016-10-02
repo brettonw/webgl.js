@@ -352,15 +352,15 @@
         },
         {
             "file": "src/main/javascript/loader.js",
-            "line": 49,
+            "line": 51,
             "description": "static method to create and construct a new Loader.",
             "itemtype": "method",
             "name": "new",
             "static": 1,
             "params": [
                 {
-                    "name": "onReady",
-                    "description": "an object specifying the scope and callback to call when ready",
+                    "name": "parameters",
+                    "description": "an object specifying the scope and callback to call when an item is finsihed, and when\nall items are finished (onFinishedAll, onFinishedItem).",
                     "type": "Object"
                 }
             ],

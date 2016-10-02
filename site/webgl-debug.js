@@ -103,8 +103,9 @@ let Loader = function () {
      * @param {Object} onReady an object specifying the scope and callback to call when ready
      * @return {Loader}
      */
-    _.construct = function (onReady) {
-        this.onReady = onReady;
+    _.construct = function (parameters) {
+        this.onFinishedAll = (typeof parameters.onFinishedAll !== "undefined") ? parameters.onFinishedAll : { notify: function (x) {} };
+        this.onFinishedItem = (typeof parameters.onFinishedItem !== "undefined") ? parameters.onFinishedItem : { notify: function (x) {} };
         return this;
     };
 
@@ -117,6 +118,7 @@ let Loader = function () {
         if (finishedItem === this.pendingItem) {
             // clear the pending item, and go
             delete this.pendingItem;
+            this.onFinishedItem.notify(finishedItem);
             this.go ();
         } else {
             console.log ("WHAT'S UP WILLIS?");
@@ -130,7 +132,7 @@ let Loader = function () {
             this.pendingItem = item.type.new (item.name, item.parameters, OnReady.new (this, this.finish));
         } else {
             // all done, inform our waiting handler
-            this.onReady.notify (this);
+            this.onFinishedAll.notify (this);
         }
     };
 
@@ -139,11 +141,12 @@ let Loader = function () {
      *
      * @method new
      * @static
-     * @param {Object} onReady an object specifying the scope and callback to call when ready
+     * @param {Object} parameters an object specifying the scope and callback to call when an item is finsihed, and when
+     * all items are finished (onFinishedAll, onFinishedItem).
      * @return {Loader}
      */
-    _.new = function (onReady) {
-        return Object.create (_).construct (onReady);
+    _.new = function (parameters) {
+        return Object.create (_).construct (parameters);
     };
 
     return _;
