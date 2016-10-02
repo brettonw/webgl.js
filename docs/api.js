@@ -6,8 +6,8 @@ YUI.add("yuidoc-meta", function(Y) {
         "FloatNxN",
         "Loader",
         "Node",
+        "Program",
         "Render",
-        "Shader",
         "Utility"
     ],
     "modules": [],

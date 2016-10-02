@@ -6,6 +6,7 @@ let Texture = function () {
 
     _.construct  = function (name, parameters, onReady) {
         this.name = name;
+        LOG("Texture: " + name);
 
         let texture = this.texture = context.createTexture();
         let image = new Image();
@@ -14,8 +15,7 @@ let Texture = function () {
             context.bindTexture (context.TEXTURE_2D, texture);
             context.texImage2D (context.TEXTURE_2D, 0, context.RGBA, context.RGBA, context.UNSIGNED_BYTE, image);
             context.texParameteri (context.TEXTURE_2D, context.TEXTURE_MAG_FILTER, context.LINEAR);
-            let useMipMap = true;
-            if (useMipMap) {
+            if (("generateMipMap" in parameters) && (parameters.generateMipMap == true)) {
                 context.texParameteri (context.TEXTURE_2D, context.TEXTURE_MIN_FILTER, context.LINEAR_MIPMAP_LINEAR);
                 context.texParameterf (context.TEXTURE_2D, afExtension.TEXTURE_MAX_ANISOTROPY_EXT, parameters.anisotropicFiltering);
                 context.generateMipmap (context.TEXTURE_2D);
@@ -33,12 +33,12 @@ let Texture = function () {
     };
 
     /**
-     * static method to create and construct a new Shader.
+     * static method to create and construct a new Texture.
      *
      * @method new
      * @static
      * @param {string} name the name to use to refer to this texture
-     * @param {Object} parameters textture construction parameters
+     * @param {Object} parameters texture construction parameters
      * @param {Object} onReady an object specifying the scope and callback to call when ready
      * @return {Texture}
      */

@@ -135,7 +135,7 @@ let Loader = function () {
     };
 
     /**
-     * static method to create and construct a new Shader.
+     * static method to create and construct a new Loader.
      *
      * @method new
      * @static
@@ -171,9 +171,6 @@ let Render = function () {
         context.viewportWidth = canvas.width;
         context.viewportHeight = canvas.height;
         context.viewport (0, 0, context.viewportWidth, context.viewportHeight);
-
-        // create the basic shader by default
-        Shader.new ("basic");
 
         // make some shapes we might use
         Tetrahedron.make();
@@ -899,14 +896,6 @@ let Float4x4 = function () {
         return to;
     };
 
-    /**
-     * Bind the POSITION attribute to the given buffer.
-     *
-     * @method bindPositionAttribute
-     * @static
-     * @param {Object} buffer WebGL buffer to bind
-     * @return {Shader}
-     */
     /*
     eval (function () {
         let index = _.index;
@@ -1056,12 +1045,71 @@ let Float4x4 = function () {
 
     return _;
 } ();
+let Shader = function () {
+    let _ = Object.create (null);
+
+    let shaders = Object.create (null);
+
+    _.construct = function (name, parameters, onReady) {
+        this.name = name;
+        console.log ("Shader: " + this.name);
+
+        let scope = this;
+        let request = new XMLHttpRequest();
+        request.onload = function (event) {
+            if (request.status === 200) {
+                let shader = context.createShader (parameters.type);
+                context.shaderSource (shader, request.responseText);
+                context.compileShader (shader);
+                if (!context.getShaderParameter (shader, context.COMPILE_STATUS)) {
+                    console.log (context.getShaderInfoLog (shader));
+                } else {
+                    scope.compiledShader = shader;
+                    onReady.notify (scope);
+                }
+            }
+        };
+        request.open("GET", parameters.url);
+        request.send();
+
+        return this;
+    };
+
+    /**
+     * static method to create and construct a new Shader.
+     *
+     * @method new
+     * @static
+     * @param {string} name the name to use to refer to this shader
+     * @param {Object} parameters shader construction parameters, typically url and type, where
+     * type is one of (context.VERTEX_SHADER, context.FRAGMENT_SHADER)
+     * @param {Object} onReady an object specifying the scope and callback to call when ready
+     * @return {Shader}
+     */
+    _.new = function (name, parameters, onReady) {
+        return (shaders[name] = Object.create (_).construct (name, parameters, onReady));
+    };
+
+    /**
+     * fetch a shader by name.
+     *
+     * @method get
+     * @static
+     * @param {string} name the name of the shader to return
+     * @return {Shader}
+     */
+    _.get = function (name) {
+        return shaders[name];
+    };
+
+    return _;
+} ();
 /**
  * A Vertex and Fragment "shader" pairing, and utilities for setting attributes and parameters.
  *
- * @class Shader
+ * @class Program
  */
-let Shader = function () {
+let Program = function () {
     let _ = Object.create (null);
 
     /**
@@ -1088,57 +1136,30 @@ let Shader = function () {
      */
     _.TEXTURE_ATTRIBUTE = "TEXTURE_ATTRIBUTE";
 
-    let shaders = Object.create (null);
-    let currentShader;
+    let programs = Object.create (null);
+    let currentProgram;
 
     /**
      * the initializer for a shader.
      *
      * @method construct
      * @param {string} name name to retrieve this shader
-     * @param {string} vertexShaderUrl url to the vertex shader GLSL file
-     * @param {string} fragmentShaderUrl url to the fragment shader GLSL file
-     * @param {Object} attributeMapping maps standard attribute names to the names used in the shader
-     * @param {Object} parameterMapping maps standard parameter names to the names used in the shader
-     * @return {Shader}
+     * @param {Object} parameters shader construction parameters
+     * @return {Program}
      */
-    _.construct = function (name, vertexShaderUrl, fragmentShaderUrl, attributeMapping, parameterMapping) {
+    _.construct = function (name, parameters) {
         this.name = name;
-        console.log ("Shader: " + this.name);
-
-        // internal function to fetch and compile a shader function
-        let fetchAndCompileShader = function (url, type) {
-            let compiledShader = null;
-            let request = new XMLHttpRequest ();
-            request.open ("GET", url, false);
-            request.send (null);
-            if (request.status === 200) {
-                // type is one of (context.VERTEX_SHADER, context.FRAGMENT_SHADER)
-                let tmpShader = context.createShader (type);
-                context.shaderSource (tmpShader, request.responseText);
-                context.compileShader (tmpShader);
-                if (!context.getShaderParameter (tmpShader, context.COMPILE_STATUS)) {
-                    console.log (context.getShaderInfoLog (tmpShader));
-                } else {
-                    compiledShader = tmpShader;
-                }
-            }
-            return compiledShader;
-        };
-
-        // fetch and compile the shader components
-        let vertexShader = fetchAndCompileShader (vertexShaderUrl, context.VERTEX_SHADER);
-        let fragmentShader = fetchAndCompileShader (fragmentShaderUrl, context.FRAGMENT_SHADER);
+        console.log ("Program: " + this.name);
 
         // create the shader program and attach the components
         let program = this.program = context.createProgram ();
-        context.attachShader (program, vertexShader);
-        context.attachShader (program, fragmentShader);
+        context.attachShader (program, Shader.get (parameters.vertexShader).compiledShader);
+        context.attachShader (program, Shader.get (parameters.fragmentShader).compiledShader);
 
         // force a binding of attribute 0 to the position attribute (which SHOULD always be present)
         // this avoids a performance penalty incurred if a randomly assigned attribute is on index 0
         // but is not used by a particular shape (like a normals buffer).
-        context.bindAttribLocation (program, 0, attributeMapping.POSITION_ATTRIBUTE);
+        context.bindAttribLocation (program, 0, parameters.attributeMapping.POSITION_ATTRIBUTE);
 
         // link the program and check that it succeeded
         context.linkProgram (program);
@@ -1152,46 +1173,46 @@ let Shader = function () {
 
         // loop over the found active shader parameters providing setter methods for them, and map
         // the ones we know about
+        let parameterMapping = parameters.parameterMapping;
         let reverseParameterMapping = Utility.reverseMap (parameterMapping);
         let standardParameterMapping = this.standardParameterMapping = Object.create (null);
         for (let i = 0, end = context.getProgramParameter (program, context.ACTIVE_UNIFORMS); i < end; i++) {
-            let shaderParameter = ShaderParameter.new (program, i);
-            let shaderParameterName = shaderParameter.name;
-            let setShaderParameterFunctionName = "set" + Utility.uppercase (shaderParameterName);
-            this[setShaderParameterFunctionName] = function (value) {
-                shaderParameter.set (value);
+            let programUniform = ProgramUniform.new (program, i);
+            let programUniformName = programUniform.name;
+            let setProgramUniformFunctionName = "set" + Utility.uppercase (programUniformName);
+            this[setProgramUniformFunctionName] = function (value) {
+                programUniform.set (value);
                 return this;
             };
 
             // if the shader parameter is in the standard mapping, add that
-            if (shaderParameterName in reverseParameterMapping) {
-                standardParameterMapping[reverseParameterMapping[shaderParameterName]] = setShaderParameterFunctionName;
+            if (programUniformName in reverseParameterMapping) {
+                standardParameterMapping[reverseParameterMapping[programUniformName]] = setProgramUniformFunctionName;
             }
         }
 
         // loop over the found active attributes, and map the ones we know about
-        let reverseAttributeMapping = Utility.reverseMap (attributeMapping);
+        let reverseAttributeMapping = Utility.reverseMap (parameters.attributeMapping);
         let attributes = this.attributes = Object.create (null);
         for (let i = 0, end = context.getProgramParameter (program, context.ACTIVE_ATTRIBUTES); i < end; i++) {
             let activeAttribute = context.getActiveAttrib (program, i);
             let activeAttributeName = activeAttribute.name;
             if (activeAttributeName in reverseAttributeMapping) {
-                attributes[reverseAttributeMapping[activeAttributeName]] = ShaderAttribute.new (program, activeAttribute);
+                attributes[reverseAttributeMapping[activeAttributeName]] = ProgramAttribute.new (program, activeAttribute);
             }
         }
-
         return this;
     };
 
     /**
      * set the standard shader parameters in one call.
      *
-     * @method setStandardParameters
+     * @method setStandardUniforms
      * @param {Object} parameters a mapping of standard parameter names to values, as specified in
      * the initialization of the shader
-     * @return {Shader}
+     * @return {Program}
      */
-    _.setStandardParameters = function (parameters) {
+    _.setStandardUniforms = function (parameters) {
         let standardParameterMapping = this.standardParameterMapping;
         for (let parameter in parameters) {
             if (parameter in standardParameterMapping) {
@@ -1202,12 +1223,12 @@ let Shader = function () {
 
     let bindAttribute = function (which, buffer) {
         // not every shader uses every attribute, so don't bother to set them unless they will be used
-        if (which in currentShader.attributes) {
+        if (which in currentProgram.attributes) {
             //LOG ("Bind " + which);
             context.bindBuffer (context.ARRAY_BUFFER, buffer);
-            currentShader.attributes[which].bind ();
+            currentProgram.attributes[which].bind ();
         }
-        return Shader;
+        return Program;
     };
 
     /**
@@ -1216,7 +1237,7 @@ let Shader = function () {
      * @method bindPositionAttribute
      * @static
      * @param {Object} buffer WebGL buffer to bind
-     * @return {Shader}
+     * @return {Program}
      */
     _.bindPositionAttribute = function (buffer) {
         return bindAttribute (_.POSITION_ATTRIBUTE, buffer);
@@ -1228,7 +1249,7 @@ let Shader = function () {
      * @method bindNormalAttribute
      * @static
      * @param {Object} buffer WebGL buffer to bind
-     * @return {Shader}
+     * @return {Program}
      */
     _.bindNormalAttribute = function (buffer) {
         return bindAttribute (_.NORMAL_ATTRIBUTE, buffer);
@@ -1240,7 +1261,7 @@ let Shader = function () {
      * @method bindTextureAttribute
      * @static
      * @param {Object} buffer WebGL buffer to bind
-     * @return {Shader}
+     * @return {Program}
      */
     _.bindTextureAttribute = function (buffer) {
         return bindAttribute (_.TEXTURE_ATTRIBUTE, buffer);
@@ -1252,7 +1273,7 @@ let Shader = function () {
      * @method bindTextureAttribute
      * @static
      * @param {Object} buffer WebGL buffer to bind
-     * @return {Shader}
+     * @return {Program}
      */
     _.unbind = function () {
         for (let attribute in this.attributes) {
@@ -1263,12 +1284,12 @@ let Shader = function () {
     /**
      * fetch the shader currently in use.
      *
-     * @method getCurrentShader
+     * @method getCurrentProgram
      * @static
-     * @return {Shader}
+     * @return {Program}
      */
-    _.getCurrentShader = function () {
-        return currentShader;
+    _.getCurrentProgram = function () {
+        return currentProgram;
     };
 
     /**
@@ -1278,11 +1299,11 @@ let Shader = function () {
      * @chainable
      */
     _.use = function () {
-        if (currentShader !== this) {
-            if (typeof currentShader !== "undefined") {
-                //currentShader.unbind ();
+        if (currentProgram !== this) {
+            if (typeof currentProgram !== "undefined") {
+                currentProgram.unbind ();
             }
-            currentShader = this;
+            currentProgram = this;
             context.useProgram (this.program);
         }
         return this;
@@ -1299,20 +1320,21 @@ let Shader = function () {
     };
 
     /**
-     * static method to create and construct a new Shader.
+     * static method to create and construct a new Program.
      *
      * @method new
      * @static
      * @param {string} name name to retrieve this shader
-     * @param {string} vertexShaderUrl url to the vertex shader GLSL file
-     * @param {string} fragmentShaderUrl url to the fragment shader GLSL file
-     * @param {Object} attributeMapping maps POSITION, NORMAL, and TEXTURE attributes to the
+     * @param {Object} parameters shader construction parameters
+     * vertexShader name of the vertex shader to use
+     * fragmentShader name of the fragment shader to use
+     * attributeMapping maps POSITION, NORMAL, and TEXTURE attributes to the
      * attribute names in the shader. This allows the engine to manage the attributes without
      * forcing the shader author to use "standard" names for everything. Defaults to:
      * * POSITION_ATTRIBUTE: "inputPosition"
      * * NORMAL_ATTRIBUTE: "inputNormal"
      * * TEXTURE_ATTRIBUTE: "inputTexture"
-     * @param {Object} parameterMapping maps standard parameters to the parameter names in the
+     * parameterMapping maps standard parameters to the parameter names in the
      * shader. This allows the engine to manage setting the standard set of parameters on the shader
      * without forcing the shader author to use "standard" names. Defaults to:
      * * MODEL_MATRIX_PARAMETER: "modelMatrix"
@@ -1321,27 +1343,33 @@ let Shader = function () {
      * * NORMAL_MATRIX_PARAMETER: "normalMatrix"
      * * OUTPUT_ALPHA_PARAMETER: "outputAlpha"
      * * TEXTURE_SAMPLER: "textureSampler"
-     * @return {Shader}
+     * @return {Program}
      */
-    _.new = function (name, vertexShaderUrl, fragmentShaderUrl, attributeMapping, parameterMapping) {
-        // default value for the vertex shader
+    _.new = function (name, parameters) {
+        // default value for the parameters
+        parameters = (typeof parameters !== "undefined") ? parameters : function () { return Object.create (null); } ();
 
+        // default value for the vertex shader
+        if (!("vertexShader" in parameters)) {
+            parameters.vertexShader = "vertex-basic";
+        }
         // default value for the fragment shader
-        vertexShaderUrl = (typeof vertexShaderUrl !== "undefined") ? vertexShaderUrl : "http://webgl-render.azurewebsites.net/site/shaders/vertex-basic.glsl";
-        fragmentShaderUrl = (typeof fragmentShaderUrl !== "undefined") ? fragmentShaderUrl : "http://webgl-render.azurewebsites.net/site/shaders/fragment-basic.glsl";
+        if (!("fragmentShader" in parameters)) {
+            parameters.fragmentShader = "fragment-basic";
+        }
 
         // default values for the attribute mapping
-        attributeMapping = Utility.defaultFunction (attributeMapping, function () {
-            return {
+        if (!("attributeMapping" in parameters)) {
+            parameters.attributeMapping = {
                 POSITION_ATTRIBUTE: "inputPosition",
                 NORMAL_ATTRIBUTE: "inputNormal",
                 TEXTURE_ATTRIBUTE: "inputTexture"
-            }
-        });
+            };
+        }
 
         // default values for the parameter mapping
-        parameterMapping = Utility.defaultFunction (parameterMapping, function () {
-            return {
+        if (!("parameterMapping" in parameters)) {
+            parameters.parameterMapping = {
                 MODEL_MATRIX_PARAMETER: "modelMatrix",
                 VIEW_MATRIX_PARAMETER: "viewMatrix",
                 PROJECTION_MATRIX_PARAMETER: "projectionMatrix",
@@ -1349,25 +1377,25 @@ let Shader = function () {
                 OUTPUT_ALPHA_PARAMETER: "outputAlpha",
                 TEXTURE_SAMPLER: "textureSampler"
             }
-        });
-        return (shaders[name] = Object.create (_).construct (name, vertexShaderUrl, fragmentShaderUrl, attributeMapping, parameterMapping));
+        };
+        return (programs[name] = Object.create (_).construct (name, parameters));
     };
 
     /**
-     * fetch a shader by name.
+     * fetch a program by name.
      *
      * @method get
      * @static
-     * @return {Shader}
+     * @return {Program}
      */
     _.get = function (name) {
-        return shaders[name];
+        return programs[name];
     };
 
     return _;
 } ();
 
-let ShaderParameter = function () {
+let ProgramUniform = function () {
     let _ = Object.create (null);
 
     _.construct = function (program, i) {
@@ -1375,60 +1403,55 @@ let ShaderParameter = function () {
         this.name = activeUniform.name;
         this.type = activeUniform.type;
         this.location = context.getUniformLocation (program, activeUniform.name);
-        this.lastValue = "Invalid last value to force refresh on first load.";
-        console.log ("Shader parameter: " + this.name + " (type 0x" + this.type.toString(16) + ")");
+        console.log ("Program uniform: " + this.name + " (type 0x" + this.type.toString(16) + ")");
         return this;
     };
 
     _.set = function (value) {
-        //if (value !== this.lastValue) {
-        if (true) {
-            // see https://www.khronos.org/registry/webgl/specs/latest/1.0/#5.1 (5.14) for explanation
-            switch (this.type) {
-                case 0x1404:
-                    context.uniform1i (this.location, value);
-                    break;
-                case 0x8B53:
-                    context.uniform2iv (this.location, value);
-                    break;
-                case 0x8B54:
-                    context.uniform3iv (this.location, value);
-                    break;
-                case 0x8B55:
-                    context.uniform4iv (this.location, value);
-                    break;
+        // see https://www.khronos.org/registry/webgl/specs/latest/1.0/#5.1 (5.14) for explanation
+        switch (this.type) {
+            case 0x1404:
+                context.uniform1i (this.location, value);
+                break;
+            case 0x8B53:
+                context.uniform2iv (this.location, value);
+                break;
+            case 0x8B54:
+                context.uniform3iv (this.location, value);
+                break;
+            case 0x8B55:
+                context.uniform4iv (this.location, value);
+                break;
 
-                case 0x1406:
-                    context.uniform1f (this.location, value);
-                    break;
-                case 0x8B50:
-                    context.uniform2fv (this.location, value);
-                    break;
-                case 0x8B51:
-                    context.uniform3fv (this.location, value);
-                    break;
-                case 0x8B52:
-                    context.uniform4fv (this.location, value);
-                    break;
+            case 0x1406:
+                context.uniform1f (this.location, value);
+                break;
+            case 0x8B50:
+                context.uniform2fv (this.location, value);
+                break;
+            case 0x8B51:
+                context.uniform3fv (this.location, value);
+                break;
+            case 0x8B52:
+                context.uniform4fv (this.location, value);
+                break;
 
-                case 0x8B5A:
-                    context.uniformMatrix2fv (this.location, false, value);
-                    break;
-                case 0x8B5B:
-                    context.uniformMatrix3fv (this.location, false, value);
-                    break;
-                case 0x8B5C:
-                    context.uniformMatrix4fv (this.location, false, value);
-                    break;
+            case 0x8B5A:
+                context.uniformMatrix2fv (this.location, false, value);
+                break;
+            case 0x8B5B:
+                context.uniformMatrix3fv (this.location, false, value);
+                break;
+            case 0x8B5C:
+                context.uniformMatrix4fv (this.location, false, value);
+                break;
 
-                case 0x8B5E:
-                    // I wonder if this will need to be unbound
-                    context.activeTexture (context.TEXTURE0);
-                    context.bindTexture (context.TEXTURE_2D, Texture.get (value).texture);
-                    context.uniform1i (this.location, 0);
-                    break;
-            }
-            this.lastValue = value;
+            case 0x8B5E:
+                // I wonder if this will need to be unbound
+                context.activeTexture (context.TEXTURE0);
+                context.bindTexture (context.TEXTURE_2D, Texture.get (value).texture);
+                context.uniform1i (this.location, 0);
+                break;
         }
     };
 
@@ -1438,14 +1461,14 @@ let ShaderParameter = function () {
 
     return _;
 } ();
-let ShaderAttribute = function () {
+let ProgramAttribute = function () {
     let _ = Object.create (null);
 
     _.construct = function (program, activeAttribute) {
         this.name = activeAttribute.name;
         this.type = activeAttribute.type;
         this.location = context.getAttribLocation (program, this.name);
-        console.log ("Shader attribute: " + this.name + " at index " + this.location + " (type 0x" + this.type.toString(16) + ")");
+        console.log ("Program attribute: " + this.name + " at index " + this.location + " (type 0x" + this.type.toString(16) + ")");
 
         // set the bind function
         switch (this.type) {
@@ -1519,6 +1542,7 @@ let Texture = function () {
 
     _.construct = function (name, parameters, onReady) {
         this.name = name;
+        console.log ("Texture: " + name);
 
         let texture = this.texture = context.createTexture();
         let image = new Image();
@@ -1527,8 +1551,7 @@ let Texture = function () {
             context.bindTexture (context.TEXTURE_2D, texture);
             context.texImage2D (context.TEXTURE_2D, 0, context.RGBA, context.RGBA, context.UNSIGNED_BYTE, image);
             context.texParameteri (context.TEXTURE_2D, context.TEXTURE_MAG_FILTER, context.LINEAR);
-            let useMipMap = true;
-            if (useMipMap) {
+            if (("generateMipMap" in parameters) && (parameters.generateMipMap == true)) {
                 context.texParameteri (context.TEXTURE_2D, context.TEXTURE_MIN_FILTER, context.LINEAR_MIPMAP_LINEAR);
                 context.texParameterf (context.TEXTURE_2D, afExtension.TEXTURE_MAX_ANISOTROPY_EXT, parameters.anisotropicFiltering);
                 context.generateMipmap (context.TEXTURE_2D);
@@ -1546,12 +1569,12 @@ let Texture = function () {
     };
 
     /**
-     * static method to create and construct a new Shader.
+     * static method to create and construct a new Texture.
      *
      * @method new
      * @static
      * @param {string} name the name to use to refer to this texture
-     * @param {Object} parameters textture construction parameters
+     * @param {Object} parameters texture construction parameters
      * @param {Object} onReady an object specifying the scope and callback to call when ready
      * @return {Texture}
      */
@@ -1662,121 +1685,121 @@ let Node = function () {
             // 3 transform, state
             INVALID_TRAVERSE,
             // 4 shape only
-            function (standardParameters) {
-                Shader.getCurrentShader ().setStandardParameters (standardParameters);
+            function (standardUniforms) {
+                Program.getCurrentProgram ().setStandardUniforms (standardUniforms);
                 this.shape.draw ();
                 return this;
             },
             // 5 transform, shape
-            function (standardParameters) {
-                standardParameters.MODEL_MATRIX_PARAMETER = Float4x4.multiply (this.transform, standardParameters.MODEL_MATRIX_PARAMETER);
-                standardParameters.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardParameters.MODEL_MATRIX_PARAMETER));
-                Shader.getCurrentShader ().setStandardParameters (standardParameters);
+            function (standardUniforms) {
+                standardUniforms.MODEL_MATRIX_PARAMETER = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
+                standardUniforms.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardUniforms.MODEL_MATRIX_PARAMETER));
+                Program.getCurrentProgram ().setStandardUniforms (standardUniforms);
                 this.shape.draw ();
                 return this;
             },
             // 6 state, shape
-            function (standardParameters) {
-                this.state (standardParameters);
-                standardParameters.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardParameters.MODEL_MATRIX_PARAMETER));
-                Shader.getCurrentShader ().setStandardParameters (standardParameters);
+            function (standardUniforms) {
+                this.state (standardUniforms);
+                standardUniforms.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardUniforms.MODEL_MATRIX_PARAMETER));
+                Program.getCurrentProgram ().setStandardUniforms (standardUniforms);
                 this.shape.draw ();
                 return this;
             },
             // 7 transform, state, shape
-            function (standardParameters) {
-                this.state (standardParameters);
-                standardParameters.MODEL_MATRIX_PARAMETER = Float4x4.multiply (this.transform, standardParameters.MODEL_MATRIX_PARAMETER);
-                standardParameters.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardParameters.MODEL_MATRIX_PARAMETER));
-                Shader.getCurrentShader ().setStandardParameters (standardParameters);
+            function (standardUniforms) {
+                this.state (standardUniforms);
+                standardUniforms.MODEL_MATRIX_PARAMETER = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
+                standardUniforms.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardUniforms.MODEL_MATRIX_PARAMETER));
+                Program.getCurrentProgram ().setStandardUniforms (standardUniforms);
                 this.shape.draw ();
                 return this;
             },
             // 8 children only
-            function (standardParameters) {
-                let modelMatrix = standardParameters.MODEL_MATRIX_PARAMETER;
+            function (standardUniforms) {
+                let modelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER;
                 for (let child of this.children) {
-                    standardParameters.MODEL_MATRIX_PARAMETER = modelMatrix;
-                    child.traverse (standardParameters);
+                    standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
+                    child.traverse (standardUniforms);
                 }
                 return this;
             },
             // 9 transform, children
-            function (standardParameters) {
-                let modelMatrix = Float4x4.multiply (this.transform, standardParameters.MODEL_MATRIX_PARAMETER);
+            function (standardUniforms) {
+                let modelMatrix = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
                 for (let child of this.children) {
-                    standardParameters.MODEL_MATRIX_PARAMETER = modelMatrix;
-                    child.traverse (standardParameters);
+                    standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
+                    child.traverse (standardUniforms);
                 }
                 return this;
             },
             // 10 state, children
-            function (standardParameters) {
-                this.state (standardParameters);
-                let modelMatrix = standardParameters.MODEL_MATRIX_PARAMETER;
+            function (standardUniforms) {
+                this.state (standardUniforms);
+                let modelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER;
                 for (let child of this.children) {
-                    standardParameters.MODEL_MATRIX_PARAMETER = modelMatrix;
-                    child.traverse (standardParameters);
+                    standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
+                    child.traverse (standardUniforms);
                 }
                 return this;
             },
             // 11 transform, state, children
-            function (standardParameters) {
-                this.state (standardParameters);
-                let modelMatrix = Float4x4.multiply (this.transform, standardParameters.MODEL_MATRIX_PARAMETER);
+            function (standardUniforms) {
+                this.state (standardUniforms);
+                let modelMatrix = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
                 for (let child of this.children) {
-                    standardParameters.MODEL_MATRIX_PARAMETER = modelMatrix;
-                    child.traverse (standardParameters);
+                    standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
+                    child.traverse (standardUniforms);
                 }
                 return this;
             },
             // 12 shape, children
-            function (standardParameters) {
-                let modelMatrix = standardParameters.MODEL_MATRIX_PARAMETER;
-                standardParameters.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardParameters.MODEL_MATRIX_PARAMETER));
-                Shader.getCurrentShader ().setStandardParameters (standardParameters);
+            function (standardUniforms) {
+                let modelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER;
+                standardUniforms.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardUniforms.MODEL_MATRIX_PARAMETER));
+                Program.getCurrentProgram ().setStandardUniforms (standardUniforms);
                 this.shape.draw ();
                 for (let child of this.children) {
-                    standardParameters.MODEL_MATRIX_PARAMETER = modelMatrix;
-                    child.traverse (standardParameters);
+                    standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
+                    child.traverse (standardUniforms);
                 }
                 return this;
             },
             // 13 transform, shape, children
-            function (standardParameters) {
-                let modelMatrix = standardParameters.MODEL_MATRIX_PARAMETER = Float4x4.multiply (this.transform, standardParameters.MODEL_MATRIX_PARAMETER);
-                standardParameters.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardParameters.MODEL_MATRIX_PARAMETER));
-                Shader.getCurrentShader ().setStandardParameters (standardParameters);
+            function (standardUniforms) {
+                let modelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
+                standardUniforms.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardUniforms.MODEL_MATRIX_PARAMETER));
+                Program.getCurrentProgram ().setStandardUniforms (standardUniforms);
                 this.shape.draw ();
                 for (let child of this.children) {
-                    standardParameters.MODEL_MATRIX_PARAMETER = modelMatrix;
-                    child.traverse (standardParameters);
+                    standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
+                    child.traverse (standardUniforms);
                 }
                 return this;
             },
             // 14 state, shape, children
-            function (standardParameters) {
-                this.state (standardParameters);
-                let modelMatrix = standardParameters.MODEL_MATRIX_PARAMETER;
-                standardParameters.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardParameters.MODEL_MATRIX_PARAMETER));
-                Shader.getCurrentShader ().setStandardParameters (standardParameters);
+            function (standardUniforms) {
+                this.state (standardUniforms);
+                let modelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER;
+                standardUniforms.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardUniforms.MODEL_MATRIX_PARAMETER));
+                Program.getCurrentProgram ().setStandardUniforms (standardUniforms);
                 this.shape.draw ();
                 for (let child of this.children) {
-                    standardParameters.MODEL_MATRIX_PARAMETER = modelMatrix;
-                    child.traverse (standardParameters);
+                    standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
+                    child.traverse (standardUniforms);
                 }
                 return this;
             },
             // 15 transform, state, shape, children
-            function (standardParameters) {
-                this.state (standardParameters);
-                let modelMatrix = standardParameters.MODEL_MATRIX_PARAMETER = Float4x4.multiply (this.transform, standardParameters.MODEL_MATRIX_PARAMETER);
-                standardParameters.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardParameters.MODEL_MATRIX_PARAMETER));
-                Shader.getCurrentShader ().setStandardParameters (standardParameters);
+            function (standardUniforms) {
+                this.state (standardUniforms);
+                let modelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
+                standardUniforms.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardUniforms.MODEL_MATRIX_PARAMETER));
+                Program.getCurrentProgram ().setStandardUniforms (standardUniforms);
                 this.shape.draw ();
                 for (let child of this.children) {
-                    standardParameters.MODEL_MATRIX_PARAMETER = modelMatrix;
-                    child.traverse (standardParameters);
+                    standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
+                    child.traverse (standardUniforms);
                 }
                 return this;
             }
@@ -1805,13 +1828,13 @@ let Node = function () {
      * render this node and its contents.
      *
      * @method traverse
-     * @param {Object} standardParameters the container for standard parameters, as documented in
-     * Shader
+     * @param {Object} standardUniforms the container for standard parameters, as documented in
+     * Program
      * @chainable
      */
-    _.traverse = function (standardParameters) {
+    _.traverse = function (standardUniforms) {
         return this;
-    }
+    };
 
     /**
      * get the name of this node (if it has one).
@@ -1849,6 +1872,14 @@ let Node = function () {
 
     return _;
 } ();
+
+/*
+ thoughts...
+
+ Nodes are a hierarchical way of traversing "state", which includes, shape, program (shaders),
+ texture, and other state information. Should each one of these be a special element? Should "draw"
+ just be a flag on the node construction, assuming that some node set all of the "state" needed
+ */
 /**
  * A Cloud, a scene graph node for displaying points in space.
  *
@@ -1983,7 +2014,7 @@ let Shape = function () {
             function () {
                 try {
                     if (this.setCurrentShape ()) {
-                        Shader.bindPositionAttribute (this.positionBuffer);
+                        Program.bindPositionAttribute (this.positionBuffer);
                     }
                     context.drawArrays (context.TRIANGLES, 0, this.positionBuffer.numItems);
                 } catch (err) {
@@ -1994,7 +2025,7 @@ let Shape = function () {
             function () {
                 try {
                     if (this.setCurrentShape ()) {
-                        Shader
+                        Program
                             .bindPositionAttribute (this.positionBuffer)
                             .bindNormalAttribute (this.normalBuffer);
                     }
@@ -2007,7 +2038,7 @@ let Shape = function () {
             function () {
                 try {
                     if (this.setCurrentShape ()) {
-                        Shader
+                        Program
                             .bindPositionAttribute (this.positionBuffer)
                             .bindTextureAttribute (this.textureBuffer);
                     }
@@ -2020,7 +2051,7 @@ let Shape = function () {
             function () {
                 try {
                     if (this.setCurrentShape ()) {
-                        Shader
+                        Program
                             .bindPositionAttribute (this.positionBuffer)
                             .bindNormalAttribute (this.normalBuffer)
                             .bindTextureAttribute (this.textureBuffer);
@@ -2034,7 +2065,7 @@ let Shape = function () {
             function () {
                 try {
                     if (this.setCurrentShape ()) {
-                        Shader.bindPositionAttribute (this.positionBuffer);
+                        Program.bindPositionAttribute (this.positionBuffer);
                         context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
                     }
                     context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
@@ -2046,7 +2077,7 @@ let Shape = function () {
             function () {
                 try {
                     if (this.setCurrentShape ()) {
-                        Shader
+                        Program
                             .bindPositionAttribute (this.positionBuffer)
                             .bindNormalAttribute (this.normalBuffer);
                         context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
@@ -2060,7 +2091,7 @@ let Shape = function () {
             function () {
                 try {
                     if (this.setCurrentShape ()) {
-                        Shader
+                        Program
                             .bindPositionAttribute (this.positionBuffer)
                             .bindTextureAttribute (this.textureBuffer);
                         context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
@@ -2074,7 +2105,7 @@ let Shape = function () {
             function () {
                 try {
                     if (this.setCurrentShape ()) {
-                        Shader
+                        Program
                             .bindPositionAttribute (this.positionBuffer)
                             .bindNormalAttribute (this.normalBuffer)
                             .bindTextureAttribute (this.textureBuffer);

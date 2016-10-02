@@ -26,7 +26,7 @@
             </li>
         </div>
         <form class="navbar-form pull-right" style="line-height: 40px; height: 40px;">
-            <input style="margin-top: 0;" type="text" class="search-query" placeholder="Search for classes/modules..." data-obj='["classes/Cloud", "classes/Float4x4", "classes/FloatNxN", "classes/Loader", "classes/Node", "classes/Render", "classes/Shader", "classes/Utility"]'>
+            <input style="margin-top: 0;" type="text" class="search-query" placeholder="Search for classes/modules..." data-obj='["classes/Cloud", "classes/Float4x4", "classes/FloatNxN", "classes/Loader", "classes/Node", "classes/Program", "classes/Render", "classes/Utility"]'>
         </form>
     </div>
 </div>
@@ -42,8 +42,8 @@
                 <li><a href="../classes/FloatNxN.html">FloatNxN</a></li>
                 <li><a href="../classes/Loader.html">Loader</a></li>
                 <li><a href="../classes/Node.html">Node</a></li>
+                <li><a href="../classes/Program.html">Program</a></li>
                 <li><a href="../classes/Render.html">Render</a></li>
-                <li><a href="../classes/Shader.html">Shader</a></li>
                 <li><a href="../classes/Utility.html">Utility</a></li>
         </ul>
     </div>
@@ -103,7 +103,7 @@
 				<li><a href="#method-construct"><span class="im">construct</span>(<span class="ia">parameters</span>)</a></li>
 				<li><a href="#method-get"><span class="im">get</span>(<span class="ia">name</span>)</a></li>
 				<li><a href="#method-getName"><span class="im">getName</span>()</a></li>
-				<li><a href="#method-traverse"><span class="im">traverse</span>(<span class="ia">standardParameters</span>)</a></li>
+				<li><a href="#method-traverse"><span class="im">traverse</span>(<span class="ia">standardUniforms</span>)</a></li>
 			</ul>
 		</li>
 
@@ -350,7 +350,7 @@ value to "false".</li>
 		<div class="args">
 			<span class="paren">(</span><ul class="args-list inline commas">
 				<li class="arg">
-						<code>standardParameters</code>
+						<code>standardUniforms</code>
 				</li>
 			</ul><span class="paren">)</span>
 		</div>
@@ -380,12 +380,12 @@ value to "false".</li>
 
 			<ul class="params-list">
 				<li class="param">
-						<code class="param-name">standardParameters</code>
+						<code class="param-name">standardUniforms</code>
 						<span class="type">Object</span>
 
 
 					<div class="param-description"><p>the container for standard parameters, as documented in
-Shader</p>
+Program</p>
 </div>
 
 				</li>

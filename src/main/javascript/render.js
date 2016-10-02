@@ -22,9 +22,6 @@ let Render = function () {
         context.viewportHeight = canvas.height;
         context.viewport (0, 0, context.viewportWidth, context.viewportHeight);
 
-        // create the basic shader by default
-        Shader.new ("basic");
-
         // make some shapes we might use
         Tetrahedron.make();
         Hexahedron.make();

@@ -3,7 +3,7 @@
 let scene;
 let currentPosition = [0, 0];
 
-let standardParameters = Object.create(null);
+let standardUniforms = Object.create(null);
 
 let draw = function (deltaPosition) {
     // update the current position and clamp or wrap accordingly
@@ -19,7 +19,7 @@ let draw = function (deltaPosition) {
 
     // compute the view parameters as up or down, and left or right
     let upAngle = currentPosition[1] * Math.PI * 0.5;
-    let viewOffset = Float2.scale ([Math.cos (upAngle), Math.sin (upAngle)], -5);
+    let viewOffset = Float2.scale ([Math.cos (upAngle), Math.sin (upAngle)], -3);
 
     // setup the view matrix
     let viewMatrix = Float4x4.identity ();
@@ -28,11 +28,11 @@ let draw = function (deltaPosition) {
     Float4x4.rotateY (viewMatrix,currentPosition[0] * Math.PI);
     //viewMatrix = Float4x4.multiply (Float4x4.scale ([ 2, 2, 2 ]), viewMatrix);
     //viewMatrix  = Float4x4.multiply (Float4x4.translate ([ -0.5, -0.5, -0.5 ]), viewMatrix);
-    standardParameters.VIEW_MATRIX_PARAMETER = viewMatrix;
-    standardParameters.MODEL_MATRIX_PARAMETER = Float4x4.identity ();;
+    standardUniforms.VIEW_MATRIX_PARAMETER = viewMatrix;
+    standardUniforms.MODEL_MATRIX_PARAMETER = Float4x4.identity ();;
 
     // draw the scene
-    scene.traverse (standardParameters);
+    scene.traverse (standardUniforms);
 };
 
 let buildScene = function (points) {
@@ -44,7 +44,7 @@ let buildScene = function (points) {
 
     scene = Node.new ({
         name: "root",
-        state: function (standardParameters) {
+        state: function (standardUniforms) {
             // ordinarily, webGl will automatically present and clear when we return control to the
             // event loop from the draw function, but we overrode that to have explicit control.
             // webGl still presents the buffer automatically, but the back buffer is not cleared
@@ -65,13 +65,13 @@ let buildScene = function (points) {
     let starfield = Node.new ({
         name: "starfield",
         transform: Float4x4.multiply(Float4x4.rotateX (Float4x4.identity (), Math.PI), Float4x4.scale (-190)),
-        state: function (standardParameters) {
-            Shader.get ("basic").use ();
+        state: function (standardUniforms) {
+            Program.get ("basic").use ();
             context.disable (context.DEPTH_TEST);
             context.enable (context.CULL_FACE);
             context.cullFace (context.BACK);
-            standardParameters.OUTPUT_ALPHA_PARAMETER = 1.0;
-            standardParameters.TEXTURE_SAMPLER = "starfield";
+            standardUniforms.OUTPUT_ALPHA_PARAMETER = 1.0;
+            standardUniforms.TEXTURE_SAMPLER = "starfield";
         },
         shape: "ball"
     });
@@ -79,13 +79,13 @@ let buildScene = function (points) {
 
     let constellations = Node.new ({
         name: "constellations",
-        state: function (standardParameters) {
-            Shader.get ("overlay").use ();
+        state: function (standardUniforms) {
+            Program.get ("overlay").use ();
             context.disable (context.DEPTH_TEST);
             context.enable (context.CULL_FACE);
             context.cullFace (context.BACK);
-            standardParameters.OUTPUT_ALPHA_PARAMETER = 0.5;
-            standardParameters.TEXTURE_SAMPLER = "constellations";
+            standardUniforms.OUTPUT_ALPHA_PARAMETER = 0.5;
+            standardUniforms.TEXTURE_SAMPLER = "constellations";
         },
         shape: "ball",
         children: false
@@ -94,13 +94,13 @@ let buildScene = function (points) {
 
     let earth = Node.new ({
         name: "earth",
-        state: function (standardParameters) {
-            Shader.get ("basic").use ();
+        state: function (standardUniforms) {
+            Program.get ("basic").use ();
             context.enable (context.DEPTH_TEST);
             context.enable (context.CULL_FACE);
             context.cullFace (context.BACK);
-            standardParameters.OUTPUT_ALPHA_PARAMETER = 1.0;
-            standardParameters.TEXTURE_SAMPLER = "earth";
+            standardUniforms.OUTPUT_ALPHA_PARAMETER = 1.0;
+            standardUniforms.TEXTURE_SAMPLER = "earth-night";
         },
         shape: "ball"
     });
@@ -108,8 +108,8 @@ let buildScene = function (points) {
 
     let projectionMatrix = Float4x4.create ();
     Float4x4.perspective (60, context.viewportWidth / context.viewportHeight, 0.1, 200.0, projectionMatrix);
-    standardParameters.PROJECTION_MATRIX_PARAMETER = projectionMatrix;
-    standardParameters.OUTPUT_ALPHA_PARAMETER = 1.0;
+    standardUniforms.PROJECTION_MATRIX_PARAMETER = projectionMatrix;
+    standardUniforms.OUTPUT_ALPHA_PARAMETER = 1.0;
 
 
     draw ([0, 0]);

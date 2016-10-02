@@ -274,14 +274,6 @@ let Float4x4 = function () {
         return to;
     };
 
-    /**
-     * Bind the POSITION attribute to the given buffer.
-     *
-     * @method bindPositionAttribute
-     * @static
-     * @param {Object} buffer WebGL buffer to bind
-     * @return {Shader}
-     */
     /*
     eval (function () {
         let index = _.index;

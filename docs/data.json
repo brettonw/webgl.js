@@ -50,6 +50,15 @@
             "fors": {},
             "namespaces": {}
         },
+        "src/main/javascript/program.js": {
+            "name": "src/main/javascript/program.js",
+            "modules": {},
+            "classes": {
+                "Program": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
         "src/main/javascript/render.js": {
             "name": "src/main/javascript/render.js",
             "modules": {},
@@ -62,9 +71,7 @@
         "src/main/javascript/shader.js": {
             "name": "src/main/javascript/shader.js",
             "modules": {},
-            "classes": {
-                "Shader": 1
-            },
+            "classes": {},
             "fors": {},
             "namespaces": {}
         },
@@ -148,6 +155,18 @@
             "line": 1,
             "description": "A node in a scene graph."
         },
+        "Program": {
+            "name": "Program",
+            "shortname": "Program",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src/main/javascript/program.js",
+            "line": 1,
+            "description": "A Vertex and Fragment \"shader\" pairing, and utilities for setting attributes and parameters."
+        },
         "Render": {
             "name": "Render",
             "shortname": "Render",
@@ -159,18 +178,6 @@
             "file": "src/main/javascript/render.js",
             "line": 3,
             "description": "A Rendering context."
-        },
-        "Shader": {
-            "name": "Shader",
-            "shortname": "Shader",
-            "classitems": [],
-            "plugins": [],
-            "extensions": [],
-            "plugin_for": [],
-            "extension_for": [],
-            "file": "src/main/javascript/shader.js",
-            "line": 1,
-            "description": "A Vertex and Fragment \"shader\" pairing, and utilities for setting attributes and parameters."
         },
         "Utility": {
             "name": "Utility",
@@ -189,7 +196,7 @@
         "POSITION_ATTRIBUTE": {
             "name": "POSITION_ATTRIBUTE",
             "attributes": [],
-            "file": "src/main/javascript/shader.js",
+            "file": "src/main/javascript/program.js",
             "line": 9,
             "description": "the name for the standard POSITION buffer attribute in a shader.",
             "type": "{string}",
@@ -198,7 +205,7 @@
         "NORMAL_ATTRIBUTE": {
             "name": "NORMAL_ATTRIBUTE",
             "attributes": [],
-            "file": "src/main/javascript/shader.js",
+            "file": "src/main/javascript/program.js",
             "line": 17,
             "description": "the name for the standard NORMAL buffer attribute in a shader.",
             "type": "{string}",
@@ -207,7 +214,7 @@
         "TEXTURE_ATTRIBUTE": {
             "name": "TEXTURE_ATTRIBUTE",
             "attributes": [],
-            "file": "src/main/javascript/shader.js",
+            "file": "src/main/javascript/program.js",
             "line": 25,
             "description": "the name for the standard TEXTURE buffer attribute in a shader.",
             "type": "{string}",
@@ -287,26 +294,6 @@
             "class": "Cloud"
         },
         {
-            "file": "src/main/javascript/float4x4.js",
-            "line": 277,
-            "description": "Bind the POSITION attribute to the given buffer.",
-            "itemtype": "method",
-            "name": "bindPositionAttribute",
-            "static": 1,
-            "params": [
-                {
-                    "name": "buffer",
-                    "description": "WebGL buffer to bind",
-                    "type": "Object"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "Shader"
-            },
-            "class": "Float4x4"
-        },
-        {
             "file": "src/main/javascript/floatNxN.js",
             "line": 20,
             "description": "Create a new FloatNxN.",
@@ -366,7 +353,7 @@
         {
             "file": "src/main/javascript/loader.js",
             "line": 49,
-            "description": "static method to create and construct a new Shader.",
+            "description": "static method to create and construct a new Loader.",
             "itemtype": "method",
             "name": "new",
             "static": 1,
@@ -426,8 +413,8 @@
             "name": "traverse",
             "params": [
                 {
-                    "name": "standardParameters",
-                    "description": "the container for standard parameters, as documented in\nShader",
+                    "name": "standardUniforms",
+                    "description": "the container for standard parameters, as documented in\nProgram",
                     "type": "Object"
                 }
             ],
@@ -486,6 +473,201 @@
             "class": "Node"
         },
         {
+            "file": "src/main/javascript/program.js",
+            "line": 36,
+            "description": "the initializer for a shader.",
+            "itemtype": "method",
+            "name": "construct",
+            "params": [
+                {
+                    "name": "name",
+                    "description": "name to retrieve this shader",
+                    "type": "String"
+                },
+                {
+                    "name": "parameters",
+                    "description": "shader construction parameters",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Program"
+            },
+            "class": "Program"
+        },
+        {
+            "file": "src/main/javascript/program.js",
+            "line": 101,
+            "description": "set the standard shader parameters in one call.",
+            "itemtype": "method",
+            "name": "setStandardUniforms",
+            "params": [
+                {
+                    "name": "parameters",
+                    "description": "a mapping of standard parameter names to values, as specified in\nthe initialization of the shader",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Program"
+            },
+            "class": "Program"
+        },
+        {
+            "file": "src/main/javascript/program.js",
+            "line": 128,
+            "description": "bind the POSITION attribute to the given buffer.",
+            "itemtype": "method",
+            "name": "bindPositionAttribute",
+            "static": 1,
+            "params": [
+                {
+                    "name": "buffer",
+                    "description": "WebGL buffer to bind",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Program"
+            },
+            "class": "Program"
+        },
+        {
+            "file": "src/main/javascript/program.js",
+            "line": 140,
+            "description": "bind the NORMAL attribute to the given buffer.",
+            "itemtype": "method",
+            "name": "bindNormalAttribute",
+            "static": 1,
+            "params": [
+                {
+                    "name": "buffer",
+                    "description": "WebGL buffer to bind",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Program"
+            },
+            "class": "Program"
+        },
+        {
+            "file": "src/main/javascript/program.js",
+            "line": 152,
+            "description": "bind the TEXTURE attribute to the given buffer.",
+            "itemtype": "method",
+            "name": "bindTextureAttribute",
+            "static": 1,
+            "params": [
+                {
+                    "name": "buffer",
+                    "description": "WebGL buffer to bind",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Program"
+            },
+            "class": "Program"
+        },
+        {
+            "file": "src/main/javascript/program.js",
+            "line": 164,
+            "description": "disable the enabled buffers.",
+            "itemtype": "method",
+            "name": "bindTextureAttribute",
+            "static": 1,
+            "params": [
+                {
+                    "name": "buffer",
+                    "description": "WebGL buffer to bind",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Program"
+            },
+            "class": "Program"
+        },
+        {
+            "file": "src/main/javascript/program.js",
+            "line": 178,
+            "description": "fetch the shader currently in use.",
+            "itemtype": "method",
+            "name": "getCurrentProgram",
+            "static": 1,
+            "return": {
+                "description": "",
+                "type": "Program"
+            },
+            "class": "Program"
+        },
+        {
+            "file": "src/main/javascript/program.js",
+            "line": 189,
+            "description": "set this as the current shader in the rendering context.",
+            "itemtype": "method",
+            "name": "use",
+            "chainable": 1,
+            "class": "Program"
+        },
+        {
+            "file": "src/main/javascript/program.js",
+            "line": 206,
+            "description": "get the name of this shader",
+            "itemtype": "method",
+            "name": "getName",
+            "return": {
+                "description": "the name of this shader.",
+                "type": "String"
+            },
+            "class": "Program"
+        },
+        {
+            "file": "src/main/javascript/program.js",
+            "line": 216,
+            "description": "static method to create and construct a new Program.",
+            "itemtype": "method",
+            "name": "new",
+            "static": 1,
+            "params": [
+                {
+                    "name": "name",
+                    "description": "name to retrieve this shader",
+                    "type": "String"
+                },
+                {
+                    "name": "parameters",
+                    "description": "shader construction parameters\nvertexShader name of the vertex shader to use\nfragmentShader name of the fragment shader to use\nattributeMapping maps POSITION, NORMAL, and TEXTURE attributes to the\nattribute names in the shader. This allows the engine to manage the attributes without\nforcing the shader author to use \"standard\" names for everything. Defaults to:\n* POSITION_ATTRIBUTE: \"inputPosition\"\n* NORMAL_ATTRIBUTE: \"inputNormal\"\n* TEXTURE_ATTRIBUTE: \"inputTexture\"\nparameterMapping maps standard parameters to the parameter names in the\nshader. This allows the engine to manage setting the standard set of parameters on the shader\nwithout forcing the shader author to use \"standard\" names. Defaults to:\n* MODEL_MATRIX_PARAMETER: \"modelMatrix\"\n* VIEW_MATRIX_PARAMETER: \"viewMatrix\"\n* PROJECTION_MATRIX_PARAMETER: \"projectionMatrix\"\n* NORMAL_MATRIX_PARAMETER: \"normalMatrix\"\n* OUTPUT_ALPHA_PARAMETER: \"outputAlpha\"\n* TEXTURE_SAMPLER: \"textureSampler\"",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Program"
+            },
+            "class": "Program"
+        },
+        {
+            "file": "src/main/javascript/program.js",
+            "line": 278,
+            "description": "fetch a program by name.",
+            "itemtype": "method",
+            "name": "get",
+            "static": 1,
+            "return": {
+                "description": "",
+                "type": "Program"
+            },
+            "class": "Program"
+        },
+        {
             "file": "src/main/javascript/render.js",
             "line": 11,
             "description": "The initializer for a rendering context.",
@@ -506,7 +688,7 @@
         },
         {
             "file": "src/main/javascript/render.js",
-            "line": 41,
+            "line": 38,
             "description": "Set the global rendering context.",
             "itemtype": "method",
             "name": "use",
@@ -514,7 +696,7 @@
         },
         {
             "file": "src/main/javascript/render.js",
-            "line": 50,
+            "line": 47,
             "description": "Static method to create and construct a new rendering context.",
             "itemtype": "method",
             "name": "new",
@@ -534,179 +716,7 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 36,
-            "description": "the initializer for a shader.",
-            "itemtype": "method",
-            "name": "construct",
-            "params": [
-                {
-                    "name": "name",
-                    "description": "name to retrieve this shader",
-                    "type": "String"
-                },
-                {
-                    "name": "vertexShaderUrl",
-                    "description": "url to the vertex shader GLSL file",
-                    "type": "String"
-                },
-                {
-                    "name": "fragmentShaderUrl",
-                    "description": "url to the fragment shader GLSL file",
-                    "type": "String"
-                },
-                {
-                    "name": "attributeMapping",
-                    "description": "maps standard attribute names to the names used in the shader",
-                    "type": "Object"
-                },
-                {
-                    "name": "parameterMapping",
-                    "description": "maps standard parameter names to the names used in the shader",
-                    "type": "Object"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "Shader"
-            },
-            "class": "Shader"
-        },
-        {
-            "file": "src/main/javascript/shader.js",
-            "line": 128,
-            "description": "set the standard shader parameters in one call.",
-            "itemtype": "method",
-            "name": "setStandardParameters",
-            "params": [
-                {
-                    "name": "parameters",
-                    "description": "a mapping of standard parameter names to values, as specified in\nthe initialization of the shader",
-                    "type": "Object"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "Shader"
-            },
-            "class": "Shader"
-        },
-        {
-            "file": "src/main/javascript/shader.js",
-            "line": 155,
-            "description": "bind the POSITION attribute to the given buffer.",
-            "itemtype": "method",
-            "name": "bindPositionAttribute",
-            "static": 1,
-            "params": [
-                {
-                    "name": "buffer",
-                    "description": "WebGL buffer to bind",
-                    "type": "Object"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "Shader"
-            },
-            "class": "Shader"
-        },
-        {
-            "file": "src/main/javascript/shader.js",
-            "line": 167,
-            "description": "bind the NORMAL attribute to the given buffer.",
-            "itemtype": "method",
-            "name": "bindNormalAttribute",
-            "static": 1,
-            "params": [
-                {
-                    "name": "buffer",
-                    "description": "WebGL buffer to bind",
-                    "type": "Object"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "Shader"
-            },
-            "class": "Shader"
-        },
-        {
-            "file": "src/main/javascript/shader.js",
-            "line": 179,
-            "description": "bind the TEXTURE attribute to the given buffer.",
-            "itemtype": "method",
-            "name": "bindTextureAttribute",
-            "static": 1,
-            "params": [
-                {
-                    "name": "buffer",
-                    "description": "WebGL buffer to bind",
-                    "type": "Object"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "Shader"
-            },
-            "class": "Shader"
-        },
-        {
-            "file": "src/main/javascript/shader.js",
-            "line": 191,
-            "description": "disable the enabled buffers.",
-            "itemtype": "method",
-            "name": "bindTextureAttribute",
-            "static": 1,
-            "params": [
-                {
-                    "name": "buffer",
-                    "description": "WebGL buffer to bind",
-                    "type": "Object"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "Shader"
-            },
-            "class": "Shader"
-        },
-        {
-            "file": "src/main/javascript/shader.js",
-            "line": 205,
-            "description": "fetch the shader currently in use.",
-            "itemtype": "method",
-            "name": "getCurrentShader",
-            "static": 1,
-            "return": {
-                "description": "",
-                "type": "Shader"
-            },
-            "class": "Shader"
-        },
-        {
-            "file": "src/main/javascript/shader.js",
-            "line": 216,
-            "description": "set this as the current shader in the rendering context.",
-            "itemtype": "method",
-            "name": "use",
-            "chainable": 1,
-            "class": "Shader"
-        },
-        {
-            "file": "src/main/javascript/shader.js",
-            "line": 233,
-            "description": "get the name of this shader",
-            "itemtype": "method",
-            "name": "getName",
-            "return": {
-                "description": "the name of this shader.",
-                "type": "String"
-            },
-            "class": "Shader"
-        },
-        {
-            "file": "src/main/javascript/shader.js",
-            "line": 243,
+            "line": 31,
             "description": "static method to create and construct a new Shader.",
             "itemtype": "method",
             "name": "new",
@@ -714,27 +724,17 @@
             "params": [
                 {
                     "name": "name",
-                    "description": "name to retrieve this shader",
+                    "description": "the name to use to refer to this shader",
                     "type": "String"
                 },
                 {
-                    "name": "vertexShaderUrl",
-                    "description": "url to the vertex shader GLSL file",
-                    "type": "String"
-                },
-                {
-                    "name": "fragmentShaderUrl",
-                    "description": "url to the fragment shader GLSL file",
-                    "type": "String"
-                },
-                {
-                    "name": "attributeMapping",
-                    "description": "maps POSITION, NORMAL, and TEXTURE attributes to the\nattribute names in the shader. This allows the engine to manage the attributes without\nforcing the shader author to use \"standard\" names for everything. Defaults to:\n* POSITION_ATTRIBUTE: \"inputPosition\"\n* NORMAL_ATTRIBUTE: \"inputNormal\"\n* TEXTURE_ATTRIBUTE: \"inputTexture\"",
+                    "name": "parameters",
+                    "description": "shader construction parameters, typically url and type, where\ntype is one of (context.VERTEX_SHADER, context.FRAGMENT_SHADER)",
                     "type": "Object"
                 },
                 {
-                    "name": "parameterMapping",
-                    "description": "maps standard parameters to the parameter names in the\nshader. This allows the engine to manage setting the standard set of parameters on the shader\nwithout forcing the shader author to use \"standard\" names. Defaults to:\n* MODEL_MATRIX_PARAMETER: \"modelMatrix\"\n* VIEW_MATRIX_PARAMETER: \"viewMatrix\"\n* PROJECTION_MATRIX_PARAMETER: \"projectionMatrix\"\n* NORMAL_MATRIX_PARAMETER: \"normalMatrix\"\n* OUTPUT_ALPHA_PARAMETER: \"outputAlpha\"\n* TEXTURE_SAMPLER: \"textureSampler\"",
+                    "name": "onReady",
+                    "description": "an object specifying the scope and callback to call when ready",
                     "type": "Object"
                 }
             ],
@@ -742,25 +742,32 @@
                 "description": "",
                 "type": "Shader"
             },
-            "class": "Shader"
+            "class": "Utility"
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 298,
+            "line": 46,
             "description": "fetch a shader by name.",
             "itemtype": "method",
             "name": "get",
             "static": 1,
+            "params": [
+                {
+                    "name": "name",
+                    "description": "the name of the shader to return",
+                    "type": "String"
+                }
+            ],
             "return": {
                 "description": "",
                 "type": "Shader"
             },
-            "class": "Shader"
+            "class": "Utility"
         },
         {
             "file": "src/main/javascript/texture.js",
             "line": 35,
-            "description": "static method to create and construct a new Shader.",
+            "description": "static method to create and construct a new Texture.",
             "itemtype": "method",
             "name": "new",
             "static": 1,
@@ -772,7 +779,7 @@
                 },
                 {
                     "name": "parameters",
-                    "description": "textture construction parameters",
+                    "description": "texture construction parameters",
                     "type": "Object"
                 },
                 {

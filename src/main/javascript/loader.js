@@ -47,7 +47,7 @@ let Loader = function () {
     };
 
     /**
-     * static method to create and construct a new Shader.
+     * static method to create and construct a new Loader.
      *
      * @method new
      * @static

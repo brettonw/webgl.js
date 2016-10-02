@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="style.css" />
 
     <script type="text/javascript" src="webgl-debug.js"></script>
-    <script type="text/javascript" src="../src/main/javascript/mouse-tracker.js"></script>
     <script type="text/javascript" src="scene.js"></script>
 
     <script type="text/javascript">
@@ -18,10 +17,6 @@
             }));
             Render.new ("render-canvas");
 
-            // replace the basic shader with mine (for testing)
-            Shader.new ("basic", "shaders/vertex-basic.glsl", "shaders/fragment-basic.glsl");
-            Shader.new ("overlay", "shaders/vertex-basic.glsl", "shaders/fragment-overlay.glsl");
-
             // starmaps: https://svs.gsfc.nasa.gov/3895
             // earth night textures: http://visibleearth.nasa.gov/view.php?id=79765
             // earth day textures: http://visibleearth.nasa.gov/view_cat.php?categoryID=1484&p=1
@@ -29,6 +24,9 @@
             // realtime cloud coverage: http://weather.msfc.nasa.gov/GOES/getsatellite.html
 
             let loader = Loader.new (OnReady.new (null, function (x) {
+                Program.new ("basic", { vertexShader: "vertex-basic", fragmentShader: "fragment-basic" });
+                Program.new ("overlay", { vertexShader: "vertex-basic", fragmentShader: "fragment-overlay" });
+
                 buildScene ([
                     [0.5, 0.45, 0.65],
                     [0.75, 0.75, 0.75],
@@ -39,9 +37,15 @@
                 ]);
             }));
 
-            loader.addItem (Texture, "earth", {url:"textures/earth.png" });
+            loader.addItem (Shader, "vertex-basic", { url:"shaders/vertex-basic.glsl", type: context.VERTEX_SHADER });
+            loader.addItem (Shader, "fragment-basic", { url:"shaders/fragment-basic.glsl", type: context.FRAGMENT_SHADER });
+            loader.addItem (Shader, "fragment-overlay", { url:"shaders/fragment-overlay.glsl", type: context.FRAGMENT_SHADER });
+
+            loader.addItem (Texture, "earth-day", { url:"textures/earth-day.png", generateMipMap: true });
+            loader.addItem (Texture, "earth-night", { url:"textures/earth-night.png", generateMipMap: true });
             loader.addItem (Texture, "starfield", { url: "textures/starfield.png" });
             loader.addItem (Texture, "constellations", { url: "textures/constellations.png" });
+            loader.addItem (Texture, "moon", { url: "textures/moon.png", generateMipMap: true });
             loader.go ();
         };
     </script>

@@ -57,7 +57,7 @@ let Shape = function () {
             function () {
                 try {
                     if (this.setCurrentShape ()) {
-                        Shader.bindPositionAttribute (this.positionBuffer);
+                        Program.bindPositionAttribute (this.positionBuffer);
                     }
                     context.drawArrays (context.TRIANGLES, 0, this.positionBuffer.numItems);
                 } catch (err) {
@@ -68,7 +68,7 @@ let Shape = function () {
             function () {
                 try {
                     if (this.setCurrentShape ()) {
-                        Shader
+                        Program
                             .bindPositionAttribute (this.positionBuffer)
                             .bindNormalAttribute (this.normalBuffer);
                     }
@@ -81,7 +81,7 @@ let Shape = function () {
             function () {
                 try {
                     if (this.setCurrentShape ()) {
-                        Shader
+                        Program
                             .bindPositionAttribute (this.positionBuffer)
                             .bindTextureAttribute (this.textureBuffer);
                     }
@@ -94,7 +94,7 @@ let Shape = function () {
             function () {
                 try {
                     if (this.setCurrentShape ()) {
-                        Shader
+                        Program
                             .bindPositionAttribute (this.positionBuffer)
                             .bindNormalAttribute (this.normalBuffer)
                             .bindTextureAttribute (this.textureBuffer);
@@ -108,7 +108,7 @@ let Shape = function () {
             function () {
                 try {
                     if (this.setCurrentShape ()) {
-                        Shader.bindPositionAttribute (this.positionBuffer);
+                        Program.bindPositionAttribute (this.positionBuffer);
                         context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
                     }
                     context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
@@ -120,7 +120,7 @@ let Shape = function () {
             function () {
                 try {
                     if (this.setCurrentShape ()) {
-                        Shader
+                        Program
                             .bindPositionAttribute (this.positionBuffer)
                             .bindNormalAttribute (this.normalBuffer);
                         context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
@@ -134,7 +134,7 @@ let Shape = function () {
             function () {
                 try {
                     if (this.setCurrentShape ()) {
-                        Shader
+                        Program
                             .bindPositionAttribute (this.positionBuffer)
                             .bindTextureAttribute (this.textureBuffer);
                         context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
@@ -148,7 +148,7 @@ let Shape = function () {
             function () {
                 try {
                     if (this.setCurrentShape ()) {
-                        Shader
+                        Program
                             .bindPositionAttribute (this.positionBuffer)
                             .bindNormalAttribute (this.normalBuffer)
                             .bindTextureAttribute (this.textureBuffer);

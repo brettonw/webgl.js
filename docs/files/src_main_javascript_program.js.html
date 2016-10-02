@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>src/main/javascript/program.js - WebGL</title>
+    <link rel="stylesheet" href="">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="stylesheet" href="../assets/css/custom.css">
+    <link rel="stylesheet" href="../assets/css/lucid.css">
+    <link rel="stylesheet" href="../assets/vendor/bootstrap/css/bootstrap.css">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+</head>
+<body class="yui3-skin-sam">
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <h1 class="brand" style="padding: 10px 16px 10px; height: 20px; line-height: 20px; margin-left: 0;">
+            WebGL
+        </h1>
+	<div class="nav">
+            <li class="divider-vertical"></li>
+            <li>
+                <p class="navbar-text">
+                    API Docs for Version: <b>1.0.0</b>
+                </p>
+            </li>
+        </div>
+        <form class="navbar-form pull-right" style="line-height: 40px; height: 40px;">
+            <input style="margin-top: 0;" type="text" class="search-query" placeholder="Search for classes/modules..." data-obj='["classes/Cloud", "classes/Float4x4", "classes/FloatNxN", "classes/Loader", "classes/Node", "classes/Program", "classes/Render", "classes/Utility"]'>
+        </form>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="span3">
+<div>
+    <div id="sidebar">
+    <div id="classes">
+        <ul id="api-classes" class="nav nav-list">
+                <li><a href="../classes/Cloud.html">Cloud</a></li>
+                <li><a href="../classes/Float4x4.html">Float4x4</a></li>
+                <li><a href="../classes/FloatNxN.html">FloatNxN</a></li>
+                <li><a href="../classes/Loader.html">Loader</a></li>
+                <li><a href="../classes/Node.html">Node</a></li>
+                <li><a href="../classes/Program.html">Program</a></li>
+                <li><a href="../classes/Render.html">Render</a></li>
+                <li><a href="../classes/Utility.html">Utility</a></li>
+        </ul>
+    </div>
+    </div>
+</div>
+        </div>
+        <div class="span9">
+    <form id="options-form" class="form-inline pull-right">
+        Show:
+        <label for="api-show-inherited" class="checkbox">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected" class="checkbox">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private" class="checkbox">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated" class="checkbox">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </form>
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+<div class="page-header">
+    <h1>src/main/javascript/program.js <small>File</small></h1>
+</div>
+
+<div class="file">
+    <pre class="prettyprint linenums">
+/**
+ * A Vertex and Fragment &quot;shader&quot; pairing, and utilities for setting attributes and parameters.
+ *
+ * @class Program
+ */
+let Program = function () {
+    let _ = Object.create (null);
+
+    /**
+     * the name for the standard POSITION buffer attribute in a shader.
+     * @element POSITION_ATTRIBUTE
+     * @type {string}
+     * @final
+     */
+    _.POSITION_ATTRIBUTE = &quot;POSITION_ATTRIBUTE&quot;;
+
+    /**
+     * the name for the standard NORMAL buffer attribute in a shader.
+     * @element NORMAL_ATTRIBUTE
+     * @type {string}
+     * @final
+     */
+    _.NORMAL_ATTRIBUTE = &quot;NORMAL_ATTRIBUTE&quot;;
+
+    /**
+     * the name for the standard TEXTURE buffer attribute in a shader.
+     * @element TEXTURE_ATTRIBUTE
+     * @type {string}
+     * @final
+     */
+    _.TEXTURE_ATTRIBUTE = &quot;TEXTURE_ATTRIBUTE&quot;;
+
+    let programs = Object.create (null);
+    let currentProgram;
+
+    /**
+     * the initializer for a shader.
+     *
+     * @method construct
+     * @param {string} name name to retrieve this shader
+     * @param {Object} parameters shader construction parameters
+     * @return {Program}
+     */
+    _.construct = function (name, parameters) {
+        this.name = name;
+        LOG (&quot;Program: &quot; + this.name);
+
+        // create the shader program and attach the components
+        let program = this.program = context.createProgram ();
+        context.attachShader (program, Shader.get (parameters.vertexShader).compiledShader);
+        context.attachShader (program, Shader.get (parameters.fragmentShader).compiledShader);
+
+        // force a binding of attribute 0 to the position attribute (which SHOULD always be present)
+        // this avoids a performance penalty incurred if a randomly assigned attribute is on index 0
+        // but is not used by a particular shape (like a normals buffer).
+        context.bindAttribLocation (program, 0, parameters.attributeMapping.POSITION_ATTRIBUTE);
+
+        // link the program and check that it succeeded
+        context.linkProgram (program);
+        if (!context.getProgramParameter (program, context.LINK_STATUS)) {
+            LOG (&quot;Could not initialise shader&quot;);
+            // XXX do we need to delete it?
+        }
+
+        // have to do this before collecting parameters and attributes, or else...
+        context.useProgram (program);
+
+        // loop over the found active shader parameters providing setter methods for them, and map
+        // the ones we know about
+        let parameterMapping = parameters.parameterMapping;
+        let reverseParameterMapping = Utility.reverseMap (parameterMapping);
+        let standardParameterMapping = this.standardParameterMapping = Object.create (null);
+        for (let i = 0, end = context.getProgramParameter (program, context.ACTIVE_UNIFORMS); i &lt; end; i++) {
+            let programUniform = ProgramUniform.new (program, i);
+            let programUniformName = programUniform.name;
+            let setProgramUniformFunctionName = &quot;set&quot; + Utility.uppercase (programUniformName);
+            this[setProgramUniformFunctionName] = function (value) {
+                programUniform.set (value);
+                return this;
+            };
+
+            // if the shader parameter is in the standard mapping, add that
+            if (programUniformName in reverseParameterMapping) {
+                standardParameterMapping[reverseParameterMapping[programUniformName]] = setProgramUniformFunctionName;
+            }
+        }
+
+        // loop over the found active attributes, and map the ones we know about
+        let reverseAttributeMapping = Utility.reverseMap (parameters.attributeMapping);
+        let attributes = this.attributes = Object.create (null);
+        for (let i = 0, end = context.getProgramParameter (program, context.ACTIVE_ATTRIBUTES); i &lt; end; i++) {
+            let activeAttribute = context.getActiveAttrib (program, i);
+            let activeAttributeName = activeAttribute.name;
+            if (activeAttributeName in reverseAttributeMapping) {
+                attributes[reverseAttributeMapping[activeAttributeName]] = ProgramAttribute.new (program, activeAttribute);
+            }
+        }
+        return this;
+    };
+
+    /**
+     * set the standard shader parameters in one call.
+     *
+     * @method setStandardUniforms
+     * @param {Object} parameters a mapping of standard parameter names to values, as specified in
+     * the initialization of the shader
+     * @return {Program}
+     */
+    _.setStandardUniforms = function (parameters) {
+        let standardParameterMapping = this.standardParameterMapping;
+        for (let parameter in parameters) {
+            if (parameter in standardParameterMapping) {
+                this[standardParameterMapping[parameter]] (parameters[parameter]);
+            }
+        }
+    };
+
+    let bindAttribute = function (which, buffer) {
+        // not every shader uses every attribute, so don&#x27;t bother to set them unless they will be used
+        if (which in currentProgram.attributes) {
+            //LOG (&quot;Bind &quot; + which);
+            context.bindBuffer (context.ARRAY_BUFFER, buffer);
+            currentProgram.attributes[which].bind ();
+        }
+        return Program;
+    };
+
+    /**
+     * bind the POSITION attribute to the given buffer.
+     *
+     * @method bindPositionAttribute
+     * @static
+     * @param {Object} buffer WebGL buffer to bind
+     * @return {Program}
+     */
+    _.bindPositionAttribute = function (buffer) {
+        return bindAttribute (_.POSITION_ATTRIBUTE, buffer);
+    };
+
+    /**
+     * bind the NORMAL attribute to the given buffer.
+     *
+     * @method bindNormalAttribute
+     * @static
+     * @param {Object} buffer WebGL buffer to bind
+     * @return {Program}
+     */
+    _.bindNormalAttribute = function (buffer) {
+        return bindAttribute (_.NORMAL_ATTRIBUTE, buffer);
+    };
+
+    /**
+     * bind the TEXTURE attribute to the given buffer.
+     *
+     * @method bindTextureAttribute
+     * @static
+     * @param {Object} buffer WebGL buffer to bind
+     * @return {Program}
+     */
+    _.bindTextureAttribute = function (buffer) {
+        return bindAttribute (_.TEXTURE_ATTRIBUTE, buffer);
+    };
+
+    /**
+     * disable the enabled buffers.
+     *
+     * @method bindTextureAttribute
+     * @static
+     * @param {Object} buffer WebGL buffer to bind
+     * @return {Program}
+     */
+    _.unbind = function () {
+        for (let attribute in this.attributes) {
+            this.attributes[attribute].unbind ();
+        }
+    };
+
+    /**
+     * fetch the shader currently in use.
+     *
+     * @method getCurrentProgram
+     * @static
+     * @return {Program}
+     */
+    _.getCurrentProgram = function () {
+        return currentProgram;
+    };
+
+    /**
+     * set this as the current shader in the rendering context.
+     *
+     * @method use
+     * @chainable
+     */
+    _.use = function () {
+        if (currentProgram !== this) {
+            if (typeof currentProgram !== &quot;undefined&quot;) {
+                currentProgram.unbind ();
+            }
+            currentProgram = this;
+            context.useProgram (this.program);
+        }
+        return this;
+    };
+
+    /**
+     * get the name of this shader
+     *
+     * @method getName
+     * @return {string} the name of this shader.
+     */
+    _.getName = function () {
+        return this.name;
+    };
+
+    /**
+     * static method to create and construct a new Program.
+     *
+     * @method new
+     * @static
+     * @param {string} name name to retrieve this shader
+     * @param {Object} parameters shader construction parameters
+     * vertexShader name of the vertex shader to use
+     * fragmentShader name of the fragment shader to use
+     * attributeMapping maps POSITION, NORMAL, and TEXTURE attributes to the
+     * attribute names in the shader. This allows the engine to manage the attributes without
+     * forcing the shader author to use &quot;standard&quot; names for everything. Defaults to:
+     * * POSITION_ATTRIBUTE: &quot;inputPosition&quot;
+     * * NORMAL_ATTRIBUTE: &quot;inputNormal&quot;
+     * * TEXTURE_ATTRIBUTE: &quot;inputTexture&quot;
+     * parameterMapping maps standard parameters to the parameter names in the
+     * shader. This allows the engine to manage setting the standard set of parameters on the shader
+     * without forcing the shader author to use &quot;standard&quot; names. Defaults to:
+     * * MODEL_MATRIX_PARAMETER: &quot;modelMatrix&quot;
+     * * VIEW_MATRIX_PARAMETER: &quot;viewMatrix&quot;
+     * * PROJECTION_MATRIX_PARAMETER: &quot;projectionMatrix&quot;
+     * * NORMAL_MATRIX_PARAMETER: &quot;normalMatrix&quot;
+     * * OUTPUT_ALPHA_PARAMETER: &quot;outputAlpha&quot;
+     * * TEXTURE_SAMPLER: &quot;textureSampler&quot;
+     * @return {Program}
+     */
+    _.new = function (name, parameters) {
+        // default value for the parameters
+        parameters = DEFAULT_FUNCTION (parameters, function () { return Object.create (null); });
+
+        // default value for the vertex shader
+        if (!(&quot;vertexShader&quot; in parameters)) {
+            parameters.vertexShader = &quot;vertex-basic&quot;;
+        }
+        // default value for the fragment shader
+        if (!(&quot;fragmentShader&quot; in parameters)) {
+            parameters.fragmentShader = &quot;fragment-basic&quot;;
+        }
+
+        // default values for the attribute mapping
+        if (!(&quot;attributeMapping&quot; in parameters)) {
+            parameters.attributeMapping = {
+                POSITION_ATTRIBUTE: &quot;inputPosition&quot;,
+                NORMAL_ATTRIBUTE: &quot;inputNormal&quot;,
+                TEXTURE_ATTRIBUTE: &quot;inputTexture&quot;
+            };
+        }
+
+        // default values for the parameter mapping
+        if (!(&quot;parameterMapping&quot; in parameters)) {
+            parameters.parameterMapping = {
+                MODEL_MATRIX_PARAMETER: &quot;modelMatrix&quot;,
+                VIEW_MATRIX_PARAMETER: &quot;viewMatrix&quot;,
+                PROJECTION_MATRIX_PARAMETER: &quot;projectionMatrix&quot;,
+                NORMAL_MATRIX_PARAMETER: &quot;normalMatrix&quot;,
+                OUTPUT_ALPHA_PARAMETER: &quot;outputAlpha&quot;,
+                TEXTURE_SAMPLER: &quot;textureSampler&quot;
+            }
+        };
+        return (programs[name] = Object.create (_).construct (name, parameters));
+    };
+
+    /**
+     * fetch a program by name.
+     *
+     * @method get
+     * @static
+     * @return {Program}
+     */
+    _.get = function (name) {
+        return programs[name];
+    };
+
+    return _;
+} ();
+
+
+    </pre>
+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/jquery/jquery-1.8.2.min.js"></script>
+<script src="../assets/vendor/bootstrap/js/bootstrap.js"></script>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script src="../assets/js/yuidoc-bootstrap.js"></script>
+<script>prettyPrint();</script>
+</body>
+</html>
