@@ -3,7 +3,6 @@ attribute vec3 inputNormal;
 attribute vec2 inputTexture;
 
 uniform mat4 modelMatrix;
-uniform mat4 normalMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 
@@ -17,6 +16,6 @@ void main(void) {
     vec4 viewPosition = viewMatrix * modelPosition;
     gl_Position = projectionMatrix * viewPosition;
     model = modelPosition.xyz;
-    normal = normalize ((normalMatrix * vec4 (inputNormal, 0)).xyz);
+    normal = inputNormal;
     texture = inputTexture;
 }

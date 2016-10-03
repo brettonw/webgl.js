@@ -59,6 +59,9 @@ let buildScene = function () {
             // oh for &#^%'s sake, alpha blending should be standard
             context.blendFunc (context.SRC_ALPHA, context.ONE_MINUS_SRC_ALPHA);
             context.enable (context.BLEND);
+
+            // a little bit of setup for light direction
+            standardUniforms.LIGHT_DIRECTION = Float3.normalize ([100, 10, 0]);
         }
     });
 
@@ -66,7 +69,7 @@ let buildScene = function () {
         name: "starfield",
         transform: Float4x4.multiply(Float4x4.rotateX (Float4x4.identity (), Math.PI), Float4x4.scale (-190)),
         state: function (standardUniforms) {
-            Program.get ("basic").use ();
+            Program.get ("texture").use ();
             context.disable (context.DEPTH_TEST);
             context.enable (context.CULL_FACE);
             context.cullFace (context.BACK);
@@ -100,7 +103,7 @@ let buildScene = function () {
             context.enable (context.CULL_FACE);
             context.cullFace (context.BACK);
             standardUniforms.OUTPUT_ALPHA_PARAMETER = 1.0;
-            standardUniforms.TEXTURE_SAMPLER = "earth-night";
+            standardUniforms.TEXTURE_SAMPLER = "grid";
         },
         shape: "ball"
     });

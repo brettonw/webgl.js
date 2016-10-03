@@ -283,7 +283,9 @@ let Program = function () {
                 PROJECTION_MATRIX_PARAMETER: "projectionMatrix",
                 NORMAL_MATRIX_PARAMETER: "normalMatrix",
                 OUTPUT_ALPHA_PARAMETER: "outputAlpha",
-                TEXTURE_SAMPLER: "textureSampler"
+                TEXTURE_SAMPLER: "textureSampler",
+                LIGHT_DIRECTION: "lightDirection",
+                CAMERA_POSITION: "cameraPosition"
             }
         };
         return (programs[name] = Object.create (_).construct (name, parameters));

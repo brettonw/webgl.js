@@ -26,6 +26,8 @@
 
 // sidereal period (rotation of Earth around sun) of Earth is 365.25 days ()
 
+// we will work in J2000
+
 /**
  *
  * @param hourAngle {Object} hour angle components ([degrees or hours], minutes, seconds)
@@ -46,6 +48,20 @@ let angleToRadians = function (angle) {
         circleFraction = degrees / 360.0;
     }
     return circleFraction * 2 * Math.PI;
+};
+
+let angleToDegrees = function (angle) {
+    let seconds = angle.seconds;
+    let minutes = angle.minutes + (seconds / 60);
+    let circleFraction;
+    if ("hours" in angle) {
+        let hours = angle.hours + (minutes / 60);
+        circleFraction = (hours / 24.0);
+    } else if ("degrees" in angle) {
+        let degrees = angle.degrees + (minutes / 60);;
+        circleFraction = degrees / 360.0;
+    }
+    return circleFraction * 360.0;
 };
 
 let testHourAngleToRadians = function () {
@@ -76,18 +92,18 @@ let angleFromString = function (string) {
     // "1h 30m 31s"
     let result = Object.create (null);
     let components = string.split (/[″"s]\s*/i);
-    let fractional = (components.length > 1) ? components[1] : 0;
+    let fractional = parseFloat (((components.length > 1) && (components[1].length > 0)) ? components[1] : 0);
     components = components[0].split (/[′'m]\s*/i);
-    result.seconds = ((components.length > 1) ? components[1] : 0) + fractional;
+    result.seconds = parseFloat (((components.length > 1) && (components[1].length > 0)) ? components[1] : 0) + fractional;
 
     if (string.test (/[°d]/)) {
         components = components[0].split (/[°d]\s*/i);
-        result.minutes = (components.length > 1) ? components[1] : 0;
-        result.degrees = components[0];
+        result.minutes = parseFloat (((components.length > 1) && (components[1].length > 0)) ? components[1] : 0);
+        result.degrees = parseFloat (components[0]);
     } else {
         components = components[0].split (/[h]\s*/i);
-        result.minutes = (components.length > 1) ? components[1] : 0;
-        result.hours = components[0];
+        result.minutes = parseFloat (((components.length > 1) && (components[1].length > 0)) ? components[1] : 0);
+        result.hours = parseFloat (components[0]);
     }
     return result;
 };
@@ -116,3 +132,15 @@ let testHourAngleFromString = function () {
     affirm ("1h 30m 31s", { hours: 1, minutes: 30, seconds: 31 });
     affirm ("46″.836769", { hours: 0, minutes: 0, seconds: 46.836769 });
 } ();
+
+let eclipticPlaneObliquity = function (t) {
+    // ε = 23° 26′ 21″.406 − 46″.836769 T − 0″.0001831 T2 + 0″.00200340 T3 − 0″.576×10−6 T4 − 4″.34×10−8 T5
+    let e = angleToRadians(angleFromString ("23° 26′ 21″.406"));
+    e -= (angleToRadians(angleFromString ("0° 0′ 46″.836769"))) * t;
+    e -= (angleToRadians(angleFromString ("0° 0′ 0.0001831″"))) * t * t;
+    e -= (angleToRadians(angleFromString ("0° 0′ 0.00200340″"))) * t * t * t;
+    e -= (angleToRadians(angleFromString ("0° 0′ 5.76e−7″"))) * t * t * t * t;
+    e -= (angleToRadians(angleFromString ("0° 0′ 4.34e−8″"))) * t * t * t * t *t;
+    return e;
+} (16 / 100);
+console.log("Ecliptic Plane Obliquity: " + eclipticPlaneObliquity + "°");
