@@ -498,7 +498,7 @@
         },
         {
             "file": "src/main/javascript/program.js",
-            "line": 101,
+            "line": 103,
             "description": "set the standard shader parameters in one call.",
             "itemtype": "method",
             "name": "setStandardUniforms",
@@ -509,19 +509,15 @@
                     "type": "Object"
                 }
             ],
-            "return": {
-                "description": "",
-                "type": "Program"
-            },
+            "chainable": 1,
             "class": "Program"
         },
         {
             "file": "src/main/javascript/program.js",
-            "line": 128,
+            "line": 130,
             "description": "bind the POSITION attribute to the given buffer.",
             "itemtype": "method",
             "name": "bindPositionAttribute",
-            "static": 1,
             "params": [
                 {
                     "name": "buffer",
@@ -529,19 +525,15 @@
                     "type": "Object"
                 }
             ],
-            "return": {
-                "description": "",
-                "type": "Program"
-            },
+            "chainable": 1,
             "class": "Program"
         },
         {
             "file": "src/main/javascript/program.js",
-            "line": 140,
+            "line": 141,
             "description": "bind the NORMAL attribute to the given buffer.",
             "itemtype": "method",
             "name": "bindNormalAttribute",
-            "static": 1,
             "params": [
                 {
                     "name": "buffer",
@@ -549,10 +541,7 @@
                     "type": "Object"
                 }
             ],
-            "return": {
-                "description": "",
-                "type": "Program"
-            },
+            "chainable": 1,
             "class": "Program"
         },
         {
@@ -561,7 +550,6 @@
             "description": "bind the TEXTURE attribute to the given buffer.",
             "itemtype": "method",
             "name": "bindTextureAttribute",
-            "static": 1,
             "params": [
                 {
                     "name": "buffer",
@@ -569,10 +557,7 @@
                     "type": "Object"
                 }
             ],
-            "return": {
-                "description": "",
-                "type": "Program"
-            },
+            "chainable": 1,
             "class": "Program"
         },
         {
@@ -580,15 +565,7 @@
             "line": 164,
             "description": "disable the enabled buffers.",
             "itemtype": "method",
-            "name": "bindTextureAttribute",
-            "static": 1,
-            "params": [
-                {
-                    "name": "buffer",
-                    "description": "WebGL buffer to bind",
-                    "type": "Object"
-                }
-            ],
+            "name": "unbindAttributes",
             "return": {
                 "description": "",
                 "type": "Program"
@@ -597,7 +574,7 @@
         },
         {
             "file": "src/main/javascript/program.js",
-            "line": 178,
+            "line": 176,
             "description": "fetch the shader currently in use.",
             "itemtype": "method",
             "name": "getCurrentProgram",
@@ -610,7 +587,7 @@
         },
         {
             "file": "src/main/javascript/program.js",
-            "line": 189,
+            "line": 187,
             "description": "set this as the current shader in the rendering context.",
             "itemtype": "method",
             "name": "use",
@@ -619,7 +596,7 @@
         },
         {
             "file": "src/main/javascript/program.js",
-            "line": 206,
+            "line": 220,
             "description": "get the name of this shader",
             "itemtype": "method",
             "name": "getName",
@@ -631,7 +608,7 @@
         },
         {
             "file": "src/main/javascript/program.js",
-            "line": 216,
+            "line": 230,
             "description": "static method to create and construct a new Program.",
             "itemtype": "method",
             "name": "new",
@@ -656,7 +633,7 @@
         },
         {
             "file": "src/main/javascript/program.js",
-            "line": 278,
+            "line": 292,
             "description": "fetch a program by name.",
             "itemtype": "method",
             "name": "get",

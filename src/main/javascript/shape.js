@@ -2,7 +2,6 @@ let Shape = function () {
     let _ = Object.create (null);
 
     let shapes = Object.create (null);
-    let currentShape;
 
     _.construct = function (name, buffers) {
         this.name = name;
@@ -56,8 +55,9 @@ let Shape = function () {
             // 0 vertex only
             function () {
                 try {
-                    if (this.setCurrentShape ()) {
-                        Program.bindPositionAttribute (this.positionBuffer);
+                    let program = Program.getCurrentProgram();
+                    if (program.useShape (this)) {
+                        program.bindPositionAttribute (this.positionBuffer);
                     }
                     context.drawArrays (context.TRIANGLES, 0, this.positionBuffer.numItems);
                 } catch (err) {
@@ -67,8 +67,9 @@ let Shape = function () {
             // 1 vertex, normal
             function () {
                 try {
-                    if (this.setCurrentShape ()) {
-                        Program
+                    let program = Program.getCurrentProgram();
+                    if (program.useShape (this)) {
+                        program
                             .bindPositionAttribute (this.positionBuffer)
                             .bindNormalAttribute (this.normalBuffer);
                     }
@@ -80,8 +81,9 @@ let Shape = function () {
             // 2 vertex, texture
             function () {
                 try {
-                    if (this.setCurrentShape ()) {
-                        Program
+                    let program = Program.getCurrentProgram();
+                    if (program.useShape (this)) {
+                        program
                             .bindPositionAttribute (this.positionBuffer)
                             .bindTextureAttribute (this.textureBuffer);
                     }
@@ -93,8 +95,9 @@ let Shape = function () {
             // 3 vertex, normal, texture
             function () {
                 try {
-                    if (this.setCurrentShape ()) {
-                        Program
+                    let program = Program.getCurrentProgram();
+                    if (program.useShape (this)) {
+                        program
                             .bindPositionAttribute (this.positionBuffer)
                             .bindNormalAttribute (this.normalBuffer)
                             .bindTextureAttribute (this.textureBuffer);
@@ -107,8 +110,9 @@ let Shape = function () {
             // 4 vertex, index
             function () {
                 try {
-                    if (this.setCurrentShape ()) {
-                        Program.bindPositionAttribute (this.positionBuffer);
+                    let program = Program.getCurrentProgram();
+                    if (program.useShape (this)) {
+                        program.bindPositionAttribute (this.positionBuffer);
                         context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
                     }
                     context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
@@ -119,8 +123,9 @@ let Shape = function () {
             // 5 vertex, normal, index
             function () {
                 try {
-                    if (this.setCurrentShape ()) {
-                        Program
+                    let program = Program.getCurrentProgram();
+                    if (program.useShape (this)) {
+                        program
                             .bindPositionAttribute (this.positionBuffer)
                             .bindNormalAttribute (this.normalBuffer);
                         context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
@@ -133,8 +138,9 @@ let Shape = function () {
             // 6 vertex, texture, index
             function () {
                 try {
-                    if (this.setCurrentShape ()) {
-                        Program
+                    let program = Program.getCurrentProgram();
+                    if (program.useShape (this)) {
+                        program
                             .bindPositionAttribute (this.positionBuffer)
                             .bindTextureAttribute (this.textureBuffer);
                         context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
@@ -147,8 +153,9 @@ let Shape = function () {
             // 7 vertex, normal, texture, index
             function () {
                 try {
-                    if (this.setCurrentShape ()) {
-                        Program
+                    let program = Program.getCurrentProgram();
+                    if (program.useShape (this)) {
+                        program
                             .bindPositionAttribute (this.positionBuffer)
                             .bindNormalAttribute (this.normalBuffer)
                             .bindTextureAttribute (this.textureBuffer);
@@ -162,17 +169,6 @@ let Shape = function () {
         ][drawFunctionIndex];
 
         return this;
-    };
-
-    _.setCurrentShape = function () {
-        return true;
-        /*
-        if (currentShape !== this) {
-            currentShape = this;
-            return true;
-        }
-        return false;
-        */
     };
 
     _.new = function (name, buffers) {

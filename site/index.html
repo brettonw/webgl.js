@@ -8,20 +8,15 @@
     <link rel="stylesheet" href="style.css" />
 
     <script type="text/javascript" src="webgl-debug.js"></script>
+    <script type="text/javascript" src="astro.js"></script>
     <script type="text/javascript" src="scene.js"></script>
 
     <script type="text/javascript">
-        var onBodyLoad = function () {
+        let onBodyLoad = function () {
             MouseTracker.new ("render-canvas", OnReady.new (null, function (deltaPosition) {
                 draw (deltaPosition);
             }));
             Render.new ("render-canvas");
-
-            // starmaps: https://svs.gsfc.nasa.gov/3895
-            // earth night textures: http://visibleearth.nasa.gov/view.php?id=79765
-            // earth day textures: http://visibleearth.nasa.gov/view_cat.php?categoryID=1484&p=1
-            // earth cloud textures: http://visibleearth.nasa.gov/view.php?id=57747
-            // realtime cloud coverage: http://weather.msfc.nasa.gov/GOES/getsatellite.html
 
             let loader = Loader.new ({ onFinishedAll: OnReady.new (null, function (x) {
                 Program.new ("basic", { vertexShader: "vertex-basic", fragmentShader: "fragment-basic" });
@@ -38,7 +33,7 @@
                     loader2.addItem (Texture, "earth-night", { url: "textures/earth-night.png", generateMipMap: true });
                     loader2.addItem (Texture, "starfield", { url: "textures/starfield.png" });
                     loader2.addItem (Texture, "constellations", { url: "textures/constellations.png" });
-                    loader2.addItem (Texture, "moon", { url: "textures/moon.png", generateMipMap: true });
+                    //loader2.addItem (Texture, "moon", { url: "textures/moon.png", generateMipMap: true });
                     loader2.go ();
                 }, 1000);
             })});
@@ -51,7 +46,7 @@
             loader.addItem (Texture, "earth-night", { url:"textures-lores/earth-night.png", generateMipMap: true });
             loader.addItem (Texture, "starfield", { url: "textures-lores/starfield.png" });
             loader.addItem (Texture, "constellations", { url: "textures-lores/constellations.png" });
-            loader.addItem (Texture, "moon", { url: "textures-lores/moon.png", generateMipMap: true });
+            //loader.addItem (Texture, "moon", { url: "textures-lores/moon.png", generateMipMap: true });
             loader.go ();
         };
     </script>

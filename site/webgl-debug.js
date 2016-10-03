@@ -1154,6 +1154,8 @@ let Program = function () {
         this.name = name;
         console.log ("Program: " + this.name);
 
+        this.currentShape = null;
+
         // create the shader program and attach the components
         let program = this.program = context.createProgram ();
         context.attachShader (program, Shader.get (parameters.vertexShader).compiledShader);
@@ -1213,7 +1215,7 @@ let Program = function () {
      * @method setStandardUniforms
      * @param {Object} parameters a mapping of standard parameter names to values, as specified in
      * the initialization of the shader
-     * @return {Program}
+     * @chainable
      */
     _.setStandardUniforms = function (parameters) {
         let standardParameterMapping = this.standardParameterMapping;
@@ -1222,63 +1224,59 @@ let Program = function () {
                 this[standardParameterMapping[parameter]] (parameters[parameter]);
             }
         }
+        return this;
     };
 
-    let bindAttribute = function (which, buffer) {
+    let bindAttribute = function (scope, which, buffer) {
         // not every shader uses every attribute, so don't bother to set them unless they will be used
-        if (which in currentProgram.attributes) {
-            //LOG ("Bind " + which);
+        if (which in scope.attributes) {
             context.bindBuffer (context.ARRAY_BUFFER, buffer);
-            currentProgram.attributes[which].bind ();
+            scope.attributes[which].bind ();
         }
-        return Program;
+        return scope;
     };
 
     /**
      * bind the POSITION attribute to the given buffer.
      *
      * @method bindPositionAttribute
-     * @static
      * @param {Object} buffer WebGL buffer to bind
-     * @return {Program}
+     * @chainable
      */
     _.bindPositionAttribute = function (buffer) {
-        return bindAttribute (_.POSITION_ATTRIBUTE, buffer);
+        return bindAttribute(this, _.POSITION_ATTRIBUTE, buffer);
     };
 
     /**
      * bind the NORMAL attribute to the given buffer.
      *
      * @method bindNormalAttribute
-     * @static
      * @param {Object} buffer WebGL buffer to bind
-     * @return {Program}
+     * @chainable
      */
     _.bindNormalAttribute = function (buffer) {
-        return bindAttribute (_.NORMAL_ATTRIBUTE, buffer);
+        return bindAttribute(this, _.NORMAL_ATTRIBUTE, buffer);
     };
 
     /**
      * bind the TEXTURE attribute to the given buffer.
      *
      * @method bindTextureAttribute
-     * @static
      * @param {Object} buffer WebGL buffer to bind
-     * @return {Program}
+     * @chainable
      */
     _.bindTextureAttribute = function (buffer) {
-        return bindAttribute (_.TEXTURE_ATTRIBUTE, buffer);
+        // not every shader uses every attribute, so don't bother to set this unless it will be used
+        return bindAttribute(this, _.TEXTURE_ATTRIBUTE, buffer);
     };
 
     /**
      * disable the enabled buffers.
      *
-     * @method bindTextureAttribute
-     * @static
-     * @param {Object} buffer WebGL buffer to bind
+     * @method unbindAttributes
      * @return {Program}
      */
-    _.unbind = function () {
+    _.unbindAttributes = function () {
         for (let attribute in this.attributes) {
             this.attributes[attribute].unbind ();
         }
@@ -1303,13 +1301,29 @@ let Program = function () {
      */
     _.use = function () {
         if (currentProgram !== this) {
-            if (typeof currentProgram !== "undefined") {
-                currentProgram.unbind ();
+            // if a program is already set, we want to unbind it's buffers to avoid an extraneous
+            // buffer connection hanging around in a subsequent draw effect
+            if (currentProgram) {
+                currentProgram.unbindAttributes ();
             }
+
+            console.log ("Use program: " + this.name);
             currentProgram = this;
             context.useProgram (this.program);
+
+            // reset the current shape to ensure we bind attributes correctly after changing programs
+            this.currentShape = null;
         }
         return this;
+    };
+
+    _.useShape = function (shape) {
+        if (this.currentShape !== shape) {
+            console.log ("Set shape: " + shape.name);
+            this.currentShape = shape;
+            return true;
+        }
+        return false;
     };
 
     /**
@@ -1411,6 +1425,7 @@ let ProgramUniform = function () {
     };
 
     _.set = function (value) {
+        console.log ("Set uniform: " + this.name);
         // see https://www.khronos.org/registry/webgl/specs/latest/1.0/#5.1 (5.14) for explanation
         switch (this.type) {
             case 0x1404:
@@ -1450,7 +1465,7 @@ let ProgramUniform = function () {
                 break;
 
             case 0x8B5E:
-                // I wonder if this will need to be unbound
+                // XXX I wonder if this will need to be unbound
                 context.activeTexture (context.TEXTURE0);
                 context.bindTexture (context.TEXTURE_2D, Texture.get (value).texture);
                 context.uniform1i (this.location, 0);
@@ -1477,48 +1492,56 @@ let ProgramAttribute = function () {
         switch (this.type) {
             case 0x1404:
                 this.bind = function () {
+                    console.log ("Bind attribute (" + this.name + ") at location " + this.location);
                     context.enableVertexAttribArray (this.location);
                     context.vertexAttribPointer (this.location, 1, context.INT, false, 0, 0);
                 };
                 break;
             case 0x8B53:
                 this.bind = function () {
+                    console.log ("Bind attribute (" + this.name + ") at location " + this.location);
                     context.enableVertexAttribArray (this.location);
                     context.vertexAttribPointer (this.location, 2, context.INT, false, 0, 0);
                 };
                 break;
             case 0x8B54:
                 this.bind = function () {
+                    console.log ("Bind attribute (" + this.name + ") at location " + this.location);
                     context.enableVertexAttribArray (this.location);
                     context.vertexAttribPointer (this.location, 3, context.INT, false, 0, 0);
                 };
                 break;
             case 0x8B55:
                 this.bind = function () {
+                    console.log ("Bind attribute (" + this.name + ") at location " + this.location);
                     context.enableVertexAttribArray (this.location);
                     context.vertexAttribPointer (this.location, 4, context.INT, false, 0, 0);
                 };
                 break;
             case 0x1406:
                 this.bind = function () {
+                    console.log ("Bind attribute (" + this.name + ") at location " + this.location);
                     context.enableVertexAttribArray (this.location);
                     context.vertexAttribPointer (this.location, 1, context.FLOAT, false, 0, 0);
                 };
                 break;
             case 0x8B50:
                 this.bind = function () {
+                    console.log ("Bind attribute (" + this.name + ") at location " + this.location);
                     context.enableVertexAttribArray (this.location);
                     context.vertexAttribPointer (this.location, 2, context.FLOAT, false, 0, 0);
                 };
                 break;
             case 0x8B51:
                 this.bind = function () {
+                    console.log ("Bind attribute (" + this.name + ") at location " + this.location);
                     context.enableVertexAttribArray (this.location);
                     context.vertexAttribPointer (this.location, 3, context.FLOAT, false, 0, 0);
                 };
                 break;
             case 0x8B52:
                 this.bind = function () {
+                    console.log ("Bind attribute (" + this.name + ") at location " + this.location);
                     context.enableVertexAttribArray (this.location);
                     context.vertexAttribPointer (this.location, 4, context.FLOAT, false, 0, 0);
                 };
@@ -1528,6 +1551,7 @@ let ProgramAttribute = function () {
     };
 
     _.unbind = function () {
+        console.log ("Unbind attribute (" + this.name + ") at location " + this.location);
         context.disableVertexAttribArray (this.location);
     };
 
@@ -1965,7 +1989,6 @@ let Shape = function () {
     let _ = Object.create (null);
 
     let shapes = Object.create (null);
-    let currentShape;
 
     _.construct = function (name, buffers) {
         this.name = name;
@@ -2019,8 +2042,9 @@ let Shape = function () {
             // 0 vertex only
             function () {
                 try {
-                    if (this.setCurrentShape ()) {
-                        Program.bindPositionAttribute (this.positionBuffer);
+                    let program = Program.getCurrentProgram();
+                    if (program.useShape (this)) {
+                        program.bindPositionAttribute (this.positionBuffer);
                     }
                     context.drawArrays (context.TRIANGLES, 0, this.positionBuffer.numItems);
                 } catch (err) {
@@ -2030,8 +2054,9 @@ let Shape = function () {
             // 1 vertex, normal
             function () {
                 try {
-                    if (this.setCurrentShape ()) {
-                        Program
+                    let program = Program.getCurrentProgram();
+                    if (program.useShape (this)) {
+                        program
                             .bindPositionAttribute (this.positionBuffer)
                             .bindNormalAttribute (this.normalBuffer);
                     }
@@ -2043,8 +2068,9 @@ let Shape = function () {
             // 2 vertex, texture
             function () {
                 try {
-                    if (this.setCurrentShape ()) {
-                        Program
+                    let program = Program.getCurrentProgram();
+                    if (program.useShape (this)) {
+                        program
                             .bindPositionAttribute (this.positionBuffer)
                             .bindTextureAttribute (this.textureBuffer);
                     }
@@ -2056,8 +2082,9 @@ let Shape = function () {
             // 3 vertex, normal, texture
             function () {
                 try {
-                    if (this.setCurrentShape ()) {
-                        Program
+                    let program = Program.getCurrentProgram();
+                    if (program.useShape (this)) {
+                        program
                             .bindPositionAttribute (this.positionBuffer)
                             .bindNormalAttribute (this.normalBuffer)
                             .bindTextureAttribute (this.textureBuffer);
@@ -2070,8 +2097,9 @@ let Shape = function () {
             // 4 vertex, index
             function () {
                 try {
-                    if (this.setCurrentShape ()) {
-                        Program.bindPositionAttribute (this.positionBuffer);
+                    let program = Program.getCurrentProgram();
+                    if (program.useShape (this)) {
+                        program.bindPositionAttribute (this.positionBuffer);
                         context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
                     }
                     context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
@@ -2082,8 +2110,9 @@ let Shape = function () {
             // 5 vertex, normal, index
             function () {
                 try {
-                    if (this.setCurrentShape ()) {
-                        Program
+                    let program = Program.getCurrentProgram();
+                    if (program.useShape (this)) {
+                        program
                             .bindPositionAttribute (this.positionBuffer)
                             .bindNormalAttribute (this.normalBuffer);
                         context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
@@ -2096,8 +2125,9 @@ let Shape = function () {
             // 6 vertex, texture, index
             function () {
                 try {
-                    if (this.setCurrentShape ()) {
-                        Program
+                    let program = Program.getCurrentProgram();
+                    if (program.useShape (this)) {
+                        program
                             .bindPositionAttribute (this.positionBuffer)
                             .bindTextureAttribute (this.textureBuffer);
                         context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
@@ -2110,8 +2140,9 @@ let Shape = function () {
             // 7 vertex, normal, texture, index
             function () {
                 try {
-                    if (this.setCurrentShape ()) {
-                        Program
+                    let program = Program.getCurrentProgram();
+                    if (program.useShape (this)) {
+                        program
                             .bindPositionAttribute (this.positionBuffer)
                             .bindNormalAttribute (this.normalBuffer)
                             .bindTextureAttribute (this.textureBuffer);
@@ -2125,17 +2156,6 @@ let Shape = function () {
         ][drawFunctionIndex];
 
         return this;
-    };
-
-    _.setCurrentShape = function () {
-        return true;
-        /*
-        if (currentShape !== this) {
-            currentShape = this;
-            return true;
-        }
-        return false;
-        */
     };
 
     _.new = function (name, buffers) {

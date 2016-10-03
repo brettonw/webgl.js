@@ -11,48 +11,56 @@ let ProgramAttribute = function () {
         switch (this.type) {
             case 0x1404:
                 this.bind = function () {
+                    LOG("Bind attribute (" + this.name + ") at location " + this.location);
                     context.enableVertexAttribArray (this.location);
                     context.vertexAttribPointer (this.location, 1, context.INT, false, 0, 0);
                 };
                 break;
             case 0x8B53:
                 this.bind = function () {
+                    LOG("Bind attribute (" + this.name + ") at location " + this.location);
                     context.enableVertexAttribArray (this.location);
                     context.vertexAttribPointer (this.location, 2, context.INT, false, 0, 0);
                 };
                 break;
             case 0x8B54:
                 this.bind = function () {
+                    LOG("Bind attribute (" + this.name + ") at location " + this.location);
                     context.enableVertexAttribArray (this.location);
                     context.vertexAttribPointer (this.location, 3, context.INT, false, 0, 0);
                 };
                 break;
             case 0x8B55:
                 this.bind = function () {
+                    LOG("Bind attribute (" + this.name + ") at location " + this.location);
                     context.enableVertexAttribArray (this.location);
                     context.vertexAttribPointer (this.location, 4, context.INT, false, 0, 0);
                 };
                 break;
             case 0x1406:
                 this.bind = function () {
+                    LOG("Bind attribute (" + this.name + ") at location " + this.location);
                     context.enableVertexAttribArray (this.location);
                     context.vertexAttribPointer (this.location, 1, context.FLOAT, false, 0, 0);
                 };
                 break;
             case 0x8B50:
                 this.bind = function () {
+                    LOG("Bind attribute (" + this.name + ") at location " + this.location);
                     context.enableVertexAttribArray (this.location);
                     context.vertexAttribPointer (this.location, 2, context.FLOAT, false, 0, 0);
                 };
                 break;
             case 0x8B51:
                 this.bind = function () {
+                    LOG("Bind attribute (" + this.name + ") at location " + this.location);
                     context.enableVertexAttribArray (this.location);
                     context.vertexAttribPointer (this.location, 3, context.FLOAT, false, 0, 0);
                 };
                 break;
             case 0x8B52:
                 this.bind = function () {
+                    LOG("Bind attribute (" + this.name + ") at location " + this.location);
                     context.enableVertexAttribArray (this.location);
                     context.vertexAttribPointer (this.location, 4, context.FLOAT, false, 0, 0);
                 };
@@ -62,6 +70,7 @@ let ProgramAttribute = function () {
     };
 
     _.unbind = function () {
+        LOG("Unbind attribute (" + this.name + ") at location " + this.location);
         context.disableVertexAttribArray (this.location);
     };
 

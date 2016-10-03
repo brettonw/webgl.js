@@ -45,6 +45,8 @@ let Program = function () {
         this.name = name;
         LOG ("Program: " + this.name);
 
+        this.currentShape = null;
+
         // create the shader program and attach the components
         let program = this.program = context.createProgram ();
         context.attachShader (program, Shader.get (parameters.vertexShader).compiledShader);
@@ -104,7 +106,7 @@ let Program = function () {
      * @method setStandardUniforms
      * @param {Object} parameters a mapping of standard parameter names to values, as specified in
      * the initialization of the shader
-     * @return {Program}
+     * @chainable
      */
     _.setStandardUniforms = function (parameters) {
         let standardParameterMapping = this.standardParameterMapping;
@@ -113,63 +115,59 @@ let Program = function () {
                 this[standardParameterMapping[parameter]] (parameters[parameter]);
             }
         }
+        return this;
     };
 
-    let bindAttribute = function (which, buffer) {
+    let bindAttribute = function (scope, which, buffer) {
         // not every shader uses every attribute, so don't bother to set them unless they will be used
-        if (which in currentProgram.attributes) {
-            //LOG ("Bind " + which);
+        if (which in scope.attributes) {
             context.bindBuffer (context.ARRAY_BUFFER, buffer);
-            currentProgram.attributes[which].bind ();
+            scope.attributes[which].bind ();
         }
-        return Program;
+        return scope;
     };
 
     /**
      * bind the POSITION attribute to the given buffer.
      *
      * @method bindPositionAttribute
-     * @static
      * @param {Object} buffer WebGL buffer to bind
-     * @return {Program}
+     * @chainable
      */
     _.bindPositionAttribute = function (buffer) {
-        return bindAttribute (_.POSITION_ATTRIBUTE, buffer);
+        return bindAttribute(this, _.POSITION_ATTRIBUTE, buffer);
     };
 
     /**
      * bind the NORMAL attribute to the given buffer.
      *
      * @method bindNormalAttribute
-     * @static
      * @param {Object} buffer WebGL buffer to bind
-     * @return {Program}
+     * @chainable
      */
     _.bindNormalAttribute = function (buffer) {
-        return bindAttribute (_.NORMAL_ATTRIBUTE, buffer);
+        return bindAttribute(this, _.NORMAL_ATTRIBUTE, buffer);
     };
 
     /**
      * bind the TEXTURE attribute to the given buffer.
      *
      * @method bindTextureAttribute
-     * @static
      * @param {Object} buffer WebGL buffer to bind
-     * @return {Program}
+     * @chainable
      */
     _.bindTextureAttribute = function (buffer) {
-        return bindAttribute (_.TEXTURE_ATTRIBUTE, buffer);
+        // not every shader uses every attribute, so don't bother to set this unless it will be used
+        return bindAttribute(this, _.TEXTURE_ATTRIBUTE, buffer);
     };
 
     /**
      * disable the enabled buffers.
      *
-     * @method bindTextureAttribute
-     * @static
-     * @param {Object} buffer WebGL buffer to bind
+     * @method unbindAttributes
      * @return {Program}
      */
-    _.unbind = function () {
+    _.unbindAttributes = function () {
         for (let attribute in this.attributes) {
             this.attributes[attribute].unbind ();
         }
@@ -194,13 +192,29 @@ let Program = function () {
      */
     _.use = function () {
         if (currentProgram !== this) {
-            if (typeof currentProgram !== "undefined") {
-                currentProgram.unbind ();
+            // if a program is already set, we want to unbind it's buffers to avoid an extraneous
+            // buffer connection hanging around in a subsequent draw effect
+            if (currentProgram) {
+                currentProgram.unbindAttributes ();
             }
+
+            LOG("Use program: " + this.name);
             currentProgram = this;
             context.useProgram (this.program);
+
+            // reset the current shape to ensure we bind attributes correctly after changing programs
+            this.currentShape = null;
         }
         return this;
+    };
+
+    _.useShape = function (shape) {
+        if (this.currentShape !== shape) {
+            LOG("Set shape: " + shape.name);
+            this.currentShape = shape;
+            return true;
+        }
+        return false;
     };
 
     /**

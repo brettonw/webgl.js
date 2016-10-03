@@ -11,6 +11,7 @@ let ProgramUniform = function () {
     };
 
     _.set = function (value) {
+        LOG("Set uniform: " + this.name);
         // see https://www.khronos.org/registry/webgl/specs/latest/1.0/#5.1 (5.14) for explanation
         switch (this.type) {
             case 0x1404:
@@ -50,7 +51,7 @@ let ProgramUniform = function () {
                 break;
 
             case 0x8B5E:
-                // I wonder if this will need to be unbound
+                // XXX I wonder if this will need to be unbound
                 context.activeTexture (context.TEXTURE0);
                 context.bindTexture (context.TEXTURE_2D, Texture.get (value).texture);
                 context.uniform1i (this.location, 0);
