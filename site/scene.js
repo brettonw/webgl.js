@@ -103,7 +103,7 @@ let buildScene = function () {
             context.enable (context.CULL_FACE);
             context.cullFace (context.BACK);
             standardUniforms.OUTPUT_ALPHA_PARAMETER = 1.0;
-            standardUniforms.TEXTURE_SAMPLER = "grid";
+            standardUniforms.TEXTURE_SAMPLER = "clouds";
         },
         shape: "ball"
     });

@@ -7,7 +7,7 @@
     <link rel="icon" type="image/png" href="img/tab-icon.png?v=2" />
     <link rel="stylesheet" href="style.css" />
 
-    <script type="text/javascript" src="webgl-debug.js"></script>
+    <script type="text/javascript" src="webgl.js"></script>
     <script type="text/javascript" src="astro.js"></script>
     <script type="text/javascript" src="scene.js"></script>
 
@@ -34,7 +34,7 @@
                     loader2.addItem (Texture, "earth-night", { url: "textures/earth-night.png", generateMipMap: true });
                     loader2.addItem (Texture, "starfield", { url: "textures/starfield.png" });
                     loader2.addItem (Texture, "constellations", { url: "textures/constellations.png" });
-                    //loader2.addItem (Texture, "moon", { url: "textures/moon.png", generateMipMap: true });
+                    loader2.addItem (Texture, "moon", { url: "textures/moon.png", generateMipMap: true });
                     loader2.go ();
                 }, 1000);
             })});
@@ -49,7 +49,9 @@
             loader.addItem (Texture, "earth-night", { url:"textures-lores/earth-night.png", generateMipMap: true });
             loader.addItem (Texture, "starfield", { url: "textures-lores/starfield.png" });
             loader.addItem (Texture, "constellations", { url: "textures-lores/constellations.png" });
-            //loader.addItem (Texture, "moon", { url: "textures-lores/moon.png", generateMipMap: true });
+            loader.addItem (Texture, "moon", { url: "textures-lores/moon.png", generateMipMap: true });
+
+            loader.addItem (Texture, "clouds", { url: "textures/gmgsi-lw.gif", generateMipMap: true });
             loader.go ();
         };
     </script>
@@ -63,6 +65,15 @@
     <a href="../docs" style="float:left;text-decoration:none;font-family:sans-serif;font-size:14px;color:white;">docs</a>
     <a href="https://github.com/brettonw/WebGL" style="float:right;text-decoration:none;font-family:sans-serif;font-size:14px;color:white;">... on GitHub</a>
 </div>
-
+<div style="display:block;clear:both;margin-top:50px;font-family:sans-serif;font-size:12px;color:cornflowerblue;">
+    Credits: <ul>
+    <li><a style="color:lightskyblue;" href="https://svs.gsfc.nasa.gov/3895">star and constellations maps</a>:
+    NASA/Goddard Space Flight Center Scientific Visualization Studio. Constellation figures based
+    on those developed for the IAU by Alan MacRobert of Sky and Telescope magazine (Roger Sinnott
+    and Rick Fienberg).</li>
+    <li><a style="color:lightskyblue;" href="http://laps.noaa.gov/albers/sos/sos.html">moon map</a>: By Jens Meyer</li>
+    <li><a style="color:lightskyblue;" href="http://laps.noaa.gov/albers/sos/sos.html">earth daytime map</a>: Blue Marble</li>
+    </ul>
+</div>
 </body>
 </html>

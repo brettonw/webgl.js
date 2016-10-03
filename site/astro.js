@@ -1,8 +1,22 @@
 // starmaps: https://svs.gsfc.nasa.gov/3895
 // earth night textures: http://visibleearth.nasa.gov/view.php?id=79765
+//                       http://visibleearth.nasa.gov/view.php?id=55167
 // earth day textures: http://visibleearth.nasa.gov/view_cat.php?categoryID=1484&p=1
 // earth cloud textures: http://visibleearth.nasa.gov/view.php?id=57747
 // realtime cloud coverage: http://weather.msfc.nasa.gov/GOES/getsatellite.html
+//                          http://cloudsgate2.larc.nasa.gov/index.html
+
+// MODIS imagery: https://cdn.earthdata.nasa.gov/conduit/upload/946/MODIS_True_Color.pdf
+// realtime terr and aqua MODIS imagery: https://lance.modaps.eosdis.nasa.gov/cgi-bin/imagery/realtime.cgi?date=2016275
+
+// YYY THIS ONE YYY - special... http://www.ospo.noaa.gov/Products/imagery/
+// VISIBLE:    http://www.ospo.noaa.gov/data/imagery/gmgsi/GLOBCOMPVIS.2016100315.gif (update every 3 hours, change 2016100315 to 2016100318, 2016100321, etc.
+// LONG WAVE:  http://www.ospo.noaa.gov/data/imagery/gmgsi/GLOBCOMPLIR.2016100315.gif
+// SHORT WAVE: http://www.ospo.noaa.gov/data/imagery/gmgsi/GLOBCOMPSIR.2016100315.gif
+
+// interesting: http://www.ncdc.noaa.gov/gibbs/
+// ftp://geo.msfc.nasa.gov/Weather/
+// ftp://geo.msfc.nasa.gov/Weather/TLE/  (I can get track information here)
 
 // moon position: http://www.geoastro.de/elevazmoon/basics/index.htm
 // http://astro.wsu.edu/worthey/astro/html/lec-celestial-sph.html
@@ -143,4 +157,4 @@ let eclipticPlaneObliquity = function (t) {
     e -= (angleToRadians(angleFromString ("0° 0′ 4.34e−8″"))) * t * t * t * t *t;
     return e;
 } (16 / 100);
-console.log("Ecliptic Plane Obliquity: " + eclipticPlaneObliquity + "°");
+console.log("Ecliptic Plane Obliquity: " + eclipticPlaneObliquity + "rad");
