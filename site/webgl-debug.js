@@ -1422,7 +1422,15 @@ let ProgramUniform = function () {
         this.name = activeUniform.name;
         this.type = activeUniform.type;
         this.location = context.getUniformLocation (program, activeUniform.name);
-        console.log ("Program uniform: " + this.name + " (type 0x" + this.type.toString(16) + ")");
+
+        // XXX temporarily store texture indices on the program (subversive actions here)
+        if (this.type == context.SAMPLER_2D) {
+            this.textureIndex = ("nextTextureIndex" in program) ? program.nextTextureIndex : 0;
+            program.nextTextureIndex = this.textureIndex + 1;
+            console.log ("Program uniform: " + this.name + " (type 0x" + this.type.toString(16) + ") at index " + this.textureIndex);
+        } else {
+            console.log ("Program uniform: " + this.name + " (type 0x" + this.type.toString(16) + ")");
+        }
         return this;
     };
 
@@ -1430,47 +1438,48 @@ let ProgramUniform = function () {
         console.log ("Set uniform: " + this.name);
         // see https://www.khronos.org/registry/webgl/specs/latest/1.0/#5.1 (5.14) for explanation
         switch (this.type) {
-            case 0x1404:
+            case 0x1404: // context.INT
                 context.uniform1i (this.location, value);
                 break;
-            case 0x8B53:
+            case 0x8B53: // context.INT_VEC2
                 context.uniform2iv (this.location, value);
                 break;
-            case 0x8B54:
+            case 0x8B54: // context.INT_VEC3
                 context.uniform3iv (this.location, value);
                 break;
-            case 0x8B55:
+            case 0x8B55: // context.INT_VEC4
                 context.uniform4iv (this.location, value);
                 break;
 
-            case 0x1406:
+            case 0x1406: // context.FLOAT
                 context.uniform1f (this.location, value);
                 break;
-            case 0x8B50:
+            case 0x8B50: // context.FLOAT_VEC2
                 context.uniform2fv (this.location, value);
                 break;
-            case 0x8B51:
+            case 0x8B51: // context.FLOAT_VEC3
                 context.uniform3fv (this.location, value);
                 break;
-            case 0x8B52:
+            case 0x8B52: // context.FLOAT_VEC4
                 context.uniform4fv (this.location, value);
                 break;
 
-            case 0x8B5A:
+            case 0x8B5A: // context.FLOAT_MAT2
                 context.uniformMatrix2fv (this.location, false, value);
                 break;
-            case 0x8B5B:
+            case 0x8B5B: // context.FLOAT_MAT3
                 context.uniformMatrix3fv (this.location, false, value);
                 break;
-            case 0x8B5C:
+            case 0x8B5C: // context.FLOAT_MAT4
                 context.uniformMatrix4fv (this.location, false, value);
                 break;
 
-            case 0x8B5E:
+            case 0x8B5E: // context.SAMPLER_2D
+                // TEXTURE0 is a constant, up to TEXTURE31 (just incremental adds to TEXTURE0)
                 // XXX I wonder if this will need to be unbound
-                context.activeTexture (context.TEXTURE0);
+                context.activeTexture (context.TEXTURE0 + this.textureIndex);
                 context.bindTexture (context.TEXTURE_2D, Texture.get (value).texture);
-                context.uniform1i (this.location, 0);
+                context.uniform1i (this.location, this.textureIndex);
                 break;
         }
     };
@@ -2533,7 +2542,7 @@ let Sphere = function () {
 
     return _;
 } ();
-let makeRevolve = function (name, outline, normal, steps) {
+let makeRevolve = function (name, outline, normal, steps, projection) {
     // outline is an array of Float2, and the axis of revolution is x = 0, we make a number of
     // wedges, from top to bottom, to complete the revolution.
 
@@ -2571,6 +2580,10 @@ let makeRevolve = function (name, outline, normal, steps) {
         return N;
     });
 
+    // default projection is a plate carree, equirectangular projection
+    // https://en.wikipedia.org/wiki/Equirectangular_projection
+    projection = (typeof projection !== "undefined") ? projection : function (uvY) { return uvY; };
+
     return Shape.new (name, function () {
         // compute the steps we need to make to build the rotated shape
         console.log ("Make revolved outline");
@@ -2597,24 +2610,24 @@ let makeRevolve = function (name, outline, normal, steps) {
                         case 0: // degenerate, emit nothing
                             break;
                         case 1: { // top cap, emit 1 triangle
-                            let vim = builder.addVertexNormalTexture ([0, vm[1], 0], [nm[0] * iCosAngle, nm[1], nm[0] * iSinAngle], [i / steps, m / last]);
-                            let vin = builder.addVertexNormalTexture ([vn[0] * iCosAngle, vn[1], vn[0] * iSinAngle], [nn[0] * iCosAngle, nn[1], nn[0] * iSinAngle], [i / steps, n / last]);
-                            let vjn = builder.addVertexNormalTexture ([vn[0] * jCosAngle, vn[1], vn[0] * jSinAngle], [nn[0] * jCosAngle, nn[1], nn[0] * jSinAngle], [j / steps, n / last]);
+                            let vim = builder.addVertexNormalTexture ([0, vm[1], 0], [nm[0] * iCosAngle, nm[1], nm[0] * iSinAngle], [i / steps, projection (m / last)]);
+                            let vin = builder.addVertexNormalTexture ([vn[0] * iCosAngle, vn[1], vn[0] * iSinAngle], [nn[0] * iCosAngle, nn[1], nn[0] * iSinAngle], [i / steps, projection (n / last)]);
+                            let vjn = builder.addVertexNormalTexture ([vn[0] * jCosAngle, vn[1], vn[0] * jSinAngle], [nn[0] * jCosAngle, nn[1], nn[0] * jSinAngle], [j / steps, projection (n / last)]);
                             builder.addFace ([vim, vin, vjn]);
                             break;
                         }
                         case 2: { // bottom cap, emit 1 triangle
-                            let vim = builder.addVertexNormalTexture ([vm[0] * iCosAngle, vm[1], vm[0] * iSinAngle], [nm[0] * iCosAngle, nm[1], nm[0] * iSinAngle], [i / steps, m / last]);
-                            let vjm = builder.addVertexNormalTexture ([vm[0] * jCosAngle, vm[1], vm[0] * jSinAngle], [nm[0] * jCosAngle, nm[1], nm[0] * jSinAngle], [j / steps, m / last]);
-                            let vin = builder.addVertexNormalTexture ([0, vn[1], 0], [nn[0] * iCosAngle, nn[1], nn[0] * iSinAngle], [i / steps, n / last]);
+                            let vim = builder.addVertexNormalTexture ([vm[0] * iCosAngle, vm[1], vm[0] * iSinAngle], [nm[0] * iCosAngle, nm[1], nm[0] * iSinAngle], [i / steps, projection (m / last)]);
+                            let vjm = builder.addVertexNormalTexture ([vm[0] * jCosAngle, vm[1], vm[0] * jSinAngle], [nm[0] * jCosAngle, nm[1], nm[0] * jSinAngle], [j / steps, projection (m / last)]);
+                            let vin = builder.addVertexNormalTexture ([0, vn[1], 0], [nn[0] * iCosAngle, nn[1], nn[0] * iSinAngle], [i / steps, projection (n / last)]);
                             builder.addFace ([vim, vin, vjm]);
                             break;
                         }
                         case 3: { // quad, emit 2 triangles
-                            let vim = builder.addVertexNormalTexture ([vm[0] * iCosAngle, vm[1], vm[0] * iSinAngle], [nm[0] * iCosAngle, nm[1], nm[0] * iSinAngle], [i / steps, m / last]);
-                            let vin = builder.addVertexNormalTexture ([vn[0] * iCosAngle, vn[1], vn[0] * iSinAngle], [nn[0] * iCosAngle, nn[1], nn[0] * iSinAngle], [i / steps, n / last]);
-                            let vjm = builder.addVertexNormalTexture ([vm[0] * jCosAngle, vm[1], vm[0] * jSinAngle], [nm[0] * jCosAngle, nm[1], nm[0] * jSinAngle], [j / steps, m / last]);
-                            let vjn = builder.addVertexNormalTexture ([vn[0] * jCosAngle, vn[1], vn[0] * jSinAngle], [nn[0] * jCosAngle, nn[1], nn[0] * jSinAngle], [j / steps, n / last]);
+                            let vim = builder.addVertexNormalTexture ([vm[0] * iCosAngle, vm[1], vm[0] * iSinAngle], [nm[0] * iCosAngle, nm[1], nm[0] * iSinAngle], [i / steps, projection (m / last)]);
+                            let vin = builder.addVertexNormalTexture ([vn[0] * iCosAngle, vn[1], vn[0] * iSinAngle], [nn[0] * iCosAngle, nn[1], nn[0] * iSinAngle], [i / steps, projection (n / last)]);
+                            let vjm = builder.addVertexNormalTexture ([vm[0] * jCosAngle, vm[1], vm[0] * jSinAngle], [nm[0] * jCosAngle, nm[1], nm[0] * jSinAngle], [j / steps, projection (m / last)]);
+                            let vjn = builder.addVertexNormalTexture ([vn[0] * jCosAngle, vn[1], vn[0] * jSinAngle], [nn[0] * jCosAngle, nn[1], nn[0] * jSinAngle], [j / steps, projection (n / last)]);
                             builder.addFace ([vjm, vim, vjn]);
                             builder.addFace ([vjn, vim, vin]);
                             break;
@@ -2645,7 +2658,14 @@ let makeBall = function (name, steps) {
 
     // revolve the surface, the outline is a half circle, so the revolved surface needs to be twice
     // as many steps to go all the way around
-    return makeRevolve(name, outline, normal, steps * 2);
+    return makeRevolve(name, outline, normal, steps * 2, function (uvY) {
+        return uvY;
+        // uvY varies [0..1] over the course of the outline
+        let angle = Math.PI * uvY;
+        let result = 1 - ((Math.cos (angle) + 1) / 2);
+        console.log ("Input " + uvY + " => " + result);
+        return result;
+    });
 };
 /**
  * A collection of utility functions.

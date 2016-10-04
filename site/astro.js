@@ -11,7 +11,15 @@
 // earth day textures: http://visibleearth.nasa.gov/view_cat.php?categoryID=1484&p=1
 // earth cloud textures: http://visibleearth.nasa.gov/view.php?id=57747
 // realtime cloud coverage: http://weather.msfc.nasa.gov/GOES/getsatellite.html
+//                          http://weather.msfc.nasa.gov/GOES/satlinks.html
 //                          http://cloudsgate2.larc.nasa.gov/index.html
+//                          http://cimss.ssec.wisc.edu/
+//                          http://eosweb.ssec.wisc.edu/cgi-bin/eosdb.cgi
+//                          http://www.ssec.wisc.edu/
+//                          http://www.ssec.wisc.edu/data/geo-new/#/animation?satellite=goes-east&end_datetime=latest&n_images=1&coverage=conus&channel=04&image_quality=gif
+//                          http://modis-atmos.gsfc.nasa.gov/MOD35_L2/acquiring.html
+//                          https://ladsweb.nascom.nasa.gov/data/search.html
+//                          https://github.com/jmozmoz/cloudmap
 
 // MODIS imagery: https://cdn.earthdata.nasa.gov/conduit/upload/946/MODIS_True_Color.pdf
 // realtime terr and aqua MODIS imagery: https://lance.modaps.eosdis.nasa.gov/cgi-bin/imagery/realtime.cgi?date=2016275
@@ -156,13 +164,15 @@ let testHourAngleFromString = function () {
     affirm ("23° 26′ 21″.406", { degrees: 23, minutes: 26, seconds: 21.406 });
     affirm ("23° 26′ 21.45″", { degrees: 23, minutes: 26, seconds: 21.45 });
     affirm ("1h 30m 31s", { hours: 1, minutes: 30, seconds: 31 });
+    affirm ("46.836769″", { hours: 0, minutes: 0, seconds: 46.836769 });
     affirm ("46″.836769", { hours: 0, minutes: 0, seconds: 46.836769 });
 } ();
 
 let eclipticPlaneObliquity = function (t) {
+    // Astronomical Almanac for 2010
     // ε = 23° 26′ 21″.406 − 46″.836769 T − 0″.0001831 T2 + 0″.00200340 T3 − 0″.576×10−6 T4 − 4″.34×10−8 T5
-    let e = angleToRadians(angleFromString ("23° 26′ 21″.406"));
-    e -= (angleToRadians(angleFromString ("0° 0′ 46″.836769"))) * t;
+    let e = angleToRadians(angleFromString ("23° 26′ 21.406″"));
+    e -= (angleToRadians(angleFromString ("0° 0′ 46.836769″"))) * t;
     e -= (angleToRadians(angleFromString ("0° 0′ 0.0001831″"))) * t * t;
     e -= (angleToRadians(angleFromString ("0° 0′ 0.00200340″"))) * t * t * t;
     e -= (angleToRadians(angleFromString ("0° 0′ 5.76e−7″"))) * t * t * t * t;

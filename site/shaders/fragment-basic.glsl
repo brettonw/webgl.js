@@ -24,7 +24,7 @@ void main(void) {
     float lighting = diffuse + ambient;
 
     vec3 textureColor = texture2D(textureSampler, texture).rgb;
-    float textureColorScale = 1.0 - step (0.01, dot (textureColor, textureColor));
+    float textureColorScale = 1.0 - step (10.0 / 255.0, textureColor.r);
 
     float specularExp = 8.0;
     vec3 reflection = reflect(-lightDirection, normalVector);
