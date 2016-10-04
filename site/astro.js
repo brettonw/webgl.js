@@ -42,6 +42,8 @@
 
 // we will work in J2000
 
+// PASSWORD: 2SeeTheClouds
+
 /**
  *
  * @param hourAngle {Object} hour angle components ([degrees or hours], minutes, seconds)
