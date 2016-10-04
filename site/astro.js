@@ -1,3 +1,10 @@
+// https://en.wikipedia.org/wiki/International_Earth_Rotation_and_Reference_Systems_Service
+// https://en.wikipedia.org/wiki/Axial_tilt#Obliquity_of_the_ecliptic_.28Earth.27s_axial_tilt.29
+// celestial coordinates for axial tilt (aka sun angle) is 23.439281 degrees
+// 1 earth rotation is 86,164.098903691 seconds of mean solar time
+// 1 earth year is 365.2564 days
+// 1 lunar orbit around earth is 29.53 days
+
 // starmaps: https://svs.gsfc.nasa.gov/3895
 // earth night textures: http://visibleearth.nasa.gov/view.php?id=79765
 //                       http://visibleearth.nasa.gov/view.php?id=55167
