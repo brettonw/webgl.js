@@ -29,7 +29,7 @@ void main(void) {
     float specularExp = 8.0;
     vec3 reflection = reflect(-lightDirection, normalVector);
     float specularMultiplier = clamp(dot(reflection, viewVector), 0.0, 1.0);
-    vec3 specularColor = vec3(1.0, 0.9, 0.8) * (pow(specularMultiplier, specularExp) * 0.5 * textureColorScale);
+    vec3 specularColor = vec3(1.0, 0.9, 0.8) * (pow(specularMultiplier, specularExp) * 0.33 * textureColorScale);
 
     vec3 litTextureColor = lighting * textureColor;
     vec3 finalColor = clamp (litTextureColor + specularColor, 0.0, 1.0);
