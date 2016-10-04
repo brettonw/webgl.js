@@ -138,7 +138,7 @@ let buildScene = function () {
             context.enable (context.DEPTH_TEST);
             context.enable (context.CULL_FACE);
             context.cullFace (context.BACK);
-            standardUniforms.OUTPUT_ALPHA_PARAMETER = 0.35;
+            standardUniforms.OUTPUT_ALPHA_PARAMETER = 0.4;
         },
         shape: "ball"
     });
