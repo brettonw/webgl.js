@@ -7,7 +7,7 @@
     <link rel="icon" type="image/png" href="img/tab-icon.png?v=2" />
     <link rel="stylesheet" href="style.css" />
 
-    <script type="text/javascript" src="webgl.js"></script>
+    <script type="text/javascript" src="webgl-debug.js"></script>
     <script type="text/javascript" src="astro.js"></script>
     <script type="text/javascript" src="scene.js"></script>
 
@@ -23,6 +23,7 @@
                 Program.new ("overlay", { vertexShader: "vertex-basic", fragmentShader: "fragment-overlay" });
                 Program.new ("overlay-lighting", { vertexShader: "vertex-basic", fragmentShader: "fragment-overlay-lighting" });
                 Program.new ("texture", { vertexShader: "vertex-basic", fragmentShader: "fragment-texture" });
+                Program.new ("atmosphere", { vertexShader: "vertex-basic", fragmentShader: "fragment-atmosphere" });
 
                 buildScene ();
 
@@ -45,7 +46,8 @@
             loader.addItem (Shader, "fragment-basic", { url:"shaders/fragment-basic.glsl", type: context.FRAGMENT_SHADER });
             loader.addItem (Shader, "fragment-overlay", { url: "shaders/fragment-overlay.glsl", type: context.FRAGMENT_SHADER });
             loader.addItem (Shader, "fragment-overlay-lighting", { url: "shaders/fragment-overlay-lighting.glsl", type: context.FRAGMENT_SHADER });
-            loader.addItem (Shader, "fragment-texture", { url:"shaders/fragment-texture.glsl", type: context.FRAGMENT_SHADER });
+            loader.addItem (Shader, "fragment-texture", { url: "shaders/fragment-texture.glsl", type: context.FRAGMENT_SHADER });
+            loader.addItem (Shader, "fragment-atmosphere", { url: "shaders/fragment-atmosphere.glsl", type: context.FRAGMENT_SHADER });
 
             loader.addItem (Texture, "grid", { url:"textures/grid.png", generateMipMap: true });
             loader.addItem (Texture, "earth-day", { url:"textures-lores/earth-day.png", generateMipMap: true });

@@ -29,7 +29,11 @@ let draw = function (deltaPosition) {
     //viewMatrix = Float4x4.multiply (Float4x4.scale ([ 2, 2, 2 ]), viewMatrix);
     //viewMatrix  = Float4x4.multiply (Float4x4.translate ([ -0.5, -0.5, -0.5 ]), viewMatrix);
     standardUniforms.VIEW_MATRIX_PARAMETER = viewMatrix;
-    standardUniforms.MODEL_MATRIX_PARAMETER = Float4x4.identity ();;
+    standardUniforms.MODEL_MATRIX_PARAMETER = Float4x4.identity ();
+
+    // compute the camera position and set it in the standard uniforms
+    let vmi = Float4x4.inverse (viewMatrix);
+    standardUniforms.CAMERA_POSITION = [vmi[12], vmi[13], vmi[14]];
 
     // draw the scene
     scene.traverse (standardUniforms);
@@ -111,7 +115,7 @@ let buildScene = function () {
 
     let clouds = Node.new ({
         name: "clouds",
-        transform: Float4x4.scale ((3 + 6378.1370) / 6378.1370),
+        transform: Float4x4.scale ((40 + 6378.1370) / 6378.1370),
         state: function (standardUniforms) {
             Program.get ("overlay-lighting").use ();
             context.enable (context.DEPTH_TEST);
@@ -123,6 +127,22 @@ let buildScene = function () {
         shape: "ball"
     });
     scene.addChild (clouds);
+
+    let atmosphereDepth = (200 + 6378.1370) / 6378.1370;
+    let atmosphere = Node.new ({
+        name: "clouds",
+        transform: Float4x4.scale (atmosphereDepth),
+        state: function (standardUniforms) {
+            Program.get ("atmosphere").use ()
+                .setAtmosphereDepth (atmosphereDepth - 1.0);
+            context.enable (context.DEPTH_TEST);
+            context.enable (context.CULL_FACE);
+            context.cullFace (context.BACK);
+            standardUniforms.OUTPUT_ALPHA_PARAMETER = 0.35;
+        },
+        shape: "ball"
+    });
+    scene.addChild (atmosphere);
 
     let projectionMatrix = Float4x4.create ();
     Float4x4.perspective (60, context.viewportWidth / context.viewportHeight, 0.1, 200.0, projectionMatrix);
