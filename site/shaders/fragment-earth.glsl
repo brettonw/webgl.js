@@ -35,7 +35,7 @@ void main(void) {
     float specularExp = 5.0;
     vec3 reflection = reflect(-lightDirection, normalVector);
     float specularMultiplier = clamp(dot(reflection, viewVector), 0.0, 1.0);
-    vec3 specularColor = vec3(1.0, 0.9, 0.8) * (pow(specularMultiplier, specularExp) * 0.333 * specularMapTxValue);
+    vec3 specularColor = vec3(1.0, 0.9, 0.8) * (pow(specularMultiplier, specularExp) * 0.4 * specularMapTxValue);
 
     vec3 groundColor = mix (nightTxColor, dayTxColor, daytimeScale);
     vec3 finalColor = clamp (groundColor + specularColor, 0.0, 1.0);

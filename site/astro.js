@@ -20,6 +20,7 @@
 //                          http://modis-atmos.gsfc.nasa.gov/MOD35_L2/acquiring.html
 //                          https://ladsweb.nascom.nasa.gov/data/search.html
 //                          https://github.com/jmozmoz/cloudmap
+// XXXX THIS ONE! XXX https://apollo.open-resource.org/mission:log:2014:06:17:new-fresh-global-cloudmap-distribution-service-xplanet
 
 // MODIS imagery: https://cdn.earthdata.nasa.gov/conduit/upload/946/MODIS_True_Color.pdf
 // realtime terr and aqua MODIS imagery: https://lance.modaps.eosdis.nasa.gov/cgi-bin/imagery/realtime.cgi?date=2016275

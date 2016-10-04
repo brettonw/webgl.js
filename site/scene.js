@@ -134,7 +134,7 @@ let buildScene = function () {
             name: "clouds",
             transform: Float4x4.scale ((40 + 6378.1370) / 6378.1370),
             state: function (standardUniforms) {
-                Program.get ("overlay-lighting").use ();
+                Program.get ("clouds").use ();
                 context.enable (context.DEPTH_TEST);
                 context.enable (context.CULL_FACE);
                 context.cullFace (context.BACK);
