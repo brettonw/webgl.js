@@ -30,6 +30,9 @@
 // http://www.stjarnhimlen.se/comp/tutorial.html
 // https://www.astronomyhouston.org/sites/default/files/presentations/HAS_Novice_Program_Celestial_Coordinates.pdf
 
+// reference image: http://svs.gsfc.nasa.gov/12321
+// http://svs.gsfc.nasa.gov/4404
+
 
 // mean earth radius: 6,378.1370 km
 // midlevel clouds to cirrus layer is 2,000m to 6,000m

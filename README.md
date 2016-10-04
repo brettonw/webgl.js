@@ -1,7 +1,9 @@
 # WebGL
 Javascript drawing in 3D 
 
-deployed at: http://webgl-render.azurewebsites.net/
+Deployed at: http://webgl-render.azurewebsites.net/ (though the free Azure website connection is severely constrained 
+and may not serve up the high resolution textures correctly).
+
 
 ### Building
 This project uses ant for building, with the "dev" target being the default:

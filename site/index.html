@@ -21,6 +21,7 @@
             let loader = Loader.new ({ onFinishedAll: OnReady.new (null, function (x) {
                 Program.new ("basic", { vertexShader: "vertex-basic", fragmentShader: "fragment-basic" });
                 Program.new ("overlay", { vertexShader: "vertex-basic", fragmentShader: "fragment-overlay" });
+                Program.new ("overlay-lighting", { vertexShader: "vertex-basic", fragmentShader: "fragment-overlay-lighting" });
                 Program.new ("texture", { vertexShader: "vertex-basic", fragmentShader: "fragment-texture" });
 
                 buildScene ();
@@ -30,6 +31,7 @@
                     let loader2 = Loader.new ({ onFinishedItem: OnReady.new (null, function (x) {
                         draw ([0, 0]);
                     })});
+                    loader2.addItem (Texture, "clouds", { url: "textures/clouds.png", generateMipMap: true });
                     loader2.addItem (Texture, "earth-day", { url: "textures/earth-day.png", generateMipMap: true });
                     loader2.addItem (Texture, "earth-night", { url: "textures/earth-night.png", generateMipMap: true });
                     loader2.addItem (Texture, "starfield", { url: "textures/starfield.png" });
@@ -41,17 +43,17 @@
 
             loader.addItem (Shader, "vertex-basic", { url:"shaders/vertex-basic.glsl", type: context.VERTEX_SHADER });
             loader.addItem (Shader, "fragment-basic", { url:"shaders/fragment-basic.glsl", type: context.FRAGMENT_SHADER });
-            loader.addItem (Shader, "fragment-overlay", { url:"shaders/fragment-overlay.glsl", type: context.FRAGMENT_SHADER });
+            loader.addItem (Shader, "fragment-overlay", { url: "shaders/fragment-overlay.glsl", type: context.FRAGMENT_SHADER });
+            loader.addItem (Shader, "fragment-overlay-lighting", { url: "shaders/fragment-overlay-lighting.glsl", type: context.FRAGMENT_SHADER });
             loader.addItem (Shader, "fragment-texture", { url:"shaders/fragment-texture.glsl", type: context.FRAGMENT_SHADER });
 
             loader.addItem (Texture, "grid", { url:"textures/grid.png", generateMipMap: true });
             loader.addItem (Texture, "earth-day", { url:"textures-lores/earth-day.png", generateMipMap: true });
             loader.addItem (Texture, "earth-night", { url:"textures-lores/earth-night.png", generateMipMap: true });
+            loader.addItem (Texture, "clouds", { url: "textures-lores/clouds.png", generateMipMap: true });
             loader.addItem (Texture, "starfield", { url: "textures-lores/starfield.png" });
             loader.addItem (Texture, "constellations", { url: "textures-lores/constellations.png" });
             loader.addItem (Texture, "moon", { url: "textures-lores/moon.png", generateMipMap: true });
-
-            loader.addItem (Texture, "clouds", { url: "textures/gmgsi-lw.gif", generateMipMap: true });
             loader.go ();
         };
     </script>

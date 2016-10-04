@@ -61,7 +61,7 @@ let buildScene = function () {
             context.enable (context.BLEND);
 
             // a little bit of setup for light direction
-            standardUniforms.LIGHT_DIRECTION = Float3.normalize ([100, 10, 0]);
+            standardUniforms.LIGHT_DIRECTION = Float3.normalize ([0, 10, -100]);
         }
     });
 
@@ -103,11 +103,26 @@ let buildScene = function () {
             context.enable (context.CULL_FACE);
             context.cullFace (context.BACK);
             standardUniforms.OUTPUT_ALPHA_PARAMETER = 1.0;
-            standardUniforms.TEXTURE_SAMPLER = "clouds";
+            standardUniforms.TEXTURE_SAMPLER = "earth-day";
         },
         shape: "ball"
     });
     scene.addChild (earth);
+
+    let clouds = Node.new ({
+        name: "clouds",
+        transform: Float4x4.scale ((3 + 6378.1370) / 6378.1370),
+        state: function (standardUniforms) {
+            Program.get ("overlay-lighting").use ();
+            context.enable (context.DEPTH_TEST);
+            context.enable (context.CULL_FACE);
+            context.cullFace (context.BACK);
+            standardUniforms.OUTPUT_ALPHA_PARAMETER = 1.0;
+            standardUniforms.TEXTURE_SAMPLER = "clouds";
+        },
+        shape: "ball"
+    });
+    scene.addChild (clouds);
 
     let projectionMatrix = Float4x4.create ();
     Float4x4.perspective (60, context.viewportWidth / context.viewportHeight, 0.1, 200.0, projectionMatrix);
