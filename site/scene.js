@@ -121,14 +121,14 @@ let buildScene = function () {
             context.enable (context.DEPTH_TEST);
             context.enable (context.CULL_FACE);
             context.cullFace (context.BACK);
-            standardUniforms.OUTPUT_ALPHA_PARAMETER = 1.0;
+            standardUniforms.OUTPUT_ALPHA_PARAMETER = 0.9;
             standardUniforms.TEXTURE_SAMPLER = "clouds";
         },
         shape: "ball"
     });
     scene.addChild (clouds);
 
-    let atmosphereDepth = (200 + 6378.1370) / 6378.1370;
+    let atmosphereDepth = (160 + 6378.1370) / 6378.1370;
     let atmosphere = Node.new ({
         name: "clouds",
         transform: Float4x4.scale (atmosphereDepth),
