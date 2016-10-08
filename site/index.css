@@ -11,12 +11,20 @@ body {
     height:             100%;
     overflow:           auto;
     padding:            0px;
+    font-family:        sans-serif;
+    color:              white;
+}
+
+canvas {
+    background-color:   #ff0000;
 }
 
 div {
     margin-left:        auto;
     margin-right:       auto;
+    margin-top:         5px;
     width:              640px;
+    text-decoration:    none;
 }
 
 div#title {

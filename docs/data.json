@@ -32,6 +32,15 @@
             "fors": {},
             "namespaces": {}
         },
+        "src/main/javascript/loader-path.js": {
+            "name": "src/main/javascript/loader-path.js",
+            "modules": {},
+            "classes": {
+                "LoaderPath": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
         "src/main/javascript/loader.js": {
             "name": "src/main/javascript/loader.js",
             "modules": {},
@@ -130,6 +139,18 @@
             "file": "src/main/javascript/floatNxN.js",
             "line": 1,
             "description": "A (square) NxN matrix"
+        },
+        "LoaderPath": {
+            "name": "LoaderPath",
+            "shortname": "LoaderPath",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src/main/javascript/loader-path.js",
+            "line": 1,
+            "description": "A loader for external assets in a particular location."
         },
         "Loader": {
             "name": "Loader",
@@ -332,6 +353,45 @@
             "class": "FloatNxN"
         },
         {
+            "file": "src/main/javascript/loader-path.js",
+            "line": 11,
+            "description": "the initializer for a loader.",
+            "itemtype": "method",
+            "name": "construct",
+            "params": [
+                {
+                    "name": "onReady",
+                    "description": "an object specifying the scope and callback to call when ready",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Loader"
+            },
+            "class": "LoaderPath"
+        },
+        {
+            "file": "src/main/javascript/loader-path.js",
+            "line": 52,
+            "description": "static method to create and construct a new Loader.",
+            "itemtype": "method",
+            "name": "new",
+            "static": 1,
+            "params": [
+                {
+                    "name": "parameters",
+                    "description": "an object specifying the scope and callback to call when an item is finsihed, and when\nall items are finished (onFinishedAll, onFinishedItem).",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Loader"
+            },
+            "class": "LoaderPath"
+        },
+        {
             "file": "src/main/javascript/loader.js",
             "line": 11,
             "description": "the initializer for a loader.",
@@ -391,7 +451,7 @@
         },
         {
             "file": "src/main/javascript/node.js",
-            "line": 210,
+            "line": 198,
             "description": "add a child node (only applies to non-leaf nodes).",
             "itemtype": "method",
             "name": "addChild",
@@ -407,8 +467,23 @@
         },
         {
             "file": "src/main/javascript/node.js",
-            "line": 226,
-            "description": "render this node and its contents.",
+            "line": 214,
+            "description": "draw this node's contents.",
+            "itemtype": "method",
+            "name": "draw",
+            "params": [
+                {
+                    "name": "standardUniforms",
+                    "description": "the container for standard parameters, as documented in\nProgram",
+                    "type": "Object"
+                }
+            ],
+            "class": "Node"
+        },
+        {
+            "file": "src/main/javascript/node.js",
+            "line": 229,
+            "description": "traverse this node and its contents. this funciton is a place-holder that is replaced by the\nactual function called depending on the parameters passed during construction.",
             "itemtype": "method",
             "name": "traverse",
             "params": [
@@ -423,7 +498,7 @@
         },
         {
             "file": "src/main/javascript/node.js",
-            "line": 238,
+            "line": 242,
             "description": "get the name of this node (if it has one).",
             "itemtype": "method",
             "name": "getName",
@@ -435,7 +510,7 @@
         },
         {
             "file": "src/main/javascript/node.js",
-            "line": 248,
+            "line": 252,
             "description": "get a node by name.",
             "itemtype": "method",
             "name": "get",
@@ -454,7 +529,7 @@
         },
         {
             "file": "src/main/javascript/node.js",
-            "line": 259,
+            "line": 263,
             "description": "static method to create and construct a new scene graph node.",
             "itemtype": "method",
             "name": "new",
@@ -743,7 +818,7 @@
         },
         {
             "file": "src/main/javascript/texture.js",
-            "line": 38,
+            "line": 41,
             "description": "static method to create and construct a new Texture.",
             "itemtype": "method",
             "name": "new",
@@ -773,7 +848,7 @@
         },
         {
             "file": "src/main/javascript/texture.js",
-            "line": 55,
+            "line": 58,
             "description": "fetch a texture by name.",
             "itemtype": "method",
             "name": "get",

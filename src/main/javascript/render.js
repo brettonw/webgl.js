@@ -17,7 +17,7 @@ let Render = function () {
      */
     _.construct = function (canvasId) {
         let canvas = this.canvas = document.getElementById (canvasId);
-        context = this.context = canvas.getContext ("webgl", { preserveDrawingBuffer: true });
+        context = this.context = canvas.getContext ("webgl", { preserveDrawingBuffer: true, alpha: false });
         context.viewportWidth = canvas.width;
         context.viewportHeight = canvas.height;
         context.viewport (0, 0, context.viewportWidth, context.viewportHeight);

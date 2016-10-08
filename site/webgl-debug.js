@@ -170,7 +170,7 @@ let Render = function () {
      */
     _.construct = function (canvasId) {
         let canvas = this.canvas = document.getElementById (canvasId);
-        context = this.context = canvas.getContext ("webgl", { preserveDrawingBuffer: true });
+        context = this.context = canvas.getContext ("webgl", { preserveDrawingBuffer: true, alpha: false });
         context.viewportWidth = canvas.width;
         context.viewportHeight = canvas.height;
         context.viewport (0, 0, context.viewportWidth, context.viewportHeight);
@@ -1584,6 +1584,9 @@ let Texture = function () {
 
         let texture = this.texture = context.createTexture();
         let image = new Image();
+
+        // allow cross origin loads, all of them... it's butt stupid that this isn't the default
+        image.crossOrigin = "anonymous";
         let scope = this;
         image.onload = function() {
             context.bindTexture (context.TEXTURE_2D, texture);
@@ -1698,6 +1701,9 @@ let Node = function () {
                 traverseFunctionIndex += HAS_SHAPE;
             }
 
+            // by default, nodes are enabled
+            this.enabled = (typeof parameters.enabled !== "undefined") ? parameters.enabled : true;
+
             // children are special, the default is to include children, but we want a way to say
             // the current node is a leaf node, so { children: false } is the way to do that
             if ((!("children" in parameters)) || (parameters.children != false)) {
@@ -1727,33 +1733,26 @@ let Node = function () {
             INVALID_TRAVERSE,
             // 4 shape only
             function (standardUniforms) {
-                Program.getCurrentProgram ().setStandardUniforms (standardUniforms);
-                this.shape.draw ();
+                this.draw (standardUniforms);
                 return this;
             },
             // 5 transform, shape
             function (standardUniforms) {
                 standardUniforms.MODEL_MATRIX_PARAMETER = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
-                standardUniforms.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardUniforms.MODEL_MATRIX_PARAMETER));
-                Program.getCurrentProgram ().setStandardUniforms (standardUniforms);
-                this.shape.draw ();
+                this.draw (standardUniforms);
                 return this;
             },
             // 6 state, shape
             function (standardUniforms) {
                 this.state (standardUniforms);
-                standardUniforms.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardUniforms.MODEL_MATRIX_PARAMETER));
-                Program.getCurrentProgram ().setStandardUniforms (standardUniforms);
-                this.shape.draw ();
+                this.draw (standardUniforms);
                 return this;
             },
             // 7 transform, state, shape
             function (standardUniforms) {
                 this.state (standardUniforms);
                 standardUniforms.MODEL_MATRIX_PARAMETER = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
-                standardUniforms.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardUniforms.MODEL_MATRIX_PARAMETER));
-                Program.getCurrentProgram ().setStandardUniforms (standardUniforms);
-                this.shape.draw ();
+                draw (standardUniforms);
                 return this;
             },
             // 8 children only
@@ -1797,9 +1796,7 @@ let Node = function () {
             // 12 shape, children
             function (standardUniforms) {
                 let modelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER;
-                standardUniforms.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardUniforms.MODEL_MATRIX_PARAMETER));
-                Program.getCurrentProgram ().setStandardUniforms (standardUniforms);
-                this.shape.draw ();
+                this.draw (standardUniforms);
                 for (let child of this.children) {
                     standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
                     child.traverse (standardUniforms);
@@ -1809,9 +1806,7 @@ let Node = function () {
             // 13 transform, shape, children
             function (standardUniforms) {
                 let modelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
-                standardUniforms.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardUniforms.MODEL_MATRIX_PARAMETER));
-                Program.getCurrentProgram ().setStandardUniforms (standardUniforms);
-                this.shape.draw ();
+                this.draw (standardUniforms);
                 for (let child of this.children) {
                     standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
                     child.traverse (standardUniforms);
@@ -1821,10 +1816,8 @@ let Node = function () {
             // 14 state, shape, children
             function (standardUniforms) {
                 this.state (standardUniforms);
+                this.draw (standardUniforms);
                 let modelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER;
-                standardUniforms.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardUniforms.MODEL_MATRIX_PARAMETER));
-                Program.getCurrentProgram ().setStandardUniforms (standardUniforms);
-                this.shape.draw ();
                 for (let child of this.children) {
                     standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
                     child.traverse (standardUniforms);
@@ -1835,9 +1828,7 @@ let Node = function () {
             function (standardUniforms) {
                 this.state (standardUniforms);
                 let modelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
-                standardUniforms.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardUniforms.MODEL_MATRIX_PARAMETER));
-                Program.getCurrentProgram ().setStandardUniforms (standardUniforms);
-                this.shape.draw ();
+                this.draw (standardUniforms);
                 for (let child of this.children) {
                     standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
                     child.traverse (standardUniforms);
@@ -1866,7 +1857,23 @@ let Node = function () {
     };
 
     /**
-     * render this node and its contents.
+     * draw this node's contents.
+     *
+     * @method draw
+     * @param {Object} standardUniforms the container for standard parameters, as documented in
+     * Program
+     */
+    _.draw = function (standardUniforms) {
+        if (this.enabled) {
+            standardUniforms.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardUniforms.MODEL_MATRIX_PARAMETER));
+            Program.getCurrentProgram ().setStandardUniforms (standardUniforms);
+            this.shape.draw ();
+        }
+    };
+
+    /**
+     * traverse this node and its contents. this funciton is a place-holder that is replaced by the
+     * actual function called depending on the parameters passed during construction.
      *
      * @method traverse
      * @param {Object} standardUniforms the container for standard parameters, as documented in

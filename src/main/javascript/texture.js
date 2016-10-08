@@ -10,6 +10,9 @@ let Texture = function () {
 
         let texture = this.texture = context.createTexture();
         let image = new Image();
+
+        // allow cross origin loads, all of them... it's butt stupid that this isn't the default
+        image.crossOrigin = "anonymous";
         let scope = this;
         image.onload = function() {
             context.bindTexture (context.TEXTURE_2D, texture);

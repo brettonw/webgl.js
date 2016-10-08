@@ -25,19 +25,22 @@ void main(void) {
 
     // the mapping from day to night
     float daytimeScale = clamp((cosLightNormalAngle + 0.2) * 2.5, 0.0, 1.0);
+    daytimeScale *= daytimeScale;
 
-    // get the texture map samples we'll need
+    // get the texture map samples we'll need, the night color is scaled to black as the view angle
+    // fades away, and then the two textures are blende by the daytime scale
     vec3 dayTxColor = texture2D(dayTxSampler, texture).rgb;
-    vec3 nightTxColor = texture2D(nightTxSampler, texture).rgb * cosViewNormalAngle;
-    float specularMapTxValue = texture2D(specularMapTxSampler, texture).r;
+    vec3 nightTxColor = texture2D(nightTxSampler, texture).rgb;
+    nightTxColor = nightTxColor * cosViewNormalAngle;
+    vec3 groundColor = mix (nightTxColor, dayTxColor, daytimeScale);
 
     // compute the specular contribution
-    float specularExp = 5.0;
+    float specularExp = 8.0;
     vec3 reflection = reflect(-lightDirection, normalVector);
     float specularMultiplier = clamp(dot(reflection, viewVector), 0.0, 1.0);
-    vec3 specularColor = vec3(1.0, 0.9, 0.8) * (pow(specularMultiplier, specularExp) * 0.4 * specularMapTxValue);
+    float specularMapTxValue = texture2D(specularMapTxSampler, texture).r;
+    vec3 specularColor = vec3(1.0, 0.9, 0.8) * (pow(specularMultiplier, specularExp) * 0.3 * specularMapTxValue);
 
-    vec3 groundColor = mix (nightTxColor, dayTxColor, daytimeScale);
     vec3 finalColor = clamp (groundColor + specularColor, 0.0, 1.0);
 
     gl_FragColor = vec4 (finalColor, outputAlpha);

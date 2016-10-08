@@ -5,6 +5,12 @@ let currentPosition = [0, 0];
 
 let standardUniforms = Object.create(null);
 
+let showCloudsCheckbox;
+let showAtmosphereCheckbox;
+
+let cloudsNode;
+let atmosphereNode;
+
 let draw = function (deltaPosition) {
     // update the current position and clamp or wrap accordingly
     currentPosition = Float2.add (currentPosition, deltaPosition);
@@ -34,6 +40,10 @@ let draw = function (deltaPosition) {
     // compute the camera position and set it in the standard uniforms
     let vmi = Float4x4.inverse (viewMatrix);
     standardUniforms.CAMERA_POSITION = [vmi[12], vmi[13], vmi[14]];
+
+    // update the visibility layers
+    cloudsNode.enabled = showCloudsCheckbox.checked;
+    atmosphereNode.enabled = showAtmosphereCheckbox.checked;
 
     // draw the scene
     scene.traverse (standardUniforms);
@@ -108,7 +118,7 @@ let buildScene = function () {
                 context.enable (context.CULL_FACE);
                 context.cullFace (context.BACK);
                 standardUniforms.OUTPUT_ALPHA_PARAMETER = 1.0;
-                standardUniforms.TEXTURE_SAMPLER = "earth-plate-carree";
+                standardUniforms.TEXTURE_SAMPLER = "grid";
             },
             shape: "ball"
         });
@@ -130,7 +140,7 @@ let buildScene = function () {
         });
         scene.addChild (earth);
 
-        let clouds = Node.new ({
+        cloudsNode = Node.new ({
             name: "clouds",
             transform: Float4x4.scale ((40 + 6378.1370) / 6378.1370),
             state: function (standardUniforms) {
@@ -143,23 +153,22 @@ let buildScene = function () {
             },
             shape: "ball"
         });
-        scene.addChild (clouds);
+        scene.addChild (cloudsNode);
 
         let atmosphereDepth = (160 + 6378.1370) / 6378.1370;
-        let atmosphere = Node.new ({
+        atmosphereNode = Node.new ({
             name: "clouds",
             transform: Float4x4.scale (atmosphereDepth),
             state: function (standardUniforms) {
                 Program.get ("atmosphere").use ()
                     .setAtmosphereDepth (atmosphereDepth - 1.0);
                 context.enable (context.DEPTH_TEST);
-                context.enable (context.CULL_FACE);
-                context.cullFace (context.BACK);
-                standardUniforms.OUTPUT_ALPHA_PARAMETER = 0.4;
+                context.disable (context.CULL_FACE);
+                standardUniforms.OUTPUT_ALPHA_PARAMETER = 0.5;
             },
             shape: "ball"
         });
-        scene.addChild (atmosphere);
+        scene.addChild (atmosphereNode);
     }
 
     let projectionMatrix = Float4x4.create ();
@@ -169,4 +178,62 @@ let buildScene = function () {
 
 
     draw ([0, 0]);
+};
+
+let onBodyLoad = function () {
+    MouseTracker.new ("render-canvas", OnReady.new (null, function (deltaPosition) {
+        draw (deltaPosition);
+    }));
+    Render.new ("render-canvas");
+
+    showCloudsCheckbox = document.getElementById("showCloudsCheckbox");
+    showAtmosphereCheckbox = document.getElementById("showAtmosphereCheckbox");
+
+    let loader = Loader.new ({ onFinishedAll: OnReady.new (null, function (x) {
+        Program.new ("basic", { vertexShader: "vertex-basic", fragmentShader: "fragment-basic" });
+        Program.new ("overlay", { vertexShader: "vertex-basic", fragmentShader: "fragment-overlay" });
+        Program.new ("texture", { vertexShader: "vertex-basic", fragmentShader: "fragment-texture" });
+        Program.new ("earth", { vertexShader: "vertex-basic", fragmentShader: "fragment-earth" });
+        Program.new ("clouds", { vertexShader: "vertex-basic", fragmentShader: "fragment-clouds" });
+        Program.new ("atmosphere", { vertexShader: "vertex-basic", fragmentShader: "fragment-atmosphere" });
+
+        buildScene ();
+
+        // update the textures....
+        setTimeout (function () {
+            let loader2 = Loader.new ({ onFinishedItem: OnReady.new (null, function (x) {
+                draw ([0, 0]);
+            })});
+            loader2.addItem (Texture, "clouds", { url: "textures/clouds.png", generateMipMap: true });
+            loader2.addItem (Texture, "earth-day", { url: "textures/earth-day.png", generateMipMap: true });
+            loader2.addItem (Texture, "earth-night", { url: "textures/earth-night.png", generateMipMap: true });
+            loader.addItem (Texture, "earth-specular-map", { url:"textures/earth-specular-map.png", generateMipMap: true });
+            loader2.addItem (Texture, "starfield", { url: "textures/starfield.png" });
+            loader2.addItem (Texture, "constellations", { url: "textures/constellations.png" });
+            //loader2.addItem (Texture, "moon", { url: "textures/moon.png", generateMipMap: true });
+            loader2.go ();
+        }, 1000);
+    })});
+
+    // XXX could I automatically scan for all these things?
+    loader.addItem (Shader, "vertex-basic", { url:"shaders/vertex-basic.glsl", type: context.VERTEX_SHADER });
+    loader.addItem (Shader, "fragment-basic", { url:"shaders/fragment-basic.glsl", type: context.FRAGMENT_SHADER });
+    loader.addItem (Shader, "fragment-overlay", { url: "shaders/fragment-overlay.glsl", type: context.FRAGMENT_SHADER });
+    loader.addItem (Shader, "fragment-texture", { url: "shaders/fragment-texture.glsl", type: context.FRAGMENT_SHADER });
+    loader.addItem (Shader, "fragment-earth", { url: "shaders/fragment-earth.glsl", type: context.FRAGMENT_SHADER });
+    loader.addItem (Shader, "fragment-clouds", { url: "shaders/fragment-clouds.glsl", type: context.FRAGMENT_SHADER });
+    loader.addItem (Shader, "fragment-atmosphere", { url: "shaders/fragment-atmosphere.glsl", type: context.FRAGMENT_SHADER });
+
+    loader.addItem (Texture, "grid", { url:"textures-test/grid.png", generateMipMap: true });
+    //loader.addItem (Texture, "tissot", { url:"textures-test/tissot.png", generateMipMap: true });
+    //loader.addItem (Texture, "earth-plate-carree", { url:"textures-test/earth-plate-carree.png", generateMipMap: true });
+
+    loader.addItem (Texture, "earth-day", { url:"textures-lores/earth-day.png", generateMipMap: true });
+    loader.addItem (Texture, "earth-night", { url:"textures-lores/earth-night.png", generateMipMap: true });
+    loader.addItem (Texture, "earth-specular-map", { url:"textures-lores/earth-specular-map.png", generateMipMap: true });
+    loader.addItem (Texture, "clouds", { url: "textures-lores/clouds.png", generateMipMap: true });
+    loader.addItem (Texture, "starfield", { url: "textures-lores/starfield.png" });
+    loader.addItem (Texture, "constellations", { url: "textures-lores/constellations.png" });
+    //loader.addItem (Texture, "moon", { url: "textures-lores/moon.png", generateMipMap: true });
+    loader.go ();
 };

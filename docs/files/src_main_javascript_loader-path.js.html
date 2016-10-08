@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>src/main/javascript/shader.js - WebGL</title>
+    <title>src/main/javascript/loader-path.js - WebGL</title>
     <link rel="stylesheet" href="">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -79,66 +79,73 @@
                 <div id="docs-main">
                     <div class="content">
 <div class="page-header">
-    <h1>src/main/javascript/shader.js <small>File</small></h1>
+    <h1>src/main/javascript/loader-path.js <small>File</small></h1>
 </div>
 
 <div class="file">
     <pre class="prettyprint linenums">
-let Shader = function () {
+/**
+ * A loader for external assets in a particular location.
+ *
+ * @class LoaderPath
+ */
+let LoaderPath = function () {
     let _ = Object.create (null);
 
-    let shaders = Object.create (null);
+    let items = [];
 
-    _.construct  = function (name, parameters, onReady) {
-        this.name = name;
-        LOG (&quot;Shader: &quot; + this.name);
+    /**
+     * the initializer for a loader.
+     *
+     * @method construct
+     * @param {Object} onReady an object specifying the scope and callback to call when ready
+     * @return {Loader}
+     */
+    _.construct = function (parameters) {
 
-        let scope = this;
-        let request = new XMLHttpRequest();
-        request.onload = function (event) {
-            if (request.status === 200) {
-                let shader = context.createShader (parameters.type);
-                context.shaderSource (shader, request.responseText);
-                context.compileShader (shader);
-                if (!context.getShaderParameter (shader, context.COMPILE_STATUS)) {
-                    LOG (context.getShaderInfoLog (shader));
-                } else {
-                    scope.compiledShader = shader;
-                    onReady.notify (scope);
-                }
-            }
-        };
-        request.open(&quot;GET&quot;, parameters.url);
-        request.send();
-
+        this.onFinishedAll = DEFAULT_VALUE (parameters.onFinishedAll, { notify: function (x) {} });
+        this.onFinishedItem = DEFAULT_VALUE (parameters.onFinishedItem, { notify: function (x) {} });
         return this;
     };
 
-    /**
-     * static method to create and construct a new Shader.
-     *
-     * @method new
-     * @static
-     * @param {string} name the name to use to refer to this shader
-     * @param {Object} parameters shader construction parameters, typically url and type, where
-     * type is one of (context.VERTEX_SHADER, context.FRAGMENT_SHADER)
-     * @param {Object} onReady an object specifying the scope and callback to call when ready
-     * @return {Shader}
-     */
-    _.new = function (name, parameters, onReady) {
-        return (shaders[name] = Object.create (_).construct (name, parameters, onReady));
+    _.addItem = function (type, name, parameters) {
+        let item = { type: type, name: name, parameters: parameters };
+        items.push (item);
+    };
+
+    _.finish = function (finishedItem) {
+        if (finishedItem === this.pendingItem) {
+            // clear the pending item, and go
+            delete this.pendingItem;
+            this.onFinishedItem.notify(finishedItem);
+            this.go ();
+        } else {
+            LOG (&quot;WHAT&#x27;S UP WILLIS?&quot;);
+        }
+    };
+
+    _.go = function () {
+        if (items.length &gt; 0) {
+            // have work to do, kick off a fetch
+            let item = items.shift ();
+            this.pendingItem = item.type.new (item.name, item.parameters, OnReady.new (this, this.finish));
+        } else {
+            // all done, inform our waiting handler
+            this.onFinishedAll.notify (this);
+        }
     };
 
     /**
-     * fetch a shader by name.
+     * static method to create and construct a new Loader.
      *
-     * @method get
+     * @method new
      * @static
-     * @param {string} name the name of the shader to return
-     * @return {Shader}
+     * @param {Object} parameters an object specifying the scope and callback to call when an item is finsihed, and when
+     * all items are finished (onFinishedAll, onFinishedItem).
+     * @return {Loader}
      */
-    _.get = function (name) {
-        return shaders[name];
+    _.new = function (parameters) {
+        return Object.create (_).construct (parameters);
     };
 
     return _;

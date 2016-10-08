@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Render - WebGL</title>
+    <title>LoaderPath - WebGL</title>
     <link rel="stylesheet" href="">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -79,7 +79,7 @@
                 <div id="docs-main">
                     <div class="content">
 <div class="page-header">
-    <h1>Render</h1>
+    <h1>LoaderPath</h1>
 </div>
 
 
@@ -88,7 +88,7 @@
 
 
 <div class="yuidoc-class-description">
-<p>A Rendering context.</p>
+<p>A loader for external assets in a particular location.</p>
 
 </div>
 
@@ -100,8 +100,7 @@
 		<li>
 			<strong>Methods</strong>
 			<ul>
-				<li><a href="#method-construct"><span class="im">construct</span>(<span class="ia">canvasId</span>)</a></li>
-				<li><a href="#method-use"><span class="im">use</span>()</a></li>
+				<li><a href="#method-construct"><span class="im">construct</span>(<span class="ia">onReady</span>)</a></li>
 			</ul>
 		</li>
 
@@ -110,7 +109,7 @@
 		<li>
 			<strong>Static Methods</strong>
 			<ul>
-				<li><a href="#method-new"><span class="im">Render.new</span>(<span class="ia">canvasId</span>)</a></li>
+				<li><a href="#method-new"><span class="im">LoaderPath.new</span>(<span class="ia">parameters</span>)</a></li>
 			</ul>
 		</li>
 	</ul>
@@ -129,12 +128,12 @@
 		<div class="args">
 			<span class="paren">(</span><ul class="args-list inline commas">
 				<li class="arg">
-						<code>canvasId</code>
+						<code>onReady</code>
 				</li>
 			</ul><span class="paren">)</span>
 		</div>
 		<span class="returns-inline">
-			<span class="type"><a href="../classes/Render.html" class="crosslink">Render</a></span>
+			<span class="type"><a href="../classes/Loader.html" class="crosslink">Loader</a></span>
 		</span>
 	</div>
 
@@ -146,14 +145,14 @@
 	<div class="meta">
 				<p>
 				Defined in
-		<a href="../files/src_main_javascript_render.js.html#l11"><code>src&#x2F;main&#x2F;javascript&#x2F;render.js:11</code></a>
+		<a href="../files/src_main_javascript_loader-path.js.html#l11"><code>src&#x2F;main&#x2F;javascript&#x2F;loader-path.js:11</code></a>
 		</p>
 
 
 
 	</div>
 
-	<div class="description"><p>The initializer for a rendering context.</p>
+	<div class="description"><p>the initializer for a loader.</p>
 </div>
 
 		<div class="params">
@@ -161,11 +160,11 @@
 
 			<ul class="params-list">
 				<li class="param">
-						<code class="param-name">canvasId</code>
-						<span class="type">String</span>
+						<code class="param-name">onReady</code>
+						<span class="type">Object</span>
 
 
-					<div class="param-description"><p>the id of the canvas element to use for the rendering context</p>
+					<div class="param-description"><p>an object specifying the scope and callback to call when ready</p>
 </div>
 
 				</li>
@@ -176,37 +175,9 @@
 			<h4>Returns:</h4>
 
 			<div class="returns-description">
-						<span class="type"><a href="../classes/Render.html" class="crosslink">Render</a></span>
+						<span class="type"><a href="../classes/Loader.html" class="crosslink">Loader</a></span>
 			</div>
 		</div>
-
-</div>
-<div id="method-use" class="method item">
-	<div class="method-signature">
-	<span class="name"><code>use</code></span>
-
-		<span class="paren">()</span>
-	</div>
-
-
-
-
-
-
-	<div class="meta">
-				<p>
-				Defined in
-		<a href="../files/src_main_javascript_render.js.html#l38"><code>src&#x2F;main&#x2F;javascript&#x2F;render.js:38</code></a>
-		</p>
-
-
-
-	</div>
-
-	<div class="description"><p>Set the global rendering context.</p>
-</div>
-
-
 
 </div>
         </div>
@@ -220,17 +191,17 @@
         <div class="item-list">
 <div id="method-new" class="method item">
 	<div class="method-signature">
-	<span class="name"><code>Render.new</code></span>
+	<span class="name"><code>LoaderPath.new</code></span>
 
 		<div class="args">
 			<span class="paren">(</span><ul class="args-list inline commas">
 				<li class="arg">
-						<code>canvasId</code>
+						<code>parameters</code>
 				</li>
 			</ul><span class="paren">)</span>
 		</div>
 		<span class="returns-inline">
-			<span class="type"><a href="../classes/Render.html" class="crosslink">Render</a></span>
+			<span class="type"><a href="../classes/Loader.html" class="crosslink">Loader</a></span>
 		</span>
 	</div>
 
@@ -242,14 +213,14 @@
 	<div class="meta">
 				<p>
 				Defined in
-		<a href="../files/src_main_javascript_render.js.html#l47"><code>src&#x2F;main&#x2F;javascript&#x2F;render.js:47</code></a>
+		<a href="../files/src_main_javascript_loader-path.js.html#l52"><code>src&#x2F;main&#x2F;javascript&#x2F;loader-path.js:52</code></a>
 		</p>
 
 
 
 	</div>
 
-	<div class="description"><p>Static method to create and construct a new rendering context.</p>
+	<div class="description"><p>static method to create and construct a new Loader.</p>
 </div>
 
 		<div class="params">
@@ -257,11 +228,12 @@
 
 			<ul class="params-list">
 				<li class="param">
-						<code class="param-name">canvasId</code>
-						<span class="type">String</span>
+						<code class="param-name">parameters</code>
+						<span class="type">Object</span>
 
 
-					<div class="param-description"><p>the id of the canvas element to use for the rendering context.</p>
+					<div class="param-description"><p>an object specifying the scope and callback to call when an item is finsihed, and when
+all items are finished (onFinishedAll, onFinishedItem).</p>
 </div>
 
 				</li>
@@ -272,7 +244,7 @@
 			<h4>Returns:</h4>
 
 			<div class="returns-description">
-						<span class="type"><a href="../classes/Render.html" class="crosslink">Render</a></span>
+						<span class="type"><a href="../classes/Loader.html" class="crosslink">Loader</a></span>
 			</div>
 		</div>
 
