@@ -112,68 +112,52 @@ let buildScene = function () {
     });
     starfield.addChild (constellationsNode);
 
-    if (false) {
-        let test = Node.new ({
-            name: "test",
-            state: function (standardUniforms) {
-                Program.get ("texture").use ();
-                context.enable (context.DEPTH_TEST);
-                context.enable (context.CULL_FACE);
-                context.cullFace (context.BACK);
-                standardUniforms.OUTPUT_ALPHA_PARAMETER = 1.0;
-                standardUniforms.TEXTURE_SAMPLER = "grid";
-            },
-            shape: "ball"
-        });
-        scene.addChild (test);
-    } else {
-        let earth = Node.new ({
-            name: "earth",
-            state: function (standardUniforms) {
-                Program.get ("earth").use ()
-                    .setDayTxSampler ("earth-day")
-                    .setNightTxSampler ("earth-night")
-                    .setSpecularMapTxSampler ("earth-specular-map");
-                context.enable (context.DEPTH_TEST);
-                context.enable (context.CULL_FACE);
-                context.cullFace (context.BACK);
-                standardUniforms.OUTPUT_ALPHA_PARAMETER = 1.0;
-            },
-            shape: "ball"
-        });
-        scene.addChild (earth);
+    let earth = Node.new ({
+        name: "earth",
+        state: function (standardUniforms) {
+            Program.get ("earth").use ()
+                .setDayTxSampler ("earth-day")
+                .setNightTxSampler ("earth-night")
+                .setSpecularMapTxSampler ("earth-specular-map");
+            context.enable (context.DEPTH_TEST);
+            context.enable (context.CULL_FACE);
+            context.cullFace (context.BACK);
+            standardUniforms.OUTPUT_ALPHA_PARAMETER = 1.0;
+        },
+        shape: "ball"
+    });
+    scene.addChild (earth);
 
-        cloudsNode = Node.new ({
-            name: "clouds",
-            transform: Float4x4.scale ((40 + 6378.1370) / 6378.1370),
-            state: function (standardUniforms) {
-                Program.get ("clouds").use ();
-                context.enable (context.DEPTH_TEST);
-                context.enable (context.CULL_FACE);
-                context.cullFace (context.BACK);
-                standardUniforms.OUTPUT_ALPHA_PARAMETER = 0.90;
-                standardUniforms.TEXTURE_SAMPLER = "clouds";
-            },
-            shape: "ball"
-        });
-        scene.addChild (cloudsNode);
+    cloudsNode = Node.new ({
+        name: "clouds",
+        transform: Float4x4.scale ((40 + 6378.1370) / 6378.1370),
+        state: function (standardUniforms) {
+            Program.get ("clouds").use ();
+            context.enable (context.DEPTH_TEST);
+            context.enable (context.CULL_FACE);
+            context.cullFace (context.BACK);
+            standardUniforms.OUTPUT_ALPHA_PARAMETER = 0.90;
+            standardUniforms.TEXTURE_SAMPLER = "clouds";
+        },
+        shape: "ball"
+    });
+    scene.addChild (cloudsNode);
 
-        let atmosphereDepth = (100 + 6378.1370) / 6378.1370;
-        atmosphereNode = Node.new ({
-            name: "clouds",
-            transform: Float4x4.scale (atmosphereDepth),
-            state: function (standardUniforms) {
-                Program.get ("atmosphere").use ()
-                    .setAtmosphereDepth (atmosphereDepth - 1.0);
-                context.enable (context.DEPTH_TEST);
-                context.enable (context.CULL_FACE);
-                context.cullFace (context.BACK);
-                standardUniforms.OUTPUT_ALPHA_PARAMETER = 0.5;
-            },
-            shape: "ball"
-        });
-        scene.addChild (atmosphereNode);
-    }
+    let atmosphereDepth = (100 + 6378.1370) / 6378.1370;
+    atmosphereNode = Node.new ({
+        name: "clouds",
+        transform: Float4x4.scale (atmosphereDepth),
+        state: function (standardUniforms) {
+            Program.get ("atmosphere").use ()
+                .setAtmosphereDepth (atmosphereDepth - 1.0);
+            context.enable (context.DEPTH_TEST);
+            context.enable (context.CULL_FACE);
+            context.cullFace (context.BACK);
+            standardUniforms.OUTPUT_ALPHA_PARAMETER = 0.5;
+        },
+        shape: "ball"
+    });
+    scene.addChild (atmosphereNode);
 
     let projectionMatrix = Float4x4.create ();
     Float4x4.perspective (60, context.viewportWidth / context.viewportHeight, 0.1, 200.0, projectionMatrix);
