@@ -5,9 +5,11 @@ let currentPosition = [0, 0];
 
 let standardUniforms = Object.create(null);
 
+let showConstellationsCheckbox;
 let showCloudsCheckbox;
 let showAtmosphereCheckbox;
 
+let constellationsNode;
 let cloudsNode;
 let atmosphereNode;
 
@@ -42,6 +44,7 @@ let draw = function (deltaPosition) {
     standardUniforms.CAMERA_POSITION = [vmi[12], vmi[13], vmi[14]];
 
     // update the visibility layers
+    constellationsNode.enabled = showConstellationsCheckbox.checked;
     cloudsNode.enabled = showCloudsCheckbox.checked;
     atmosphereNode.enabled = showAtmosphereCheckbox.checked;
 
@@ -94,7 +97,7 @@ let buildScene = function () {
     });
     scene.addChild (starfield);
 
-    let constellations = Node.new ({
+    constellationsNode = Node.new ({
         name: "constellations",
         state: function (standardUniforms) {
             Program.get ("overlay").use ();
@@ -107,7 +110,7 @@ let buildScene = function () {
         shape: "ball",
         children: false
     });
-    starfield.addChild (constellations);
+    starfield.addChild (constellationsNode);
 
     if (false) {
         let test = Node.new ({
@@ -187,6 +190,7 @@ let onBodyLoad = function () {
     }));
     Render.new ("render-canvas");
 
+    showConstellationsCheckbox = document.getElementById("showConstellationsCheckbox");
     showCloudsCheckbox = document.getElementById("showCloudsCheckbox");
     showAtmosphereCheckbox = document.getElementById("showAtmosphereCheckbox");
 
