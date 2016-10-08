@@ -36,6 +36,6 @@ void main(void) {
 
 	// the sky color is faded out according to the proximity to the day/night boundary
 	vec3 daytimeLightColor = mix(vec3 (1.0, 0.8, 0.6), vec3 (0.7, 0.8, 1.0), daytimeScale) * daytimeScale;
-	float atmosphere = atmosphereTravelDistance * atmosphereTravelDistance * outputAlpha;
+	float atmosphere = atmosphereTravelDistance * atmosphereTravelDistance * outputAlpha * daytimeScale;
 	gl_FragColor = vec4 (daytimeLightColor, atmosphere);
 }

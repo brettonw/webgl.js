@@ -155,7 +155,7 @@ let buildScene = function () {
         });
         scene.addChild (cloudsNode);
 
-        let atmosphereDepth = (160 + 6378.1370) / 6378.1370;
+        let atmosphereDepth = (100 + 6378.1370) / 6378.1370;
         atmosphereNode = Node.new ({
             name: "clouds",
             transform: Float4x4.scale (atmosphereDepth),
@@ -163,7 +163,8 @@ let buildScene = function () {
                 Program.get ("atmosphere").use ()
                     .setAtmosphereDepth (atmosphereDepth - 1.0);
                 context.enable (context.DEPTH_TEST);
-                context.disable (context.CULL_FACE);
+                context.enable (context.CULL_FACE);
+                context.cullFace (context.BACK);
                 standardUniforms.OUTPUT_ALPHA_PARAMETER = 0.5;
             },
             shape: "ball"
