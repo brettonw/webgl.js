@@ -72,7 +72,7 @@ let MouseTracker = function () {
 
     _.construct = function (canvasId, onReadyIn, stepSizeIn) {
         onReady = onReadyIn;
-        stepSize = (typeof stepSizeIn !== "undefined") ? stepSizeIn : 0.05;
+        stepSize = ((typeof stepSizeIn !== "undefined") && (stepSizeIn != null)) ? stepSizeIn : 0.05;
 
         let canvas = document.getElementById(canvasId);
 
@@ -100,12 +100,12 @@ let Loader = function () {
      * the initializer for a loader.
      *
      * @method construct
-     * @param {Object} onReady an object specifying the scope and callback to call when ready
+     * @param {Object} parameters an object specifying callback parameters (see "new")
      * @return {Loader}
      */
     _.construct = function (parameters) {
-        this.onFinishedAll = (typeof parameters.onFinishedAll !== "undefined") ? parameters.onFinishedAll : { notify: function (x) {} };
-        this.onFinishedItem = (typeof parameters.onFinishedItem !== "undefined") ? parameters.onFinishedItem : { notify: function (x) {} };
+        this.onFinishedAll = ((typeof parameters.onFinishedAll !== "undefined") && (parameters.onFinishedAll != null)) ? parameters.onFinishedAll : { notify: function (x) {} };
+        this.onFinishedItem = ((typeof parameters.onFinishedItem !== "undefined") && (parameters.onFinishedItem != null)) ? parameters.onFinishedItem : { notify: function (x) {} };
         this.items = [];
         return this;
     };
@@ -113,6 +113,7 @@ let Loader = function () {
     _.addItem = function (type, name, url, parameters) {
         let item = { type: type, name: name, url: url, parameters: parameters };
         this.items.push (item);
+        return this;
     };
 
     _.finish = function (finishedItem) {
@@ -120,13 +121,33 @@ let Loader = function () {
             // clear the pending item, and go
             delete this.pendingItem;
             this.onFinishedItem.notify(finishedItem);
-            this.go ();
+            this.next ();
         } else {
             console.log ("WHAT'S UP WILLIS?");
         }
     };
 
-    _.go = function () {
+    /**
+     * start the fetch process for all the loadable items.
+     *
+     * @method go
+     * @param {Object} parameters an object specifying the scope and callback to call when an item
+     * is finished, and when all items are finished (onFinishedAll, onFinishedItem).
+     * @chainable
+     */
+    _.go = function (onFinishedEach, onFinishedAll) {
+        this.onFinishedEach = ((typeof onFinishedEach !== "undefined") && (onFinishedEach != null)) ? onFinishedEach : { notify: function (x) {} };
+        this.onFinishedAll = ((typeof onFinishedAll !== "undefined") && (onFinishedAll != null)) ? onFinishedAll : { notify: function (x) {} };
+        this.next ();
+    };
+
+    /**
+     * continue the fetch process for all the loadable items.
+     *
+     * @method next
+     * @chainable
+     */
+    _.next = function () {
         if (this.items.length > 0) {
             // have work to do, kick off a fetch
             let item = this.items.shift ();
@@ -142,8 +163,58 @@ let Loader = function () {
      *
      * @method new
      * @static
-     * @param {Object} parameters an object specifying the scope and callback to call when an item is finsihed, and when
-     * all items are finished (onFinishedAll, onFinishedItem).
+     * @param {Object} parameters an object specifying the scope and callback to call when an item
+     * is finished, and when all items are finished (onFinishedAll, onFinishedItem).
+     * @return {Loader}
+     */
+    _.new = function (parameters) {
+        return Object.create (_).construct (parameters);
+    };
+
+    return _;
+} ();
+/**
+ * A loader for external assets, which assumes assets reside in a common base path, and are named as
+ * the file element is named.
+ *
+ * @class LoaderPath
+ */
+let LoaderPath = function () {
+    let _ = Object.create (Loader);
+
+    /**
+     * the initializer for a loader.
+     *
+     * @method construct
+     * @param {Object} onReady an object specifying the scope and callback to call when ready
+     * @return {Loader}
+     */
+    _.construct = function (parameters) {
+        Object.getPrototypeOf(_).construct.call(this, parameters);
+        this.type = parameters.type;
+        this.path = parameters.path;
+        return this;
+    };
+
+    _.addItem = function (name, parameters) {
+        let url = this.path.replace ("@", name);
+        return Object.getPrototypeOf(_).addItem.call(this, this.type, name, url, parameters);
+    };
+
+    _.addItems = function (names, parameters) {
+        for (let name of names) {
+            this.addItem(name, parameters);
+        }
+        return this;
+    };
+
+    /**
+     * static method to create and construct a new LoaderPath.
+     *
+     * @method new
+     * @static
+     * @param {Object} parameters an object including Loader class parameters, as well as the type
+     * and urlBase to use for all operations.
      * @return {Loader}
      */
     _.new = function (parameters) {
@@ -171,7 +242,7 @@ let Render = function () {
      */
     _.construct = function (canvasId, aspectRatio) {
         let canvas = this.canvas = document.getElementById (canvasId);
-        aspectRatio = (typeof aspectRatio !== "undefined") ? aspectRatio : 16.0 / 9.0;
+        aspectRatio = ((typeof aspectRatio !== "undefined") && (aspectRatio != null)) ? aspectRatio : 16.0 / 9.0;
 
         // high DPI devices need to have the canvas drawing surface scaled up while leaving the style
         // size as indicated
@@ -428,7 +499,7 @@ let Float2 = function () {
     let _ = FloatN (2);
 
     _.perpendicular = function (from, to) {
-        to = (typeof to !== "undefined") ? to : _.create ();
+        to = ((typeof to !== "undefined") && (to != null)) ? to : _.create ();
         to[0] = from[1]; to[1] = -from[0];
         return to;
     };
@@ -440,7 +511,7 @@ let Float3 = function () {
     let _ = FloatN (3);
 
     _.cross = function (left, right, to) {
-        to = (typeof to !== "undefined") ? to : _.create ();
+        to = ((typeof to !== "undefined") && (to != null)) ? to : _.create ();
         to[0] = (left[1] * right[2]) - (left[2] * right[1]);
         to[1] = (left[2] * right[0]) - (left[0] * right[2]);
         to[2] = (left[0] * right[1]) - (left[1] * right[0]);
@@ -469,7 +540,7 @@ let FloatNxN = function (dim) {
     };
 
     let defineTo = function (to) {
-        to = (typeof to !== "undefined") ? to : "to";
+        to = ((typeof to !== "undefined") && (to != null)) ? to : "to";
         return to + " = (typeof " + to + " !== 'undefined') ? " + to + " : _.create ();\n";
     };
 
@@ -654,7 +725,7 @@ let Float4x4 = function () {
 
     _.inverse = function (from, to) {
         // adapted from a bit of obfuscated, unwound, code
-        to = (typeof to !== "undefined") ? to : _.create ();
+        to = ((typeof to !== "undefined") && (to != null)) ? to : _.create ();
         let A = from[0] * from[5] - from[1] * from[4], B = from[0] * from[6] - from[2] * from[4],
             C = from[9] * from[14] - from[10] * from[13], D = from[9] * from[15] - from[11] * from[13],
             E = from[10] * from[15] - from[11] * from[14], F = from[0] * from[7] - from[3] * from[4],
@@ -815,7 +886,7 @@ let Float4x4 = function () {
     };
 
     _.frustum = function (a, b, c, d, e, g, to) {
-        to = (typeof to !== "undefined") ? to : _.create ();
+        to = ((typeof to !== "undefined") && (to != null)) ? to : _.create ();
         let h = b - a, i = d - c, j = g - e;
         to[0] = e * 2 / h;
         to[1] = 0;
@@ -843,7 +914,7 @@ let Float4x4 = function () {
     };
 
     _.ortho = function (a, b, c, d, e, g, to) {
-        to = (typeof to !== "undefined") ? to : _.create ();
+        to = ((typeof to !== "undefined") && (to != null)) ? to : _.create ();
         let h = b - a, i = d - c, j = g - e;
         to[0] = 2 / h;
         to[1] = 0;
@@ -865,7 +936,7 @@ let Float4x4 = function () {
     };
 
     _.lookAt = function (a, b, c, to) {
-        to = (typeof to !== "undefined") ? to : _.create ();
+        to = ((typeof to !== "undefined") && (to != null)) ? to : _.create ();
         let e = a[0], g = a[1];
         a = a[2];
         let f = c[0], h = c[1], i = c[2];
@@ -1110,7 +1181,7 @@ let Shader = function () {
      * @return {Shader}
      */
     _.new = function (name, url, parameters, onReady) {
-        parameters = (typeof parameters !== "undefined") ? parameters : {};
+        parameters = ((typeof parameters !== "undefined") && (parameters != null)) ? parameters : {};
         return (shaders[name] = Object.create (_).construct (name, url, parameters, onReady));
     };
 
@@ -1394,7 +1465,7 @@ let Program = function () {
      */
     _.new = function (name, parameters) {
         // default value for the parameters
-        parameters = (typeof parameters !== "undefined") ? parameters : function () { return Object.create (null); } ();
+        parameters = ((typeof parameters !== "undefined") && (parameters != null)) ? parameters : function () { return Object.create (null); } ();
 
         // default value for the vertex shader
         if (!("vertexShader" in parameters)) {
@@ -1661,8 +1732,8 @@ let Texture = function () {
      * @return {Texture}
      */
     _.new = function (name, url, parameters, onReady) {
-        afExtension = (typeof afExtension !== "undefined") ? afExtension : function () { return context.getExtension ("EXT_texture_filter_anisotropic") } ();
-        parameters = (typeof parameters !== "undefined") ? parameters : {};
+        afExtension = ((typeof afExtension !== "undefined") && (afExtension != null)) ? afExtension : function () { return context.getExtension ("EXT_texture_filter_anisotropic") } ();
+        parameters = ((typeof parameters !== "undefined") && (parameters != null)) ? parameters : {};
         // make sure anisotropic filtering is defined, and has a reasonable default value
         parameters.anisotropicFiltering = Math.min (context.getParameter(afExtension.MAX_TEXTURE_MAX_ANISOTROPY_EXT), ("anisotropicFiltering" in parameters)? parameters.anisotropicFiltering : 4);
         return Object.create (_).construct (name, url, parameters, onReady);
@@ -1741,7 +1812,7 @@ let Node = function () {
             }
 
             // by default, nodes are enabled
-            this.enabled = (typeof parameters.enabled !== "undefined") ? parameters.enabled : true;
+            this.enabled = ((typeof parameters.enabled !== "undefined") && (parameters.enabled != null)) ? parameters.enabled : true;
 
             // children are special, the default is to include children, but we want a way to say
             // the current node is a leaf node, so { children: false } is the way to do that
@@ -2229,7 +2300,7 @@ let ShapeBuilder = function () {
     let _ = Object.create (null);
 
     _.construct = function (precision) {
-        this.precision = (typeof precision !== "undefined") ? precision : 7;
+        this.precision = ((typeof precision !== "undefined") && (precision != null)) ? precision : 7;
         this.vertexIndex = Object.create (null);
         this.vertices = [];
         this.faces = [];
@@ -2346,7 +2417,7 @@ let Primitive = function () {
     };
 
     _.makeFromBuilder = function (name, builder) {
-        name = (typeof name !== "undefined") ? name : this.name;
+        name = ((typeof name !== "undefined") && (name != null)) ? name : this.name;
         return Shape.new(name, function () {
             return builder.makeFacets();
         });
@@ -2573,7 +2644,7 @@ let Sphere = function () {
     };
 
     _.makeFromBuilder = function (name, builder) {
-        name = (typeof name !== "undefined") ? name : this.name;
+        name = ((typeof name !== "undefined") && (name != null)) ? name : this.name;
         return Shape.new (name, function () {
             let buffers = builder.makeBuffers ();
             buffers.normal = buffers.position;
@@ -2628,7 +2699,7 @@ let makeRevolve = function (name, outline, normal, steps, projection) {
 
     // default projection is a plate carree, equirectangular projection
     // https://en.wikipedia.org/wiki/Equirectangular_projection
-    projection = (typeof projection !== "undefined") ? projection : function (uvY) { return uvY; };
+    projection = ((typeof projection !== "undefined") && (projection != null)) ? projection : function (uvY) { return uvY; };
 
     return Shape.new (name, function () {
         // compute the steps we need to make to build the rotated shape
@@ -2791,7 +2862,7 @@ let Utility = function () {
      * @return {number}
      */
     _.fixNum = function (number, precision) {
-        let fix = (typeof precision !== "undefined") ? precision : 7;
+        let fix = ((typeof precision !== "undefined") && (precision != null)) ? precision : 7;
         return Number.parseFloat (number.toFixed (fix));
     };
 
@@ -2805,7 +2876,7 @@ let Utility = function () {
      * @return {any}
      */
     _.defaultValue = function (value, defaultValue) {
-        return (typeof value !== "undefined") ? value : defaultValue;
+        return ((typeof value !== "undefined") && (value != null)) ? value : defaultValue;
     };
 
     /**
@@ -2818,7 +2889,7 @@ let Utility = function () {
      * @return {any}
      */
     _.defaultFunction = function (value, defaultFunction) {
-        return (typeof value !== "undefined") ? value : defaultFunction ();
+        return ((typeof value !== "undefined") && (value != null)) ? value : defaultFunction ();
     };
 
     /**

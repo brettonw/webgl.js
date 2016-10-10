@@ -238,55 +238,27 @@ let onBodyLoad = function () {
     fovRange = document.getElementById("fovRange");
     framingRange = document.getElementById("framingRange");
 
-    let loader = Loader.new ({ onFinishedAll: OnReady.new (null, function (x) {
-        Program.new ("basic", { vertexShader: "vertex-basic", fragmentShader: "fragment-basic" });
-        Program.new ("ads", { vertexShader: "vertex-basic", fragmentShader: "fragment-ads" });
-        Program.new ("overlay", { vertexShader: "vertex-basic", fragmentShader: "fragment-overlay" });
-        Program.new ("texture", { vertexShader: "vertex-basic", fragmentShader: "fragment-texture" });
-        Program.new ("color", { vertexShader: "vertex-basic", fragmentShader: "fragment-color" });
-        Program.new ("earth", { vertexShader: "vertex-basic", fragmentShader: "fragment-earth" });
-        Program.new ("clouds", { vertexShader: "vertex-basic", fragmentShader: "fragment-clouds" });
-        Program.new ("atmosphere", { vertexShader: "vertex-basic", fragmentShader: "fragment-atmosphere" });
+    // load the shaders, and build the programs
+    LoaderPath.new ({ type:Shader, path: "shaders/@.glsl"})
+        .addItem ("vertex-basic", { type: context.VERTEX_SHADER })
+        .addItems ([ "fragment-basic", "fragment-ads", "fragment-overlay", "fragment-texture", "fragment-color", "fragment-earth", "fragment-clouds", "fragment-atmosphere" ], { type: context.FRAGMENT_SHADER })
+        .go (null, OnReady.new (null, function (x) {
+            Program.new ("basic", { vertexShader: "vertex-basic", fragmentShader: "fragment-basic" });
+            Program.new ("ads", { vertexShader: "vertex-basic", fragmentShader: "fragment-ads" });
+            Program.new ("overlay", { vertexShader: "vertex-basic", fragmentShader: "fragment-overlay" });
+            Program.new ("texture", { vertexShader: "vertex-basic", fragmentShader: "fragment-texture" });
+            Program.new ("color", { vertexShader: "vertex-basic", fragmentShader: "fragment-color" });
+            Program.new ("earth", { vertexShader: "vertex-basic", fragmentShader: "fragment-earth" });
+            Program.new ("clouds", { vertexShader: "vertex-basic", fragmentShader: "fragment-clouds" });
+            Program.new ("atmosphere", { vertexShader: "vertex-basic", fragmentShader: "fragment-atmosphere" });
 
-        buildScene ();
+            // load the textures
+            LoaderPath.new ({ type:Texture, path:"textures/@.png"})
+                .addItems (["clouds", "earth-day", "earth-night", "earth-specular-map", "moon"], { generateMipMap: true })
+                .addItems (["starfield", "constellations"])
+                .go (null, OnReady.new (null, function (x) {
+                    buildScene ();
+                }));
 
-        // update the textures....
-        setTimeout (function () {
-            let loader2 = Loader.new ({ onFinishedItem: OnReady.new (null, function (x) {
-                draw ([0, 0]);
-            })});
-            loader2.addItem (Texture, "clouds", "textures/clouds.png", { generateMipMap: true });
-            loader2.addItem (Texture, "earth-day", "textures/earth-day.png", { generateMipMap: true });
-            loader2.addItem (Texture, "earth-night", "textures/earth-night.png", { generateMipMap: true });
-            loader.addItem (Texture, "earth-specular-map", "textures/earth-specular-map.png", { generateMipMap: true });
-            loader2.addItem (Texture, "starfield", "textures/starfield-16k.png");
-            loader2.addItem (Texture, "constellations", "textures/constellations.png");
-            loader2.addItem (Texture, "moon", "textures/moon.png", { generateMipMap: true });
-            loader2.go ();
-        }, 1000);
-    })});
-
-    // XXX could I automatically scan for all these things?
-    loader.addItem (Shader, "vertex-basic", "shaders/vertex-basic.glsl", { type: context.VERTEX_SHADER });
-    loader.addItem (Shader, "fragment-basic", "shaders/fragment-basic.glsl", { type: context.FRAGMENT_SHADER });
-    loader.addItem (Shader, "fragment-ads", "shaders/fragment-ads.glsl", { type: context.FRAGMENT_SHADER });
-    loader.addItem (Shader, "fragment-overlay", "shaders/fragment-overlay.glsl", { type: context.FRAGMENT_SHADER });
-    loader.addItem (Shader, "fragment-texture", "shaders/fragment-texture.glsl", { type: context.FRAGMENT_SHADER });
-    loader.addItem (Shader, "fragment-color", "shaders/fragment-color.glsl", { type: context.FRAGMENT_SHADER });
-    loader.addItem (Shader, "fragment-earth", "shaders/fragment-earth.glsl", { type: context.FRAGMENT_SHADER });
-    loader.addItem (Shader, "fragment-clouds", "shaders/fragment-clouds.glsl", { type: context.FRAGMENT_SHADER });
-    loader.addItem (Shader, "fragment-atmosphere", "shaders/fragment-atmosphere.glsl", { type: context.FRAGMENT_SHADER });
-
-    loader.addItem (Texture, "grid", "textures-test/grid.png", { generateMipMap: true });
-    //loader.addItem (Texture, "tissot", { url:"textures-test/tissot.png", generateMipMap: true });
-    //loader.addItem (Texture, "earth-plate-carree", { url:"textures-test/earth-plate-carree.png", generateMipMap: true });
-
-    loader.addItem (Texture, "earth-day", "textures-lores/earth-day.png", { generateMipMap: true });
-    loader.addItem (Texture, "earth-night", "textures-lores/earth-night.png", { generateMipMap: true });
-    loader.addItem (Texture, "earth-specular-map", "textures-lores/earth-specular-map.png", { generateMipMap: true });
-    loader.addItem (Texture, "clouds", "textures-lores/clouds.png", { generateMipMap: true });
-    loader.addItem (Texture, "starfield", "textures-lores/starfield.png");
-    loader.addItem (Texture, "constellations", "textures-lores/constellations.png");
-    loader.addItem (Texture, "moon", "textures-lores/moon.png", { generateMipMap: true });
-    loader.go ();
+        }));
 };

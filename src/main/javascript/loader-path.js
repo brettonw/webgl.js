@@ -5,9 +5,7 @@
  * @class LoaderPath
  */
 let LoaderPath = function () {
-    let _ = Object.create (null);
-
-    let items = [];
+    let _ = Object.create (Loader);
 
     /**
      * the initializer for a loader.
@@ -17,45 +15,31 @@ let LoaderPath = function () {
      * @return {Loader}
      */
     _.construct = function (parameters) {
-        this.onFinishedAll = DEFAULT_VALUE (parameters.onFinishedAll, { notify: function (x) {} });
-        this.onFinishedItem = DEFAULT_VALUE (parameters.onFinishedItem, { notify: function (x) {} });
+        Object.getPrototypeOf(_).construct.call(this, parameters);
+        this.type = parameters.type;
+        this.path = parameters.path;
         return this;
     };
 
-    _.addItem = function (type, name, url, parameters) {
-        let item = { type: type, name: name, url: url, parameters: parameters };
-        items.push (item);
+    _.addItem = function (name, parameters) {
+        let url = this.path.replace ("@", name);
+        return Object.getPrototypeOf(_).addItem.call(this, this.type, name, url, parameters);
     };
 
-    _.finish = function (finishedItem) {
-        if (finishedItem === this.pendingItem) {
-            // clear the pending item, and go
-            delete this.pendingItem;
-            this.onFinishedItem.notify(finishedItem);
-            this.go ();
-        } else {
-            LOG ("WHAT'S UP WILLIS?");
+    _.addItems = function (names, parameters) {
+        for (let name of names) {
+            this.addItem(name, parameters);
         }
-    };
-
-    _.go = function () {
-        if (items.length > 0) {
-            // have work to do, kick off a fetch
-            let item = items.shift ();
-            this.pendingItem = item.type.new (item.name, item.url, item.parameters, OnReady.new (this, this.finish));
-        } else {
-            // all done, inform our waiting handler
-            this.onFinishedAll.notify (this);
-        }
+        return this;
     };
 
     /**
-     * static method to create and construct a new Loader.
+     * static method to create and construct a new LoaderPath.
      *
      * @method new
      * @static
-     * @param {Object} parameters an object specifying the scope and callback to call when an item is finsihed, and when
-     * all items are finished (onFinishedAll, onFinishedItem).
+     * @param {Object} parameters an object including Loader class parameters, as well as the type
+     * and urlBase to use for all operations.
      * @return {Loader}
      */
     _.new = function (parameters) {

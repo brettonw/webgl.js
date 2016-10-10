@@ -10,7 +10,7 @@ let Loader = function () {
      * the initializer for a loader.
      *
      * @method construct
-     * @param {Object} onReady an object specifying the scope and callback to call when ready
+     * @param {Object} parameters an object specifying callback parameters (see "new")
      * @return {Loader}
      */
     _.construct = function (parameters) {
@@ -23,6 +23,7 @@ let Loader = function () {
     _.addItem = function (type, name, url, parameters) {
         let item = { type: type, name: name, url: url, parameters: parameters };
         this.items.push (item);
+        return this;
     };
 
     _.finish = function (finishedItem) {
@@ -30,13 +31,33 @@ let Loader = function () {
             // clear the pending item, and go
             delete this.pendingItem;
             this.onFinishedItem.notify(finishedItem);
-            this.go ();
+            this.next ();
         } else {
             LOG ("WHAT'S UP WILLIS?");
         }
     };
 
-    _.go = function () {
+    /**
+     * start the fetch process for all the loadable items.
+     *
+     * @method go
+     * @param {Object} parameters an object specifying the scope and callback to call when an item
+     * is finished, and when all items are finished (onFinishedAll, onFinishedItem).
+     * @chainable
+     */
+    _.go = function (onFinishedEach, onFinishedAll) {
+        this.onFinishedEach = DEFAULT_VALUE(onFinishedEach, { notify: function (x) {} });
+        this.onFinishedAll = DEFAULT_VALUE(onFinishedAll, { notify: function (x) {} });
+        this.next ();
+    };
+
+    /**
+     * continue the fetch process for all the loadable items.
+     *
+     * @method next
+     * @chainable
+     */
+    _.next = function () {
         if (this.items.length > 0) {
             // have work to do, kick off a fetch
             let item = this.items.shift ();
@@ -52,8 +73,8 @@ let Loader = function () {
      *
      * @method new
      * @static
-     * @param {Object} parameters an object specifying the scope and callback to call when an item is finsihed, and when
-     * all items are finished (onFinishedAll, onFinishedItem).
+     * @param {Object} parameters an object specifying the scope and callback to call when an item
+     * is finished, and when all items are finished (onFinishedAll, onFinishedItem).
      * @return {Loader}
      */
     _.new = function (parameters) {

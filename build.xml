@@ -36,6 +36,7 @@
             <fileset dir="${source-dir}" includes="on-ready.js"/>
             <fileset dir="${source-dir}" includes="mouse-tracker.js"/>
             <fileset dir="${source-dir}" includes="loader.js" />
+            <fileset dir="${source-dir}" includes="loader-path.js" />
             <fileset dir="${source-dir}" includes="render.js" />
             <fileset dir="${source-dir}" includes="types.js" />
             <fileset dir="${source-dir}" includes="floatN.js" />

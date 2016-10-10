@@ -354,7 +354,7 @@
         },
         {
             "file": "src/main/javascript/loader-path.js",
-            "line": 12,
+            "line": 10,
             "description": "the initializer for a loader.",
             "itemtype": "method",
             "name": "construct",
@@ -373,15 +373,15 @@
         },
         {
             "file": "src/main/javascript/loader-path.js",
-            "line": 52,
-            "description": "static method to create and construct a new Loader.",
+            "line": 36,
+            "description": "static method to create and construct a new LoaderPath.",
             "itemtype": "method",
             "name": "new",
             "static": 1,
             "params": [
                 {
                     "name": "parameters",
-                    "description": "an object specifying the scope and callback to call when an item is finsihed, and when\nall items are finished (onFinishedAll, onFinishedItem).",
+                    "description": "an object including Loader class parameters, as well as the type\nand urlBase to use for all operations.",
                     "type": "Object"
                 }
             ],
@@ -399,8 +399,8 @@
             "name": "construct",
             "params": [
                 {
-                    "name": "onReady",
-                    "description": "an object specifying the scope and callback to call when ready",
+                    "name": "parameters",
+                    "description": "an object specifying callback parameters (see \"new\")",
                     "type": "Object"
                 }
             ],
@@ -412,7 +412,32 @@
         },
         {
             "file": "src/main/javascript/loader.js",
-            "line": 50,
+            "line": 40,
+            "description": "start the fetch process for all the loadable items.",
+            "itemtype": "method",
+            "name": "go",
+            "params": [
+                {
+                    "name": "parameters",
+                    "description": "an object specifying the scope and callback to call when an item\nis finished, and when all items are finished (onFinishedAll, onFinishedItem).",
+                    "type": "Object"
+                }
+            ],
+            "chainable": 1,
+            "class": "Loader"
+        },
+        {
+            "file": "src/main/javascript/loader.js",
+            "line": 54,
+            "description": "continue the fetch process for all the loadable items.",
+            "itemtype": "method",
+            "name": "next",
+            "chainable": 1,
+            "class": "Loader"
+        },
+        {
+            "file": "src/main/javascript/loader.js",
+            "line": 71,
             "description": "static method to create and construct a new Loader.",
             "itemtype": "method",
             "name": "new",
@@ -420,7 +445,7 @@
             "params": [
                 {
                     "name": "parameters",
-                    "description": "an object specifying the scope and callback to call when an item is finsihed, and when\nall items are finished (onFinishedAll, onFinishedItem).",
+                    "description": "an object specifying the scope and callback to call when an item\nis finished, and when all items are finished (onFinishedAll, onFinishedItem).",
                     "type": "Object"
                 }
             ],

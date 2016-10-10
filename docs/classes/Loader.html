@@ -100,7 +100,9 @@
 		<li>
 			<strong>Methods</strong>
 			<ul>
-				<li><a href="#method-construct"><span class="im">construct</span>(<span class="ia">onReady</span>)</a></li>
+				<li><a href="#method-construct"><span class="im">construct</span>(<span class="ia">parameters</span>)</a></li>
+				<li><a href="#method-go"><span class="im">go</span>(<span class="ia">parameters</span>)</a></li>
+				<li><a href="#method-next"><span class="im">next</span>()</a></li>
 			</ul>
 		</li>
 
@@ -128,7 +130,7 @@
 		<div class="args">
 			<span class="paren">(</span><ul class="args-list inline commas">
 				<li class="arg">
-						<code>onReady</code>
+						<code>parameters</code>
 				</li>
 			</ul><span class="paren">)</span>
 		</div>
@@ -160,11 +162,11 @@
 
 			<ul class="params-list">
 				<li class="param">
-						<code class="param-name">onReady</code>
+						<code class="param-name">parameters</code>
 						<span class="type">Object</span>
 
 
-					<div class="param-description"><p>an object specifying the scope and callback to call when ready</p>
+					<div class="param-description"><p>an object specifying callback parameters (see "new")</p>
 </div>
 
 				</li>
@@ -178,6 +180,86 @@
 						<span class="type"><a href="../classes/Loader.html" class="crosslink">Loader</a></span>
 			</div>
 		</div>
+
+</div>
+<div id="method-go" class="method item">
+	<div class="method-signature">
+	<span class="name"><code>go</code></span>
+
+		<div class="args">
+			<span class="paren">(</span><ul class="args-list inline commas">
+				<li class="arg">
+						<code>parameters</code>
+				</li>
+			</ul><span class="paren">)</span>
+		</div>
+	</div>
+
+
+
+
+		<span class="flag chainable">chainable</span>
+
+
+	<div class="meta">
+				<p>
+				Defined in
+		<a href="../files/src_main_javascript_loader.js.html#l40"><code>src&#x2F;main&#x2F;javascript&#x2F;loader.js:40</code></a>
+		</p>
+
+
+
+	</div>
+
+	<div class="description"><p>start the fetch process for all the loadable items.</p>
+</div>
+
+		<div class="params">
+			<h4>Parameters:</h4>
+
+			<ul class="params-list">
+				<li class="param">
+						<code class="param-name">parameters</code>
+						<span class="type">Object</span>
+
+
+					<div class="param-description"><p>an object specifying the scope and callback to call when an item
+is finished, and when all items are finished (onFinishedAll, onFinishedItem).</p>
+</div>
+
+				</li>
+			</ul>
+		</div>
+
+
+</div>
+<div id="method-next" class="method item">
+	<div class="method-signature">
+	<span class="name"><code>next</code></span>
+
+		<span class="paren">()</span>
+	</div>
+
+
+
+
+		<span class="flag chainable">chainable</span>
+
+
+	<div class="meta">
+				<p>
+				Defined in
+		<a href="../files/src_main_javascript_loader.js.html#l54"><code>src&#x2F;main&#x2F;javascript&#x2F;loader.js:54</code></a>
+		</p>
+
+
+
+	</div>
+
+	<div class="description"><p>continue the fetch process for all the loadable items.</p>
+</div>
+
+
 
 </div>
         </div>
@@ -213,7 +295,7 @@
 	<div class="meta">
 				<p>
 				Defined in
-		<a href="../files/src_main_javascript_loader.js.html#l50"><code>src&#x2F;main&#x2F;javascript&#x2F;loader.js:50</code></a>
+		<a href="../files/src_main_javascript_loader.js.html#l71"><code>src&#x2F;main&#x2F;javascript&#x2F;loader.js:71</code></a>
 		</p>
 
 
@@ -232,8 +314,8 @@
 						<span class="type">Object</span>
 
 
-					<div class="param-description"><p>an object specifying the scope and callback to call when an item is finsihed, and when
-all items are finished (onFinishedAll, onFinishedItem).</p>
+					<div class="param-description"><p>an object specifying the scope and callback to call when an item
+is finished, and when all items are finished (onFinishedAll, onFinishedItem).</p>
 </div>
 
 				</li>
