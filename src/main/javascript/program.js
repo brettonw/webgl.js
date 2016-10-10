@@ -43,7 +43,7 @@ let Program = function () {
      */
     _.construct = function (name, parameters) {
         this.name = name;
-        LOG (LogLevel.TRACE, "Program: " + this.name);
+        LOG (LogLevel.INFO, "Program: " + this.name);
 
         this.currentShape = null;
 

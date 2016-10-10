@@ -44,7 +44,7 @@ let draw = function (deltaPosition) {
     let goalOpposite = 1.0 / framingRangeValue;
     let sinTheta = Math.sin(Utility.degreesToRadians (halfFov));
     let hypotenuse = goalOpposite / sinTheta;
-    console.log("Setting Projection at: " + hypotenuse);
+    //console.log("Setting Projection at: " + hypotenuse);
     let nearPlane = 0.1;
     let farPlane = hypotenuse + 220.0;
     standardUniforms.PROJECTION_MATRIX_PARAMETER = Float4x4.perspective (fov, context.viewportWidth / context.viewportHeight, nearPlane, farPlane, Float4x4.create ());
@@ -128,9 +128,6 @@ let buildScene = function () {
         name: "constellations",
         state: function (standardUniforms) {
             Program.get ("overlay").use ();
-            context.disable (context.DEPTH_TEST);
-            context.enable (context.CULL_FACE);
-            context.cullFace (context.BACK);
             standardUniforms.OUTPUT_ALPHA_PARAMETER = 0.25;
             standardUniforms.TEXTURE_SAMPLER = "constellations";
         },
