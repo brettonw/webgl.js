@@ -6,8 +6,6 @@
 let Loader = function () {
     let _ = Object.create (null);
 
-    let items = [];
-
     /**
      * the initializer for a loader.
      *
@@ -18,12 +16,13 @@ let Loader = function () {
     _.construct = function (parameters) {
         this.onFinishedAll = DEFAULT_VALUE (parameters.onFinishedAll, { notify: function (x) {} });
         this.onFinishedItem = DEFAULT_VALUE (parameters.onFinishedItem, { notify: function (x) {} });
+        this.items = [];
         return this;
     };
 
-    _.addItem = function (type, name, parameters) {
-        let item = { type: type, name: name, parameters: parameters };
-        items.push (item);
+    _.addItem = function (type, name, url, parameters) {
+        let item = { type: type, name: name, url: url, parameters: parameters };
+        this.items.push (item);
     };
 
     _.finish = function (finishedItem) {
@@ -38,10 +37,10 @@ let Loader = function () {
     };
 
     _.go = function () {
-        if (items.length > 0) {
+        if (this.items.length > 0) {
             // have work to do, kick off a fetch
-            let item = items.shift ();
-            this.pendingItem = item.type.new (item.name, item.parameters, OnReady.new (this, this.finish));
+            let item = this.items.shift ();
+            this.pendingItem = item.type.new (item.name, item.url, item.parameters, OnReady.new (this, this.finish));
         } else {
             // all done, inform our waiting handler
             this.onFinishedAll.notify (this);

@@ -29,6 +29,7 @@ let MouseTracker = function () {
     let mouseDownPosition;
     let bound;
     let onReady;
+    let stepSize;
 
     let mousePosition = function (event) {
         return {
@@ -64,13 +65,14 @@ let MouseTracker = function () {
 
     let keyDown = function (event) {
         switch (event.keyCode) {
-            case KEY_LEFT: draw (-0.05); break;
-            case KEY_RIGHT: draw (0.05); break;
+            case KEY_LEFT: onReady.notify ([-stepSize, 0.0]); break;
+            case KEY_RIGHT: onReady.notify ([stepSize, 0.0]); break;
         }
     };
 
-    _.construct = function (canvasId, onReadyIn) {
+    _.construct = function (canvasId, onReadyIn, stepSizeIn) {
         onReady = onReadyIn;
+        stepSize = (typeof stepSizeIn !== "undefined") ? stepSizeIn : 0.05;
 
         let canvas = document.getElementById(canvasId);
 
@@ -80,8 +82,8 @@ let MouseTracker = function () {
         canvas.focus();
     };
 
-    _.new = function (canvasId, onReadyIn) {
-        return Object.create (_).construct(canvasId, onReadyIn);
+    _.new = function (canvasId, onReadyIn, stepSizeIn) {
+        return Object.create (_).construct(canvasId, onReadyIn, stepSizeIn);
     };
 
     return _;
@@ -94,8 +96,6 @@ let MouseTracker = function () {
 let Loader = function () {
     let _ = Object.create (null);
 
-    let items = [];
-
     /**
      * the initializer for a loader.
      *
@@ -106,12 +106,13 @@ let Loader = function () {
     _.construct = function (parameters) {
         this.onFinishedAll = (typeof parameters.onFinishedAll !== "undefined") ? parameters.onFinishedAll : { notify: function (x) {} };
         this.onFinishedItem = (typeof parameters.onFinishedItem !== "undefined") ? parameters.onFinishedItem : { notify: function (x) {} };
+        this.items = [];
         return this;
     };
 
-    _.addItem = function (type, name, parameters) {
-        let item = { type: type, name: name, parameters: parameters };
-        items.push (item);
+    _.addItem = function (type, name, url, parameters) {
+        let item = { type: type, name: name, url: url, parameters: parameters };
+        this.items.push (item);
     };
 
     _.finish = function (finishedItem) {
@@ -126,10 +127,10 @@ let Loader = function () {
     };
 
     _.go = function () {
-        if (items.length > 0) {
+        if (this.items.length > 0) {
             // have work to do, kick off a fetch
-            let item = items.shift ();
-            this.pendingItem = item.type.new (item.name, item.parameters, OnReady.new (this, this.finish));
+            let item = this.items.shift ();
+            this.pendingItem = item.type.new (item.name, item.url, item.parameters, OnReady.new (this, this.finish));
         } else {
             // all done, inform our waiting handler
             this.onFinishedAll.notify (this);
@@ -168,8 +169,26 @@ let Render = function () {
      * @param {string} canvasId the id of the canvas element to use for the rendering context
      * @return {Render}
      */
-    _.construct = function (canvasId) {
+    _.construct = function (canvasId, aspectRatio) {
         let canvas = this.canvas = document.getElementById (canvasId);
+        aspectRatio = (typeof aspectRatio !== "undefined") ? aspectRatio : 16.0 / 9.0;
+
+        // high DPI devices need to have the canvas drawing surface scaled up while leaving the style
+        // size as indicated
+        let width = canvas.width;
+        let height = width / aspectRatio;
+
+        // get the display size of the canvas.
+        canvas.style.width = width + "px";
+        canvas.style.height = height + "px";
+
+        // set the size of the drawingBuffer
+        let devicePixelRatio = window.devicePixelRatio || 1;
+        canvas.width = width * devicePixelRatio;
+        canvas.height = height * devicePixelRatio;
+        console.log ("Scaling display at " + devicePixelRatio + ":1 to (" + canvas.width + "x" + canvas.height + ")");
+
+        // get the actual rendering context
         context = this.context = canvas.getContext ("webgl", { preserveDrawingBuffer: true, alpha: false });
         context.viewportWidth = canvas.width;
         context.viewportHeight = canvas.height;
@@ -1053,7 +1072,7 @@ let Shader = function () {
 
     let shaders = Object.create (null);
 
-    _.construct = function (name, parameters, onReady) {
+    _.construct = function (name, url, parameters, onReady) {
         this.name = name;
         console.log ("Shader: " + this.name);
 
@@ -1072,7 +1091,7 @@ let Shader = function () {
                 }
             }
         };
-        request.open("GET", parameters.url);
+        request.open("GET", url);
         request.send();
 
         return this;
@@ -1084,13 +1103,15 @@ let Shader = function () {
      * @method new
      * @static
      * @param {string} name the name to use to refer to this shader
+     * @param {string} url where to get this shader
      * @param {Object} parameters shader construction parameters, typically url and type, where
      * type is one of (context.VERTEX_SHADER, context.FRAGMENT_SHADER)
      * @param {Object} onReady an object specifying the scope and callback to call when ready
      * @return {Shader}
      */
-    _.new = function (name, parameters, onReady) {
-        return (shaders[name] = Object.create (_).construct (name, parameters, onReady));
+    _.new = function (name, url, parameters, onReady) {
+        parameters = (typeof parameters !== "undefined") ? parameters : {};
+        return (shaders[name] = Object.create (_).construct (name, url, parameters, onReady));
     };
 
     /**
@@ -1358,8 +1379,17 @@ let Program = function () {
      * * VIEW_MATRIX_PARAMETER: "viewMatrix"
      * * PROJECTION_MATRIX_PARAMETER: "projectionMatrix"
      * * NORMAL_MATRIX_PARAMETER: "normalMatrix"
+     * * CAMERA_POSITION: "cameraPosition"
      * * OUTPUT_ALPHA_PARAMETER: "outputAlpha"
      * * TEXTURE_SAMPLER: "textureSampler"
+     * * MODEL_COLOR:"modelColor"
+     * * AMBIENT_LIGHT_COLOR: "ambientLightColor"
+     * * AMBIENT_CONTRIBUTION:"ambientContribution"
+     * * LIGHT_DIRECTION: "lightDirection"
+     * * LIGHT_COLOR:"lightColor"
+     * * DIFFUSE_CONTRIBUTION:"diffuseContribution"
+     * * SPECULAR_CONTRIBUTION:"specularContribution"
+     * * SPECULAR_EXPONENT:"specularExponent"
      * @return {Program}
      */
     _.new = function (name, parameters) {
@@ -1391,11 +1421,18 @@ let Program = function () {
                 VIEW_MATRIX_PARAMETER: "viewMatrix",
                 PROJECTION_MATRIX_PARAMETER: "projectionMatrix",
                 NORMAL_MATRIX_PARAMETER: "normalMatrix",
+                CAMERA_POSITION: "cameraPosition",
                 OUTPUT_ALPHA_PARAMETER: "outputAlpha",
                 TEXTURE_SAMPLER: "textureSampler",
+                MODEL_COLOR:"modelColor",
+                AMBIENT_LIGHT_COLOR: "ambientLightColor",
+                AMBIENT_CONTRIBUTION:"ambientContribution",
                 LIGHT_DIRECTION: "lightDirection",
-                CAMERA_POSITION: "cameraPosition"
-            }
+                LIGHT_COLOR:"lightColor",
+                DIFFUSE_CONTRIBUTION:"diffuseContribution",
+                SPECULAR_CONTRIBUTION:"specularContribution",
+                SPECULAR_EXPONENT:"specularExponent"
+            };
         };
         return (programs[name] = Object.create (_).construct (name, parameters));
     };
@@ -1578,7 +1615,7 @@ let Texture = function () {
     let textures = Object.create (null);
     let afExtension;
 
-    _.construct = function (name, parameters, onReady) {
+    _.construct = function (name, url, parameters, onReady) {
         this.name = name;
         console.log ("Texture: " + name);
 
@@ -1607,7 +1644,7 @@ let Texture = function () {
                 // call the onReady handler
             onReady.notify (scope);
         };
-        image.src = parameters.url;
+        image.src = url;
 
         return this;
     };
@@ -1618,15 +1655,17 @@ let Texture = function () {
      * @method new
      * @static
      * @param {string} name the name to use to refer to this texture
+     * @param {string} url where to get this texture
      * @param {Object} parameters texture construction parameters
      * @param {Object} onReady an object specifying the scope and callback to call when ready
      * @return {Texture}
      */
-    _.new = function (name, parameters, onReady) {
+    _.new = function (name, url, parameters, onReady) {
         afExtension = (typeof afExtension !== "undefined") ? afExtension : function () { return context.getExtension ("EXT_texture_filter_anisotropic") } ();
+        parameters = (typeof parameters !== "undefined") ? parameters : {};
         // make sure anisotropic filtering is defined, and has a reasonable default value
         parameters.anisotropicFiltering = Math.min (context.getParameter(afExtension.MAX_TEXTURE_MAX_ANISOTROPY_EXT), ("anisotropicFiltering" in parameters)? parameters.anisotropicFiltering : 4);
-        return Object.create (_).construct (name, parameters, onReady);
+        return Object.create (_).construct (name, url, parameters, onReady);
     };
 
     /**

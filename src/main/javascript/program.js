@@ -249,8 +249,17 @@ let Program = function () {
      * * VIEW_MATRIX_PARAMETER: "viewMatrix"
      * * PROJECTION_MATRIX_PARAMETER: "projectionMatrix"
      * * NORMAL_MATRIX_PARAMETER: "normalMatrix"
+     * * CAMERA_POSITION: "cameraPosition"
      * * OUTPUT_ALPHA_PARAMETER: "outputAlpha"
      * * TEXTURE_SAMPLER: "textureSampler"
+     * * MODEL_COLOR:"modelColor"
+     * * AMBIENT_LIGHT_COLOR: "ambientLightColor"
+     * * AMBIENT_CONTRIBUTION:"ambientContribution"
+     * * LIGHT_DIRECTION: "lightDirection"
+     * * LIGHT_COLOR:"lightColor"
+     * * DIFFUSE_CONTRIBUTION:"diffuseContribution"
+     * * SPECULAR_CONTRIBUTION:"specularContribution"
+     * * SPECULAR_EXPONENT:"specularExponent"
      * @return {Program}
      */
     _.new = function (name, parameters) {
@@ -282,11 +291,18 @@ let Program = function () {
                 VIEW_MATRIX_PARAMETER: "viewMatrix",
                 PROJECTION_MATRIX_PARAMETER: "projectionMatrix",
                 NORMAL_MATRIX_PARAMETER: "normalMatrix",
+                CAMERA_POSITION: "cameraPosition",
                 OUTPUT_ALPHA_PARAMETER: "outputAlpha",
                 TEXTURE_SAMPLER: "textureSampler",
+                MODEL_COLOR:"modelColor",
+                AMBIENT_LIGHT_COLOR: "ambientLightColor",
+                AMBIENT_CONTRIBUTION:"ambientContribution",
                 LIGHT_DIRECTION: "lightDirection",
-                CAMERA_POSITION: "cameraPosition"
-            }
+                LIGHT_COLOR:"lightColor",
+                DIFFUSE_CONTRIBUTION:"diffuseContribution",
+                SPECULAR_CONTRIBUTION:"specularContribution",
+                SPECULAR_EXPONENT:"specularExponent"
+            };
         };
         return (programs[name] = Object.create (_).construct (name, parameters));
     };

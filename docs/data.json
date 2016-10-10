@@ -150,7 +150,7 @@
             "extension_for": [],
             "file": "src/main/javascript/loader-path.js",
             "line": 1,
-            "description": "A loader for external assets in a particular location."
+            "description": "A loader for external assets, which assumes assets reside in a common base path, and are named as\nthe file element is named."
         },
         "Loader": {
             "name": "Loader",
@@ -354,7 +354,7 @@
         },
         {
             "file": "src/main/javascript/loader-path.js",
-            "line": 11,
+            "line": 12,
             "description": "the initializer for a loader.",
             "itemtype": "method",
             "name": "construct",
@@ -393,7 +393,7 @@
         },
         {
             "file": "src/main/javascript/loader.js",
-            "line": 11,
+            "line": 9,
             "description": "the initializer for a loader.",
             "itemtype": "method",
             "name": "construct",
@@ -412,7 +412,7 @@
         },
         {
             "file": "src/main/javascript/loader.js",
-            "line": 51,
+            "line": 50,
             "description": "static method to create and construct a new Loader.",
             "itemtype": "method",
             "name": "new",
@@ -696,7 +696,7 @@
                 },
                 {
                     "name": "parameters",
-                    "description": "shader construction parameters\nvertexShader name of the vertex shader to use\nfragmentShader name of the fragment shader to use\nattributeMapping maps POSITION, NORMAL, and TEXTURE attributes to the\nattribute names in the shader. This allows the engine to manage the attributes without\nforcing the shader author to use \"standard\" names for everything. Defaults to:\n* POSITION_ATTRIBUTE: \"inputPosition\"\n* NORMAL_ATTRIBUTE: \"inputNormal\"\n* TEXTURE_ATTRIBUTE: \"inputTexture\"\nparameterMapping maps standard parameters to the parameter names in the\nshader. This allows the engine to manage setting the standard set of parameters on the shader\nwithout forcing the shader author to use \"standard\" names. Defaults to:\n* MODEL_MATRIX_PARAMETER: \"modelMatrix\"\n* VIEW_MATRIX_PARAMETER: \"viewMatrix\"\n* PROJECTION_MATRIX_PARAMETER: \"projectionMatrix\"\n* NORMAL_MATRIX_PARAMETER: \"normalMatrix\"\n* OUTPUT_ALPHA_PARAMETER: \"outputAlpha\"\n* TEXTURE_SAMPLER: \"textureSampler\"",
+                    "description": "shader construction parameters\nvertexShader name of the vertex shader to use\nfragmentShader name of the fragment shader to use\nattributeMapping maps POSITION, NORMAL, and TEXTURE attributes to the\nattribute names in the shader. This allows the engine to manage the attributes without\nforcing the shader author to use \"standard\" names for everything. Defaults to:\n* POSITION_ATTRIBUTE: \"inputPosition\"\n* NORMAL_ATTRIBUTE: \"inputNormal\"\n* TEXTURE_ATTRIBUTE: \"inputTexture\"\nparameterMapping maps standard parameters to the parameter names in the\nshader. This allows the engine to manage setting the standard set of parameters on the shader\nwithout forcing the shader author to use \"standard\" names. Defaults to:\n* MODEL_MATRIX_PARAMETER: \"modelMatrix\"\n* VIEW_MATRIX_PARAMETER: \"viewMatrix\"\n* PROJECTION_MATRIX_PARAMETER: \"projectionMatrix\"\n* NORMAL_MATRIX_PARAMETER: \"normalMatrix\"\n* CAMERA_POSITION: \"cameraPosition\"\n* OUTPUT_ALPHA_PARAMETER: \"outputAlpha\"\n* TEXTURE_SAMPLER: \"textureSampler\"\n* MODEL_COLOR:\"modelColor\"\n* AMBIENT_LIGHT_COLOR: \"ambientLightColor\"\n* AMBIENT_CONTRIBUTION:\"ambientContribution\"\n* LIGHT_DIRECTION: \"lightDirection\"\n* LIGHT_COLOR:\"lightColor\"\n* DIFFUSE_CONTRIBUTION:\"diffuseContribution\"\n* SPECULAR_CONTRIBUTION:\"specularContribution\"\n* SPECULAR_EXPONENT:\"specularExponent\"",
                     "type": "Object"
                 }
             ],
@@ -708,7 +708,7 @@
         },
         {
             "file": "src/main/javascript/program.js",
-            "line": 294,
+            "line": 310,
             "description": "fetch a program by name.",
             "itemtype": "method",
             "name": "get",
@@ -740,7 +740,7 @@
         },
         {
             "file": "src/main/javascript/render.js",
-            "line": 38,
+            "line": 56,
             "description": "Set the global rendering context.",
             "itemtype": "method",
             "name": "use",
@@ -748,7 +748,7 @@
         },
         {
             "file": "src/main/javascript/render.js",
-            "line": 47,
+            "line": 65,
             "description": "Static method to create and construct a new rendering context.",
             "itemtype": "method",
             "name": "new",
@@ -780,6 +780,11 @@
                     "type": "String"
                 },
                 {
+                    "name": "url",
+                    "description": "where to get this shader",
+                    "type": "String"
+                },
+                {
                     "name": "parameters",
                     "description": "shader construction parameters, typically url and type, where\ntype is one of (context.VERTEX_SHADER, context.FRAGMENT_SHADER)",
                     "type": "Object"
@@ -798,7 +803,7 @@
         },
         {
             "file": "src/main/javascript/shader.js",
-            "line": 46,
+            "line": 48,
             "description": "fetch a shader by name.",
             "itemtype": "method",
             "name": "get",
@@ -830,6 +835,11 @@
                     "type": "String"
                 },
                 {
+                    "name": "url",
+                    "description": "where to get this texture",
+                    "type": "String"
+                },
+                {
                     "name": "parameters",
                     "description": "texture construction parameters",
                     "type": "Object"
@@ -848,7 +858,7 @@
         },
         {
             "file": "src/main/javascript/texture.js",
-            "line": 58,
+            "line": 60,
             "description": "fetch a texture by name.",
             "itemtype": "method",
             "name": "get",

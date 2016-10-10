@@ -4,7 +4,7 @@ let Texture = function () {
     let textures = Object.create (null);
     let afExtension;
 
-    _.construct  = function (name, parameters, onReady) {
+    _.construct  = function (name, url, parameters, onReady) {
         this.name = name;
         LOG("Texture: " + name);
 
@@ -33,7 +33,7 @@ let Texture = function () {
                 // call the onReady handler
             onReady.notify (scope);
         };
-        image.src = parameters.url;
+        image.src = url;
 
         return this;
     };
@@ -44,15 +44,17 @@ let Texture = function () {
      * @method new
      * @static
      * @param {string} name the name to use to refer to this texture
+     * @param {string} url where to get this texture
      * @param {Object} parameters texture construction parameters
      * @param {Object} onReady an object specifying the scope and callback to call when ready
      * @return {Texture}
      */
-    _.new = function (name, parameters, onReady) {
+    _.new = function (name, url, parameters, onReady) {
         afExtension = DEFAULT_FUNCTION (afExtension, function () { return context.getExtension ("EXT_texture_filter_anisotropic") });
+        parameters = DEFAULT_VALUE(parameters, {});
         // make sure anisotropic filtering is defined, and has a reasonable default value
         parameters.anisotropicFiltering = Math.min (context.getParameter(afExtension.MAX_TEXTURE_MAX_ANISOTROPY_EXT), ("anisotropicFiltering" in parameters)? parameters.anisotropicFiltering : 4);
-        return Object.create (_).construct (name, parameters, onReady);
+        return Object.create (_).construct (name, url, parameters, onReady);
     };
 
     /**

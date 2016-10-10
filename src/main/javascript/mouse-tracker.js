@@ -6,6 +6,7 @@ let MouseTracker = function () {
     let mouseDownPosition;
     let bound;
     let onReady;
+    let stepSize;
 
     let mousePosition = function (event) {
         return {
@@ -41,13 +42,14 @@ let MouseTracker = function () {
 
     let keyDown = function (event) {
         switch (event.keyCode) {
-            case KEY_LEFT: draw (-0.05); break;
-            case KEY_RIGHT: draw (0.05); break;
+            case KEY_LEFT: onReady.notify ([-stepSize, 0.0]); break;
+            case KEY_RIGHT: onReady.notify ([stepSize, 0.0]); break;
         }
     };
 
-    _.construct = function (canvasId, onReadyIn) {
+    _.construct = function (canvasId, onReadyIn, stepSizeIn) {
         onReady = onReadyIn;
+        stepSize = DEFAULT_VALUE(stepSizeIn, 0.05);
 
         let canvas = document.getElementById(canvasId);
 
@@ -57,8 +59,8 @@ let MouseTracker = function () {
         canvas.focus();
     };
 
-    _.new = function (canvasId, onReadyIn) {
-        return Object.create (_).construct(canvasId, onReadyIn);
+    _.new = function (canvasId, onReadyIn, stepSizeIn) {
+        return Object.create (_).construct(canvasId, onReadyIn, stepSizeIn);
     };
 
     return _;

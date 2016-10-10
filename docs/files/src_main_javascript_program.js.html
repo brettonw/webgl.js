@@ -335,8 +335,17 @@ let Program = function () {
      * * VIEW_MATRIX_PARAMETER: &quot;viewMatrix&quot;
      * * PROJECTION_MATRIX_PARAMETER: &quot;projectionMatrix&quot;
      * * NORMAL_MATRIX_PARAMETER: &quot;normalMatrix&quot;
+     * * CAMERA_POSITION: &quot;cameraPosition&quot;
      * * OUTPUT_ALPHA_PARAMETER: &quot;outputAlpha&quot;
      * * TEXTURE_SAMPLER: &quot;textureSampler&quot;
+     * * MODEL_COLOR:&quot;modelColor&quot;
+     * * AMBIENT_LIGHT_COLOR: &quot;ambientLightColor&quot;
+     * * AMBIENT_CONTRIBUTION:&quot;ambientContribution&quot;
+     * * LIGHT_DIRECTION: &quot;lightDirection&quot;
+     * * LIGHT_COLOR:&quot;lightColor&quot;
+     * * DIFFUSE_CONTRIBUTION:&quot;diffuseContribution&quot;
+     * * SPECULAR_CONTRIBUTION:&quot;specularContribution&quot;
+     * * SPECULAR_EXPONENT:&quot;specularExponent&quot;
      * @return {Program}
      */
     _.new = function (name, parameters) {
@@ -368,11 +377,18 @@ let Program = function () {
                 VIEW_MATRIX_PARAMETER: &quot;viewMatrix&quot;,
                 PROJECTION_MATRIX_PARAMETER: &quot;projectionMatrix&quot;,
                 NORMAL_MATRIX_PARAMETER: &quot;normalMatrix&quot;,
+                CAMERA_POSITION: &quot;cameraPosition&quot;,
                 OUTPUT_ALPHA_PARAMETER: &quot;outputAlpha&quot;,
                 TEXTURE_SAMPLER: &quot;textureSampler&quot;,
+                MODEL_COLOR:&quot;modelColor&quot;,
+                AMBIENT_LIGHT_COLOR: &quot;ambientLightColor&quot;,
+                AMBIENT_CONTRIBUTION:&quot;ambientContribution&quot;,
                 LIGHT_DIRECTION: &quot;lightDirection&quot;,
-                CAMERA_POSITION: &quot;cameraPosition&quot;
-            }
+                LIGHT_COLOR:&quot;lightColor&quot;,
+                DIFFUSE_CONTRIBUTION:&quot;diffuseContribution&quot;,
+                SPECULAR_CONTRIBUTION:&quot;specularContribution&quot;,
+                SPECULAR_EXPONENT:&quot;specularExponent&quot;
+            };
         };
         return (programs[name] = Object.create (_).construct (name, parameters));
     };

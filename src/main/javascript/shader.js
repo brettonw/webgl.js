@@ -3,7 +3,7 @@ let Shader = function () {
 
     let shaders = Object.create (null);
 
-    _.construct  = function (name, parameters, onReady) {
+    _.construct  = function (name, url, parameters, onReady) {
         this.name = name;
         LOG ("Shader: " + this.name);
 
@@ -22,7 +22,7 @@ let Shader = function () {
                 }
             }
         };
-        request.open("GET", parameters.url);
+        request.open("GET", url);
         request.send();
 
         return this;
@@ -34,13 +34,15 @@ let Shader = function () {
      * @method new
      * @static
      * @param {string} name the name to use to refer to this shader
+     * @param {string} url where to get this shader
      * @param {Object} parameters shader construction parameters, typically url and type, where
      * type is one of (context.VERTEX_SHADER, context.FRAGMENT_SHADER)
      * @param {Object} onReady an object specifying the scope and callback to call when ready
      * @return {Shader}
      */
-    _.new = function (name, parameters, onReady) {
-        return (shaders[name] = Object.create (_).construct (name, parameters, onReady));
+    _.new = function (name, url, parameters, onReady) {
+        parameters = DEFAULT_VALUE(parameters, {});
+        return (shaders[name] = Object.create (_).construct (name, url, parameters, onReady));
     };
 
     /**

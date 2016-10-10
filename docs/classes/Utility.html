@@ -119,8 +119,8 @@
 			<ul>
 				<li><a href="#method-get"><span class="im">Utility.get</span>(<span class="ia">name</span>)</a></li>
 				<li><a href="#method-get"><span class="im">Utility.get</span>(<span class="ia">name</span>)</a></li>
-				<li><a href="#method-new"><span class="im">Utility.new</span>(<span class="ia">name</span><span class="ia">parameters</span><span class="ia">onReady</span>)</a></li>
-				<li><a href="#method-new"><span class="im">Utility.new</span>(<span class="ia">name</span><span class="ia">parameters</span><span class="ia">onReady</span>)</a></li>
+				<li><a href="#method-new"><span class="im">Utility.new</span>(<span class="ia">name</span><span class="ia">url</span><span class="ia">parameters</span><span class="ia">onReady</span>)</a></li>
+				<li><a href="#method-new"><span class="im">Utility.new</span>(<span class="ia">name</span><span class="ia">url</span><span class="ia">parameters</span><span class="ia">onReady</span>)</a></li>
 			</ul>
 		</li>
 	</ul>
@@ -734,7 +734,7 @@ here because the macro doesn't handle multiline values.</p>
 	<div class="meta">
 				<p>
 				Defined in
-		<a href="../files/src_main_javascript_shader.js.html#l46"><code>src&#x2F;main&#x2F;javascript&#x2F;shader.js:46</code></a>
+		<a href="../files/src_main_javascript_shader.js.html#l48"><code>src&#x2F;main&#x2F;javascript&#x2F;shader.js:48</code></a>
 		</p>
 
 
@@ -793,7 +793,7 @@ here because the macro doesn't handle multiline values.</p>
 	<div class="meta">
 				<p>
 				Defined in
-		<a href="../files/src_main_javascript_texture.js.html#l58"><code>src&#x2F;main&#x2F;javascript&#x2F;texture.js:58</code></a>
+		<a href="../files/src_main_javascript_texture.js.html#l60"><code>src&#x2F;main&#x2F;javascript&#x2F;texture.js:60</code></a>
 		</p>
 
 
@@ -836,6 +836,9 @@ here because the macro doesn't handle multiline values.</p>
 			<span class="paren">(</span><ul class="args-list inline commas">
 				<li class="arg">
 						<code>name</code>
+				</li>
+				<li class="arg">
+						<code>url</code>
 				</li>
 				<li class="arg">
 						<code>parameters</code>
@@ -882,6 +885,15 @@ here because the macro doesn't handle multiline values.</p>
 
 				</li>
 				<li class="param">
+						<code class="param-name">url</code>
+						<span class="type">String</span>
+
+
+					<div class="param-description"><p>where to get this texture</p>
+</div>
+
+				</li>
+				<li class="param">
 						<code class="param-name">parameters</code>
 						<span class="type">Object</span>
 
@@ -919,6 +931,9 @@ here because the macro doesn't handle multiline values.</p>
 			<span class="paren">(</span><ul class="args-list inline commas">
 				<li class="arg">
 						<code>name</code>
+				</li>
+				<li class="arg">
+						<code>url</code>
 				</li>
 				<li class="arg">
 						<code>parameters</code>
@@ -961,6 +976,15 @@ here because the macro doesn't handle multiline values.</p>
 
 
 					<div class="param-description"><p>the name to use to refer to this shader</p>
+</div>
+
+				</li>
+				<li class="param">
+						<code class="param-name">url</code>
+						<span class="type">String</span>
+
+
+					<div class="param-description"><p>where to get this shader</p>
 </div>
 
 				</li>

@@ -15,8 +15,26 @@ let Render = function () {
      * @param {string} canvasId the id of the canvas element to use for the rendering context
      * @return {Render}
      */
-    _.construct = function (canvasId) {
+    _.construct = function (canvasId, aspectRatio) {
         let canvas = this.canvas = document.getElementById (canvasId);
+        aspectRatio = DEFAULT_VALUE(aspectRatio, 16.0 / 9.0);
+
+        // high DPI devices need to have the canvas drawing surface scaled up while leaving the style
+        // size as indicated
+        let width = canvas.width;
+        let height = width / aspectRatio;
+
+        // get the display size of the canvas.
+        canvas.style.width = width + "px";
+        canvas.style.height = height + "px";
+
+        // set the size of the drawingBuffer
+        let devicePixelRatio = window.devicePixelRatio || 1;
+        canvas.width = width * devicePixelRatio;
+        canvas.height = height * devicePixelRatio;
+        LOG("Scaling display at " + devicePixelRatio + ":1 to (" + canvas.width + "x" + canvas.height + ")");
+
+        // get the actual rendering context
         context = this.context = canvas.getContext ("webgl", { preserveDrawingBuffer: true, alpha: false });
         context.viewportWidth = canvas.width;
         context.viewportHeight = canvas.height;

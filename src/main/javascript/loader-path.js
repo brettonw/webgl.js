@@ -1,5 +1,6 @@
 /**
- * A loader for external assets in a particular location.
+ * A loader for external assets, which assumes assets reside in a common base path, and are named as
+ * the file element is named.
  *
  * @class LoaderPath
  */
@@ -16,14 +17,13 @@ let LoaderPath = function () {
      * @return {Loader}
      */
     _.construct = function (parameters) {
-
         this.onFinishedAll = DEFAULT_VALUE (parameters.onFinishedAll, { notify: function (x) {} });
         this.onFinishedItem = DEFAULT_VALUE (parameters.onFinishedItem, { notify: function (x) {} });
         return this;
     };
 
-    _.addItem = function (type, name, parameters) {
-        let item = { type: type, name: name, parameters: parameters };
+    _.addItem = function (type, name, url, parameters) {
+        let item = { type: type, name: name, url: url, parameters: parameters };
         items.push (item);
     };
 
@@ -42,7 +42,7 @@ let LoaderPath = function () {
         if (items.length > 0) {
             // have work to do, kick off a fetch
             let item = items.shift ();
-            this.pendingItem = item.type.new (item.name, item.parameters, OnReady.new (this, this.finish));
+            this.pendingItem = item.type.new (item.name, item.url, item.parameters, OnReady.new (this, this.finish));
         } else {
             // all done, inform our waiting handler
             this.onFinishedAll.notify (this);

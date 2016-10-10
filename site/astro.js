@@ -45,6 +45,9 @@
 
 // mean earth radius: 6,378.1370 km
 // midlevel clouds to cirrus layer is 2,000m to 6,000m
+// mean moon orbit radius is 384,399km or 60.2682 earth radii away
+// mean sun radius: 695,700km
+// mean sun distance: 149,597,870.700km
 
 // celestial coordinate system uses vernal equinox as its origin, RA measures eastward, counter-
 // clockwise (viewed from above), in the direction of Earth's rotation (measured in hours, minutes,

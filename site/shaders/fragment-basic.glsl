@@ -19,8 +19,8 @@ void main(void) {
 	float cosViewNormalAngle = dot(normalVector, viewVector);
 
     //float lighting = (clamp (dot (normal, lightDirection), 0.0, 1.0) * 0.95) + 0.05;
-    float diffuse = clamp (cosLightNormalAngle, 0.0, 1.0) * 0.95;
-    float ambient = 0.05;
+    float diffuse = clamp (cosLightNormalAngle, 0.0, 1.0) * 0.90;
+    float ambient = 0.1;
     float lighting = diffuse + ambient;
 
     vec3 textureColor = texture2D(textureSampler, texture).rgb;
