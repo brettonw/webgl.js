@@ -129,7 +129,7 @@ let Program = function () {
      */
     _.construct = function (name, parameters) {
         this.name = name;
-        LOG (&quot;Program: &quot; + this.name);
+        LOG (LogLevel.TRACE, &quot;Program: &quot; + this.name);
 
         this.currentShape = null;
 
@@ -146,7 +146,7 @@ let Program = function () {
         // link the program and check that it succeeded
         context.linkProgram (program);
         if (!context.getProgramParameter (program, context.LINK_STATUS)) {
-            LOG (&quot;Could not initialise shader&quot;);
+            LOG (LogLevel.ERROR, &quot;Could not initialise shader&quot;);
             // XXX do we need to delete it?
         }
 
@@ -284,7 +284,7 @@ let Program = function () {
                 currentProgram.unbindAttributes ();
             }
 
-            LOG(&quot;Use program: &quot; + this.name);
+            LOG(LogLevel.TRACE, &quot;Use program: &quot; + this.name);
             currentProgram = this;
             context.useProgram (this.program);
 
@@ -296,7 +296,7 @@ let Program = function () {
 
     _.useShape = function (shape) {
         if (this.currentShape !== shape) {
-            LOG(&quot;Set shape: &quot; + shape.name);
+            LOG(LogLevel.TRACE, &quot;Use shape: &quot; + shape.name);
             this.currentShape = shape;
             return true;
         }

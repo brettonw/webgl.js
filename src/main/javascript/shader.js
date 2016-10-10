@@ -5,7 +5,7 @@ let Shader = function () {
 
     _.construct  = function (name, url, parameters, onReady) {
         this.name = name;
-        LOG ("Shader: " + this.name);
+        LOG (LogLevel.TRACE, "Shader: " + this.name);
 
         let scope = this;
         let request = new XMLHttpRequest();
@@ -15,7 +15,7 @@ let Shader = function () {
                 context.shaderSource (shader, request.responseText);
                 context.compileShader (shader);
                 if (!context.getShaderParameter (shader, context.COMPILE_STATUS)) {
-                    LOG (context.getShaderInfoLog (shader));
+                    LOG (LogLevel.ERROR, "Shader compilation failed for " + this.name + ":\n" + context.getShaderInfoLog (shader));
                 } else {
                     scope.compiledShader = shader;
                     onReady.notify (scope);

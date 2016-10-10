@@ -92,7 +92,7 @@ let Texture = function () {
 
     _.construct  = function (name, url, parameters, onReady) {
         this.name = name;
-        LOG(&quot;Texture: &quot; + name);
+        LOG(LogLevel.TRACE, &quot;Texture: &quot; + name);
 
         let texture = this.texture = context.createTexture();
         let image = new Image();

@@ -43,14 +43,14 @@ let Sphere = function () {
 
         // subdivide the triangles we already defined, do this the requested number of times (3
         // seems to be the minimum for a spherical appearance)
-        LOG ("Build sphere...");
+        LOG (LogLevel.TRACE, "Build sphere...");
         for (let j = 0; j < this.parameters.subdivisions; ++j) {
-            LOG ("Iteration " + j + " with " + vertices.length + " points in " + faces.length + " triangles");
+            LOG (LogLevel.TRACE, "Iteration " + j + " with " + vertices.length + " points in " + faces.length + " triangles");
             for (let i = 0, faceCount = faces.length; i < faceCount; ++i) {
                 subdivide ();
             }
         }
-        LOG ("Finished sphere with " + vertices.length + " points in " + faces.length + " triangles");
+        LOG (LogLevel.TRACE, "Finished sphere with " + vertices.length + " points in " + faces.length + " triangles");
         return builder;
     };
 

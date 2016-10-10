@@ -11,15 +11,15 @@ let ProgramUniform = function () {
         if (this.type == context.SAMPLER_2D) {
             this.textureIndex = ("nextTextureIndex" in program) ? program.nextTextureIndex : 0;
             program.nextTextureIndex = this.textureIndex + 1;
-            LOG ("Program uniform: " + this.name + " (type 0x" + this.type.toString(16) + ") at index " + this.textureIndex);
+            LOG (LogLevel.TRACE, "Program uniform: " + this.name + " (type 0x" + this.type.toString(16) + ") at index " + this.textureIndex);
         } else {
-            LOG ("Program uniform: " + this.name + " (type 0x" + this.type.toString(16) + ")");
+            LOG (LogLevel.TRACE, "Program uniform: " + this.name + " (type 0x" + this.type.toString(16) + ")");
         }
         return this;
     };
 
     _.set = function (value) {
-        LOG("Set uniform: " + this.name);
+        LOG(LogLevel.TRACE, "Set uniform: " + this.name);
         // see https://www.khronos.org/registry/webgl/specs/latest/1.0/#5.1 (5.14) for explanation
         switch (this.type) {
             case 0x1404: // context.INT

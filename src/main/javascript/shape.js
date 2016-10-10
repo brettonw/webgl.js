@@ -33,7 +33,7 @@ let Shape = function () {
         if ("position" in buffers) {
             this.positionBuffer = makeBuffer (context.ARRAY_BUFFER, new Float32Array (buffers.position), 3);
         } else {
-            LOG ("What you talking about willis?");
+            LOG (LogLevel.ERROR, "What you talking about willis?");
         }
 
         if ("normal" in buffers) {
@@ -61,7 +61,7 @@ let Shape = function () {
                     }
                     context.drawArrays (context.TRIANGLES, 0, this.positionBuffer.numItems);
                 } catch (err) {
-                    LOG (err.message);
+                    LOG (LogLevel.ERROR, err.message);
                 }
             },
             // 1 vertex, normal
@@ -75,7 +75,7 @@ let Shape = function () {
                     }
                     context.drawArrays (context.TRIANGLES, 0, this.positionBuffer.numItems);
                 } catch (err) {
-                    LOG (err.message);
+                    LOG (LogLevel.ERROR, err.message);
                 }
             },
             // 2 vertex, texture
@@ -89,7 +89,7 @@ let Shape = function () {
                     }
                     context.drawArrays (context.TRIANGLES, 0, this.positionBuffer.numItems);
                 } catch (err) {
-                    LOG (err.message);
+                    LOG (LogLevel.ERROR, err.message);
                 }
             },
             // 3 vertex, normal, texture
@@ -104,7 +104,7 @@ let Shape = function () {
                     }
                     context.drawArrays (context.TRIANGLES, 0, this.positionBuffer.numItems);
                 } catch (err) {
-                    LOG (err.message);
+                    LOG (LogLevel.ERROR, err.message);
                 }
             },
             // 4 vertex, index
@@ -117,7 +117,7 @@ let Shape = function () {
                     }
                     context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
                 } catch (err) {
-                    LOG (err.message);
+                    LOG (LogLevel.ERROR, err.message);
                 }
             },
             // 5 vertex, normal, index
@@ -132,7 +132,7 @@ let Shape = function () {
                     }
                     context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
                 } catch (err) {
-                    LOG (err.message);
+                    LOG (LogLevel.ERROR, err.message);
                 }
             },
             // 6 vertex, texture, index
@@ -147,7 +147,7 @@ let Shape = function () {
                     }
                     context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
                 } catch (err) {
-                    LOG (err.message);
+                    LOG (LogLevel.ERROR, err.message);
                 }
             },
             // 7 vertex, normal, texture, index
@@ -163,7 +163,7 @@ let Shape = function () {
                     }
                     context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
                 } catch (err) {
-                    LOG (err.message);
+                    LOG (LogLevel.ERROR, err.message);
                 }
             },
         ][drawFunctionIndex];

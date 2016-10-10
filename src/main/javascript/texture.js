@@ -6,7 +6,7 @@ let Texture = function () {
 
     _.construct  = function (name, url, parameters, onReady) {
         this.name = name;
-        LOG("Texture: " + name);
+        LOG(LogLevel.TRACE, "Texture: " + name);
 
         let texture = this.texture = context.createTexture();
         let image = new Image();

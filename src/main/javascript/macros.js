@@ -2,12 +2,41 @@
 
 #ifdef DEBUG
 
-#define LOG(x) console.log (x)
+let LogLevel = function () {
+    let _ = Object.create (null);
+
+    _.TRACE = 0;
+    _.INFO = 1;
+    _.WARNNG = 2;
+    _.ERROR = 3;
+
+    // default
+    let logLevel = _.ERROR;
+
+    _.set = function (newLogLevel) {
+        logLevel = newLogLevel;
+    };
+
+    let formatStrings = [ "TRC", "INF", "WRN", "ERR" ];
+    _.say = function (messageLogLevel, message) {
+        if (messageLogLevel >= logLevel) {
+            console.log (formatStrings[logLevel] + ": " + message)
+        }
+    };
+
+    return _;
+} ();
+
+#define SET_LOG_LEVEL(logLevel) LogLevel.set (logLevel)
+SET_LOG_LEVEL(LogLevel.INFO);
+
+#define LOG(level, message) LogLevel.say (level, message)
 #define DEBUGGER debugger
 
 #else
 
-#define LOG(x)
+#define SET_LOG_LEVEL(logLevel)
+#define LOG(level, message)
 #define DEBUGGER
 
 #endif

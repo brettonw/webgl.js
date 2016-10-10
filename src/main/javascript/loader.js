@@ -33,7 +33,7 @@ let Loader = function () {
             this.onFinishedItem.notify(finishedItem);
             this.next ();
         } else {
-            LOG ("WHAT'S UP WILLIS?");
+            LOG (LogLevel.ERROR, "WHAT'S UP WILLIS?");
         }
     };
 

@@ -6,7 +6,7 @@ var TestContainer = function () {
         a = (!isNaN (a)) ? Utility.fixNum (a) : a;
         b = (!isNaN (b)) ? Utility.fixNum (b) : b;
         if (a != b) {
-            LOG ("FAIL: " + msg + " (" + a + " == " + b + ")");
+            LOG (LogLevel.ERROR, "(FAIL ASSERTION) " + msg + " (" + a + " == " + b + ")");
             return false;
         }
         return true;
@@ -21,14 +21,14 @@ var TestContainer = function () {
             }
             return true;
         } else {
-            LOG (msg + " (mismatched arrays, FAIL)");
+            LOG (LogLevel.ERROR, msg + " (mismatched arrays, FAIL ASSERTION)");
             return false;
         }
     };
 
     let tests = [
         function () {
-            LOG ("Float4x4...");
+            LOG (LogLevel.INFO, "Float4x4...");
             let viewMatrix = Float4x4.identity ();
             Float4x4.rotate (viewMatrix, Utility.degreesToRadians (27.5), [ 1, 0, 0 ]);
             viewMatrix  = Float4x4.multiply (Float4x4.translate ([ 0, -1.5, -3.5 ]), viewMatrix);
@@ -48,12 +48,11 @@ var TestContainer = function () {
     ];
 
     _.runTests = function () {
-        LOG ("Running Tests...");
+        LOG (LogLevel.INFO, "Running Tests...");
         for (let test of tests) {
-            LOG ("TEST");
             test ();
         }
-        LOG ("Finished Running Tests.");
+        LOG (LogLevel.INFO, "Finished Running Tests.");
     };
 
     return _;

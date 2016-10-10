@@ -1,4 +1,34 @@
 "use strict;"
+
+
+
+let LogLevel = function () {
+    let _ = Object.create (null);
+
+    _.TRACE = 0;
+    _.INFO = 1;
+    _.WARNNG = 2;
+    _.ERROR = 3;
+
+    // default
+    let logLevel = _.ERROR;
+
+    _.set = function (newLogLevel) {
+        logLevel = newLogLevel;
+    };
+
+    let formatStrings = [ "TRC", "INF", "WRN", "ERR" ];
+    _.say = function (messageLogLevel, message) {
+        if (messageLogLevel >= logLevel) {
+            console.log (formatStrings[logLevel] + ": " + message)
+        }
+    };
+
+    return _;
+} ();
+
+
+LogLevel.set (LogLevel.INFO);
 // default values...
 
 
@@ -123,7 +153,7 @@ let Loader = function () {
             this.onFinishedItem.notify(finishedItem);
             this.next ();
         } else {
-            console.log ("WHAT'S UP WILLIS?");
+            LogLevel.say (LogLevel.ERROR, "WHAT'S UP WILLIS?");
         }
     };
 
@@ -257,7 +287,7 @@ let Render = function () {
         let devicePixelRatio = window.devicePixelRatio || 1;
         canvas.width = width * devicePixelRatio;
         canvas.height = height * devicePixelRatio;
-        console.log ("Scaling display at " + devicePixelRatio + ":1 to (" + canvas.width + "x" + canvas.height + ")");
+        LogLevel.say (LogLevel.TRACE, "Scaling display at " + devicePixelRatio + ":1 to (" + canvas.width + "x" + canvas.height + ")");
 
         // get the actual rendering context
         context = this.context = canvas.getContext ("webgl", { preserveDrawingBuffer: true, alpha: false });
@@ -1145,7 +1175,7 @@ let Shader = function () {
 
     _.construct = function (name, url, parameters, onReady) {
         this.name = name;
-        console.log ("Shader: " + this.name);
+        LogLevel.say (LogLevel.TRACE, "Shader: " + this.name);
 
         let scope = this;
         let request = new XMLHttpRequest();
@@ -1155,7 +1185,7 @@ let Shader = function () {
                 context.shaderSource (shader, request.responseText);
                 context.compileShader (shader);
                 if (!context.getShaderParameter (shader, context.COMPILE_STATUS)) {
-                    console.log (context.getShaderInfoLog (shader));
+                    LogLevel.say (LogLevel.ERROR, "Shader compilation failed for " + this.name + ":\n" + context.getShaderInfoLog (shader));
                 } else {
                     scope.compiledShader = shader;
                     onReady.notify (scope);
@@ -1244,7 +1274,7 @@ let Program = function () {
      */
     _.construct = function (name, parameters) {
         this.name = name;
-        console.log ("Program: " + this.name);
+        LogLevel.say (LogLevel.TRACE, "Program: " + this.name);
 
         this.currentShape = null;
 
@@ -1261,7 +1291,7 @@ let Program = function () {
         // link the program and check that it succeeded
         context.linkProgram (program);
         if (!context.getProgramParameter (program, context.LINK_STATUS)) {
-            console.log ("Could not initialise shader");
+            LogLevel.say (LogLevel.ERROR, "Could not initialise shader");
             // XXX do we need to delete it?
         }
 
@@ -1399,7 +1429,7 @@ let Program = function () {
                 currentProgram.unbindAttributes ();
             }
 
-            console.log ("Use program: " + this.name);
+            LogLevel.say (LogLevel.TRACE, "Use program: " + this.name);
             currentProgram = this;
             context.useProgram (this.program);
 
@@ -1411,7 +1441,7 @@ let Program = function () {
 
     _.useShape = function (shape) {
         if (this.currentShape !== shape) {
-            console.log ("Set shape: " + shape.name);
+            LogLevel.say (LogLevel.TRACE, "Use shape: " + shape.name);
             this.currentShape = shape;
             return true;
         }
@@ -1535,15 +1565,15 @@ let ProgramUniform = function () {
         if (this.type == context.SAMPLER_2D) {
             this.textureIndex = ("nextTextureIndex" in program) ? program.nextTextureIndex : 0;
             program.nextTextureIndex = this.textureIndex + 1;
-            console.log ("Program uniform: " + this.name + " (type 0x" + this.type.toString(16) + ") at index " + this.textureIndex);
+            LogLevel.say (LogLevel.TRACE, "Program uniform: " + this.name + " (type 0x" + this.type.toString(16) + ") at index " + this.textureIndex);
         } else {
-            console.log ("Program uniform: " + this.name + " (type 0x" + this.type.toString(16) + ")");
+            LogLevel.say (LogLevel.TRACE, "Program uniform: " + this.name + " (type 0x" + this.type.toString(16) + ")");
         }
         return this;
     };
 
     _.set = function (value) {
-        console.log ("Set uniform: " + this.name);
+        LogLevel.say (LogLevel.TRACE, "Set uniform: " + this.name);
         // see https://www.khronos.org/registry/webgl/specs/latest/1.0/#5.1 (5.14) for explanation
         switch (this.type) {
             case 0x1404: // context.INT
@@ -1605,62 +1635,62 @@ let ProgramAttribute = function () {
         this.name = activeAttribute.name;
         this.type = activeAttribute.type;
         this.location = context.getAttribLocation (program, this.name);
-        console.log ("Program attribute: " + this.name + " at index " + this.location + " (type 0x" + this.type.toString(16) + ")");
+        LogLevel.say (LogLevel.TRACE, "Program attribute: " + this.name + " at index " + this.location + " (type 0x" + this.type.toString(16) + ")");
 
         // set the bind function
         switch (this.type) {
             case 0x1404:
                 this.bind = function () {
-                    console.log ("Bind attribute (" + this.name + ") at location " + this.location);
+                    LogLevel.say (LogLevel.TRACE, "Bind attribute (" + this.name + ") at location " + this.location);
                     context.enableVertexAttribArray (this.location);
                     context.vertexAttribPointer (this.location, 1, context.INT, false, 0, 0);
                 };
                 break;
             case 0x8B53:
                 this.bind = function () {
-                    console.log ("Bind attribute (" + this.name + ") at location " + this.location);
+                    LogLevel.say (LogLevel.TRACE, "Bind attribute (" + this.name + ") at location " + this.location);
                     context.enableVertexAttribArray (this.location);
                     context.vertexAttribPointer (this.location, 2, context.INT, false, 0, 0);
                 };
                 break;
             case 0x8B54:
                 this.bind = function () {
-                    console.log ("Bind attribute (" + this.name + ") at location " + this.location);
+                    LogLevel.say (LogLevel.TRACE, "Bind attribute (" + this.name + ") at location " + this.location);
                     context.enableVertexAttribArray (this.location);
                     context.vertexAttribPointer (this.location, 3, context.INT, false, 0, 0);
                 };
                 break;
             case 0x8B55:
                 this.bind = function () {
-                    console.log ("Bind attribute (" + this.name + ") at location " + this.location);
+                    LogLevel.say (LogLevel.TRACE, "Bind attribute (" + this.name + ") at location " + this.location);
                     context.enableVertexAttribArray (this.location);
                     context.vertexAttribPointer (this.location, 4, context.INT, false, 0, 0);
                 };
                 break;
             case 0x1406:
                 this.bind = function () {
-                    console.log ("Bind attribute (" + this.name + ") at location " + this.location);
+                    LogLevel.say (LogLevel.TRACE, "Bind attribute (" + this.name + ") at location " + this.location);
                     context.enableVertexAttribArray (this.location);
                     context.vertexAttribPointer (this.location, 1, context.FLOAT, false, 0, 0);
                 };
                 break;
             case 0x8B50:
                 this.bind = function () {
-                    console.log ("Bind attribute (" + this.name + ") at location " + this.location);
+                    LogLevel.say (LogLevel.TRACE, "Bind attribute (" + this.name + ") at location " + this.location);
                     context.enableVertexAttribArray (this.location);
                     context.vertexAttribPointer (this.location, 2, context.FLOAT, false, 0, 0);
                 };
                 break;
             case 0x8B51:
                 this.bind = function () {
-                    console.log ("Bind attribute (" + this.name + ") at location " + this.location);
+                    LogLevel.say (LogLevel.TRACE, "Bind attribute (" + this.name + ") at location " + this.location);
                     context.enableVertexAttribArray (this.location);
                     context.vertexAttribPointer (this.location, 3, context.FLOAT, false, 0, 0);
                 };
                 break;
             case 0x8B52:
                 this.bind = function () {
-                    console.log ("Bind attribute (" + this.name + ") at location " + this.location);
+                    LogLevel.say (LogLevel.TRACE, "Bind attribute (" + this.name + ") at location " + this.location);
                     context.enableVertexAttribArray (this.location);
                     context.vertexAttribPointer (this.location, 4, context.FLOAT, false, 0, 0);
                 };
@@ -1670,7 +1700,7 @@ let ProgramAttribute = function () {
     };
 
     _.unbind = function () {
-        console.log ("Unbind attribute (" + this.name + ") at location " + this.location);
+        LogLevel.say (LogLevel.TRACE, "Unbind attribute (" + this.name + ") at location " + this.location);
         context.disableVertexAttribArray (this.location);
     };
 
@@ -1688,7 +1718,7 @@ let Texture = function () {
 
     _.construct = function (name, url, parameters, onReady) {
         this.name = name;
-        console.log ("Texture: " + name);
+        LogLevel.say (LogLevel.TRACE, "Texture: " + name);
 
         let texture = this.texture = context.createTexture();
         let image = new Image();
@@ -1828,10 +1858,10 @@ let Node = function () {
 
         // now make a traverse function depending on the included features
         let INVALID_TRAVERSE = function (transform) {
-            console.log ("WARNING: INVALID TRAVERSE");
+            LogLevel.say (LogLevel.WARNING, "WARNING: INVALID TRAVERSE");
             return this;
         };
-        console.log ("Node (" + this.getName () + "): traverse (" + traverseFunctionIndex + ")");
+        LogLevel.say (LogLevel.TRACE, "Node (" + this.getName () + "): traverse (" + traverseFunctionIndex + ")");
         this.traverse = [
             // 0 nothing
             INVALID_TRAVERSE,
@@ -1961,7 +1991,7 @@ let Node = function () {
         if ("children" in this) {
             this.children.push (node);
         } else {
-            console.log ("ERROR: Attempting to add child (" + node.getName () + ") to node (" + this.getName () + ") that is a leaf.");
+            LogLevel.say (LogLevel.ERROR, "Attempting to add child (" + node.getName () + ") to node (" + this.getName () + ") that is a leaf.");
         }
         return this;
     };
@@ -2148,7 +2178,7 @@ let Shape = function () {
         if ("position" in buffers) {
             this.positionBuffer = makeBuffer (context.ARRAY_BUFFER, new Float32Array (buffers.position), 3);
         } else {
-            console.log ("What you talking about willis?");
+            LogLevel.say (LogLevel.ERROR, "What you talking about willis?");
         }
 
         if ("normal" in buffers) {
@@ -2176,7 +2206,7 @@ let Shape = function () {
                     }
                     context.drawArrays (context.TRIANGLES, 0, this.positionBuffer.numItems);
                 } catch (err) {
-                    console.log (err.message);
+                    LogLevel.say (LogLevel.ERROR, err.message);
                 }
             },
             // 1 vertex, normal
@@ -2190,7 +2220,7 @@ let Shape = function () {
                     }
                     context.drawArrays (context.TRIANGLES, 0, this.positionBuffer.numItems);
                 } catch (err) {
-                    console.log (err.message);
+                    LogLevel.say (LogLevel.ERROR, err.message);
                 }
             },
             // 2 vertex, texture
@@ -2204,7 +2234,7 @@ let Shape = function () {
                     }
                     context.drawArrays (context.TRIANGLES, 0, this.positionBuffer.numItems);
                 } catch (err) {
-                    console.log (err.message);
+                    LogLevel.say (LogLevel.ERROR, err.message);
                 }
             },
             // 3 vertex, normal, texture
@@ -2219,7 +2249,7 @@ let Shape = function () {
                     }
                     context.drawArrays (context.TRIANGLES, 0, this.positionBuffer.numItems);
                 } catch (err) {
-                    console.log (err.message);
+                    LogLevel.say (LogLevel.ERROR, err.message);
                 }
             },
             // 4 vertex, index
@@ -2232,7 +2262,7 @@ let Shape = function () {
                     }
                     context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
                 } catch (err) {
-                    console.log (err.message);
+                    LogLevel.say (LogLevel.ERROR, err.message);
                 }
             },
             // 5 vertex, normal, index
@@ -2247,7 +2277,7 @@ let Shape = function () {
                     }
                     context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
                 } catch (err) {
-                    console.log (err.message);
+                    LogLevel.say (LogLevel.ERROR, err.message);
                 }
             },
             // 6 vertex, texture, index
@@ -2262,7 +2292,7 @@ let Shape = function () {
                     }
                     context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
                 } catch (err) {
-                    console.log (err.message);
+                    LogLevel.say (LogLevel.ERROR, err.message);
                 }
             },
             // 7 vertex, normal, texture, index
@@ -2278,7 +2308,7 @@ let Shape = function () {
                     }
                     context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
                 } catch (err) {
-                    console.log (err.message);
+                    LogLevel.say (LogLevel.ERROR, err.message);
                 }
             },
         ][drawFunctionIndex];
@@ -2366,7 +2396,7 @@ let ShapeBuilder = function () {
     };
 
     _.makeBuffers = function () {
-        console.log (this.vertices.length + " vertices for " + this.faces.length + " faces");
+        LogLevel.say (LogLevel.TRACE, this.vertices.length + " vertices for " + this.faces.length + " faces");
         let result = {
             position: Utility.flatten(this.vertices),
             index: Utility.flatten(this.faces)
@@ -2632,14 +2662,14 @@ let Sphere = function () {
 
         // subdivide the triangles we already defined, do this the requested number of times (3
         // seems to be the minimum for a spherical appearance)
-        console.log ("Build sphere...");
+        LogLevel.say (LogLevel.TRACE, "Build sphere...");
         for (let j = 0; j < this.parameters.subdivisions; ++j) {
-            console.log ("Iteration " + j + " with " + vertices.length + " points in " + faces.length + " triangles");
+            LogLevel.say (LogLevel.TRACE, "Iteration " + j + " with " + vertices.length + " points in " + faces.length + " triangles");
             for (let i = 0, faceCount = faces.length; i < faceCount; ++i) {
                 subdivide ();
             }
         }
-        console.log ("Finished sphere with " + vertices.length + " points in " + faces.length + " triangles");
+        LogLevel.say (LogLevel.TRACE, "Finished sphere with " + vertices.length + " points in " + faces.length + " triangles");
         return builder;
     };
 
@@ -2703,7 +2733,7 @@ let makeRevolve = function (name, outline, normal, steps, projection) {
 
     return Shape.new (name, function () {
         // compute the steps we need to make to build the rotated shape
-        console.log ("Make revolved outline");
+        LogLevel.say (LogLevel.TRACE, "Make revolved outline");
         let builder = ShapeBuilder.new ();
         let stepAngle = (-2.0 * Math.PI) / steps;
         for (let i = 0; i < steps; ++i) {
@@ -2758,7 +2788,7 @@ let makeRevolve = function (name, outline, normal, steps, projection) {
     });
 };
 let makeBall = function (name, steps) {
-    console.log ("Make ball...");
+    LogLevel.say (LogLevel.TRACE, "Make ball...");
     // generate an outline, and then revolve it
     let outline = [];
     let normal = [];
@@ -2780,7 +2810,7 @@ let makeBall = function (name, steps) {
         // uvY varies [0..1] over the course of the outline
         let angle = Math.PI * uvY;
         let result = 1 - ((Math.cos (angle) + 1) / 2);
-        console.log ("Input " + uvY + " => " + result);
+        LogLevel.say (LogLevel.TRACE, "Input " + uvY + " => " + result);
         return result;
     });
 };
@@ -2917,7 +2947,7 @@ var TestContainer = function () {
         a = (!isNaN (a)) ? Utility.fixNum (a) : a;
         b = (!isNaN (b)) ? Utility.fixNum (b) : b;
         if (a != b) {
-            console.log ("FAIL: " + msg + " (" + a + " == " + b + ")");
+            LogLevel.say (LogLevel.ERROR, "(FAIL ASSERTION) " + msg + " (" + a + " == " + b + ")");
             return false;
         }
         return true;
@@ -2932,14 +2962,14 @@ var TestContainer = function () {
             }
             return true;
         } else {
-            console.log (msg + " (mismatched arrays, FAIL)");
+            LogLevel.say (LogLevel.ERROR, msg + " (mismatched arrays, FAIL ASSERTION)");
             return false;
         }
     };
 
     let tests = [
         function () {
-            console.log ("Float4x4...");
+            LogLevel.say (LogLevel.INFO, "Float4x4...");
             let viewMatrix = Float4x4.identity ();
             Float4x4.rotate (viewMatrix, Utility.degreesToRadians (27.5), [ 1, 0, 0 ]);
             viewMatrix = Float4x4.multiply (Float4x4.translate ([ 0, -1.5, -3.5 ]), viewMatrix);
@@ -2959,12 +2989,11 @@ var TestContainer = function () {
     ];
 
     _.runTests = function () {
-        console.log ("Running Tests...");
+        LogLevel.say (LogLevel.INFO, "Running Tests...");
         for (let test of tests) {
-            console.log ("TEST");
             test ();
         }
-        console.log ("Finished Running Tests.");
+        LogLevel.say (LogLevel.INFO, "Finished Running Tests.");
     };
 
     return _;

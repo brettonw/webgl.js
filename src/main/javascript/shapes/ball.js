@@ -1,5 +1,5 @@
 let makeBall = function (name, steps) {
-    LOG ("Make ball...");
+    LOG (LogLevel.TRACE, "Make ball...");
     // generate an outline, and then revolve it
     let outline = [];
     let normal = [];
@@ -21,7 +21,7 @@ let makeBall = function (name, steps) {
         // uvY varies [0..1] over the course of the outline
         let angle = Math.PI * uvY;
         let result = 1 - ((Math.cos (angle) + 1) / 2);
-        LOG ("Input " + uvY + " => " + result);
+        LOG (LogLevel.TRACE, "Input " + uvY + " => " + result);
         return result;
     });
 };

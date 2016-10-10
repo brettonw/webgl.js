@@ -118,7 +118,7 @@ let Render = function () {
         let devicePixelRatio = window.devicePixelRatio || 1;
         canvas.width = width * devicePixelRatio;
         canvas.height = height * devicePixelRatio;
-        LOG(&quot;Scaling display at &quot; + devicePixelRatio + &quot;:1 to (&quot; + canvas.width + &quot;x&quot; + canvas.height + &quot;)&quot;);
+        LOG(LogLevel.TRACE, &quot;Scaling display at &quot; + devicePixelRatio + &quot;:1 to (&quot; + canvas.width + &quot;x&quot; + canvas.height + &quot;)&quot;);
 
         // get the actual rendering context
         context = this.context = canvas.getContext (&quot;webgl&quot;, { preserveDrawingBuffer: true, alpha: false });

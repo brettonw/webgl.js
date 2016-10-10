@@ -73,10 +73,10 @@ let Node = function () {
 
         // now make a traverse function depending on the included features
         let INVALID_TRAVERSE = function (transform) {
-            LOG ("WARNING: INVALID TRAVERSE");
+            LOG (LogLevel.WARNING, "WARNING: INVALID TRAVERSE");
             return this;
         };
-        LOG ("Node (" + this.getName () + "): traverse (" + traverseFunctionIndex + ")");
+        LOG (LogLevel.TRACE, "Node (" + this.getName () + "): traverse (" + traverseFunctionIndex + ")");
         this.traverse = [
             // 0 nothing
             INVALID_TRAVERSE,
@@ -206,7 +206,7 @@ let Node = function () {
         if ("children" in this) {
             this.children.push (node);
         } else {
-            LOG ("ERROR: Attempting to add child (" + node.getName () + ") to node (" + this.getName () + ") that is a leaf.");
+            LOG (LogLevel.ERROR, "Attempting to add child (" + node.getName () + ") to node (" + this.getName () + ") that is a leaf.");
         }
         return this;
     };

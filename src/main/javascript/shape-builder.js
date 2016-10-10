@@ -68,7 +68,7 @@ let ShapeBuilder = function () {
     };
 
     _.makeBuffers = function () {
-        LOG(this.vertices.length + " vertices for " + this.faces.length + " faces");
+        LOG(LogLevel.TRACE, this.vertices.length + " vertices for " + this.faces.length + " faces");
         let result = {
             position: Utility.flatten(this.vertices),
             index: Utility.flatten(this.faces)
