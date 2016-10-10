@@ -1175,7 +1175,7 @@ let Shader = function () {
 
     _.construct = function (name, url, parameters, onReady) {
         this.name = name;
-        LogLevel.say (LogLevel.TRACE, "Shader: " + this.name);
+        LogLevel.say (LogLevel.INFO, "Shader: " + this.name);
 
         let scope = this;
         let request = new XMLHttpRequest();
@@ -1274,7 +1274,7 @@ let Program = function () {
      */
     _.construct = function (name, parameters) {
         this.name = name;
-        LogLevel.say (LogLevel.TRACE, "Program: " + this.name);
+        LogLevel.say (LogLevel.INFO, "Program: " + this.name);
 
         this.currentShape = null;
 
@@ -1718,7 +1718,7 @@ let Texture = function () {
 
     _.construct = function (name, url, parameters, onReady) {
         this.name = name;
-        LogLevel.say (LogLevel.TRACE, "Texture: " + name);
+        LogLevel.say (LogLevel.INFO, "Texture: " + name);
 
         let texture = this.texture = context.createTexture();
         let image = new Image();

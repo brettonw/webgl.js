@@ -91,7 +91,7 @@ let Shader = function () {
 
     _.construct  = function (name, url, parameters, onReady) {
         this.name = name;
-        LOG (LogLevel.TRACE, &quot;Shader: &quot; + this.name);
+        LOG (LogLevel.INFO, &quot;Shader: &quot; + this.name);
 
         let scope = this;
         let request = new XMLHttpRequest();
