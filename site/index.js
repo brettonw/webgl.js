@@ -1,7 +1,7 @@
 "use strict;"
 
 let scene;
-let currentPosition = [0, 0];
+let currentPosition = [0.6, 0.05];
 
 let standardUniforms = Object.create(null);
 
