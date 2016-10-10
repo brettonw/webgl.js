@@ -26,7 +26,7 @@
             </li>
         </div>
         <form class="navbar-form pull-right" style="line-height: 40px; height: 40px;">
-            <input style="margin-top: 0;" type="text" class="search-query" placeholder="Search for classes/modules..." data-obj='["classes/Cloud", "classes/Float4x4", "classes/FloatNxN", "classes/Loader", "classes/LoaderPath", "classes/Node", "classes/Program", "classes/Render", "classes/Utility"]'>
+            <input style="margin-top: 0;" type="text" class="search-query" placeholder="Search for classes/modules..." data-obj='["classes/Cloud", "classes/Float4x4", "classes/FloatNxN", "classes/Loader", "classes/LoaderPath", "classes/LoaderShader", "classes/Node", "classes/Program", "classes/Render", "classes/Utility"]'>
         </form>
     </div>
 </div>
@@ -42,6 +42,7 @@
                 <li><a href="../classes/FloatNxN.html">FloatNxN</a></li>
                 <li><a href="../classes/Loader.html">Loader</a></li>
                 <li><a href="../classes/LoaderPath.html">LoaderPath</a></li>
+                <li><a href="../classes/LoaderShader.html">LoaderShader</a></li>
                 <li><a href="../classes/Node.html">Node</a></li>
                 <li><a href="../classes/Program.html">Program</a></li>
                 <li><a href="../classes/Render.html">Render</a></li>
@@ -352,14 +353,9 @@ let Program = function () {
         // default value for the parameters
         parameters = DEFAULT_FUNCTION (parameters, function () { return Object.create (null); });
 
-        // default value for the vertex shader
-        if (!(&quot;vertexShader&quot; in parameters)) {
-            parameters.vertexShader = &quot;vertex-basic&quot;;
-        }
-        // default value for the fragment shader
-        if (!(&quot;fragmentShader&quot; in parameters)) {
-            parameters.fragmentShader = &quot;fragment-basic&quot;;
-        }
+        // default value for the shader names
+        parameters.vertexShader = &quot;vertex-&quot; + DEFAULT_VALUE(parameters.vertexShader, name);
+        parameters.fragmentShader = &quot;fragment-&quot; + DEFAULT_VALUE(parameters.fragmentShader, name);
 
         // default values for the attribute mapping
         if (!(&quot;attributeMapping&quot; in parameters)) {

@@ -236,18 +236,18 @@ let onBodyLoad = function () {
     framingRange = document.getElementById("framingRange");
 
     // load the shaders, and build the programs
-    LoaderPath.new ({ type:Shader, path: "shaders/@.glsl"})
-        .addItem ("vertex-basic", { type: context.VERTEX_SHADER })
-        .addItems ([ "fragment-basic", "fragment-ads", "fragment-overlay", "fragment-texture", "fragment-color", "fragment-earth", "fragment-clouds", "fragment-atmosphere" ], { type: context.FRAGMENT_SHADER })
+    LoaderShader.new ("shaders/@.glsl")
+        .addVertexShaders ("basic")
+        .addFragmentShaders([ "basic", "ads", "overlay", "texture", "color", "earth", "clouds", "atmosphere" ])
         .go (null, OnReady.new (null, function (x) {
-            Program.new ("basic", { vertexShader: "vertex-basic", fragmentShader: "fragment-basic" });
-            Program.new ("ads", { vertexShader: "vertex-basic", fragmentShader: "fragment-ads" });
-            Program.new ("overlay", { vertexShader: "vertex-basic", fragmentShader: "fragment-overlay" });
-            Program.new ("texture", { vertexShader: "vertex-basic", fragmentShader: "fragment-texture" });
-            Program.new ("color", { vertexShader: "vertex-basic", fragmentShader: "fragment-color" });
-            Program.new ("earth", { vertexShader: "vertex-basic", fragmentShader: "fragment-earth" });
-            Program.new ("clouds", { vertexShader: "vertex-basic", fragmentShader: "fragment-clouds" });
-            Program.new ("atmosphere", { vertexShader: "vertex-basic", fragmentShader: "fragment-atmosphere" });
+            Program.new ("basic");
+            Program.new ("ads", { vertexShader: "basic" });
+            Program.new ("overlay", { vertexShader: "basic" });
+            Program.new ("texture", { vertexShader: "basic" });
+            Program.new ("color", { vertexShader: "basic" });
+            Program.new ("earth", { vertexShader: "basic" });
+            Program.new ("clouds", { vertexShader: "basic" });
+            Program.new ("atmosphere", { vertexShader: "basic" });
 
             // load the textures
             LoaderPath.new ({ type:Texture, path:"textures/@.png"})

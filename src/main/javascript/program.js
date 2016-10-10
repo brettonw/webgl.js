@@ -266,14 +266,9 @@ let Program = function () {
         // default value for the parameters
         parameters = DEFAULT_FUNCTION (parameters, function () { return Object.create (null); });
 
-        // default value for the vertex shader
-        if (!("vertexShader" in parameters)) {
-            parameters.vertexShader = "vertex-basic";
-        }
-        // default value for the fragment shader
-        if (!("fragmentShader" in parameters)) {
-            parameters.fragmentShader = "fragment-basic";
-        }
+        // default value for the shader names
+        parameters.vertexShader = "vertex-" + DEFAULT_VALUE(parameters.vertexShader, name);
+        parameters.fragmentShader = "fragment-" + DEFAULT_VALUE(parameters.fragmentShader, name);
 
         // default values for the attribute mapping
         if (!("attributeMapping" in parameters)) {

@@ -41,6 +41,15 @@
             "fors": {},
             "namespaces": {}
         },
+        "src/main/javascript/loader-shader.js": {
+            "name": "src/main/javascript/loader-shader.js",
+            "modules": {},
+            "classes": {
+                "LoaderShader": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
         "src/main/javascript/loader.js": {
             "name": "src/main/javascript/loader.js",
             "modules": {},
@@ -151,6 +160,18 @@
             "file": "src/main/javascript/loader-path.js",
             "line": 1,
             "description": "A loader for external assets, which assumes assets reside in a common base path, and are named as\nthe file element is named."
+        },
+        "LoaderShader": {
+            "name": "LoaderShader",
+            "shortname": "LoaderShader",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src/main/javascript/loader-shader.js",
+            "line": 1,
+            "description": "A loader for external shader assets."
         },
         "Loader": {
             "name": "Loader",
@@ -355,13 +376,13 @@
         {
             "file": "src/main/javascript/loader-path.js",
             "line": 10,
-            "description": "the initializer for a loader.",
+            "description": "the initializer for a path loader.",
             "itemtype": "method",
             "name": "construct",
             "params": [
                 {
-                    "name": "onReady",
-                    "description": "an object specifying the scope and callback to call when ready",
+                    "name": "parameters",
+                    "description": "an object specifying the loader class parameters",
                     "type": "Object"
                 }
             ],
@@ -373,7 +394,7 @@
         },
         {
             "file": "src/main/javascript/loader-path.js",
-            "line": 36,
+            "line": 33,
             "description": "static method to create and construct a new LoaderPath.",
             "itemtype": "method",
             "name": "new",
@@ -381,15 +402,54 @@
             "params": [
                 {
                     "name": "parameters",
-                    "description": "an object including Loader class parameters, as well as the type\nand urlBase to use for all operations.",
+                    "description": "an object including Loader class parameters, as well as the type\nand path to use for all operations. The \"path\" parameter should contain a \"@\" to be replaced\nwith the fetch name.",
                     "type": "Object"
                 }
             ],
             "return": {
                 "description": "",
-                "type": "Loader"
+                "type": "LoaderPath"
             },
             "class": "LoaderPath"
+        },
+        {
+            "file": "src/main/javascript/loader-shader.js",
+            "line": 9,
+            "description": "the initializer for a shader loader.",
+            "itemtype": "method",
+            "name": "construct",
+            "params": [
+                {
+                    "name": "path",
+                    "description": "the common path for a path loader.",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "LoaderShader"
+            },
+            "class": "LoaderShader"
+        },
+        {
+            "file": "src/main/javascript/loader-shader.js",
+            "line": 37,
+            "description": "static method to create and construct a new LoaderPath.",
+            "itemtype": "method",
+            "name": "new",
+            "static": 1,
+            "params": [
+                {
+                    "name": "path",
+                    "description": "the common path for a path loader.",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "LoaderShader"
+            },
+            "class": "LoaderShader"
         },
         {
             "file": "src/main/javascript/loader.js",
@@ -733,7 +793,7 @@
         },
         {
             "file": "src/main/javascript/program.js",
-            "line": 310,
+            "line": 305,
             "description": "fetch a program by name.",
             "itemtype": "method",
             "name": "get",

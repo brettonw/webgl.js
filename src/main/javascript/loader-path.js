@@ -8,27 +8,24 @@ let LoaderPath = function () {
     let _ = Object.create (Loader);
 
     /**
-     * the initializer for a loader.
+     * the initializer for a path loader.
      *
      * @method construct
-     * @param {Object} onReady an object specifying the scope and callback to call when ready
+     * @param {Object} parameters an object specifying the loader class parameters
      * @return {Loader}
      */
     _.construct = function (parameters) {
-        Object.getPrototypeOf(_).construct.call(this, parameters);
+        SUPER.construct.call(this, parameters);
         this.type = parameters.type;
         this.path = parameters.path;
         return this;
     };
 
-    _.addItem = function (name, parameters) {
-        let url = this.path.replace ("@", name);
-        return Object.getPrototypeOf(_).addItem.call(this, this.type, name, url, parameters);
-    };
-
     _.addItems = function (names, parameters) {
+        names = Array.isArray(names) ? names : Array(1).fill(names);
         for (let name of names) {
-            this.addItem(name, parameters);
+            let url = this.path.replace ("@", name);
+            SUPER.addItem.call(this, this.type, name, url, parameters);
         }
         return this;
     };
@@ -39,8 +36,9 @@ let LoaderPath = function () {
      * @method new
      * @static
      * @param {Object} parameters an object including Loader class parameters, as well as the type
-     * and urlBase to use for all operations.
-     * @return {Loader}
+     * and path to use for all operations. The "path" parameter should contain a "@" to be replaced
+     * with the fetch name.
+     * @return {LoaderPath}
      */
     _.new = function (parameters) {
         return Object.create (_).construct (parameters);

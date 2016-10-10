@@ -26,7 +26,7 @@
             </li>
         </div>
         <form class="navbar-form pull-right" style="line-height: 40px; height: 40px;">
-            <input style="margin-top: 0;" type="text" class="search-query" placeholder="Search for classes/modules..." data-obj='["classes/Cloud", "classes/Float4x4", "classes/FloatNxN", "classes/Loader", "classes/LoaderPath", "classes/Node", "classes/Program", "classes/Render", "classes/Utility"]'>
+            <input style="margin-top: 0;" type="text" class="search-query" placeholder="Search for classes/modules..." data-obj='["classes/Cloud", "classes/Float4x4", "classes/FloatNxN", "classes/Loader", "classes/LoaderPath", "classes/LoaderShader", "classes/Node", "classes/Program", "classes/Render", "classes/Utility"]'>
         </form>
     </div>
 </div>
@@ -42,6 +42,7 @@
                 <li><a href="../classes/FloatNxN.html">FloatNxN</a></li>
                 <li><a href="../classes/Loader.html">Loader</a></li>
                 <li><a href="../classes/LoaderPath.html">LoaderPath</a></li>
+                <li><a href="../classes/LoaderShader.html">LoaderShader</a></li>
                 <li><a href="../classes/Node.html">Node</a></li>
                 <li><a href="../classes/Program.html">Program</a></li>
                 <li><a href="../classes/Render.html">Render</a></li>
@@ -101,7 +102,7 @@ the file element is named.</p>
 		<li>
 			<strong>Methods</strong>
 			<ul>
-				<li><a href="#method-construct"><span class="im">construct</span>(<span class="ia">onReady</span>)</a></li>
+				<li><a href="#method-construct"><span class="im">construct</span>(<span class="ia">parameters</span>)</a></li>
 			</ul>
 		</li>
 
@@ -129,7 +130,7 @@ the file element is named.</p>
 		<div class="args">
 			<span class="paren">(</span><ul class="args-list inline commas">
 				<li class="arg">
-						<code>onReady</code>
+						<code>parameters</code>
 				</li>
 			</ul><span class="paren">)</span>
 		</div>
@@ -153,7 +154,7 @@ the file element is named.</p>
 
 	</div>
 
-	<div class="description"><p>the initializer for a loader.</p>
+	<div class="description"><p>the initializer for a path loader.</p>
 </div>
 
 		<div class="params">
@@ -161,11 +162,11 @@ the file element is named.</p>
 
 			<ul class="params-list">
 				<li class="param">
-						<code class="param-name">onReady</code>
+						<code class="param-name">parameters</code>
 						<span class="type">Object</span>
 
 
-					<div class="param-description"><p>an object specifying the scope and callback to call when ready</p>
+					<div class="param-description"><p>an object specifying the loader class parameters</p>
 </div>
 
 				</li>
@@ -202,7 +203,7 @@ the file element is named.</p>
 			</ul><span class="paren">)</span>
 		</div>
 		<span class="returns-inline">
-			<span class="type"><a href="../classes/Loader.html" class="crosslink">Loader</a></span>
+			<span class="type"><a href="../classes/LoaderPath.html" class="crosslink">LoaderPath</a></span>
 		</span>
 	</div>
 
@@ -214,7 +215,7 @@ the file element is named.</p>
 	<div class="meta">
 				<p>
 				Defined in
-		<a href="../files/src_main_javascript_loader-path.js.html#l36"><code>src&#x2F;main&#x2F;javascript&#x2F;loader-path.js:36</code></a>
+		<a href="../files/src_main_javascript_loader-path.js.html#l33"><code>src&#x2F;main&#x2F;javascript&#x2F;loader-path.js:33</code></a>
 		</p>
 
 
@@ -234,7 +235,8 @@ the file element is named.</p>
 
 
 					<div class="param-description"><p>an object including Loader class parameters, as well as the type
-and urlBase to use for all operations.</p>
+and path to use for all operations. The "path" parameter should contain a "@" to be replaced
+with the fetch name.</p>
 </div>
 
 				</li>
@@ -245,7 +247,7 @@ and urlBase to use for all operations.</p>
 			<h4>Returns:</h4>
 
 			<div class="returns-description">
-						<span class="type"><a href="../classes/Loader.html" class="crosslink">Loader</a></span>
+						<span class="type"><a href="../classes/LoaderPath.html" class="crosslink">LoaderPath</a></span>
 			</div>
 		</div>
 

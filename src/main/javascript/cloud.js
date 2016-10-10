@@ -17,7 +17,7 @@ let Cloud = function () {
      */
     _.construct = function (parameters) {
         // call the superclass constructor on this object
-        Object.getPrototypeOf(_).construct.call(this, parameters);
+        SUPER.construct.call(this, parameters);
 
         // look to see if the user has provided a point shape or size to use
         this.pointShape =  ("pointShape" in parameters) ? parameters.pointShape : "sphere2";

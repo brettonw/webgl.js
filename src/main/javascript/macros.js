@@ -41,6 +41,9 @@ SET_LOG_LEVEL(LogLevel.INFO);
 
 #endif
 
+// class hierarchy
+#define SUPER   Object.getPrototypeOf(_)
+
 // default values...
-#define DEFAULT_VALUE(value, defaultValue) ((typeof value !== "undefined") && (value != null)) ? value : defaultValue
-#define DEFAULT_FUNCTION(value, defaultFunction) ((typeof value !== "undefined") && (value != null)) ? value : defaultFunction ()
+#define DEFAULT_VALUE(value, defaultValue) (((typeof value !== "undefined") && (value != null)) ? value : defaultValue)
+#define DEFAULT_FUNCTION(value, defaultFunction) (((typeof value !== "undefined") && (value != null)) ? value : defaultFunction ())
