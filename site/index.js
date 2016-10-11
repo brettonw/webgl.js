@@ -94,6 +94,10 @@ let buildScene = function () {
             context.clearColor (0.0, 0.0, 0.0, 1.0);
             context.clear (context.COLOR_BUFFER_BIT | context.DEPTH_BUFFER_BIT);
 
+            // back face culling enabled
+            context.enable (context.CULL_FACE);
+            context.cullFace (context.BACK);
+
             // extensions I want for getting gradient infomation inside the fragment shaders
             //context.getExtension ("OES_standard_derivatives");
             //context.getExtension ("EXT_shader_texture_lod");
@@ -115,8 +119,6 @@ let buildScene = function () {
         state: function (standardUniforms) {
             Program.get ("texture").use ();
             context.disable (context.DEPTH_TEST);
-            context.enable (context.CULL_FACE);
-            context.cullFace (context.BACK);
             standardUniforms.OUTPUT_ALPHA_PARAMETER = 1.0;
             standardUniforms.TEXTURE_SAMPLER = "starfield";
         },
@@ -142,8 +144,6 @@ let buildScene = function () {
         state: function (standardUniforms) {
             Program.get ("ads").use ();
             context.enable (context.DEPTH_TEST);
-            context.enable (context.CULL_FACE);
-            context.cullFace (context.BACK);
             standardUniforms.OUTPUT_ALPHA_PARAMETER = 1.0;
             standardUniforms.TEXTURE_SAMPLER = "moon";
             standardUniforms.MODEL_COLOR = [1.1, 1.1, 1.1];
@@ -162,8 +162,6 @@ let buildScene = function () {
         state: function (standardUniforms) {
             Program.get ("color").use ();
             context.enable (context.DEPTH_TEST);
-            context.enable (context.CULL_FACE);
-            context.cullFace (context.BACK);
             standardUniforms.OUTPUT_ALPHA_PARAMETER = 1.0;
             standardUniforms.MODEL_COLOR = [255, 241, 234];
         },
@@ -180,8 +178,6 @@ let buildScene = function () {
                 .setNightTxSampler ("earth-night")
                 .setSpecularMapTxSampler ("earth-specular-map");
             context.enable (context.DEPTH_TEST);
-            context.enable (context.CULL_FACE);
-            context.cullFace (context.BACK);
             standardUniforms.OUTPUT_ALPHA_PARAMETER = 1.0;
         },
         shape: "ball"
@@ -195,8 +191,6 @@ let buildScene = function () {
         state: function (standardUniforms) {
             Program.get ("clouds").use ();
             context.enable (context.DEPTH_TEST);
-            context.enable (context.CULL_FACE);
-            context.cullFace (context.BACK);
             standardUniforms.OUTPUT_ALPHA_PARAMETER = 0.90;
             standardUniforms.TEXTURE_SAMPLER = "clouds";
         },
@@ -212,8 +206,6 @@ let buildScene = function () {
             Program.get ("atmosphere").use ()
                 .setAtmosphereDepth (atmosphereDepth - 1.0);
             context.enable (context.DEPTH_TEST);
-            context.enable (context.CULL_FACE);
-            context.cullFace (context.BACK);
             standardUniforms.OUTPUT_ALPHA_PARAMETER = 0.5;
         },
         shape: "ball"
