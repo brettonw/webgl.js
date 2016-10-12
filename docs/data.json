@@ -843,6 +843,11 @@
                     "name": "canvasId",
                     "description": "the id of the canvas element to use for the rendering context.",
                     "type": "String"
+                },
+                {
+                    "name": "aspectRatio",
+                    "description": "the width / height of the canvas.",
+                    "type": "Number"
                 }
             ],
             "return": {

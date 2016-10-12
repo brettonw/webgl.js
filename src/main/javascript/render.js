@@ -68,10 +68,11 @@ let Render = function () {
      * @method new
      * @static
      * @param {string} canvasId the id of the canvas element to use for the rendering context.
+     * @param {number} aspectRatio the width / height of the canvas.
      * @return {Render}
      */
-    _.new = function (canvasId) {
-        return (render = Object.create (_).construct (canvasId));
+    _.new = function (canvasId, aspectRatio) {
+        return (render = Object.create (_).construct (canvasId, aspectRatio));
     };
 
     return _;
