@@ -1920,6 +1920,7 @@ let Node = function () {
             // 4 shape only
             function (standardUniforms) {
                 if (this.enabled) {
+                    LogLevel.say (LogLevel.TRACE, "Traverse: " + (this.name ? this.name : "unnamed"));
                     this.draw (standardUniforms);
                 }
                 return this;
@@ -1927,6 +1928,7 @@ let Node = function () {
             // 5 transform, shape
             function (standardUniforms) {
                 if (this.enabled) {
+                    LogLevel.say (LogLevel.TRACE, "Traverse: " + (this.name ? this.name : "unnamed"));
                     standardUniforms.MODEL_MATRIX_PARAMETER = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
                     this.draw (standardUniforms);
                 }
@@ -1935,6 +1937,7 @@ let Node = function () {
             // 6 state, shape
             function (standardUniforms) {
                 if (this.enabled) {
+                    LogLevel.say (LogLevel.TRACE, "Traverse: " + (this.name ? this.name : "unnamed"));
                     this.state (standardUniforms);
                     this.draw (standardUniforms);
                 }
@@ -1943,6 +1946,7 @@ let Node = function () {
             // 7 transform, state, shape
             function (standardUniforms) {
                 if (this.enabled) {
+                    LogLevel.say (LogLevel.TRACE, "Traverse: " + (this.name ? this.name : "unnamed"));
                     this.state (standardUniforms);
                     standardUniforms.MODEL_MATRIX_PARAMETER = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
                     this.draw (standardUniforms);
@@ -1952,6 +1956,7 @@ let Node = function () {
             // 8 children only
             function (standardUniforms) {
                 if (this.enabled) {
+                    LogLevel.say (LogLevel.TRACE, "Traverse: " + (this.name ? this.name : "unnamed"));
                     let modelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER;
                     for (let child of this.children) {
                         standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
@@ -1963,6 +1968,7 @@ let Node = function () {
             // 9 transform, children
             function (standardUniforms) {
                 if (this.enabled) {
+                    LogLevel.say (LogLevel.TRACE, "Traverse: " + (this.name ? this.name : "unnamed"));
                     let modelMatrix = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
                     for (let child of this.children) {
                         standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
@@ -1974,6 +1980,7 @@ let Node = function () {
             // 10 state, children
             function (standardUniforms) {
                 if (this.enabled) {
+                    LogLevel.say (LogLevel.TRACE, "Traverse: " + (this.name ? this.name : "unnamed"));
                     this.state (standardUniforms);
                     let modelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER;
                     for (let child of this.children) {
@@ -1986,6 +1993,7 @@ let Node = function () {
             // 11 transform, state, children
             function (standardUniforms) {
                 if (this.enabled) {
+                    LogLevel.say (LogLevel.TRACE, "Traverse: " + (this.name ? this.name : "unnamed"));
                     this.state (standardUniforms);
                     let modelMatrix = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
                     for (let child of this.children) {
@@ -1998,6 +2006,7 @@ let Node = function () {
             // 12 shape, children
             function (standardUniforms) {
                 if (this.enabled) {
+                    LogLevel.say (LogLevel.TRACE, "Traverse: " + (this.name ? this.name : "unnamed"));
                     let modelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER;
                     this.draw (standardUniforms);
                     for (let child of this.children) {
@@ -2010,6 +2019,7 @@ let Node = function () {
             // 13 transform, shape, children
             function (standardUniforms) {
                 if (this.enabled) {
+                    LogLevel.say (LogLevel.TRACE, "Traverse: " + (this.name ? this.name : "unnamed"));
                     let modelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
                     this.draw (standardUniforms);
                     for (let child of this.children) {
@@ -2022,6 +2032,7 @@ let Node = function () {
             // 14 state, shape, children
             function (standardUniforms) {
                 if (this.enabled) {
+                    LogLevel.say (LogLevel.TRACE, "Traverse: " + (this.name ? this.name : "unnamed"));
                     this.state (standardUniforms);
                     this.draw (standardUniforms);
                     let modelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER;
@@ -2035,6 +2046,7 @@ let Node = function () {
             // 15 transform, state, shape, children
             function (standardUniforms) {
                 if (this.enabled) {
+                    LogLevel.say (LogLevel.TRACE, "Traverse: " + (this.name ? this.name : "unnamed"));
                     this.state (standardUniforms);
                     let modelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
                     this.draw (standardUniforms);

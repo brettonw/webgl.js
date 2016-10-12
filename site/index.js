@@ -50,7 +50,7 @@ let draw = function (deltaPosition) {
     // I'm cheating with the near/far, I know the moon and anything orbiting it is the farthest out
     // we'll want to see on the near side, and the starfield on the far side
     let nearPlane = Math.max (0.1, hypotenuse - 80.0);
-    let farPlane = hypotenuse + 80.0;
+    let farPlane = hypotenuse + 211.0;
     standardUniforms.PROJECTION_MATRIX_PARAMETER = Float4x4.perspective (fov, context.viewportWidth / context.viewportHeight, nearPlane, farPlane, Float4x4.create ());
 
     // compute the view parameters as up or down, and left or right
@@ -121,10 +121,13 @@ let buildScene = function () {
         name: "stars",
         transform: Float4x4.multiply(Float4x4.rotateX (Float4x4.identity (), Math.PI), Float4x4.scale (-210)),
         state: function (standardUniforms) {
-            //context.disable (context.DEPTH_TEST);
-            //context.depthMask (false);
-            standardUniforms.OUTPUT_ALPHA_PARAMETER = 1.0;//starsNode.alpha;
-        }
+            context.disable (context.DEPTH_TEST);
+            context.depthMask (false);
+            Program.get ("texture").use ();
+            standardUniforms.TEXTURE_SAMPLER = "starfield";
+            standardUniforms.OUTPUT_ALPHA_PARAMETER = starsNode.alpha;
+        },
+        shape: "ball"
     });
     scene.addChild (starsNode);
 
@@ -162,11 +165,10 @@ let buildScene = function () {
         shape: "sphere2",
         children: false
     });
-    starsNode.addChild (sunNode);
+    scene.addChild (sunNode);
 
     let worldNode = Node.new ({
         name: "world",
-        enabled:false,
         state: function (standardUniforms) {
             context.enable (context.DEPTH_TEST);
             context.depthMask (true);
@@ -235,6 +237,7 @@ let buildScene = function () {
     });
     worldNode.addChild (atmosphereNode);
 
+    LogLevel.set (LogLevel.TRACE);
     draw ([0, 0]);
 };
 
