@@ -73,7 +73,7 @@ let Node = function () {
 
         // now make a traverse function depending on the included features
         let INVALID_TRAVERSE = function (transform) {
-            LOG (LogLevel.WARNING, "WARNING: INVALID TRAVERSE");
+            LOG (LogLevel.WARNING, "INVALID TRAVERSE");
             return this;
         };
         LOG (LogLevel.TRACE, "Node (" + this.getName () + "): traverse (" + traverseFunctionIndex + ")");
@@ -88,105 +88,129 @@ let Node = function () {
             INVALID_TRAVERSE,
             // 4 shape only
             function (standardUniforms) {
-                this.draw (standardUniforms);
+                if (this.enabled) {
+                    this.draw (standardUniforms);
+                }
                 return this;
             },
             // 5 transform, shape
             function (standardUniforms) {
-                standardUniforms.MODEL_MATRIX_PARAMETER = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
-                this.draw (standardUniforms);
+                if (this.enabled) {
+                    standardUniforms.MODEL_MATRIX_PARAMETER = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
+                    this.draw (standardUniforms);
+                }
                 return this;
             },
             // 6 state, shape
             function (standardUniforms) {
-                this.state (standardUniforms);
-                this.draw (standardUniforms);
+                if (this.enabled) {
+                    this.state (standardUniforms);
+                    this.draw (standardUniforms);
+                }
                 return this;
             },
             // 7 transform, state, shape
             function (standardUniforms) {
-                this.state (standardUniforms);
-                standardUniforms.MODEL_MATRIX_PARAMETER = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
-                draw (standardUniforms);
+                if (this.enabled) {
+                    this.state (standardUniforms);
+                    standardUniforms.MODEL_MATRIX_PARAMETER = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
+                    this.draw (standardUniforms);
+                }
                 return this;
             },
             // 8 children only
             function (standardUniforms) {
-                let modelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER;
-                for (let child of this.children) {
-                    standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
-                    child.traverse (standardUniforms);
+                if (this.enabled) {
+                    let modelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER;
+                    for (let child of this.children) {
+                        standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
+                        child.traverse (standardUniforms);
+                    }
                 }
                 return this;
             },
             // 9 transform, children
             function (standardUniforms) {
-                let modelMatrix = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
-                for (let child of this.children) {
-                    standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
-                    child.traverse (standardUniforms);
+                if (this.enabled) {
+                    let modelMatrix = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
+                    for (let child of this.children) {
+                        standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
+                        child.traverse (standardUniforms);
+                    }
                 }
                 return this;
             },
             // 10 state, children
             function (standardUniforms) {
-                this.state (standardUniforms);
-                let modelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER;
-                for (let child of this.children) {
-                    standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
-                    child.traverse (standardUniforms);
+                if (this.enabled) {
+                    this.state (standardUniforms);
+                    let modelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER;
+                    for (let child of this.children) {
+                        standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
+                        child.traverse (standardUniforms);
+                    }
                 }
                 return this;
             },
             // 11 transform, state, children
             function (standardUniforms) {
-                this.state (standardUniforms);
-                let modelMatrix = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
-                for (let child of this.children) {
-                    standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
-                    child.traverse (standardUniforms);
+                if (this.enabled) {
+                    this.state (standardUniforms);
+                    let modelMatrix = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
+                    for (let child of this.children) {
+                        standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
+                        child.traverse (standardUniforms);
+                    }
                 }
                 return this;
             },
             // 12 shape, children
             function (standardUniforms) {
-                let modelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER;
-                this.draw (standardUniforms);
-                for (let child of this.children) {
-                    standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
-                    child.traverse (standardUniforms);
+                if (this.enabled) {
+                    let modelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER;
+                    this.draw (standardUniforms);
+                    for (let child of this.children) {
+                        standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
+                        child.traverse (standardUniforms);
+                    }
                 }
                 return this;
             },
             // 13 transform, shape, children
             function (standardUniforms) {
-                let modelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
-                this.draw (standardUniforms);
-                for (let child of this.children) {
-                    standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
-                    child.traverse (standardUniforms);
+                if (this.enabled) {
+                    let modelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
+                    this.draw (standardUniforms);
+                    for (let child of this.children) {
+                        standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
+                        child.traverse (standardUniforms);
+                    }
                 }
                 return this;
             },
             // 14 state, shape, children
             function (standardUniforms) {
-                this.state (standardUniforms);
-                this.draw (standardUniforms);
-                let modelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER;
-                for (let child of this.children) {
-                    standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
-                    child.traverse (standardUniforms);
+                if (this.enabled) {
+                    this.state (standardUniforms);
+                    this.draw (standardUniforms);
+                    let modelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER;
+                    for (let child of this.children) {
+                        standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
+                        child.traverse (standardUniforms);
+                    }
                 }
                 return this;
             },
             // 15 transform, state, shape, children
             function (standardUniforms) {
-                this.state (standardUniforms);
-                let modelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
-                this.draw (standardUniforms);
-                for (let child of this.children) {
-                    standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
-                    child.traverse (standardUniforms);
+                if (this.enabled) {
+                    this.state (standardUniforms);
+                    let modelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
+                    this.draw (standardUniforms);
+                    for (let child of this.children) {
+                        standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
+                        child.traverse (standardUniforms);
+                    }
                 }
                 return this;
             }
@@ -219,11 +243,9 @@ let Node = function () {
      * Program
      */
     _.draw = function (standardUniforms) {
-        if (this.enabled) {
-            standardUniforms.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardUniforms.MODEL_MATRIX_PARAMETER));
-            Program.getCurrentProgram ().setStandardUniforms (standardUniforms);
-            this.shape.draw ();
-        }
+        standardUniforms.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardUniforms.MODEL_MATRIX_PARAMETER));
+        Program.getCurrentProgram ().setStandardUniforms (standardUniforms);
+        this.shape.draw ();
     };
 
     /**

@@ -11,6 +11,7 @@ let showAtmosphereCheckbox;
 let fovRange;
 let framingRange;
 
+let starsNode;
 let constellationsNode;
 let cloudsNode;
 let atmosphereNode;
@@ -33,7 +34,8 @@ let draw = function (deltaPosition) {
     fovRangeValue *= 0.01;
     fovRangeValue *= fovRangeValue;
     fovRangeValue = 1.0 - fovRangeValue;
-    fovRangeValue = 10 + (50 * fovRangeValue);
+    starsNode.alpha = fovRangeValue;
+    fovRangeValue = 0.5 + (59.5 * fovRangeValue);
 
     let framingRangeValue = framingRange.value;
     framingRangeValue *= 0.01;
@@ -45,8 +47,10 @@ let draw = function (deltaPosition) {
     let sinTheta = Math.sin(Utility.degreesToRadians (halfFov));
     let hypotenuse = goalOpposite / sinTheta;
     //console.log("Setting Projection at: " + hypotenuse);
-    let nearPlane = 0.1;
-    let farPlane = hypotenuse + 220.0;
+    // I'm cheating with the near/far, I know the moon and anything orbiting it is the farthest out
+    // we'll want to see on the near side, and the starfield on the far side
+    let nearPlane = Math.max (0.1, hypotenuse - 80.0);
+    let farPlane = hypotenuse + 80.0;
     standardUniforms.PROJECTION_MATRIX_PARAMETER = Float4x4.perspective (fov, context.viewportWidth / context.viewportHeight, nearPlane, farPlane, Float4x4.create ());
 
     // compute the view parameters as up or down, and left or right
@@ -113,37 +117,68 @@ let buildScene = function () {
         }
     });
 
-    let starfieldNode = Node.new ({
-        name: "starfield",
+    starsNode = Node.new ({
+        name: "stars",
         transform: Float4x4.multiply(Float4x4.rotateX (Float4x4.identity (), Math.PI), Float4x4.scale (-210)),
         state: function (standardUniforms) {
+            //context.disable (context.DEPTH_TEST);
+            //context.depthMask (false);
+            standardUniforms.OUTPUT_ALPHA_PARAMETER = 1.0;//starsNode.alpha;
+        }
+    });
+    scene.addChild (starsNode);
+
+    let starfieldNode = Node.new ({
+        name: "starfield",
+        state: function (standardUniforms) {
             Program.get ("texture").use ();
-            context.disable (context.DEPTH_TEST);
-            standardUniforms.OUTPUT_ALPHA_PARAMETER = 1.0;
             standardUniforms.TEXTURE_SAMPLER = "starfield";
         },
-        shape: "ball"
+        shape: "ball",
+        children: false
     });
-    scene.addChild (starfieldNode);
+    starsNode.addChild (starfieldNode);
 
     constellationsNode = Node.new ({
         name: "constellations",
         state: function (standardUniforms) {
             Program.get ("overlay").use ();
-            standardUniforms.OUTPUT_ALPHA_PARAMETER = 0.25;
+            standardUniforms.OUTPUT_ALPHA_PARAMETER = starsNode.alpha * 0.25;
             standardUniforms.TEXTURE_SAMPLER = "constellations";
         },
         shape: "ball",
         children: false
     });
-    starfieldNode.addChild (constellationsNode);
+    starsNode.addChild (constellationsNode);
+
+    let sunNode = Node.new ({
+        name: "sun",
+        transform: Float4x4.multiply (Float4x4.scale (0.930), Float4x4.translate ([0, 0, -200])),
+        state: function (standardUniforms) {
+            Program.get ("color").use ();
+            standardUniforms.OUTPUT_ALPHA_PARAMETER = 1.0;
+            standardUniforms.MODEL_COLOR = [255, 241, 234];
+        },
+        shape: "sphere2",
+        children: false
+    });
+    starsNode.addChild (sunNode);
+
+    let worldNode = Node.new ({
+        name: "world",
+        enabled:false,
+        state: function (standardUniforms) {
+            context.enable (context.DEPTH_TEST);
+            context.depthMask (true);
+        }
+    });
+    scene.addChild (worldNode);
 
     let moonNode = Node.new ({
         name: "moon",
         transform: Float4x4.multiply (Float4x4.scale (0.273), Float4x4.translate ([60.2682, 0, 0])),
         state: function (standardUniforms) {
             Program.get ("ads").use ();
-            context.enable (context.DEPTH_TEST);
             standardUniforms.OUTPUT_ALPHA_PARAMETER = 1.0;
             standardUniforms.TEXTURE_SAMPLER = "moon";
             standardUniforms.MODEL_COLOR = [1.1, 1.1, 1.1];
@@ -152,22 +187,10 @@ let buildScene = function () {
             standardUniforms.SPECULAR_CONTRIBUTION = 0.05;
             standardUniforms.SPECULAR_EXPONENT = 8.0;
         },
-        shape: "ball-small"
+        shape: "ball-small",
+        children: false
     });
-    scene.addChild (moonNode);
-
-    let sunNode = Node.new ({
-        name: "sun",
-        transform: Float4x4.multiply (Float4x4.scale (0.930), Float4x4.translate ([0, 0, -200])),
-        state: function (standardUniforms) {
-            Program.get ("color").use ();
-            context.enable (context.DEPTH_TEST);
-            standardUniforms.OUTPUT_ALPHA_PARAMETER = 1.0;
-            standardUniforms.MODEL_COLOR = [255, 241, 234];
-        },
-        shape: "sphere2"
-    });
-    scene.addChild (sunNode);
+    worldNode.addChild (moonNode);
 
     let earthRadius = 6378.1370;
     let earthNode = Node.new ({
@@ -177,12 +200,12 @@ let buildScene = function () {
                 .setDayTxSampler ("earth-day")
                 .setNightTxSampler ("earth-night")
                 .setSpecularMapTxSampler ("earth-specular-map");
-            context.enable (context.DEPTH_TEST);
             standardUniforms.OUTPUT_ALPHA_PARAMETER = 1.0;
         },
-        shape: "ball"
+        shape: "ball",
+        children: false
     });
-    scene.addChild (earthNode);
+    worldNode.addChild (earthNode);
 
     let cloudHeight = (40 + earthRadius) / earthRadius;
     cloudsNode = Node.new ({
@@ -190,13 +213,13 @@ let buildScene = function () {
         transform: Float4x4.scale (cloudHeight),
         state: function (standardUniforms) {
             Program.get ("clouds").use ();
-            context.enable (context.DEPTH_TEST);
             standardUniforms.OUTPUT_ALPHA_PARAMETER = 0.90;
             standardUniforms.TEXTURE_SAMPLER = "clouds";
         },
-        shape: "ball"
+        shape: "ball",
+        children: false
     });
-    scene.addChild (cloudsNode);
+    worldNode.addChild (cloudsNode);
 
     let atmosphereDepth = (160 + earthRadius) / earthRadius;
     atmosphereNode = Node.new ({
@@ -205,12 +228,12 @@ let buildScene = function () {
         state: function (standardUniforms) {
             Program.get ("atmosphere").use ()
                 .setAtmosphereDepth (atmosphereDepth - 1.0);
-            context.enable (context.DEPTH_TEST);
             standardUniforms.OUTPUT_ALPHA_PARAMETER = 0.5;
         },
-        shape: "ball"
+        shape: "ball",
+        children: false
     });
-    scene.addChild (atmosphereNode);
+    worldNode.addChild (atmosphereNode);
 
     draw ([0, 0]);
 };

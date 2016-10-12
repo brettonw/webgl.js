@@ -536,7 +536,7 @@
         },
         {
             "file": "src/main/javascript/node.js",
-            "line": 198,
+            "line": 222,
             "description": "add a child node (only applies to non-leaf nodes).",
             "itemtype": "method",
             "name": "addChild",
@@ -552,7 +552,7 @@
         },
         {
             "file": "src/main/javascript/node.js",
-            "line": 214,
+            "line": 238,
             "description": "draw this node's contents.",
             "itemtype": "method",
             "name": "draw",
@@ -567,7 +567,7 @@
         },
         {
             "file": "src/main/javascript/node.js",
-            "line": 229,
+            "line": 251,
             "description": "traverse this node and its contents. this funciton is a place-holder that is replaced by the\nactual function called depending on the parameters passed during construction.",
             "itemtype": "method",
             "name": "traverse",
@@ -583,7 +583,7 @@
         },
         {
             "file": "src/main/javascript/node.js",
-            "line": 242,
+            "line": 264,
             "description": "get the name of this node (if it has one).",
             "itemtype": "method",
             "name": "getName",
@@ -595,7 +595,7 @@
         },
         {
             "file": "src/main/javascript/node.js",
-            "line": 252,
+            "line": 274,
             "description": "get a node by name.",
             "itemtype": "method",
             "name": "get",
@@ -614,7 +614,7 @@
         },
         {
             "file": "src/main/javascript/node.js",
-            "line": 263,
+            "line": 285,
             "description": "static method to create and construct a new scene graph node.",
             "itemtype": "method",
             "name": "new",
