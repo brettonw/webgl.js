@@ -9,6 +9,7 @@
 // earth night textures: http://visibleearth.nasa.gov/view.php?id=79765
 //                       http://visibleearth.nasa.gov/view.php?id=55167
 // earth day textures: http://visibleearth.nasa.gov/view_cat.php?categoryID=1484&p=1
+//                      http://laps.noaa.gov/albers/sos/sos.html
 // earth cloud textures: http://visibleearth.nasa.gov/view.php?id=57747
 // realtime cloud coverage: http://weather.msfc.nasa.gov/GOES/getsatellite.html
 //                          http://weather.msfc.nasa.gov/GOES/satlinks.html

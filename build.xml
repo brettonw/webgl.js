@@ -32,7 +32,8 @@
         <mkdir dir="${target-dir}"/>
         <concat destfile="${target-dir}/${concat-target}">
             <!-- file order is important -->
-            <fileset dir="${source-dir}" includes="macros.js" />
+            <fileset dir="${source-dir}" includes="macros.js"/>
+            <fileset dir="${source-dir}" includes="log-level.js"/>
             <fileset dir="${source-dir}" includes="on-ready.js"/>
             <fileset dir="${source-dir}" includes="mouse-tracker.js"/>
             <fileset dir="${source-dir}" includes="loader.js" />

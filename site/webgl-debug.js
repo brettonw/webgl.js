@@ -1,5 +1,8 @@
 "use strict;"
+// class hierarchy
 
+
+// default values...
 
 
 let LogLevel = function () {
@@ -17,24 +20,33 @@ let LogLevel = function () {
         logLevel = newLogLevel;
     };
 
-    let formatStrings = [ "TRC", "INF", "WRN", "ERR" ];
+    let formatStrings = ["TRC", "INF", "WRN", "ERR"];
     _.say = function (messageLogLevel, message) {
         if (messageLogLevel >= logLevel) {
-            console.log (formatStrings[logLevel] + ": " + message)
+            console.log (formatStrings[messageLogLevel] + ": " + message)
         }
+    };
+
+    _.trace = function (message) {
+        this.say (_.TRACE, message);
+    };
+
+    _.info = function (message) {
+        this.say (_.INFO, message);
+    };
+
+    _.warn = function (message) {
+        this.say (_.WARNNG, message);
+    };
+
+    _.error = function (message) {
+        this.say (_.ERROR, message);
     };
 
     return _;
 } ();
 
-
 LogLevel.set (LogLevel.INFO);
-// class hierarchy
-
-
-// default values...
-
-
 let OnReady = function () {
     let _ = Object.create (null);
 
@@ -1825,7 +1837,10 @@ let Texture = function () {
      * @return {Texture}
      */
     _.get = function (name) {
-        return textures[name];
+        if (name in textures) {
+            return textures[name];
+        }
+        LogLevel.say (LogLevel.WARNNG, "Texture not found: " + name);
     };
 
     return _;

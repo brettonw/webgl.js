@@ -153,7 +153,10 @@ let Texture = function () {
      * @return {Texture}
      */
     _.get = function (name) {
-        return textures[name];
+        if (name in textures) {
+            return textures[name];
+        }
+        LOG(LogLevel.WARNNG, &quot;Texture not found: &quot; + name);
     };
 
     return _;
