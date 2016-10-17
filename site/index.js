@@ -1,7 +1,8 @@
 "use strict;"
 
 let scene;
-let currentPosition = [0.6, 0.05];
+let currentTime = 0;
+let currentPosition = [0, 0];
 
 let standardUniforms = Object.create(null);
 
@@ -17,6 +18,10 @@ let cloudsNode;
 let atmosphereNode;
 
 let draw = function (deltaPosition) {
+    // update all the things...
+    currentTime  = new Date ().getTime();
+    Thing.updateAll(currentTime);
+
     // update the current position and clamp or wrap accordingly
     currentPosition = Float2.add (currentPosition, deltaPosition);
     while (currentPosition[0] > 1) {
@@ -113,7 +118,6 @@ let buildScene = function () {
             // a little bit of setup for lighting
             standardUniforms.AMBIENT_LIGHT_COLOR = [1.0, 1.0, 1.0];
             standardUniforms.LIGHT_COLOR = [1.0, 1.0, 1.0];
-            standardUniforms.LIGHT_DIRECTION = Float3.normalize ([0, 0, -100]);
         }
     });
 
@@ -154,7 +158,7 @@ let buildScene = function () {
     });
     starsNode.addChild (constellationsNode);
 
-    // radii in km so I can do some reasoning...
+    // radii in km so I can do some reasoning about scales...
     let earthRadius = 6378.1370;
     let sunRadius = 695700.0;
     let earthOrbit = 149597870.700;
@@ -168,7 +172,7 @@ let buildScene = function () {
     sunScale *= drawScale; // approx 0.93
     let sunNode = Node.new ({
         name: "sun",
-        transform: Float4x4.multiply (Float4x4.scale (sunScale), Float4x4.translate ([0, 0, -sunDrawDistance])),
+        transform: Float4x4.identity (),
         state: function (standardUniforms) {
             Program.get ("color").use ();
             standardUniforms.OUTPUT_ALPHA_PARAMETER = 1.0;
@@ -178,6 +182,48 @@ let buildScene = function () {
         children: false
     });
     scene.addChild (sunNode);
+
+    Thing.new ("sun", "sun", function (time) {
+        // get the node
+        let node = Node.get (this.node);
+
+        // http://www.stjarnhimlen.se/comp/ppcomp.html
+        let jd = (time / 86400000.0) + 2440587.5;
+        let d = jd - 2451543.5;
+        d += 0.5;
+
+        let ecl = Utility.degreesToRadians (23.4393 - (3.563e-7 * d));
+        let w = Utility.degreesToRadians (282.9404 + (4.70935e-5 * d));
+        let e = 0.016709 - (1.151e-9 * d);
+        let M = Utility.degreesToRadians (356.0470 + (0.9856002585 * d));
+
+        let E = M + ((e * Math.sin(M)) * (1.0 + (e * Math.cos(M))));
+        let xv = Math.cos(E) - e;
+        let yv = Math.sqrt(1.0 - (e * e)) * Math.sin(E);
+
+        let v = Math.atan2 (yv, xv);
+        let r = Math.sqrt ((xv * xv) + (yv * yv));
+
+        let lonsun = v + w;
+
+        let xs = r * Math.cos(lonsun);
+        let ys = r * Math.sin(lonsun);
+
+        let xe = xs;
+        let ye = ys * Math.cos(ecl);
+        let ze = ys * Math.sin(ecl);
+
+        let RA  = Math.atan2 (ye, xe);
+        let Dec = Math.atan2 (ze, Math.sqrt((xe * xe)+(ye * ye)));
+
+
+        let position = RA;
+        let sunDirection = Float3.normalize ([-Math.cos (position), 0, -Math.sin (position)]);
+        let sunPosition = Float4.scale (sunDirection, sunDrawDistance);
+        // compute the position of the sun, and update the lighting conversation
+        node.transform = Float4x4.multiply (Float4x4.scale (sunScale), Float4x4.translate (sunPosition)),
+        standardUniforms.LIGHT_DIRECTION = sunDirection;
+    });
 
     let worldNode = Node.new ({
         name: "world",
@@ -193,7 +239,7 @@ let buildScene = function () {
     let moonNode = Node.new ({
         name: "moon",
         //transform: Float4x4.multiply (Float4x4.scale (0.273), Float4x4.translate ([60.2682, 0, 0])),
-        transform: Float4x4.multiply (Float4x4.scale (moonScale), Float4x4.translate ([moonDistance, 0, 0])),
+        transform: Float4x4.multiply (Float4x4.scale (moonScale), Float4x4.translate ([-moonDistance, 0, 0])),
         state: function (standardUniforms) {
             Program.get ("ads").use ();
             standardUniforms.OUTPUT_ALPHA_PARAMETER = 1.0;

@@ -44,6 +44,7 @@ let MouseTracker = function () {
         switch (event.keyCode) {
             case KEY_LEFT: onReady.notify ([-stepSize, 0.0]); break;
             case KEY_RIGHT: onReady.notify ([stepSize, 0.0]); break;
+            default: onReady.notify ([0.0, 0.0]); break;
         }
     };
 

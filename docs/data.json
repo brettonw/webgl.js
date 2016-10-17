@@ -100,6 +100,13 @@
             "fors": {},
             "namespaces": {}
         },
+        "src/main/javascript/thing.js": {
+            "name": "src/main/javascript/thing.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
         "src/main/javascript/utility.js": {
             "name": "src/main/javascript/utility.js",
             "modules": {},
@@ -963,6 +970,26 @@
             "return": {
                 "description": "",
                 "type": "Texture"
+            },
+            "class": "Utility"
+        },
+        {
+            "file": "src/main/javascript/thing.js",
+            "line": 17,
+            "description": "fetch a thing by name.",
+            "itemtype": "method",
+            "name": "get",
+            "static": 1,
+            "params": [
+                {
+                    "name": "name",
+                    "description": "the name of the thing to return",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Thing"
             },
             "class": "Utility"
         },

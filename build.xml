@@ -65,6 +65,7 @@
             <fileset dir="${source-dir}/shapes" includes="extrude.js" />
             <fileset dir="${source-dir}/shapes" includes="triangulate.js" />
             <fileset dir="${source-dir}" includes="utility.js" />
+            <fileset dir="${source-dir}" includes="thing.js" />
         </concat>
     </target>
 
