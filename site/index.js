@@ -161,11 +161,14 @@ let buildScene = function () {
     let moonRadius = 1737.1;
     let moonOrbit = 384405.0;
 
-    let sunDistance = 200;
-    let sunScale = (sunRadius / earthRadius) * (sunDistance / earthOrbit); // approx 0.93
+    let sunDrawDistance = 200;
+    let sunDistance = earthOrbit / earthRadius;
+    let sunScale = (sunRadius / earthRadius);
+    let drawScale = sunDrawDistance / sunDistance;
+    sunScale *= drawScale; // approx 0.93
     let sunNode = Node.new ({
         name: "sun",
-        transform: Float4x4.multiply (Float4x4.scale (sunScale), Float4x4.translate ([0, 0, -sunDistance])),
+        transform: Float4x4.multiply (Float4x4.scale (sunScale), Float4x4.translate ([0, 0, -sunDrawDistance])),
         state: function (standardUniforms) {
             Program.get ("color").use ();
             standardUniforms.OUTPUT_ALPHA_PARAMETER = 1.0;
