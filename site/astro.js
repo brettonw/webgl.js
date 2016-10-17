@@ -46,7 +46,8 @@
 
 // mean earth radius: 6,378.1370 km
 // midlevel clouds to cirrus layer is 2,000m to 6,000m
-// mean moon orbit radius is 384,399km or 60.2682 earth radii away
+// mean moon radius:1737.1
+// mean moon orbit radius is 362,600km to 405,400km away (using 384405 as mean)
 // mean sun radius: 695,700km
 // mean sun distance: 149,597,870.700km
 

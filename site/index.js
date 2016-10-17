@@ -154,9 +154,18 @@ let buildScene = function () {
     });
     starsNode.addChild (constellationsNode);
 
+    // radii in km so I can do some reasoning...
+    let earthRadius = 6378.1370;
+    let sunRadius = 695700.0;
+    let earthOrbit = 149597870.700;
+    let moonRadius = 1737.1;
+    let moonOrbit = 384405.0;
+
+    let sunDistance = 200;
+    let sunScale = (sunRadius / earthRadius) * (sunDistance / earthOrbit); // approx 0.93
     let sunNode = Node.new ({
         name: "sun",
-        transform: Float4x4.multiply (Float4x4.scale (0.930), Float4x4.translate ([0, 0, -200])),
+        transform: Float4x4.multiply (Float4x4.scale (sunScale), Float4x4.translate ([0, 0, -sunDistance])),
         state: function (standardUniforms) {
             Program.get ("color").use ();
             standardUniforms.OUTPUT_ALPHA_PARAMETER = 1.0;
@@ -176,16 +185,19 @@ let buildScene = function () {
     });
     scene.addChild (worldNode);
 
+    let moonScale = moonRadius / earthRadius; // approx 0.273
+    let moonDistance = moonOrbit / earthRadius; // approx 60.268
     let moonNode = Node.new ({
         name: "moon",
-        transform: Float4x4.multiply (Float4x4.scale (0.273), Float4x4.translate ([60.2682, 0, 0])),
+        //transform: Float4x4.multiply (Float4x4.scale (0.273), Float4x4.translate ([60.2682, 0, 0])),
+        transform: Float4x4.multiply (Float4x4.scale (moonScale), Float4x4.translate ([moonDistance, 0, 0])),
         state: function (standardUniforms) {
             Program.get ("ads").use ();
             standardUniforms.OUTPUT_ALPHA_PARAMETER = 1.0;
             standardUniforms.TEXTURE_SAMPLER = "moon";
             standardUniforms.MODEL_COLOR = [1.1, 1.1, 1.1];
             standardUniforms.AMBIENT_CONTRIBUTION = 0.05;
-            standardUniforms.DIFFUSE_CONTRIBUTION = 0.95;
+            standardUniforms.DIFFUSE_CONTRIBUTION = 1.25;
             standardUniforms.SPECULAR_CONTRIBUTION = 0.05;
             standardUniforms.SPECULAR_EXPONENT = 8.0;
         },
@@ -194,7 +206,6 @@ let buildScene = function () {
     });
     worldNode.addChild (moonNode);
 
-    let earthRadius = 6378.1370;
     let earthNode = Node.new ({
         name: "earth",
         state: function (standardUniforms) {
@@ -209,6 +220,7 @@ let buildScene = function () {
     });
     worldNode.addChild (earthNode);
 
+    // clouds at 40km is a bit on the high side..., but it shows well
     let cloudHeight = (40 + earthRadius) / earthRadius;
     cloudsNode = Node.new ({
         name: "clouds",
@@ -223,6 +235,7 @@ let buildScene = function () {
     });
     worldNode.addChild (cloudsNode);
 
+    // atmosphere at 160km is actually in about the right place
     let atmosphereDepth = (160 + earthRadius) / earthRadius;
     atmosphereNode = Node.new ({
         name: "clouds",

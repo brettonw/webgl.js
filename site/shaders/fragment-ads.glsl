@@ -33,7 +33,7 @@ void main(void) {
 
     // compute the diffuse contribution to the surface lighting
     vec3 normalVector = normalize ((normalMatrix * vec4 (normal, 0.0)).xyz);
-	float diffuseMultiplier = clamp (dot(normalVector, lightDirection), 0.0, 1.0) * diffuseContribution;
+	float diffuseMultiplier = clamp (dot(normalVector, lightDirection) * diffuseContribution, 0.0, 1.0);
     vec3 diffuseColor = multiplyColors (diffuseMultiplier * lightColor, surfaceColor);
 
     // compute the specular contribution to the surface lighting
