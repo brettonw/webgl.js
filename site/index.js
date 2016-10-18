@@ -1,7 +1,7 @@
 "use strict;"
 
 let scene;
-let currentTime = new Date ().getTime ();
+let currentTime = new Date (2016, 2, 21, 0, 0, 0, 0).getTime();
 let currentPosition = [0, 0];
 
 let standardUniforms = Object.create(null);
@@ -18,10 +18,12 @@ let cloudsNode;
 let atmosphereNode;
 
 let draw = function (deltaPosition) {
-    // advance the clock by an hour
-    //currentTime += 12 * 60 * 60 * 1000;
-    // update all the things...
-    Thing.updateAll(currentTime);
+    if (Float2.normSq (deltaPosition) == 0) {
+        // advance the clock by 6 hours
+        //currentTime += 1;
+        // update all the things...
+        Thing.updateAll(currentTime);
+    }
 
     // update the current position and clamp or wrap accordingly
     currentPosition = Float2.add (currentPosition, deltaPosition);
@@ -188,11 +190,63 @@ let buildScene = function () {
         // get the node
         let node = Node.get (this.node);
 
+
+        // https://en.wikipedia.org/wiki/Position_of_the_Sun
+        // for J2000...
+        let UT1 = 24 * 60 * 60;
+        const millisecondsPerDay = UT1 * 1000;
+        let julianDate = (time / millisecondsPerDay) + 2440587.5;
+        let julianDay = julianDate - 2451545.0;
+        let julianCentury = julianDay / 36525;
+
+        // where D is the number of UT1 days since J2000
+        let D = julianDay;
+        let GMST0 = Utility.unwindDegrees(18.697374558 + (24.06570982441908 * D));
+
+        // earth rotation angle
+        //let ERA = Utility.unwindDegrees(360.0 * (0.7790572732640 + (1.00273781191135448 * D)));
+        let testNode = Node.get ("test");
+        //testNode.transform = Float4x4.rotateY(Float4x4.identity (), Utility.degreesToRadians(GMST0));
+
+        // compute the sun position
+        let n = julianDay;
+
+        // compute the mean longitude of the sun, corrected for aberration of light
+        let L = 280.460 + (0.9856474 * n);
+
+        // compute the mean anomaly of the sun
+        let g = 357.528 + (0.9856003 * n);
+
+        // unwind L & g
+        L = Utility.unwindDegrees(L);
+        g - Utility.unwindDegrees(g);
+
+        // compute the ecliptic longitude of the sun
+        let eclipticLongitude = L + (1.915 * Utility.sin(g)) + (0.020 * Utility.sin (g + g));
+
+        // compute the distance to the sun in astronomical units
+        let R = 1.00014 - (0.01671 * Utility.cos (g)) - (0.00014 * Utility.cos (g + g));
+
+        // compute the ecliptic obliquity
+        let eclipticObliquity = 23.439 - (0.0000004 * n);
+
+        // compute rectangular equatorial coordinates
+        // XXX temporary - I am using a coordinate system where Z goes into the view, and Y is up
+        // XXX temporary - I will adjust this later by adding a general rotation at the top of the
+        // XXX temporary - view frame
+        let X = R * Utility.cos (eclipticLongitude);
+        let Y = R * Utility.cos (eclipticObliquity) * Utility.sin (eclipticLongitude);
+        let Z = R * Utility.sin (eclipticObliquity) * Utility.sin (eclipticLongitude);
+
+        let sunDirection = Float3.normalize ([X, Z, Y]);
+
         // http://www.stjarnhimlen.se/comp/ppcomp.html
+        /*
         const millisecondsPerDay = 24 * 60 * 60 * 1000;
         let jd = (time / millisecondsPerDay) + 2440587.5;
         let d = jd - 2451543.5;
         //d = -3543.0;
+        d = 0;
 
         let ecl = 23.4393 - (3.563e-7 * d);
         let w = 282.9404 + (4.70935e-5 * d);
@@ -224,6 +278,7 @@ let buildScene = function () {
 
         //let RA  = Math.atan2 (ye, xe);
         //let Dec = Math.atan2 (ze, Math.sqrt((xe * xe)+(ye * ye)));
+        */
 
         //let position = RA;
         //let sunDirection = Float3.normalize ([-Math.cos (position), 0, -Math.sin (position)]);
@@ -233,6 +288,25 @@ let buildScene = function () {
         standardUniforms.LIGHT_DIRECTION = sunDirection;
     });
 
+    let testNode = Node.new ({
+        name: "test",
+        transform: Float4x4.identity (),
+        state: function (standardUniforms) {
+            context.enable (context.DEPTH_TEST);
+            context.depthMask (true);
+            Program.get ("hardlight").use ();
+            standardUniforms.OUTPUT_ALPHA_PARAMETER = 1.0;
+            standardUniforms.TEXTURE_SAMPLER = "earth-plate-carree";
+            standardUniforms.MODEL_COLOR = [1.1, 1.1, 1.1];
+            standardUniforms.AMBIENT_CONTRIBUTION = 0.5;
+            standardUniforms.DIFFUSE_CONTRIBUTION = 0.5;
+        },
+        shape: "ball",
+        children: false
+    });
+    scene.addChild (testNode);
+
+
     let worldNode = Node.new ({
         name: "world",
         state: function (standardUniforms) {
@@ -240,7 +314,7 @@ let buildScene = function () {
             context.depthMask (true);
         }
     });
-    scene.addChild (worldNode);
+    //scene.addChild (worldNode);
 
     let moonScale = moonRadius / earthRadius; // approx 0.273
     let moonDistance = moonOrbit / earthRadius; // approx 60.268
@@ -326,7 +400,7 @@ let onBodyLoad = function () {
     // load the shaders, and build the programs
     LoaderShader.new ("shaders/@.glsl")
         .addVertexShaders ("basic")
-        .addFragmentShaders([ "basic", "ads", "overlay", "texture", "color", "earth", "clouds", "atmosphere" ])
+        .addFragmentShaders([ "basic", "ads", "overlay", "texture", "color", "earth", "clouds", "atmosphere", "hardlight" ])
         .go (null, OnReady.new (null, function (x) {
             Program.new ("basic");
             Program.new ("ads", { vertexShader: "basic" });
@@ -336,13 +410,18 @@ let onBodyLoad = function () {
             Program.new ("earth", { vertexShader: "basic" });
             Program.new ("clouds", { vertexShader: "basic" });
             Program.new ("atmosphere", { vertexShader: "basic" });
+            Program.new ("hardlight", { vertexShader: "basic" });
 
             // load the textures
             LoaderPath.new ({ type:Texture, path:"textures/@.png"})
                 .addItems (["clouds", "earth-day", "earth-night", "earth-specular-map", "moon"], { generateMipMap: true })
                 .addItems (["starfield", "constellations"])
                 .go (null, OnReady.new (null, function (x) {
-                    buildScene ();
+                    LoaderPath.new ({ type:Texture, path:"textures-test/@.png"})
+                        .addItems ("earth-plate-carree")
+                        .go (null, OnReady.new (null, function (x) {
+                            buildScene ();
+                        }));
                 }));
 
         }));
