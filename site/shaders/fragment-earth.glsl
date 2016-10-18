@@ -42,7 +42,7 @@ void main(void) {
     // http://visibleearth.nasa.gov/view_cat.php?categoryID=1484&p=1) are very saturated, so we
     // screen in a bit of a hazy blue based on images from EPIC (http://epic.gsfc.nasa.gov/)
     vec3 dayTxColor = texture2D(dayTxSampler, texture).rgb;
-    vec3 hazyBlue = vec3(0.04, 0.07, 0.12); // vec3 (23, 36, 60) * (1.0 / 255.0) * 0.6;
+    vec3 hazyBlue = vec3(0.04, 0.07, 0.12);
     dayTxColor = screenColor (dayTxColor, hazyBlue);
 
     // get the texture map night color, scaled to black as the view angle fades away

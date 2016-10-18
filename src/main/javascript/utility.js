@@ -6,6 +6,27 @@
 let Utility = function () {
     let _ = Object.create (null);
 
+    const TWO_PI = Math.PI * 2.0;
+
+    let unwind = function (value, cap) {
+        while (value > cap) {
+            value -= cap;
+        }
+        while (value < 0) {
+            value += cap;
+        }
+        return value;
+    };
+
+
+    _.unwindRadians = function (radians) {
+        return unwind (radians, TWO_PI);
+    };
+
+    _.unwindDegrees = function (degrees) {
+        return unwind (degrees, 360.0);
+    };
+
     /**
      * Convert an angle measured in degrees to radians.
      *
@@ -14,7 +35,19 @@ let Utility = function () {
      * @return {float}
      */
     _.degreesToRadians = function (degrees) {
-        return (degrees / 180) * Math.PI;
+        return (unwind (degrees, 360.0) / 180.0) * Math.PI;
+    };
+
+    _.cos = function (degrees) {
+        return Math.cos (_.degreesToRadians (degrees));
+    };
+
+    _.sin = function (degrees) {
+        return Math.sin (_.degreesToRadians (degrees));
+    };
+
+    _.tan = function (degrees) {
+        return Math.tan (_.degreesToRadians (degrees));
     };
 
     /**
@@ -25,7 +58,7 @@ let Utility = function () {
      * @return {float}
      */
     _.radiansToDegrees = function (radians) {
-        return (radians / Math.PI) * 180;
+        return (unwind (radians, TWO_PI) / Math.PI) * 180;
     };
 
     /**

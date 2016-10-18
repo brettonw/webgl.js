@@ -1,7 +1,7 @@
 "use strict;"
 
 let scene;
-let currentTime = 0;
+let currentTime = new Date ().getTime ();
 let currentPosition = [0, 0];
 
 let standardUniforms = Object.create(null);
@@ -18,8 +18,9 @@ let cloudsNode;
 let atmosphereNode;
 
 let draw = function (deltaPosition) {
+    // advance the clock by an hour
+    //currentTime += 12 * 60 * 60 * 1000;
     // update all the things...
-    currentTime  = new Date ().getTime();
     Thing.updateAll(currentTime);
 
     // update the current position and clamp or wrap accordingly
@@ -188,37 +189,44 @@ let buildScene = function () {
         let node = Node.get (this.node);
 
         // http://www.stjarnhimlen.se/comp/ppcomp.html
-        let jd = (time / 86400000.0) + 2440587.5;
+        const millisecondsPerDay = 24 * 60 * 60 * 1000;
+        let jd = (time / millisecondsPerDay) + 2440587.5;
         let d = jd - 2451543.5;
-        d += 0.5;
+        //d = -3543.0;
 
-        let ecl = Utility.degreesToRadians (23.4393 - (3.563e-7 * d));
-        let w = Utility.degreesToRadians (282.9404 + (4.70935e-5 * d));
+        let ecl = 23.4393 - (3.563e-7 * d);
+        let w = 282.9404 + (4.70935e-5 * d);
         let e = 0.016709 - (1.151e-9 * d);
-        let M = Utility.degreesToRadians (356.0470 + (0.9856002585 * d));
+        let M = 356.0470 + (0.9856002585 * d);
+        M = Utility.unwindDegrees(M);
+        let L = Utility.unwindDegrees (w + M);
 
-        let E = M + ((e * Math.sin(M)) * (1.0 + (e * Math.cos(M))));
-        let xv = Math.cos(E) - e;
-        let yv = Math.sqrt(1.0 - (e * e)) * Math.sin(E);
+        let E = M + e * (180 / Math.PI) * Utility.sin (M) * (1.0 + e * Utility.cos (M));
 
-        let v = Math.atan2 (yv, xv);
+        let xv = Utility.cos(E) - e;
+        let yv = Math.sqrt(1.0 - (e * e)) * Utility.sin(E);
+
+        let v = Utility.radiansToDegrees(Math.atan2 (yv, xv));
         let r = Math.sqrt ((xv * xv) + (yv * yv));
 
-        let lonsun = v + w;
+        let lonsun = Utility.unwindDegrees (v + w);
+        //console.log ("d (" + d + "), ecl (" + ecl + "), w (" + w + "), e (" + e + "), M (" + M + "), E(" + E + "), L(" + L + "), xvyv(" + xv + ", " + yv + "), v(" + v + "), r(" + r + "), lonsun(" + lonsun + ")");
 
-        let xs = r * Math.cos(lonsun);
-        let ys = r * Math.sin(lonsun);
+        // compute the ecliptic coordinates of the sun (zs = 0)
+        let xs = r * Utility.cos(lonsun);
+        let ys = r * Utility.sin(lonsun);
+        //console.log ("Ecliptic (" + xs + ", " + ys + ")");
 
-        let xe = xs;
-        let ye = ys * Math.cos(ecl);
-        let ze = ys * Math.sin(ecl);
+        // project them to the equatorial coordinates
+        let sunDirection = Float3.normalize ([xs, 0, ys]);
+        //let sunDirection = Float3.normalize ([xs, ys * Utility.cos (ecl), ys * Utility.sin (ecl)]);
+        //console.log ("Equatorial " + Float3.str (sunDirection));
 
-        let RA  = Math.atan2 (ye, xe);
-        let Dec = Math.atan2 (ze, Math.sqrt((xe * xe)+(ye * ye)));
+        //let RA  = Math.atan2 (ye, xe);
+        //let Dec = Math.atan2 (ze, Math.sqrt((xe * xe)+(ye * ye)));
 
-
-        let position = RA;
-        let sunDirection = Float3.normalize ([-Math.cos (position), 0, -Math.sin (position)]);
+        //let position = RA;
+        //let sunDirection = Float3.normalize ([-Math.cos (position), 0, -Math.sin (position)]);
         let sunPosition = Float4.scale (sunDirection, sunDrawDistance);
         // compute the position of the sun, and update the lighting conversation
         node.transform = Float4x4.multiply (Float4x4.scale (sunScale), Float4x4.translate (sunPosition)),
@@ -299,7 +307,7 @@ let buildScene = function () {
     });
     worldNode.addChild (atmosphereNode);
 
-    LogLevel.set (LogLevel.TRACE);
+    //LogLevel.set (LogLevel.TRACE);
     draw ([0, 0]);
 };
 

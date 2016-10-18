@@ -995,7 +995,7 @@
         },
         {
             "file": "src/main/javascript/utility.js",
-            "line": 9,
+            "line": 30,
             "description": "Convert an angle measured in degrees to radians.",
             "itemtype": "method",
             "name": "degreesToRadians",
@@ -1014,7 +1014,7 @@
         },
         {
             "file": "src/main/javascript/utility.js",
-            "line": 20,
+            "line": 53,
             "description": "Convert an angle measured in radians to degrees.",
             "itemtype": "method",
             "name": "radiansToDegrees",
@@ -1033,7 +1033,7 @@
         },
         {
             "file": "src/main/javascript/utility.js",
-            "line": 31,
+            "line": 64,
             "description": "Make the first letter of a string be upper case.",
             "itemtype": "method",
             "name": "uppercase",
@@ -1052,7 +1052,7 @@
         },
         {
             "file": "src/main/javascript/utility.js",
-            "line": 42,
+            "line": 75,
             "description": "Make the first letter of a string be lower case.",
             "itemtype": "method",
             "name": "lowercase",
@@ -1071,7 +1071,7 @@
         },
         {
             "file": "src/main/javascript/utility.js",
-            "line": 53,
+            "line": 86,
             "description": "Convert an array of arrays to a single array of values (in order).",
             "itemtype": "method",
             "name": "flatten",
@@ -1090,7 +1090,7 @@
         },
         {
             "file": "src/main/javascript/utility.js",
-            "line": 70,
+            "line": 103,
             "description": "truncate a number to a specific precision, equivalent to discretization",
             "itemtype": "method",
             "name": "fixNum",
@@ -1114,7 +1114,7 @@
         },
         {
             "file": "src/main/javascript/utility.js",
-            "line": 83,
+            "line": 116,
             "description": "provide a default value if the requested value is undefined. this is\nhere because the macro doesn't handle multiline values.",
             "itemtype": "method",
             "name": "defaultValue",
@@ -1138,7 +1138,7 @@
         },
         {
             "file": "src/main/javascript/utility.js",
-            "line": 96,
+            "line": 129,
             "description": "provide a default value if the requested value is undefined by calling a function. this is\nhere because the macro doesn't handle multiline values.",
             "itemtype": "method",
             "name": "defaultFunction",
@@ -1162,7 +1162,7 @@
         },
         {
             "file": "src/main/javascript/utility.js",
-            "line": 109,
+            "line": 142,
             "description": "create a reversed mapping from a given object (assumes 1:1 values)",
             "itemtype": "method",
             "name": "reverseMap",
