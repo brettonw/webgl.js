@@ -1,7 +1,8 @@
 "use strict;"
 
 let scene;
-let currentTime = new Date (2016, 2, 21, 0, 0, 0, 0).getTime();
+let date = new Date ();//new Date (2016, 2, 21, 0, 0, 0, 0);
+let currentTime = date.getTime() - (date.getTimezoneOffset() * 60 * 1000);
 let currentPosition = [0, 0];
 
 let standardUniforms = Object.create(null);
@@ -20,7 +21,7 @@ let atmosphereNode;
 let draw = function (deltaPosition) {
     if (Float2.normSq (deltaPosition) == 0) {
         // advance the clock by 6 hours
-        //currentTime += 1;
+        //currentTime += 1000 * 60 * 60 * 6;
         // update all the things...
         Thing.updateAll(currentTime);
     }
@@ -193,23 +194,9 @@ let buildScene = function () {
 
         // https://en.wikipedia.org/wiki/Position_of_the_Sun
         // for J2000...
-        let UT1 = 24 * 60 * 60;
-        const millisecondsPerDay = UT1 * 1000;
+        const millisecondsPerDay = 24 * 60 * 60 * 1000;
         let julianDate = (time / millisecondsPerDay) + 2440587.5;
-        let julianDay = julianDate - 2451545.0;
-        let julianCentury = julianDay / 36525;
-
-        // where D is the number of UT1 days since J2000
-        let D = julianDay;
-        let GMST0 = Utility.unwindDegrees(18.697374558 + (24.06570982441908 * D));
-
-        // earth rotation angle
-        //let ERA = Utility.unwindDegrees(360.0 * (0.7790572732640 + (1.00273781191135448 * D)));
-        let testNode = Node.get ("test");
-        //testNode.transform = Float4x4.rotateY(Float4x4.identity (), Utility.degreesToRadians(GMST0));
-
-        // compute the sun position
-        let n = julianDay;
+        let n = julianDate - 2451545.0;
 
         // compute the mean longitude of the sun, corrected for aberration of light
         let L = 280.460 + (0.9856474 * n);
@@ -238,50 +225,7 @@ let buildScene = function () {
         let Y = R * Utility.cos (eclipticObliquity) * Utility.sin (eclipticLongitude);
         let Z = R * Utility.sin (eclipticObliquity) * Utility.sin (eclipticLongitude);
 
-        let sunDirection = Float3.normalize ([X, Z, Y]);
-
-        // http://www.stjarnhimlen.se/comp/ppcomp.html
-        /*
-        const millisecondsPerDay = 24 * 60 * 60 * 1000;
-        let jd = (time / millisecondsPerDay) + 2440587.5;
-        let d = jd - 2451543.5;
-        //d = -3543.0;
-        d = 0;
-
-        let ecl = 23.4393 - (3.563e-7 * d);
-        let w = 282.9404 + (4.70935e-5 * d);
-        let e = 0.016709 - (1.151e-9 * d);
-        let M = 356.0470 + (0.9856002585 * d);
-        M = Utility.unwindDegrees(M);
-        let L = Utility.unwindDegrees (w + M);
-
-        let E = M + e * (180 / Math.PI) * Utility.sin (M) * (1.0 + e * Utility.cos (M));
-
-        let xv = Utility.cos(E) - e;
-        let yv = Math.sqrt(1.0 - (e * e)) * Utility.sin(E);
-
-        let v = Utility.radiansToDegrees(Math.atan2 (yv, xv));
-        let r = Math.sqrt ((xv * xv) + (yv * yv));
-
-        let lonsun = Utility.unwindDegrees (v + w);
-        //console.log ("d (" + d + "), ecl (" + ecl + "), w (" + w + "), e (" + e + "), M (" + M + "), E(" + E + "), L(" + L + "), xvyv(" + xv + ", " + yv + "), v(" + v + "), r(" + r + "), lonsun(" + lonsun + ")");
-
-        // compute the ecliptic coordinates of the sun (zs = 0)
-        let xs = r * Utility.cos(lonsun);
-        let ys = r * Utility.sin(lonsun);
-        //console.log ("Ecliptic (" + xs + ", " + ys + ")");
-
-        // project them to the equatorial coordinates
-        let sunDirection = Float3.normalize ([xs, 0, ys]);
-        //let sunDirection = Float3.normalize ([xs, ys * Utility.cos (ecl), ys * Utility.sin (ecl)]);
-        //console.log ("Equatorial " + Float3.str (sunDirection));
-
-        //let RA  = Math.atan2 (ye, xe);
-        //let Dec = Math.atan2 (ze, Math.sqrt((xe * xe)+(ye * ye)));
-        */
-
-        //let position = RA;
-        //let sunDirection = Float3.normalize ([-Math.cos (position), 0, -Math.sin (position)]);
+        let sunDirection = Float3.normalize ([-X, Z, Y]);
         let sunPosition = Float4.scale (sunDirection, sunDrawDistance);
         // compute the position of the sun, and update the lighting conversation
         node.transform = Float4x4.multiply (Float4x4.scale (sunScale), Float4x4.translate (sunPosition)),
@@ -304,38 +248,18 @@ let buildScene = function () {
         shape: "ball",
         children: false
     });
-    scene.addChild (testNode);
+    //scene.addChild (testNode);
 
 
     let worldNode = Node.new ({
         name: "world",
+        transform:Float4x4.identity(),
         state: function (standardUniforms) {
             context.enable (context.DEPTH_TEST);
             context.depthMask (true);
         }
     });
-    //scene.addChild (worldNode);
-
-    let moonScale = moonRadius / earthRadius; // approx 0.273
-    let moonDistance = moonOrbit / earthRadius; // approx 60.268
-    let moonNode = Node.new ({
-        name: "moon",
-        //transform: Float4x4.multiply (Float4x4.scale (0.273), Float4x4.translate ([60.2682, 0, 0])),
-        transform: Float4x4.multiply (Float4x4.scale (moonScale), Float4x4.translate ([-moonDistance, 0, 0])),
-        state: function (standardUniforms) {
-            Program.get ("ads").use ();
-            standardUniforms.OUTPUT_ALPHA_PARAMETER = 1.0;
-            standardUniforms.TEXTURE_SAMPLER = "moon";
-            standardUniforms.MODEL_COLOR = [1.1, 1.1, 1.1];
-            standardUniforms.AMBIENT_CONTRIBUTION = 0.05;
-            standardUniforms.DIFFUSE_CONTRIBUTION = 1.25;
-            standardUniforms.SPECULAR_CONTRIBUTION = 0.05;
-            standardUniforms.SPECULAR_EXPONENT = 8.0;
-        },
-        shape: "ball-small",
-        children: false
-    });
-    worldNode.addChild (moonNode);
+    scene.addChild (worldNode);
 
     let earthNode = Node.new ({
         name: "earth",
@@ -380,6 +304,46 @@ let buildScene = function () {
         children: false
     });
     worldNode.addChild (atmosphereNode);
+
+    Thing.new ("world", "world", function (time) {
+        // get the node
+        let node = Node.get (this.node);
+
+
+        // https://en.wikipedia.org/wiki/Position_of_the_Sun
+        // for J2000...
+        let UT1 = 24 * 60 * 60;
+        const millisecondsPerDay = UT1 * 1000;
+        let julianDate = (time / millisecondsPerDay) + 2440587.5;
+        let julianDay = julianDate - 2451545.0;
+
+        // where D is the number of UT1 days since J2000
+        let D = julianDay;
+        let GMST0 = Utility.unwindDegrees (18.697374558 + (24.06570982441908 * D));
+        node.transform = Float4x4.rotateY (Float4x4.identity (), Utility.degreesToRadians (GMST0));
+    });
+
+    let moonScale = moonRadius / earthRadius; // approx 0.273
+    let moonDistance = moonOrbit / earthRadius; // approx 60.268
+    let moonNode = Node.new ({
+        name: "moon",
+        transform: Float4x4.multiply (Float4x4.scale (moonScale), Float4x4.translate ([-moonDistance, 0, 0])),
+        state: function (standardUniforms) {
+            context.enable (context.DEPTH_TEST);
+            context.depthMask (true);
+            Program.get ("ads").use ();
+            standardUniforms.OUTPUT_ALPHA_PARAMETER = 1.0;
+            standardUniforms.TEXTURE_SAMPLER = "moon";
+            standardUniforms.MODEL_COLOR = [1.1, 1.1, 1.1];
+            standardUniforms.AMBIENT_CONTRIBUTION = 0.05;
+            standardUniforms.DIFFUSE_CONTRIBUTION = 1.25;
+            standardUniforms.SPECULAR_CONTRIBUTION = 0.05;
+            standardUniforms.SPECULAR_EXPONENT = 8.0;
+        },
+        shape: "ball-small",
+        children: false
+    });
+    scene.addChild (moonNode);
 
     //LogLevel.set (LogLevel.TRACE);
     draw ([0, 0]);
