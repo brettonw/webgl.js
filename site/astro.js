@@ -150,8 +150,13 @@ let angleFromString = function (string) {
 
 let bareObjectToString = function (bareObject) {
     let result = "";
+    let first = true;
     for (component in bareObject) {
-        result += component + ": " + bareObject[component] + " ";
+        if (! first) {
+            result += " ";
+        }
+        result += component + ": " + bareObject[component];
+        first = false;
     }
     return result;
 };
@@ -186,3 +191,65 @@ let eclipticPlaneObliquity = function (t) {
     return e;
 } (16 / 100);
 console.log("Ecliptic Plane Obliquity: " + eclipticPlaneObliquity + "rad");
+
+let utc = function (year, month, day, hour, minutes, seconds) {
+    let now = new Date ();
+    now.setUTCFullYear (year, month - 1, day);
+    now.setUTCHours (hour, minutes, seconds);
+    return now;
+};
+
+let computeJ2000 = function (date) {
+    let hours = date.getUTCHours ();
+    let minutes = date.getUTCMinutes ();
+    let seconds = date.getUTCSeconds ()
+    let h = hours + (minutes / 60) + (seconds / 3600);
+    let m = date.getUTCMonth () + 1;
+    let d = date.getUTCDate ();
+    let y = date.getUTCFullYear ();
+    let f = Math.floor;
+    return 367 * y - f (7 * (y + f ((m + 9) / 12)) / 4) + f (275 * m / 9) + d - 730531.5 + (h / 24);
+};
+
+let computeGmstFromJ2000 = function (jd) {
+    let jc = jd / 36525;
+    let gmst = 67310.54841 + (((876600 * 60 * 60) + 8640184.812866) * jc) + (0.093104 * jc * jc) - (6.2e-6 * jc * jc * jc);
+    return Utility.unwindDegrees (gmst / 240);
+};
+
+let computeGmstFromDate = function (date) {
+    return computeGmstFromJ2000 (computeJ2000 (date));
+};
+
+let testJ2000 = function () {
+    let affirm = function (description, got, expected, epsilon) {
+        epsilon = (typeof epsilon !== "undefined") ? epsilon : 1.0e-6;
+        if (Math.abs (got - expected) > epsilon) {
+            console.log (description + ": got (" + got + "), expected (" + expected + ") - FAIL");
+        }
+    };
+    // october 19, 2016, 13:30
+    // julian date for 10/19/2016 @ 13:30 is 2457681.062500
+    let time = computeJ2000 (utc (2016, 10, 19, 13, 30, 0));
+    affirm ("10/19/2016 @ 13:30", time + 2451545, 2457681.062500);
+    if (Math.abs (time + 2451545 - 2457681.062500) > 1.0e-6) {
+        console.log ("test J2000: got (" + (time + 2451545) + "), expected (2457681.0625)");
+    }
+
+    time = computeJ2000 (utc (1992, 8, 20, 12, 14));
+    let T_uti = time / 36525;
+    affirm ("8/20/1992 @ 12:14", T_uti, -0.073647919);
+
+    let GMST = 67310.54841 + (((876600 * 60 * 60) + 8640184.812866) * T_uti) + (0.093104 * T_uti * T_uti) - (6.2e-6 * T_uti * T_uti * T_uti);
+    let gmst_also = ((((-6.2e-6 * T_uti + 0.093104) * T_uti + 184.812866) * T_uti + 67310.54841) + 3.1644e9 * T_uti);
+    affirm ("GMST", GMST, -232984181.0909255);
+    affirm ("GMST", GMST, gmst_also);
+    GMST = Utility.unwind(GMST, 86400);
+    affirm ("GMST manageable", GMST, -49781.0909255);
+    GMST /= 240;
+    affirm ("GMST to degrees", GMST, 152.578878810);
+
+    affirm ("compute GMST", computeGmstFromDate (utc (2016, 10, 19, 13, 30, 0), GMST));
+
+    affirm ("check GMST again", computeGmstFromDate (utc (1995, 10, 1, 0, 0, 0)), 9.257, 1.0e-3);
+} ();

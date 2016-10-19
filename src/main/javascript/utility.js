@@ -8,8 +8,9 @@ let Utility = function () {
 
     const TWO_PI = Math.PI * 2.0;
 
-    let unwind = function (value, cap) {
-        while (value > cap) {
+    _.unwind = function (value, cap) {
+        value -= Math.floor (value / cap) * cap;
+        while (value >= cap) {
             value -= cap;
         }
         while (value < 0) {
@@ -20,11 +21,11 @@ let Utility = function () {
 
 
     _.unwindRadians = function (radians) {
-        return unwind (radians, TWO_PI);
+        return _.unwind (radians, TWO_PI);
     };
 
     _.unwindDegrees = function (degrees) {
-        return unwind (degrees, 360.0);
+        return _.unwind (degrees, 360.0);
     };
 
     /**
@@ -35,7 +36,7 @@ let Utility = function () {
      * @return {float}
      */
     _.degreesToRadians = function (degrees) {
-        return (unwind (degrees, 360.0) / 180.0) * Math.PI;
+        return (_.unwind (degrees, 360.0) / 180.0) * Math.PI;
     };
 
     _.cos = function (degrees) {
@@ -58,7 +59,7 @@ let Utility = function () {
      * @return {float}
      */
     _.radiansToDegrees = function (radians) {
-        return (unwind (radians, TWO_PI) / Math.PI) * 180;
+        return (_.unwind (radians, TWO_PI) / Math.PI) * 180;
     };
 
     /**

@@ -1,8 +1,11 @@
 "use strict;"
 
 let scene;
-let date = new Date ();//new Date (2016, 2, 21, 0, 0, 0, 0);
-let currentTime = date.getTime() - (date.getTimezoneOffset() * 60 * 1000);
+
+let currentTime = computeJ2000 (utc (2016, 3, 21, 6, 0, 0));
+//let currentTime = computeJ2000 (utc (2016, 10, 19, 7, 0, 0));
+//let currentTime = computeJ2000 (new Date ());
+
 let currentPosition = [0, 0];
 
 let standardUniforms = Object.create(null);
@@ -20,8 +23,8 @@ let atmosphereNode;
 
 let draw = function (deltaPosition) {
     if (Float2.normSq (deltaPosition) == 0) {
-        // advance the clock by 6 hours
-        //currentTime += 1000 * 60 * 60 * 6;
+        // advance the clock by an hour
+        //currentTime += 0.125;
         // update all the things...
         Thing.updateAll(currentTime);
     }
@@ -192,11 +195,7 @@ let buildScene = function () {
         let node = Node.get (this.node);
 
 
-        // https://en.wikipedia.org/wiki/Position_of_the_Sun
-        // for J2000...
-        const millisecondsPerDay = 24 * 60 * 60 * 1000;
-        let julianDate = (time / millisecondsPerDay) + 2440587.5;
-        let n = julianDate - 2451545.0;
+        let n = time;
 
         // compute the mean longitude of the sun, corrected for aberration of light
         let L = 280.460 + (0.9856474 * n);
@@ -310,17 +309,11 @@ let buildScene = function () {
         let node = Node.get (this.node);
 
 
-        // https://en.wikipedia.org/wiki/Position_of_the_Sun
-        // for J2000...
-        let UT1 = 24 * 60 * 60;
-        const millisecondsPerDay = UT1 * 1000;
-        let julianDate = (time / millisecondsPerDay) + 2440587.5;
-        let julianDay = julianDate - 2451545.0;
-
         // where D is the number of UT1 days since J2000
-        let D = julianDay;
-        let GMST0 = Utility.unwindDegrees (18.697374558 + (24.06570982441908 * D));
-        node.transform = Float4x4.rotateY (Float4x4.identity (), Utility.degreesToRadians (GMST0));
+        //let D = floor (time);
+        let gmst = computeGmstFromJ2000 (time);
+        let LST = 0;//(time - Math.floor (time)) * 360;
+        node.transform = Float4x4.rotateY (Float4x4.identity (), Utility.degreesToRadians (gmst + LST));
     });
 
     let moonScale = moonRadius / earthRadius; // approx 0.273
@@ -344,6 +337,19 @@ let buildScene = function () {
         children: false
     });
     scene.addChild (moonNode);
+
+    Thing.new ("moon", "moon", function (time) {
+        // get the node
+        let node = Node.get (this.node);
+
+
+        // https://en.wikipedia.org/wiki/Position_of_the_Sun
+        // for J2000...
+        let UT1 = 24 * 60 * 60;
+        const millisecondsPerDay = UT1 * 1000;
+        let julianDate = (time / millisecondsPerDay) + 2440587.5;
+        let julianDay = julianDate - 2451545.0;
+    });
 
     //LogLevel.set (LogLevel.TRACE);
     draw ([0, 0]);
