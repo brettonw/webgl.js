@@ -2,9 +2,9 @@
 
 let scene;
 
-let currentTime = computeJ2000 (utc (2016, 3, 21, 6, 0, 0));
+//let currentTime = computeJ2000 (utc (2016, 3, 21, 6, 0, 0));
 //let currentTime = computeJ2000 (utc (2016, 10, 19, 7, 0, 0));
-//let currentTime = computeJ2000 (new Date ());
+let currentTime = computeJ2000 (new Date ());
 
 let currentPosition = [0, 0];
 
@@ -208,7 +208,7 @@ let buildScene = function () {
         g - Utility.unwindDegrees(g);
 
         // compute the ecliptic longitude of the sun
-        let eclipticLongitude = L + (1.915 * Utility.sin(g)) + (0.020 * Utility.sin (g + g));
+        let eclipticLongitude = L + (1.914666471 * Utility.sin(g)) + (0.019994643 * Utility.sin (g + g));
 
         // compute the distance to the sun in astronomical units
         let R = 1.00014 - (0.01671 * Utility.cos (g)) - (0.00014 * Utility.cos (g + g));
