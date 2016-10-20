@@ -94,8 +94,8 @@ let draw = function (deltaPosition) {
 
 let buildScene = function () {
     makeRevolve ("cylinder",
-        [[ 1.0,  1.0], [ 1.0, -1.0], [ 1.0, -1.0], [ 0.8, -1.0], [ 0.8, -1.0], [ 0.8,  1.0], [ 0.8,  1.0], [ 1.0,  1.0]],
-        [[ 1.0,  0.0], [ 1.0,  0.0], [ 0.0, -1.0], [ 0.0, -1.0], [-1.0,  0.0], [-1.0,  0.0], [ 0.0,  1.0], [ 0.0,  1.0]],
+        [[1.0, 1.0], [1.0, -1.0], [1.0, -1.0], [0.8, -1.0], [0.8, -1.0], [0.8, 1.0], [0.8, 1.0], [1.0, 1.0]],
+        [[1.0, 0.0], [1.0, 0.0], [0.0, -1.0], [0.0, -1.0], [-1.0, 0.0], [-1.0, 0.0], [0.0, 1.0], [0.0, 1.0]],
         36);
     makeBall ("ball", 72);
     makeBall ("ball-small", 36);
@@ -130,7 +130,7 @@ let buildScene = function () {
 
     starsNode = Node.new ({
         name: "stars",
-        transform: Float4x4.multiply(Float4x4.rotateX (Float4x4.identity (), Math.PI), Float4x4.scale (-210)),
+        transform: Float4x4.multiply (Float4x4.rotateX (Float4x4.identity (), Math.PI), Float4x4.scale (-210)),
         state: function (standardUniforms) {
             context.disable (context.DEPTH_TEST);
             context.depthMask (false);
@@ -198,23 +198,23 @@ let buildScene = function () {
         let n = time;
 
         // compute the mean longitude of the sun, corrected for aberration of light
-        let L = 280.460 + (0.9856474 * n);
+        let L = 280.459 + (0.98564736 * n);
 
         // compute the mean anomaly of the sun
-        let g = 357.528 + (0.9856003 * n);
+        let g = 357.529 + (0.98560028 * n);
 
         // unwind L & g
-        L = Utility.unwindDegrees(L);
-        g - Utility.unwindDegrees(g);
+        L = Utility.unwindDegrees (L);
+        g - Utility.unwindDegrees (g);
 
         // compute the ecliptic longitude of the sun
-        let eclipticLongitude = L + (1.914666471 * Utility.sin(g)) + (0.019994643 * Utility.sin (g + g));
+        let eclipticLongitude = L + (1.914666471 * Utility.sin (g)) + (0.019994643 * Utility.sin (g + g));
 
         // compute the distance to the sun in astronomical units
         let R = 1.00014 - (0.01671 * Utility.cos (g)) - (0.00014 * Utility.cos (g + g));
 
         // compute the ecliptic obliquity
-        let eclipticObliquity = 23.439 - (0.0000004 * n);
+        let eclipticObliquity = 23.439 - (0.00000036 * n);
 
         // compute rectangular equatorial coordinates
         // XXX temporary - I am using a coordinate system where Z goes into the view, and Y is up
@@ -228,8 +228,21 @@ let buildScene = function () {
         let sunPosition = Float4.scale (sunDirection, sunDrawDistance);
         // compute the position of the sun, and update the lighting conversation
         node.transform = Float4x4.multiply (Float4x4.scale (sunScale), Float4x4.translate (sunPosition)),
-        standardUniforms.LIGHT_DIRECTION = sunDirection;
+            standardUniforms.LIGHT_DIRECTION = sunDirection;
     });
+
+
+    let worldNode = Node.new ({
+        name: "world",
+        transform: Float4x4.identity (),
+        state: function (standardUniforms) {
+            context.enable (context.DEPTH_TEST);
+            context.depthMask (true);
+        }
+    });
+    scene.addChild (worldNode);
+
+    let useTest = false;
 
     let testNode = Node.new ({
         name: "test",
@@ -245,20 +258,15 @@ let buildScene = function () {
             standardUniforms.DIFFUSE_CONTRIBUTION = 0.5;
         },
         shape: "ball",
+        enabled: useTest,
         children: false
     });
-    //scene.addChild (testNode);
+    worldNode.addChild (testNode);
 
-
-    let worldNode = Node.new ({
-        name: "world",
-        transform:Float4x4.identity(),
-        state: function (standardUniforms) {
-            context.enable (context.DEPTH_TEST);
-            context.depthMask (true);
-        }
+    let earthRenderNode = Node.new ({
+        enabled:(!useTest)
     });
-    scene.addChild (worldNode);
+    worldNode.addChild (earthRenderNode);
 
     let earthNode = Node.new ({
         name: "earth",
@@ -272,7 +280,7 @@ let buildScene = function () {
         shape: "ball",
         children: false
     });
-    worldNode.addChild (earthNode);
+    earthRenderNode.addChild (earthNode);
 
     // clouds at 40km is a bit on the high side..., but it shows well
     let cloudHeight = (40 + earthRadius) / earthRadius;
@@ -287,7 +295,7 @@ let buildScene = function () {
         shape: "ball",
         children: false
     });
-    worldNode.addChild (cloudsNode);
+    earthRenderNode.addChild (cloudsNode);
 
     // atmosphere at 160km is actually in about the right place
     let atmosphereDepth = (160 + earthRadius) / earthRadius;
@@ -302,7 +310,7 @@ let buildScene = function () {
         shape: "ball",
         children: false
     });
-    worldNode.addChild (atmosphereNode);
+    earthRenderNode.addChild (atmosphereNode);
 
     Thing.new ("world", "world", function (time) {
         // get the node
