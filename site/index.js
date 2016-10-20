@@ -128,9 +128,15 @@ let buildScene = function () {
         }
     });
 
+    let starsTransform = Float4x4.identity ();
+    // rotate by 180 degrees on the x axis to account for our coordinate system, then Y by 180
+    // degrees to orient correctly. then flip it inside out and scale it up
+    starsTransform = Float4x4.multiply (starsTransform, Float4x4.rotateX (Float4x4.identity (), Math.PI));
+    starsTransform = Float4x4.multiply (starsTransform, Float4x4.rotateY (Float4x4.identity (), Math.PI));
+    starsTransform = Float4x4.multiply (starsTransform, Float4x4.scale (-210));
     starsNode = Node.new ({
         name: "stars",
-        transform: Float4x4.multiply (Float4x4.rotateX (Float4x4.identity (), Math.PI), Float4x4.scale (-210)),
+        transform: starsTransform,
         state: function (standardUniforms) {
             context.disable (context.DEPTH_TEST);
             context.depthMask (false);
@@ -209,6 +215,7 @@ let buildScene = function () {
 
         // compute the ecliptic longitude of the sun
         let eclipticLongitude = L + (1.914666471 * Utility.sin (g)) + (0.019994643 * Utility.sin (g + g));
+        //console.log ("Sun at: " + eclipticLongitude + "°");
 
         // compute the distance to the sun in astronomical units
         let R = 1.00014 - (0.01671 * Utility.cos (g)) - (0.00014 * Utility.cos (g + g));
@@ -242,7 +249,7 @@ let buildScene = function () {
     });
     scene.addChild (worldNode);
 
-    let useTest = false;
+    let useTest = true;
 
     let testNode = Node.new ({
         name: "test",
