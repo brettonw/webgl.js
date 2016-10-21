@@ -1,8 +1,7 @@
-# WebGL
+# webgl.js
 Javascript drawing in 3D 
 
-Deployed at: http://webgl-js.azurewebsites.net/ (though the free Azure website connection is severely constrained 
-and may not serve up the high resolution textures correctly).
+Deployed at: http://webgl-js.azurewebsites.net/.
 
 <center><img src="http://webgl-js.azurewebsites.net/site/img/sample.png" alt="Drawing" style="width: 320px;"/></center>
 
@@ -12,6 +11,7 @@ This project uses ant for building, with the "dev" target being the default:
     ant | ant dev | ant rel
 
 ### Build Dependencies
+* ant
 * node/npm
 * gcc (for the C-preprocessor)
 * uglifyjs (for Minification)
