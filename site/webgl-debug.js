@@ -2833,7 +2833,7 @@ let makeRevolve = function (name, outline, normal, steps, projection) {
         LogLevel.say (LogLevel.TRACE, "Make revolved outline");
         let builder = ShapeBuilder.new ();
         let stepAngle = (-2.0 * Math.PI) / steps;
-        for (let i = 0; i < steps; ++i) {
+        for (let i = 0; i < (steps/3); ++i) {
             // this could be just i + 1, but doing the modulus might help prevent a crack
             let j = i + 1;
             let iAngle = i * stepAngle, iCosAngle = Math.cos (iAngle), iSinAngle = Math.sin (iAngle);
