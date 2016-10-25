@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>src/main/javascript/floatN.js - WebGL</title>
+    <link rel="stylesheet" href="">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="stylesheet" href="../assets/css/custom.css">
+    <link rel="stylesheet" href="../assets/css/lucid.css">
+    <link rel="stylesheet" href="../assets/vendor/bootstrap/css/bootstrap.css">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+</head>
+<body class="yui3-skin-sam">
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <h1 class="brand" style="padding: 10px 16px 10px; height: 20px; line-height: 20px; margin-left: 0;">
+            WebGL
+        </h1>
+	<div class="nav">
+            <li class="divider-vertical"></li>
+            <li>
+                <p class="navbar-text">
+                    API Docs for Version: <b>1.0.0</b>
+                </p>
+            </li>
+        </div>
+        <form class="navbar-form pull-right" style="line-height: 40px; height: 40px;">
+            <input style="margin-top: 0;" type="text" class="search-query" placeholder="Search for classes/modules..." data-obj='["classes/Cloud", "classes/Float4x4", "classes/FloatNxN", "classes/Loader", "classes/LoaderPath", "classes/LoaderShader", "classes/Node", "classes/Program", "classes/Render", "classes/Utility"]'>
+        </form>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="span3">
+<div>
+    <div id="sidebar">
+    <div id="classes">
+        <ul id="api-classes" class="nav nav-list">
+                <li><a href="../classes/Cloud.html">Cloud</a></li>
+                <li><a href="../classes/Float4x4.html">Float4x4</a></li>
+                <li><a href="../classes/FloatNxN.html">FloatNxN</a></li>
+                <li><a href="../classes/Loader.html">Loader</a></li>
+                <li><a href="../classes/LoaderPath.html">LoaderPath</a></li>
+                <li><a href="../classes/LoaderShader.html">LoaderShader</a></li>
+                <li><a href="../classes/Node.html">Node</a></li>
+                <li><a href="../classes/Program.html">Program</a></li>
+                <li><a href="../classes/Render.html">Render</a></li>
+                <li><a href="../classes/Utility.html">Utility</a></li>
+        </ul>
+    </div>
+    </div>
+</div>
+        </div>
+        <div class="span9">
+    <form id="options-form" class="form-inline pull-right">
+        Show:
+        <label for="api-show-inherited" class="checkbox">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected" class="checkbox">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private" class="checkbox">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated" class="checkbox">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </form>
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+<div class="page-header">
+    <h1>src/main/javascript/floatN.js <small>File</small></h1>
+</div>
+
+<div class="file">
+    <pre class="prettyprint linenums">
+let FloatN = function (dim) {
+    let _ = Object.create (null);
+
+    _.create = function () {
+        return new glMatrixArrayType (dim);
+    };
+
+    // _.copy (from, to)
+    // from: FloatN
+    // to: FloatN
+    // copies the values of &#x27;from&#x27; over to &#x27;to&#x27;
+    // if &#x27;to&#x27; is omitted, will create a new vector
+    // returns &#x27;to&#x27;
+    /**
+     *
+     */
+    eval (function () {
+        let str = &quot;_.copy = function (from, to) { &quot;;
+        str += &quot;to = (typeof to !== &#x27;undefined&#x27;) ? to : _.create (); &quot;;
+        for (let i = 0; i &lt; dim; ++i) {
+            str += &quot;to[&quot; + i + &quot;] = from[&quot; + i + &quot;]; &quot;;
+        }
+        str += &quot;return to; &quot;;
+        str += &quot;}; &quot;;
+        return str;
+    } ());
+
+    // _.point (from, to)
+    // from: FloatN-1
+    // to: FloatN
+    // populates &#x27;to&#x27; as a homogenous coordinate point of &#x27;from&#x27;
+    // if &#x27;to&#x27; is omitted, will create a new vector
+    // returns &#x27;to&#x27;
+    /**
+     *
+     */
+    eval (function () {
+        let str = &quot;_.point = function (from, to) {&quot;;
+        str += &quot;to = (typeof to !== &#x27;undefined&#x27;) ? to : _.create (); &quot;;
+        let end = dim - 1;
+        for (let i = 0; i &lt; end; ++i) {
+            str += &quot;to[&quot; + i + &quot;] = from[&quot; + i + &quot;]; &quot;;
+        }
+        str += &quot;to[&quot; + end + &quot;] = 1; &quot;;
+        str += &quot;return to; &quot;;
+        str += &quot;}; &quot;;
+        return str;
+    } ());
+
+    // _.vector (from, to)
+    // from: FloatN-1
+    // to: FloatN
+    // populates &#x27;to&#x27; as a homogenous coordinate point of &#x27;from&#x27;
+    // if &#x27;to&#x27; is omitted, will create a new vector
+    // returns &#x27;to&#x27;
+    /**
+     *
+     */
+    eval (function () {
+        let str = &quot;_.vector = function (from, to) {&quot;;
+        str += &quot;to = (typeof to !== &#x27;undefined&#x27;) ? to : _.create (); &quot;;
+        let end = dim - 1;
+        for (let i = 0; i &lt; end; ++i) {
+            str += &quot;to[&quot; + i + &quot;] = from[&quot; + i + &quot;]; &quot;;
+        }
+        str += &quot;to[&quot; + end + &quot;] = 0; &quot;;
+        str += &quot;return to; &quot;;
+        str += &quot;}; &quot;;
+        return str;
+    } ());
+
+    // _.dot (left, right)
+    // left: FloatN
+    // right: FloatN
+    // computes the dot produce of &#x27;left&#x27; and &#x27;right&#x27;
+    // returns the Float result
+    /**
+     *
+     */
+    eval (function () {
+        let str = &quot;_.dot = function (left, right) {&quot;;
+        str += &quot;return (left[0] * right[0])&quot;;
+        for (let i = 1; i &lt; dim; ++i) {
+            str += &quot; + (left[&quot; + i + &quot;] * right[&quot; + i + &quot;])&quot;;
+        }
+        str += &quot;; &quot;;
+        str += &quot;}; &quot;;
+        return str;
+    } ());
+
+    // _.normSq (from)
+    // from: FloatN
+    // computes the squared length of the input vector
+    // returns the Float result
+    /**
+     *
+     * @param from
+     */
+    _.normSq = function (from) {
+        return _.dot (from, from);
+    };
+
+    // _.norm (from)
+    // from: FloatN
+    // computes the length of the input vector
+    // returns the Float result
+    /**
+     *
+     * @param from
+     * @return {number}
+     */
+    _.norm = function (from) {
+        return Math.sqrt (_.normSq (from));
+    };
+
+    /**
+     *
+     * @param from
+     * @param to
+     */
+    _.normalize = function (from, to) {
+        return _.scale (from, 1 / _.norm (from), to);
+    };
+
+    // _.add (left, right, to)
+    // left: FloatN
+    // right: FloatN
+    // to: FloatN
+    // sets the values of &#x27;to&#x27; to the sum of &#x27;left&#x27; and &#x27;right&#x27;
+    // if &#x27;to&#x27; is omitted, will create a new vector
+    // returns &#x27;to&#x27;
+    /**
+     *
+     */
+    eval (function () {
+        let str = &quot;_.add = function (left, right, to) {&quot;;
+        str += &quot;to = (typeof to !== &#x27;undefined&#x27;) ? to : _.create (); &quot;;
+        for (let i = 0; i &lt; dim; ++i) {
+            str += &quot;to[&quot; + i + &quot;] = left[&quot; + i + &quot;] + right[&quot; + i + &quot;]; &quot;;
+        }
+        str += &quot;return to; &quot;;
+        str += &quot;}; &quot;;
+        return str;
+    } ());
+
+    // _.subtract (left, right, to)
+    // left: FloatN
+    // right: FloatN
+    // to: FloatN
+    // sets the values of &#x27;to&#x27; to the difference of &#x27;left&#x27; and &#x27;right&#x27;
+    // if &#x27;to&#x27; is omitted, will create a new vector
+    // returns &#x27;to&#x27;
+    /**
+     *
+     */
+    eval (function () {
+        let str = &quot;_.subtract = function (left, right, to) {\n&quot;;
+        str += &quot;to = (typeof to !== &#x27;undefined&#x27;) ? to : _.create ();\n&quot;;
+        for (let i = 0; i &lt; dim; ++i) {
+            str += &quot;to[&quot; + i + &quot;] = left[&quot; + i + &quot;] - right[&quot; + i + &quot;]; &quot;;
+        }
+        str += &quot;\n&quot;;
+        str += &quot;return to;\n&quot;;
+        str += &quot;};\n&quot;;
+        return str;
+    } ());
+
+    // _.scale (from, scale, to)
+    // from: FloatN
+    // scale: Float
+    // to: FloatN
+    // sets the values of &#x27;to&#x27; to a scaled version of &#x27;from&#x27;
+    // if &#x27;to&#x27; is omitted, will create a new vector
+    // returns &#x27;to&#x27;
+    /**
+     *
+     */
+    eval (function () {
+        let str = &quot;_.scale = function (from, scale, to) {&quot;;
+        str += &quot;to = (typeof to !== &#x27;undefined&#x27;) ? to : _.create (); &quot;;
+        for (let i = 0; i &lt; dim; ++i) {
+            str += &quot;to[&quot; + i + &quot;] = from[&quot; + i + &quot;] * scale; &quot;;
+        }
+        str += &quot;return to; &quot;;
+        str += &quot;}; &quot;;
+        return str;
+    } ());
+
+    // _.fixNum (from, precision, to)
+    // from: FloatN
+    // precision: int
+    // to: FloatN
+    // sets the values of &#x27;to&#x27; to a fixed precision version of &#x27;from&#x27;
+    // if &#x27;to&#x27; is omitted, will create a new vector
+    // returns &#x27;to&#x27;
+    /**
+     *
+     */
+    eval (function () {
+        let str = &quot;_.fixNum = function (from, precision, to) {&quot;;
+        str += &quot;to = (typeof to !== &#x27;undefined&#x27;) ? to : _.create (); &quot;;
+        for (let i = 0; i &lt; dim; ++i) {
+            str += &quot;to[&quot; + i + &quot;] = Utility.fixNum (from[&quot; + i + &quot;], precision); &quot;;
+        }
+        str += &quot;return to; &quot;;
+        str += &quot;}; &quot;;
+        return str;
+    } ());
+
+    // _.str (from)
+    // from: FloatN
+    // returns the string representation of the from (to 7 significant digits), about 10 miles at
+    // 1/16&quot; resolution
+    /**
+     *
+     */
+    eval (function () {
+        let str = &quot;_.str = function (from) {&quot;;
+        str += &quot;return &#x27;(&#x27; + from[0]&quot;;
+        for (let i = 1; i &lt; dim; ++i) {
+            str += &quot; + &#x27;, &#x27; +  + from[&quot; + i + &quot;].toFixed (7)&quot;;
+        }
+        str += &quot; + &#x27;)&#x27;; &quot;;
+        str += &quot;}; &quot;;
+        return str;
+    } ());
+
+    /**
+     *
+     * @param left
+     * @param right
+     * @return {boolean}
+     */
+    _.equals = function (left, right) {
+        return _.str (left) == _.str (right);
+    };
+
+    return _;
+};
+
+let Float2 = function () {
+    let _ = FloatN (2);
+
+    /**
+     *
+     * @param from
+     * @param to
+     * @return {*}
+     */
+    _.perpendicular = function (from, to) {
+        to = DEFAULT_FUNCTION(to, _.create);
+        to[0] = from[1]; to[1] = -from[0];
+        return to;
+    };
+
+    /**
+     *
+     * @param left
+     * @param right
+     * @return {number}
+     */
+    _.cross = function (left, right) {
+        return (left[0] * right[1]) - (left[1] * right[0]);
+    };
+
+    return _;
+} ();
+
+let Float3 = function () {
+    let _ = FloatN (3);
+
+    /**
+     *
+     * @param left
+     * @param right
+     * @param to
+     * @return {*}
+     */
+    _.cross = function (left, right, to) {
+        to = DEFAULT_FUNCTION(to, _.create);
+        to[0] = (left[1] * right[2]) - (left[2] * right[1]);
+        to[1] = (left[2] * right[0]) - (left[0] * right[2]);
+        to[2] = (left[0] * right[1]) - (left[1] * right[0]);
+        return to;
+    };
+
+    return _;
+} ();
+
+let Float4 = function () {
+    let _ = FloatN (4);
+    return _;
+} ();
+
+    </pre>
+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/jquery/jquery-1.8.2.min.js"></script>
+<script src="../assets/vendor/bootstrap/js/bootstrap.js"></script>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script src="../assets/js/yuidoc-bootstrap.js"></script>
+<script>prettyPrint();</script>
+</body>
+</html>

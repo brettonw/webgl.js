@@ -30,9 +30,9 @@ var TestContainer = function () {
         function () {
             LOG (LogLevel.INFO, "Float4x4...");
             let viewMatrix = Float4x4.identity ();
-            Float4x4.rotate (viewMatrix, Utility.degreesToRadians (27.5), [ 1, 0, 0 ]);
+            viewMatrix = Float4x4.multiply (Float4x4.rotateX (Utility.degreesToRadians (27.5)), viewMatrix);
             viewMatrix  = Float4x4.multiply (Float4x4.translate ([ 0, -1.5, -3.5 ]), viewMatrix);
-            Float4x4.rotate (viewMatrix, Utility.degreesToRadians (10), [ 0, 1, 0 ]);
+            viewMatrix  = Float4x4.multiply (Float4x4.rotateY (Utility.degreesToRadians (10)), viewMatrix);
             viewMatrix = Float4x4.multiply (Float4x4.scale ([ 2, 2, 2 ]), viewMatrix);
             viewMatrix  = Float4x4.multiply (Float4x4.translate ([ -0.5, -0.5, -0.5 ]), viewMatrix);
 

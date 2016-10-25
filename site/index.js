@@ -5,16 +5,20 @@ let standardUniforms = Object.create(null);
 
 let currentAngle = 0;
 
+let fovRange;
+let framingRange;
+
+
 let draw = function (deltaPosition) {
     // set up the projection matrix (earth radius is 1 and we want it to occupy about 75% of the
     // view in the vertical direction - the view is probably wider than that)
-    let fovRangeValue = 50;
+    let fovRangeValue = fovRange.value;
     fovRangeValue *= 0.01;
     fovRangeValue *= fovRangeValue;
     fovRangeValue = 1.0 - fovRangeValue;
     fovRangeValue = 0.5 + (59.5 * fovRangeValue);
 
-    let framingRangeValue = 100;
+    let framingRangeValue = framingRange.value;
     framingRangeValue *= 0.01;
     framingRangeValue = 0.1 + (0.9 * framingRangeValue);
 
@@ -22,14 +26,14 @@ let draw = function (deltaPosition) {
     let goalOpposite = 3 * (1.0 / framingRangeValue);
     // I'm cheating using static values for the near/far planes, ideally these would be the distance
     // along the view vector to the front of the scene bounds, and the back of the scene bounds
-    let nearPlane = 1;
-    let farPlane = nearPlane + 9;
+    let nearPlane = 0.1;
+    let farPlane = nearPlane + 1000;
     standardUniforms.PROJECTION_MATRIX_PARAMETER = Float4x4.perspective (fov, context.viewportWidth / context.viewportHeight, nearPlane, farPlane);
 
     // setup the view matrix
     let viewMatrix = Float4x4.lookAlongAt (goalOpposite, fov, [0, -2, 7], [0, 1.5, 0], [0, 1, 0]);
-    currentAngle += deltaPosition[0] * 90;
-    viewMatrix = Float4x4.rotateY(viewMatrix, Utility.degreesToRadians(currentAngle));
+    currentAngle += deltaPosition[0] * 180;
+    viewMatrix = Float4x4.multiply (Float4x4.rotateY(Utility.degreesToRadians(currentAngle)), viewMatrix);
 
     standardUniforms.VIEW_MATRIX_PARAMETER = viewMatrix;
     standardUniforms.MODEL_MATRIX_PARAMETER = Float4x4.identity ();
@@ -126,10 +130,15 @@ let buildScene = function () {
 };
 
 let onBodyLoad = function () {
+    fovRange = document.getElementById("fovRange");
+    framingRange = document.getElementById("framingRange");
+
     MouseTracker.new ("render-canvas", OnReady.new (null, function (deltaPosition) {
         draw (deltaPosition);
     }), 0.01);
+
     Render.new ("render-canvas");
+
     // load the shaders, and build the programs
     LoaderShader.new ("shaders/@.glsl")
         .addVertexShaders ("basic")

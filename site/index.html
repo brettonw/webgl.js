@@ -15,6 +15,10 @@
 <div>
     <canvas id="render-canvas" style="border:none;margin:0;" width="840px" tabindex="0"></canvas>
 </div>
+<div style="font-size:12px;">
+    <input type="range" id="fovRange" min="0" max="100" step="1" value="60" oninput="draw ([0, 0]);"> FOV
+    <input type="range" id="framingRange" min="0" max="100" step="1" value="90" oninput="draw ([0, 0]);"> Framing
+</div>
 <div id="footer">
     <a href="../docs" style="float:left;font-size:14px;text-decoration:none;color:white;">docs</a>
     <a href="https://github.com/brettonw/webgl.js" style="float:right;font-size:14px;text-decoration:none;color:white;">... on GitHub</a>
