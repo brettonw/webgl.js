@@ -170,108 +170,115 @@ let Float4x4 = function () {
         return c;
     };
 
-    _.frustum = function (a, b, c, d, e, g, to) {
+    /**
+     *
+     * @param left
+     * @param right
+     * @param bottom
+     * @param top
+     * @param near
+     * @param far
+     * @param to
+     * @returns {*}
+     */
+    let frustum = function (left, right, bottom, top, near, far, to) {
         to = DEFAULT_FUNCTION(to, _.create);
-        let h = b - a, i = d - c, j = g - e;
-        to[0] = e * 2 / h;
-        to[1] = 0;
-        to[2] = 0;
-        to[3] = 0;
-        to[4] = 0;
-        to[5] = e * 2 / i;
-        to[6] = 0;
-        to[7] = 0;
-        to[8] = (b + a) / h;
-        to[9] = (d + c) / i;
-        to[10] = -(g + e) / j;
-        to[11] = -1;
-        to[12] = 0;
-        to[13] = 0;
-        to[14] = -(g * e * 2) / j;
-        to[15] = 0;
+        let width = right - left, height = top - bottom, depth = far - near;
+        to[0] = (near * 2) / width; to[1] = 0; to[2] = 0; to[3] = 0;
+        to[4] = 0; to[5] = (near * 2) / height; to[6] = 0; to[7] = 0;
+        to[8] = (right + left) / width; to[9] = (top + bottom) / height; to[10] = -(far + near) / depth; to[11] = -1;
+        to[12] = 0; to[13] = 0; to[14] = (-2.0 * far * near) / depth; to[15] = 0;
+        return to;
+    };
+    _.frustum = frustum;
+
+    /**
+     *
+     * @param fov
+     * @param aspectRatio
+     * @param nearPlane
+     * @param farPlane
+     * @param to
+     */
+    _.perspective = function (fov, aspectRatio, nearPlane, farPlane, to) {
+        let halfWidth = nearPlane * Math.tan (Utility.degreesToRadians(fov * 0.5));
+        let halfHeight = halfWidth * aspectRatio;
+        return frustum (-halfHeight, halfHeight, -halfWidth, halfWidth, nearPlane, farPlane, to);
+    };
+
+    /**
+     *
+     * @param left
+     * @param right
+     * @param bottom
+     * @param top
+     * @param near
+     * @param far
+     * @param to
+     * @returns {*}
+     */
+    _.orthographic = function (left, right, bottom, top, near, far, to) {
+        to = DEFAULT_FUNCTION(to, _.create);
+        let width = right - left, height = top - bottom, depth = far - near;
+        to[0] = 2 / width; to[1] = 0; to[2] = 0; to[3] = 0;
+        to[4] = 0; to[5] = 2 / height; to[6] = 0; to[7] = 0;
+        to[8] = 0; to[9] = 0; to[10] = -2 / depth; to[11] = 0;
+        to[12] = -(left + right) / width; to[13] = -(top + bottom) / height; to[14] = -(far + near) / depth; to[15] = 1;
         return to;
     };
 
-    _.perspective = function (a, b, c, d, e) {
-        a = c * Math.tan (a * Math.PI / 360);
-        b = a * b;
-        return _.frustum (-b, b, -a, a, c, d, e);
-    };
-
-    _.ortho = function (a, b, c, d, e, g, to) {
-        to = DEFAULT_FUNCTION(to, _.create);
-        let h = b - a, i = d - c, j = g - e;
-        to[0] = 2 / h;
-        to[1] = 0;
-        to[2] = 0;
-        to[3] = 0;
-        to[4] = 0;
-        to[5] = 2 / i;
-        to[6] = 0;
-        to[7] = 0;
-        to[8] = 0;
-        to[9] = 0;
-        to[10] = -2 / j;
-        to[11] = 0;
-        to[12] = -(a + b) / h;
-        to[13] = -(d + c) / i;
-        to[14] = -(g + e) / j;
-        to[15] = 1;
+    /**
+     *
+     * @param u
+     * @param v
+     * @param n
+     * @param from
+     * @returns {FloatNxN|Object}
+     */
+    let viewMatrix = function (u, v, n, from) {
+        let to = _.create();
+        to[0] = u[0]; to[1] = u[1]; to[2] = u[2]; to[3] = 0;
+        to[4] = v[0]; to[5] = v[1]; to[6] = v[2]; to[7] = 0;
+        to[8] = n[0]; to[9] = n[1]; to[10] = n[2]; to[11] = 0;
+        to[12] = -Float3.dot (from, u); to[13] = -Float3.dot (from, v); to[14] = -Float3.dot (from, n); to[15] = 1;
         return to;
     };
+    _.viewMatrix = viewMatrix;
 
-    _.lookAt = function (a, b, c, to) {
-        to = DEFAULT_FUNCTION(to, _.create);
-        let e = a[0], g = a[1];
-        a = a[2];
-        let f = c[0], h = c[1], i = c[2];
-        c = b[1];
-        let j = b[2];
-        if (e == b[0] && g == c && a == j)return _.identity (to);
-        let k, l, o, m;
-        c = e - b[0];
-        j = g - b[1];
-        b = a - b[2];
-        m = 1 / Math.sqrt (c * c + j * j + b * b);
-        c *= m;
-        j *= m;
-        b *= m;
-        k = h * b - i * j;
-        i = i * c - f * b;
-        f = f * j - h * c;
-        if (m = Math.sqrt (k * k + i * i + f * f)) {
-            m = 1 / m;
-            k *= m;
-            i *= m;
-            f *= m
-        } else f = i = k = 0;
-        h = j * f - b * i;
-        l = b * k - c * f;
-        o = c * i - j * k;
-        if (m = Math.sqrt (h * h + l * l + o * o)) {
-            m = 1 / m;
-            h *= m;
-            l *= m;
-            o *= m
-        } else o = l = h = 0;
-        to[0] = k;
-        to[1] = h;
-        to[2] = c;
-        to[3] = 0;
-        to[4] = i;
-        to[5] = l;
-        to[6] = j;
-        to[7] = 0;
-        to[8] = f;
-        to[9] =
-            o;
-        to[10] = b;
-        to[11] = 0;
-        to[12] = -(k * e + i * g + f * a);
-        to[13] = -(h * e + l * g + o * a);
-        to[14] = -(c * e + j * g + b * a);
-        to[15] = 1;
-        return to;
+    /**
+     *
+     * @param from
+     * @param at
+     * @param up
+     */
+    _.lookFromAt = function (from, at, up) {
+        up = DEFAULT_VALUE(up, [0, 1, 0]);
+        let viewPlaneNormal = Float3.normalize (Float3.subtract (from, at));
+        let u =  Float3.cross (Float3.normalize (up), viewPlaneNormal);
+        let v = Float3.cross (viewPlaneNormal, u);
+        return viewMatrix (u, v, viewPlaneNormal, from);
+    };
+
+    /**
+     * 
+     * @param span
+     * @param fov
+     * @param along
+     * @param at
+     * @param up
+     * @returns {FloatNxN|Object}
+     */
+    _.lookAlongAt = function (span, fov, along, at, up) {
+        up = DEFAULT_VALUE(up, [0, 1, 0]);
+        let viewPlaneNormal = Float3.normalize (along);
+        let u =  Float3.cross (Float3.normalize (up), viewPlaneNormal);
+        let v = Float3.cross (viewPlaneNormal, u);
+
+        // compute the actual camera location based on the field of view and desired view span
+        let distance = span / Math.tan (Utility.degreesToRadians(fov * 0.5));
+        let from = Float3.add (at, Float3.scale (viewPlaneNormal, distance));
+        return viewMatrix (u, v, viewPlaneNormal, from);
+
     };
 
     /*

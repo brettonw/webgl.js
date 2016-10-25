@@ -5,6 +5,13 @@
         "version": "1.0.0"
     },
     "files": {
+        "src/main/javascript/camera.js": {
+            "name": "src/main/javascript/camera.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
         "src/main/javascript/cloud.js": {
             "name": "src/main/javascript/cloud.js",
             "modules": {},
@@ -272,6 +279,21 @@
     },
     "classitems": [
         {
+            "file": "src/main/javascript/camera.js",
+            "line": 45,
+            "params": [
+                {
+                    "name": "focalLength",
+                    "description": ""
+                },
+                {
+                    "name": "filmSize",
+                    "description": ""
+                }
+            ],
+            "class": "Cloud"
+        },
+        {
             "file": "src/main/javascript/cloud.js",
             "line": 9,
             "description": "the initializer for a cloud.",
@@ -341,6 +363,188 @@
                 "type": "Cloud"
             },
             "class": "Cloud"
+        },
+        {
+            "file": "src/main/javascript/float4x4.js",
+            "line": 173,
+            "params": [
+                {
+                    "name": "left",
+                    "description": ""
+                },
+                {
+                    "name": "right",
+                    "description": ""
+                },
+                {
+                    "name": "bottom",
+                    "description": ""
+                },
+                {
+                    "name": "top",
+                    "description": ""
+                },
+                {
+                    "name": "near",
+                    "description": ""
+                },
+                {
+                    "name": "far",
+                    "description": ""
+                },
+                {
+                    "name": "to",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "*"
+            },
+            "class": "Float4x4"
+        },
+        {
+            "file": "src/main/javascript/float4x4.js",
+            "line": 195,
+            "params": [
+                {
+                    "name": "fov",
+                    "description": ""
+                },
+                {
+                    "name": "aspectRatio",
+                    "description": ""
+                },
+                {
+                    "name": "nearPlane",
+                    "description": ""
+                },
+                {
+                    "name": "farPlane",
+                    "description": ""
+                },
+                {
+                    "name": "to",
+                    "description": ""
+                }
+            ],
+            "class": "Float4x4"
+        },
+        {
+            "file": "src/main/javascript/float4x4.js",
+            "line": 209,
+            "params": [
+                {
+                    "name": "left",
+                    "description": ""
+                },
+                {
+                    "name": "right",
+                    "description": ""
+                },
+                {
+                    "name": "bottom",
+                    "description": ""
+                },
+                {
+                    "name": "top",
+                    "description": ""
+                },
+                {
+                    "name": "near",
+                    "description": ""
+                },
+                {
+                    "name": "far",
+                    "description": ""
+                },
+                {
+                    "name": "to",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "*"
+            },
+            "class": "Float4x4"
+        },
+        {
+            "file": "src/main/javascript/float4x4.js",
+            "line": 230,
+            "params": [
+                {
+                    "name": "u",
+                    "description": ""
+                },
+                {
+                    "name": "v",
+                    "description": ""
+                },
+                {
+                    "name": "n",
+                    "description": ""
+                },
+                {
+                    "name": "from",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "FloatNxN|Object"
+            },
+            "class": "Float4x4"
+        },
+        {
+            "file": "src/main/javascript/float4x4.js",
+            "line": 253,
+            "params": [
+                {
+                    "name": "from",
+                    "description": ""
+                },
+                {
+                    "name": "at",
+                    "description": ""
+                },
+                {
+                    "name": "up",
+                    "description": ""
+                }
+            ],
+            "class": "Float4x4"
+        },
+        {
+            "file": "src/main/javascript/float4x4.js",
+            "line": 266,
+            "params": [
+                {
+                    "name": "span",
+                    "description": ""
+                },
+                {
+                    "name": "fov",
+                    "description": ""
+                },
+                {
+                    "name": "along",
+                    "description": ""
+                },
+                {
+                    "name": "at",
+                    "description": ""
+                },
+                {
+                    "name": "up",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "FloatNxN|Object"
+            },
+            "class": "Float4x4"
         },
         {
             "file": "src/main/javascript/floatNxN.js",
@@ -1180,5 +1384,50 @@
             "class": "Utility"
         }
     ],
-    "warnings": []
+    "warnings": [
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " src/main/javascript/float4x4.js:173"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " src/main/javascript/float4x4.js:209"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " src/main/javascript/float4x4.js:230"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " src/main/javascript/float4x4.js:266"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src/main/javascript/camera.js:45"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src/main/javascript/float4x4.js:173"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src/main/javascript/float4x4.js:195"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src/main/javascript/float4x4.js:209"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src/main/javascript/float4x4.js:230"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src/main/javascript/float4x4.js:253"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src/main/javascript/float4x4.js:266"
+        }
+    ]
 }

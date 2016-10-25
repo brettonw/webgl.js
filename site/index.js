@@ -3,6 +3,8 @@
 let scene;
 let standardUniforms = Object.create(null);
 
+let currentAngle = 0;
+
 let draw = function (deltaPosition) {
     // set up the projection matrix (earth radius is 1 and we want it to occupy about 75% of the
     // view in the vertical direction - the view is probably wider than that)
@@ -12,30 +14,23 @@ let draw = function (deltaPosition) {
     fovRangeValue = 1.0 - fovRangeValue;
     fovRangeValue = 0.5 + (59.5 * fovRangeValue);
 
-    let framingRangeValue = 20;
+    let framingRangeValue = 100;
     framingRangeValue *= 0.01;
     framingRangeValue = 0.1 + (0.9 * framingRangeValue);
 
     let fov = fovRangeValue;
-    let halfFov = fov / 2.0;
-    let goalOpposite = 1.0 / framingRangeValue;
-    let sinTheta = Math.sin(Utility.degreesToRadians (halfFov));
-    let hypotenuse = goalOpposite / sinTheta;
-    //console.log("Setting Projection at: " + hypotenuse);
-    // I'm cheating with the near/far, I know the moon and anything orbiting it is the farthest out
-    // we'll want to see on the near side, and the starfield on the far side
-    let nearPlane = Math.max (0.1, hypotenuse - 80.0);
-    let farPlane = hypotenuse + 211.0;
-    standardUniforms.PROJECTION_MATRIX_PARAMETER = Float4x4.perspective (fov, context.viewportWidth / context.viewportHeight, nearPlane, farPlane, Float4x4.create ());
-
-    // compute the view parameters as up or down, and left or right
-    let upAngle = 0.1 * Math.PI * 0.5;
-    let viewOffset = Float2.scale ([Math.cos (upAngle), Math.sin (upAngle)], -hypotenuse);
+    let goalOpposite = 3 * (1.0 / framingRangeValue);
+    // I'm cheating using static values for the near/far planes, ideally these would be the distance
+    // along the view vector to the front of the scene bounds, and the back of the scene bounds
+    let nearPlane = 1;
+    let farPlane = nearPlane + 9;
+    standardUniforms.PROJECTION_MATRIX_PARAMETER = Float4x4.perspective (fov, context.viewportWidth / context.viewportHeight, nearPlane, farPlane);
 
     // setup the view matrix
-    let viewMatrix = Float4x4.identity ();
-    Float4x4.rotateX (viewMatrix, upAngle);
-    viewMatrix  = Float4x4.multiply (Float4x4.translate ([0, viewOffset[1], viewOffset[0]]), viewMatrix);
+    let viewMatrix = Float4x4.lookAlongAt (goalOpposite, fov, [0, -2, 7], [0, 1.5, 0], [0, 1, 0]);
+    currentAngle += deltaPosition[0] * 90;
+    viewMatrix = Float4x4.rotateY(viewMatrix, Utility.degreesToRadians(currentAngle));
+
     standardUniforms.VIEW_MATRIX_PARAMETER = viewMatrix;
     standardUniforms.MODEL_MATRIX_PARAMETER = Float4x4.identity ();
 
