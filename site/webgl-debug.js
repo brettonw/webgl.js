@@ -606,6 +606,38 @@ let FloatN = function (dim) {
         return str;
     } ());
 
+    // _.minor
+    /**
+     *
+     */
+    eval (function () {
+        let str = "_.minor = function (from) {\n";
+        str += "let minorIndex = 0, minorValue = from[minorIndex];\n";
+        for (let i = 1; i < dim; ++i) {
+            str += "nextValue = from[" + i +"]; ";
+            str += "if (minorValue > nextValue) { minorIndex = " + i + "; minorValue = nextValue;}; ";
+        }
+        str += "return minorIndex;\n";
+        str += "};\n";
+        return str;
+    } ());
+
+    // _.major
+    /**
+     *
+     */
+    eval (function () {
+        let str = "_.major = function (from) {\n";
+        str += "let majorIndex = 0, majorValue = from[majorIndex];\n";
+        for (let i = 1; i < dim; ++i) {
+            str += "nextValue = from[" + i +"]; ";
+            str += "if (majorValue < nextValue) { majorIndex = " + i + "; majorValue = nextValue;}; ";
+        }
+        str += "return majorIndex;\n";
+        str += "};\n";
+        return str;
+    } ());
+
     // _.str (from)
     // from: FloatN
     // returns the string representation of the from (to 7 significant digits), about 10 miles at
@@ -1101,19 +1133,43 @@ let Float4x4 = function () {
 
     };
 
-    /*
-    eval (function () {
-        let index = _.index;
-        let str = "_.copy = function (from, to) { ";
-        str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
-        for (let i = 0; i < size; ++i) {
-            str += "to[" + i + "] = from[" + i + "]; ";
-        }
-        str += "return to; ";
-        str += "}; ";
-        return str;
-    } ());
-    */
+    /**
+     *
+     * @param n
+     * @param up
+     * @returns {FloatNxN|Object}
+     */
+    _.rotateZAxisTo = function (n, up) {
+        up = Utility.defaultFunction(up, function () { return [0, 1, 0]; });
+        n = Float3.normalize (n);
+        let u = Float3.normalize (Float3.cross (up, n));
+        let v = Float3.cross (n, u);
+        let to = _.create();
+        to[0] = u[0]; to[1] = u[1]; to[2] = u[2]; to[3] = 0;
+        to[4] = v[0]; to[5] = v[1]; to[6] = v[2]; to[7] = 0;
+        to[8] = n[0]; to[9] = n[1]; to[10] = n[2]; to[11] = 0;
+        to[12] = 0; to[13] = 0; to[14] = 0; to[15] = 1;
+        return to;
+    };
+
+    /**
+     *
+     * @param n
+     * @param up
+     * @returns {FloatNxN|Object}
+     */
+    _.rotateXAxisTo = function (u, up) {
+        up = Utility.defaultFunction(up, function () { return [0, 1, 0]; });
+        u = Float3.normalize (u);
+        let n = Float3.normalize (Float3.cross (u, up));
+        let v = Float3.cross (n, u);
+        let to = _.create();
+        to[0] = u[0]; to[1] = u[1]; to[2] = u[2]; to[3] = 0;
+        to[4] = v[0]; to[5] = v[1]; to[6] = v[2]; to[7] = 0;
+        to[8] = n[0]; to[9] = n[1]; to[10] = n[2]; to[11] = 0;
+        to[12] = 0; to[13] = 0; to[14] = 0; to[15] = 1;
+        return to;
+    };
 
     return _;
 } ();
@@ -3020,6 +3076,14 @@ var TestContainer = function () {
     };
 
     let tests = [
+        function () {
+            LogLevel.say (LogLevel.INFO, "FloatN...");
+            let x = [1.0, 2.0, 13.0, 0.5, 7.0];
+            let Float5 = FloatN (5);
+            let minor = Float5.minor (x);
+            assertEquals("Minor Axis", Float5.minor (x), 3);
+            assertEquals("Major Axis", Float5.major (x), 2);
+        },
         function () {
             LogLevel.say (LogLevel.INFO, "Float4x4...");
             let viewMatrix = Float4x4.identity ();

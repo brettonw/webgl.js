@@ -28,6 +28,14 @@ var TestContainer = function () {
 
     let tests = [
         function () {
+            LOG (LogLevel.INFO, "FloatN...");
+            let x = [1.0, 2.0, 13.0, 0.5, 7.0];
+            let Float5 = FloatN (5);
+            let minor = Float5.minor (x);
+            assertEquals("Minor Axis", Float5.minor (x), 3);
+            assertEquals("Major Axis", Float5.major (x), 2);
+        },
+        function () {
             LOG (LogLevel.INFO, "Float4x4...");
             let viewMatrix = Float4x4.identity ();
             viewMatrix = Float4x4.multiply (Float4x4.rotateX (Utility.degreesToRadians (27.5)), viewMatrix);

@@ -221,19 +221,43 @@ let Float4x4 = function () {
 
     };
 
-    /*
-    eval (function () {
-        let index = _.index;
-        let str = "_.copy = function (from, to) { ";
-        str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
-        for (let i = 0; i < size; ++i) {
-            str += "to[" + i + "] = from[" + i + "]; ";
-        }
-        str += "return to; ";
-        str += "}; ";
-        return str;
-    } ());
-    */
+    /**
+     *
+     * @param n
+     * @param up
+     * @returns {FloatNxN|Object}
+     */
+    _.rotateZAxisTo = function (n, up) {
+        up = Utility.defaultFunction(up, function () { return [0, 1, 0]; });
+        n = Float3.normalize (n);
+        let u = Float3.normalize (Float3.cross (up, n));
+        let v = Float3.cross (n, u);
+        let to = _.create();
+        to[0] = u[0]; to[1] = u[1]; to[2] = u[2]; to[3] = 0;
+        to[4] = v[0]; to[5] = v[1]; to[6] = v[2]; to[7] = 0;
+        to[8] = n[0]; to[9] = n[1]; to[10] = n[2]; to[11] = 0;
+        to[12] = 0; to[13] = 0; to[14] = 0; to[15] = 1;
+        return to;
+    };
+
+    /**
+     *
+     * @param n
+     * @param up
+     * @returns {FloatNxN|Object}
+     */
+    _.rotateXAxisTo = function (u, up) {
+        up = Utility.defaultFunction(up, function () { return [0, 1, 0]; });
+        u = Float3.normalize (u);
+        let n = Float3.normalize (Float3.cross (u, up));
+        let v = Float3.cross (n, u);
+        let to = _.create();
+        to[0] = u[0]; to[1] = u[1]; to[2] = u[2]; to[3] = 0;
+        to[4] = v[0]; to[5] = v[1]; to[6] = v[2]; to[7] = 0;
+        to[8] = n[0]; to[9] = n[1]; to[10] = n[2]; to[11] = 0;
+        to[12] = 0; to[13] = 0; to[14] = 0; to[15] = 1;
+        return to;
+    };
 
     return _;
 } ();

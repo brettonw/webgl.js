@@ -294,6 +294,38 @@ let FloatN = function (dim) {
         return str;
     } ());
 
+    // _.minor
+    /**
+     *
+     */
+    eval (function () {
+        let str = &quot;_.minor = function (from) {\n&quot;;
+        str += &quot;let minorIndex = 0, minorValue = from[minorIndex];\n&quot;;
+        for (let i = 1; i &lt; dim; ++i) {
+            str += &quot;nextValue = from[&quot; + i +&quot;]; &quot;;
+            str += &quot;if (minorValue &gt; nextValue) { minorIndex = &quot; + i + &quot;; minorValue = nextValue;}; &quot;;
+        }
+        str += &quot;return minorIndex;\n&quot;;
+        str += &quot;};\n&quot;;
+        return str;
+    } ());
+
+    // _.major
+    /**
+     *
+     */
+    eval (function () {
+        let str = &quot;_.major = function (from) {\n&quot;;
+        str += &quot;let majorIndex = 0, majorValue = from[majorIndex];\n&quot;;
+        for (let i = 1; i &lt; dim; ++i) {
+            str += &quot;nextValue = from[&quot; + i +&quot;]; &quot;;
+            str += &quot;if (majorValue &lt; nextValue) { majorIndex = &quot; + i + &quot;; majorValue = nextValue;}; &quot;;
+        }
+        str += &quot;return majorIndex;\n&quot;;
+        str += &quot;};\n&quot;;
+        return str;
+    } ());
+
     // _.str (from)
     // from: FloatN
     // returns the string representation of the from (to 7 significant digits), about 10 miles at

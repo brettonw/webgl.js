@@ -83,7 +83,7 @@ let buildScene = function () {
             standardUniforms.AMBIENT_LIGHT_COLOR = [0.8, 0.8, 1.0];
             standardUniforms.LIGHT_COLOR = [1.0, 1.0, 0.8];
             standardUniforms.LIGHT_DIRECTION = Float3.normalize ([1.55, 1.75, 1.45]);
-            standardUniforms.AMBIENT_CONTRIBUTION = 0.15;
+            standardUniforms.AMBIENT_CONTRIBUTION = 0.35;
             standardUniforms.DIFFUSE_CONTRIBUTION = 0.85;
             standardUniforms.SPECULAR_CONTRIBUTION = 0.05;
             standardUniforms.SPECULAR_EXPONENT = 8.0;
@@ -93,7 +93,8 @@ let buildScene = function () {
     // just put down the platonic solids...
     scene.addChild (Node.new ({
         name: "moon",
-        transform: Float4x4.translate([-3, 1.5, 0]),
+        transform: Float4x4.multiply(Float4x4.rotateXAxisTo([0, 0, -1]), Float4x4.translate([-3, 1.5, 0])),
+        //transform: Float4x4.translate([-3, 1.5, 0]),
         state: function (standardUniforms) {
             Program.get ("basic-texture").use ();
             standardUniforms.TEXTURE_SAMPLER = "moon";
@@ -104,13 +105,13 @@ let buildScene = function () {
     }));
 
     scene.addChild (Node.new ({
-        name: "ball",
-        transform: Float4x4.translate([0, 1.5, 0]),
+        name: "cylinder",
+        transform: Float4x4.multiply(Float4x4.rotateZ(Math.PI / 3), Float4x4.translate([0, 1.5, 0])),
         state: function (standardUniforms) {
             Program.get ("basic").use ();
             standardUniforms.MODEL_COLOR = [1.0, 0.5, 0.5];
         },
-        shape: "sphere3",
+        shape: "cylinder",
         children: false
     }));
 

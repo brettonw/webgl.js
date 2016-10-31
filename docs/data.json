@@ -652,6 +652,44 @@
             "class": "Float4x4"
         },
         {
+            "file": "src/main/javascript/float4x4.js",
+            "line": 224,
+            "params": [
+                {
+                    "name": "n",
+                    "description": ""
+                },
+                {
+                    "name": "up",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "FloatNxN|Object"
+            },
+            "class": "Float4x4"
+        },
+        {
+            "file": "src/main/javascript/float4x4.js",
+            "line": 243,
+            "params": [
+                {
+                    "name": "n",
+                    "description": ""
+                },
+                {
+                    "name": "up",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "FloatNxN|Object"
+            },
+            "class": "Float4x4"
+        },
+        {
             "file": "src/main/javascript/floatN.js",
             "line": 14,
             "class": "FloatNxN"
@@ -734,12 +772,22 @@
         },
         {
             "file": "src/main/javascript/floatN.js",
-            "line": 214,
+            "line": 211,
             "class": "FloatNxN"
         },
         {
             "file": "src/main/javascript/floatN.js",
-            "line": 228,
+            "line": 227,
+            "class": "FloatNxN"
+        },
+        {
+            "file": "src/main/javascript/floatN.js",
+            "line": 246,
+            "class": "FloatNxN"
+        },
+        {
+            "file": "src/main/javascript/floatN.js",
+            "line": 260,
             "params": [
                 {
                     "name": "left",
@@ -758,7 +806,7 @@
         },
         {
             "file": "src/main/javascript/floatN.js",
-            "line": 244,
+            "line": 276,
             "params": [
                 {
                     "name": "from",
@@ -777,7 +825,7 @@
         },
         {
             "file": "src/main/javascript/floatN.js",
-            "line": 256,
+            "line": 288,
             "params": [
                 {
                     "name": "left",
@@ -796,7 +844,7 @@
         },
         {
             "file": "src/main/javascript/floatN.js",
-            "line": 272,
+            "line": 304,
             "params": [
                 {
                     "name": "left",
@@ -1657,6 +1705,14 @@
     ],
     "warnings": [
         {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " src/main/javascript/float4x4.js:224"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " src/main/javascript/float4x4.js:243"
+        },
+        {
             "message": "Missing item type",
             "line": " src/main/javascript/camera.js:45"
         },
@@ -1710,6 +1766,14 @@
         },
         {
             "message": "Missing item type",
+            "line": " src/main/javascript/float4x4.js:224"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src/main/javascript/float4x4.js:243"
+        },
+        {
+            "message": "Missing item type",
             "line": " src/main/javascript/floatN.js:14"
         },
         {
@@ -1754,23 +1818,31 @@
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/floatN.js:214"
+            "line": " src/main/javascript/floatN.js:211"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/floatN.js:228"
+            "line": " src/main/javascript/floatN.js:227"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/floatN.js:244"
+            "line": " src/main/javascript/floatN.js:246"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/floatN.js:256"
+            "line": " src/main/javascript/floatN.js:260"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/floatN.js:272"
+            "line": " src/main/javascript/floatN.js:276"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src/main/javascript/floatN.js:288"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src/main/javascript/floatN.js:304"
         }
     ]
 }
