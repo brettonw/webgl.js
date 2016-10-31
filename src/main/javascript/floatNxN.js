@@ -121,7 +121,6 @@ let FloatNxN = function (dim) {
     } ());
 
     _.chain = function (...args) {
-        let index = 0;
         let result = args[0];
         for (let index = 1, end = args.length; index < end; ++index) {
             let next = args[index];

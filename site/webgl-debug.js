@@ -844,6 +844,15 @@ let FloatNxN = function (dim) {
         return str;
     } ());
 
+    _.chain = function (...args) {
+        let result = args[0];
+        for (let index = 1, end = args.length; index < end; ++index) {
+            let next = args[index];
+            result = _.multiply(result, next);
+        }
+        return result;
+    };
+
     // _.scale (scale, to)
     // scale: Float or FloatN
     // to: FloatNxN

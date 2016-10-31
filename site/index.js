@@ -33,7 +33,7 @@ let draw = function (deltaPosition) {
     // setup the view matrix
     let viewMatrix = Float4x4.lookAlongAt (goalOpposite, fov, [0, -2, 7], [0, 1.5, 0], [0, 1, 0]);
     currentAngle += deltaPosition[0] * 180;
-    viewMatrix = Float4x4.multiply (Float4x4.rotateY(Utility.degreesToRadians(currentAngle)), viewMatrix);
+    viewMatrix = Float4x4.chain (Float4x4.rotateY(Utility.degreesToRadians(currentAngle)), viewMatrix);
 
     standardUniforms.VIEW_MATRIX_PARAMETER = viewMatrix;
     standardUniforms.MODEL_MATRIX_PARAMETER = Float4x4.identity ();
@@ -93,7 +93,7 @@ let buildScene = function () {
     // just put down the platonic solids...
     scene.addChild (Node.new ({
         name: "moon",
-        transform: Float4x4.multiply(Float4x4.rotateXAxisTo([0, 0, -1]), Float4x4.translate([-3, 1.5, 0])),
+        transform: Float4x4.chain(Float4x4.rotateXAxisTo([0, 0, -1]), Float4x4.translate([-3, 1.5, 0])),
         //transform: Float4x4.translate([-3, 1.5, 0]),
         state: function (standardUniforms) {
             Program.get ("basic-texture").use ();
@@ -106,7 +106,7 @@ let buildScene = function () {
 
     scene.addChild (Node.new ({
         name: "cylinder",
-        transform: Float4x4.multiply(Float4x4.rotateZ(Math.PI / 3), Float4x4.translate([0, 1.5, 0])),
+        transform: Float4x4.chain(Float4x4.rotateZ(Math.PI / 3), Float4x4.rotateX (0.25), Float4x4.translate([0, 1.5, 0])),
         state: function (standardUniforms) {
             Program.get ("basic").use ();
             standardUniforms.MODEL_COLOR = [1.0, 0.5, 0.5];
