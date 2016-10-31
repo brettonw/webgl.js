@@ -83,8 +83,8 @@ let buildScene = function () {
             standardUniforms.AMBIENT_LIGHT_COLOR = [0.8, 0.8, 1.0];
             standardUniforms.LIGHT_COLOR = [1.0, 1.0, 0.8];
             standardUniforms.LIGHT_DIRECTION = Float3.normalize ([1.55, 1.75, 1.45]);
-            standardUniforms.AMBIENT_CONTRIBUTION = 0.35;
-            standardUniforms.DIFFUSE_CONTRIBUTION = 0.85;
+            standardUniforms.AMBIENT_CONTRIBUTION = 0.25;
+            standardUniforms.DIFFUSE_CONTRIBUTION = 0.75;
             standardUniforms.SPECULAR_CONTRIBUTION = 0.05;
             standardUniforms.SPECULAR_EXPONENT = 8.0;
         }
