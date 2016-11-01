@@ -208,7 +208,7 @@ let Float4x4 = function () {
      * @param up
      */
     _.lookFromAt = function (from, at, up) {
-        return lookFrom (Float3.subtract (from, at));
+        return lookFrom (from, Float3.subtract (from, at), up);
     };
 
     /**
