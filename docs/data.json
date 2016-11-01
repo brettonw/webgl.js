@@ -579,15 +579,15 @@
             "line": 170,
             "params": [
                 {
-                    "name": "u",
+                    "name": "xAxis",
                     "description": ""
                 },
                 {
-                    "name": "v",
+                    "name": "yAxis",
                     "description": ""
                 },
                 {
-                    "name": "n",
+                    "name": "zAxis",
                     "description": ""
                 },
                 {
@@ -653,7 +653,7 @@
         },
         {
             "file": "src/main/javascript/float4x4.js",
-            "line": 224,
+            "line": 225,
             "params": [
                 {
                     "name": "n",
@@ -672,7 +672,7 @@
         },
         {
             "file": "src/main/javascript/float4x4.js",
-            "line": 243,
+            "line": 244,
             "params": [
                 {
                     "name": "n",
@@ -1711,11 +1711,11 @@
     "warnings": [
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src/main/javascript/float4x4.js:224"
+            "line": " src/main/javascript/float4x4.js:225"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src/main/javascript/float4x4.js:243"
+            "line": " src/main/javascript/float4x4.js:244"
         },
         {
             "message": "Missing item type",
@@ -1771,11 +1771,11 @@
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/float4x4.js:224"
+            "line": " src/main/javascript/float4x4.js:225"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/float4x4.js:243"
+            "line": " src/main/javascript/float4x4.js:244"
         },
         {
             "message": "Missing item type",

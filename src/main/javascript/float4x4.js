@@ -169,19 +169,19 @@ let Float4x4 = function () {
 
     /**
      *
-     * @param u
-     * @param v
-     * @param n
+     * @param xAxis
+     * @param yAxis
+     * @param zAxis
      * @param from
      * @return {FloatNxN|Object}
      */
-    let viewMatrix = function (u, v, n, from) {
-        let to = _.create();
-        to[0] = u[0]; to[1] = u[1]; to[2] = u[2]; to[3] = 0;
-        to[4] = v[0]; to[5] = v[1]; to[6] = v[2]; to[7] = 0;
-        to[8] = n[0]; to[9] = n[1]; to[10] = n[2]; to[11] = 0;
-        to[12] = -Float3.dot (from, u); to[13] = -Float3.dot (from, v); to[14] = -Float3.dot (from, n); to[15] = 1;
-        return to;
+    let viewMatrix = function (xAxis, yAxis, zAxis, from) {
+        let to = _.create ();
+        to[0] = xAxis[0]; to[1] = xAxis[1]; to[2] = xAxis[2]; to[3] = 0;
+        to[4] = yAxis[0]; to[5] = yAxis[1]; to[6] = yAxis[2]; to[7] = 0;
+        to[8] = zAxis[0]; to[9] = zAxis[1]; to[10] = zAxis[2]; to[11] = 0;
+        to[12] = from[0]; to[13] = from[1]; to[14] = from[2]; to[15] = 1;
+        return _.inverse (to);
     };
     _.viewMatrix = viewMatrix;
 
@@ -192,15 +192,15 @@ let Float4x4 = function () {
      * @param up
      */
     _.lookFromAt = function (from, at, up) {
-        up = Utility.defaultValue(up, [0, 1, 0]);
-        let viewPlaneNormal = Float3.normalize (Float3.subtract (from, at));
-        let u =  Float3.cross (Float3.normalize (up), viewPlaneNormal);
-        let v = Float3.cross (viewPlaneNormal, u);
-        return viewMatrix (u, v, viewPlaneNormal, from);
+        up = Float3.normalize (Utility.defaultValue(up, [0.0, 1.0, 0.0]));
+        let zAxis = Float3.normalize (Float3.subtract (from, at));
+        let xAxis = Float3.cross (up, zAxis);
+        let yAxis = Float3.cross (zAxis, xAxis);
+        return viewMatrix (xAxis, yAxis, zAxis, from);
     };
 
     /**
-     * 
+     *
      * @param span
      * @param fov
      * @param along
@@ -209,15 +209,16 @@ let Float4x4 = function () {
      * @return {FloatNxN|Object}
      */
     _.lookAlongAt = function (span, fov, along, at, up) {
-        up = Utility.defaultValue(up, [0, 1, 0]);
-        let viewPlaneNormal = Float3.normalize (along);
-        let u =  Float3.cross (Float3.normalize (up), viewPlaneNormal);
-        let v = Float3.cross (viewPlaneNormal, u);
+        up = Float3.normalize (Utility.defaultValue (up, [0.0, 1.0, 0.0]));
+        let zAxis = Float3.normalize (along);
+        let xAxis = Float3.cross (up, zAxis);
+        let yAxis = Float3.cross (zAxis, xAxis);
 
-        // compute the actual camera location based on the field of view and desired view span
+        // compute the actual camera location based on the field of view and desired view span at
+        // the target
         let distance = span / Math.tan (Utility.degreesToRadians(fov * 0.5));
-        let from = Float3.add (at, Float3.scale (viewPlaneNormal, distance));
-        return viewMatrix (u, v, viewPlaneNormal, from);
+        let from = Float3.add (at, Float3.scale (zAxis, distance));
+        return viewMatrix (xAxis, yAxis, zAxis, from);
 
     };
 
