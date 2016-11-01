@@ -1082,7 +1082,7 @@
         },
         {
             "file": "src/main/javascript/node.js",
-            "line": 250,
+            "line": 251,
             "description": "draw this node's contents.",
             "itemtype": "method",
             "name": "draw",
@@ -1097,8 +1097,8 @@
         },
         {
             "file": "src/main/javascript/node.js",
-            "line": 263,
-            "description": "traverse this node and its contents. this funciton is a place-holder that is replaced by the\nactual function called depending on the parameters passed during construction.",
+            "line": 264,
+            "description": "traverse this node and its contents. this function is a place-holder that is replaced by the\nactual function called depending on the parameters passed during construction.",
             "itemtype": "method",
             "name": "traverse",
             "params": [
@@ -1113,7 +1113,12 @@
         },
         {
             "file": "src/main/javascript/node.js",
-            "line": 276,
+            "line": 277,
+            "class": "Node"
+        },
+        {
+            "file": "src/main/javascript/node.js",
+            "line": 290,
             "description": "get the name of this node (if it has one).",
             "itemtype": "method",
             "name": "getName",
@@ -1125,7 +1130,7 @@
         },
         {
             "file": "src/main/javascript/node.js",
-            "line": 286,
+            "line": 300,
             "description": "get a node by name.",
             "itemtype": "method",
             "name": "get",
@@ -1144,7 +1149,7 @@
         },
         {
             "file": "src/main/javascript/node.js",
-            "line": 297,
+            "line": 311,
             "description": "static method to create and construct a new scene graph node.",
             "itemtype": "method",
             "name": "new",
@@ -1843,6 +1848,10 @@
         {
             "message": "Missing item type",
             "line": " src/main/javascript/floatN.js:304"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src/main/javascript/node.js:277"
         }
     ]
 }

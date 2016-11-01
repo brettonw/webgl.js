@@ -2038,6 +2038,7 @@ let Node = function () {
     _.addChild = function (node) {
         if ("children" in this) {
             this.children.push (node);
+            node.parent = this;
         } else {
             LogLevel.say (LogLevel.ERROR, "Attempting to add child (" + node.getName () + ") to node (" + this.getName () + ") that is a leaf.");
         }
@@ -2058,7 +2059,7 @@ let Node = function () {
     };
 
     /**
-     * traverse this node and its contents. this funciton is a place-holder that is replaced by the
+     * traverse this node and its contents. this function is a place-holder that is replaced by the
      * actual function called depending on the parameters passed during construction.
      *
      * @method traverse
@@ -2068,6 +2069,19 @@ let Node = function () {
      */
     _.traverse = function (standardUniforms) {
         return this;
+    };
+
+    /**
+     *
+     */
+    _.getTransform = function (root) {
+        let transform = ("transform" in this) ? this.transform : Float4x4.identity();
+        // walk to the root, and concatenate the transformations on the return stack
+        if (this == root) {
+            return transform;
+        } else {
+            return Float4x4.multiply (transform, this.parent.getTransform(root));
+        }
     };
 
     /**
