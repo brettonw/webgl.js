@@ -197,7 +197,8 @@ let FloatN = function (dim) {
      * @return {number}
      */
     _.norm = function (from) {
-        return Math.sqrt (_.normSq (from));
+        let n2 = _.normSq (from);
+        return (n2 &gt; 0.0) ? ((Math.abs (n2 - 1.0) &gt; 1.0e-6) ? Math.sqrt (n2) : 1.0) : 0.0;
     };
 
     /**
@@ -206,7 +207,8 @@ let FloatN = function (dim) {
      * @param to
      */
     _.normalize = function (from, to) {
-        return _.scale (from, 1 / _.norm (from), to);
+        let n = _.norm (from);
+        return (Math.abs (n - 1.0) &gt; 1.0e-6) ? _.scale (from, 1 / n, to) : _.copy (from);
     };
 
     // _.add (left, right, to)
@@ -368,7 +370,7 @@ let Float2 = function () {
      */
     _.perpendicular = function (from, to) {
         to = DEFAULT_FUNCTION(to, _.create);
-        to[0] = from[1]; to[1] = -from[0];
+        to[X] = from[Y]; to[Y] = -from[X];
         return to;
     };
 
@@ -379,7 +381,7 @@ let Float2 = function () {
      * @return {number}
      */
     _.cross = function (left, right) {
-        return (left[0] * right[1]) - (left[1] * right[0]);
+        return (left[X] * right[Y]) - (left[Y] * right[X]);
     };
 
     return _;
@@ -397,9 +399,9 @@ let Float3 = function () {
      */
     _.cross = function (left, right, to) {
         to = DEFAULT_FUNCTION(to, _.create);
-        to[0] = (left[1] * right[2]) - (left[2] * right[1]);
-        to[1] = (left[2] * right[0]) - (left[0] * right[2]);
-        to[2] = (left[0] * right[1]) - (left[1] * right[0]);
+        to[X] = (left[Y] * right[Z]) - (left[Z] * right[Y]);
+        to[Y] = (left[Z] * right[X]) - (left[X] * right[Z]);
+        to[Z] = (left[X] * right[Y]) - (left[Y] * right[X]);
         return to;
     };
 

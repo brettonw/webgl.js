@@ -31,11 +31,9 @@ let draw = function (deltaPosition) {
     standardUniforms.PROJECTION_MATRIX_PARAMETER = Float4x4.perspective (fov, context.viewportWidth / context.viewportHeight, nearPlane, farPlane);
 
     // setup the view matrix
-    let viewMatrix = Float4x4.lookAlongAt (goalOpposite, fov, [0, 2, 7], [0, 1.5, 0]);
+    let viewMatrix = Float4x4.lookAt (goalOpposite, fov, [0, 2, 7], [0, 1.5, 0]);
     console.log ("LOOK AT: " + Float3.str ([0, 1.5, 0]));
     console.log ("LOOK ALONG: " + Float3.str ([0, 2, 7]));
-    //viewMatrix = Float4x4.lookFromAt ([0, 3.5, 7], [0, 1.5, 0]);
-    //console.log ("LOOK FROM: " + Float3.str ([0, 3.5, 7]));
     currentAngle += deltaPosition[0] * 180;
     viewMatrix = Float4x4.chain (Float4x4.rotateY(Utility.degreesToRadians(currentAngle)), viewMatrix);
 

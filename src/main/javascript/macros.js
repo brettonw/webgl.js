@@ -20,3 +20,10 @@
 // default values...
 #define DEFAULT_VALUE(value, defaultValue) (((typeof value !== "undefined") && (value != null)) ? value : defaultValue)
 #define DEFAULT_FUNCTION(value, defaultFunction) (((typeof value !== "undefined") && (value != null)) ? value : defaultFunction ())
+
+// vector manipulation macros
+#define X 0
+#define Y 1
+#define Z 2
+#define W 3
+

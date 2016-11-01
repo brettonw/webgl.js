@@ -177,13 +177,29 @@ let Float4x4 = function () {
      */
     let viewMatrix = function (xAxis, yAxis, zAxis, from) {
         let to = _.create ();
-        to[0] = xAxis[0]; to[1] = xAxis[1]; to[2] = xAxis[2]; to[3] = 0;
-        to[4] = yAxis[0]; to[5] = yAxis[1]; to[6] = yAxis[2]; to[7] = 0;
-        to[8] = zAxis[0]; to[9] = zAxis[1]; to[10] = zAxis[2]; to[11] = 0;
-        to[12] = from[0]; to[13] = from[1]; to[14] = from[2]; to[15] = 1;
+        to[0] = xAxis[X]; to[1] = xAxis[Y]; to[2] = xAxis[Z]; to[3] = 0;
+        to[4] = yAxis[X]; to[5] = yAxis[Y]; to[6] = yAxis[Z]; to[7] = 0;
+        to[8] = zAxis[X]; to[9] = zAxis[Y]; to[10] = zAxis[Z]; to[11] = 0;
+        to[12] = from[X]; to[13] = from[Y]; to[14] = from[Z]; to[15] = 1;
         return _.inverse (to);
     };
     _.viewMatrix = viewMatrix;
+
+    /**
+     *
+     * @param from
+     * @param along
+     * @param up
+     * @returns {FloatNxN|Object}
+     */
+    let lookFrom = function (from, along, up) {
+        up = Float3.normalize (Utility.defaultValue (up, [0.0, 1.0, 0.0]));
+        let zAxis = Float3.normalize (along);
+        let xAxis = Float3.cross (up, zAxis);
+        let yAxis = Float3.cross (zAxis, xAxis);
+        return viewMatrix (xAxis, yAxis, zAxis, from);
+    };
+    _.lookFrom = lookFrom;
 
     /**
      *
@@ -192,51 +208,38 @@ let Float4x4 = function () {
      * @param up
      */
     _.lookFromAt = function (from, at, up) {
-        up = Float3.normalize (Utility.defaultValue(up, [0.0, 1.0, 0.0]));
-        let zAxis = Float3.normalize (Float3.subtract (from, at));
-        let xAxis = Float3.cross (up, zAxis);
-        let yAxis = Float3.cross (zAxis, xAxis);
-        return viewMatrix (xAxis, yAxis, zAxis, from);
+        return lookFrom (Float3.subtract (from, at));
     };
 
     /**
      *
-     * @param span
+     * @param size
      * @param fov
      * @param along
      * @param at
      * @param up
-     * @return {FloatNxN|Object}
      */
-    _.lookAlongAt = function (span, fov, along, at, up) {
-        up = Float3.normalize (Utility.defaultValue (up, [0.0, 1.0, 0.0]));
-        let zAxis = Float3.normalize (along);
-        let xAxis = Float3.cross (up, zAxis);
-        let yAxis = Float3.cross (zAxis, xAxis);
-
-        // compute the actual camera location based on the field of view and desired view span at
-        // the target
-        let distance = span / Math.tan (Utility.degreesToRadians(fov * 0.5));
-        let from = Float3.add (at, Float3.scale (zAxis, distance));
-        return viewMatrix (xAxis, yAxis, zAxis, from);
-
+    _.lookAt = function (size, fov, along, at, up) {
+        let distance = size / Math.tan (Utility.degreesToRadians (fov * 0.5));
+        let from = Float3.add (at, Float3.scale (along, distance / Float3.norm (along)));
+        return lookFrom (from, along, up);
     };
 
     /**
      *
-     * @param n
+     * @param zAxis
      * @param up
      * @returns {FloatNxN|Object}
      */
-    _.rotateZAxisTo = function (n, up) {
+    _.rotateZAxisTo = function (zAxis, up) {
         up = Utility.defaultFunction(up, function () { return [0, 1, 0]; });
-        n = Float3.normalize (n);
-        let u = Float3.normalize (Float3.cross (up, n));
-        let v = Float3.cross (n, u);
+        zAxis = Float3.normalize (zAxis);
+        let xAxis = Float3.normalize (Float3.cross (up, zAxis));
+        let yAxis = Float3.cross (zAxis, xAxis);
         let to = _.create();
-        to[0] = u[0]; to[1] = u[1]; to[2] = u[2]; to[3] = 0;
-        to[4] = v[0]; to[5] = v[1]; to[6] = v[2]; to[7] = 0;
-        to[8] = n[0]; to[9] = n[1]; to[10] = n[2]; to[11] = 0;
+        to[0] = xAxis[X]; to[1] = xAxis[Y]; to[2] = xAxis[Z]; to[3] = 0;
+        to[4] = yAxis[X]; to[5] = yAxis[Y]; to[6] = yAxis[Z]; to[7] = 0;
+        to[8] = zAxis[X]; to[9] = zAxis[Y]; to[10] = zAxis[Z]; to[11] = 0;
         to[12] = 0; to[13] = 0; to[14] = 0; to[15] = 1;
         return to;
     };
@@ -247,15 +250,15 @@ let Float4x4 = function () {
      * @param up
      * @returns {FloatNxN|Object}
      */
-    _.rotateXAxisTo = function (u, up) {
+    _.rotateXAxisTo = function (xAxis, up) {
         up = Utility.defaultFunction(up, function () { return [0, 1, 0]; });
-        u = Float3.normalize (u);
-        let n = Float3.normalize (Float3.cross (u, up));
-        let v = Float3.cross (n, u);
+        xAxis = Float3.normalize (xAxis);
+        let zAxis = Float3.normalize (Float3.cross (xAxis, up));
+        let yAxis = Float3.cross (zAxis, xAxis);
         let to = _.create();
-        to[0] = u[0]; to[1] = u[1]; to[2] = u[2]; to[3] = 0;
-        to[4] = v[0]; to[5] = v[1]; to[6] = v[2]; to[7] = 0;
-        to[8] = n[0]; to[9] = n[1]; to[10] = n[2]; to[11] = 0;
+        to[0] = xAxis[X]; to[1] = xAxis[Y]; to[2] = xAxis[Z]; to[3] = 0;
+        to[4] = yAxis[X]; to[5] = yAxis[Y]; to[6] = yAxis[Z]; to[7] = 0;
+        to[8] = zAxis[X]; to[9] = zAxis[Y]; to[10] = zAxis[Z]; to[11] = 0;
         to[12] = 0; to[13] = 0; to[14] = 0; to[15] = 1;
         return to;
     };
