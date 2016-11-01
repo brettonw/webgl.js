@@ -421,13 +421,13 @@ let FloatN = function (dim) {
      *
      */
     eval (function () {
-        let str = "_.copy = function (from, to) { ";
-        str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
+        let str = "_.copy = function (from, to) {\n";
+        str += "to = (typeof to !== 'undefined') ? to : _.create ();\n";
         for (let i = 0; i < dim; ++i) {
-            str += "to[" + i + "] = from[" + i + "]; ";
+            str += "to[" + i + "] = from[" + i + "];\n";
         }
-        str += "return to; ";
-        str += "}; ";
+        str += "return to;\n";
+        str += "};\n";
         return str;
     } ());
 
@@ -441,15 +441,15 @@ let FloatN = function (dim) {
      *
      */
     eval (function () {
-        let str = "_.point = function (from, to) {";
-        str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
+        let str = "_.point = function (from, to) {\n";
+        str += "to = (typeof to !== 'undefined') ? to : _.create ();\n";
         let end = dim - 1;
         for (let i = 0; i < end; ++i) {
-            str += "to[" + i + "] = from[" + i + "]; ";
+            str += "to[" + i + "] = from[" + i + "];\n";
         }
-        str += "to[" + end + "] = 1; ";
-        str += "return to; ";
-        str += "}; ";
+        str += "to[" + end + "] = 1;\n";
+        str += "return to;\n";
+        str += "};\n";
         return str;
     } ());
 
@@ -463,15 +463,15 @@ let FloatN = function (dim) {
      *
      */
     eval (function () {
-        let str = "_.vector = function (from, to) {";
-        str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
+        let str = "_.vector = function (from, to) {\n";
+        str += "to = (typeof to !== 'undefined') ? to : _.create ();\n";
         let end = dim - 1;
         for (let i = 0; i < end; ++i) {
-            str += "to[" + i + "] = from[" + i + "]; ";
+            str += "to[" + i + "] = from[" + i + "];\n";
         }
-        str += "to[" + end + "] = 0; ";
-        str += "return to; ";
-        str += "}; ";
+        str += "to[" + end + "] = 0;\n";
+        str += "return to;\n";
+        str += "};\n";
         return str;
     } ());
 
@@ -484,13 +484,13 @@ let FloatN = function (dim) {
      *
      */
     eval (function () {
-        let str = "_.dot = function (left, right) {";
+        let str = "_.dot = function (left, right) {\n";
         str += "return (left[0] * right[0])";
         for (let i = 1; i < dim; ++i) {
-            str += " + (left[" + i + "] * right[" + i + "])";
+            str += "\n + (left[" + i + "] * right[" + i + "])";
         }
-        str += "; ";
-        str += "}; ";
+        str += ";\n";
+        str += "};\n";
         return str;
     } ());
 
@@ -541,13 +541,13 @@ let FloatN = function (dim) {
      *
      */
     eval (function () {
-        let str = "_.add = function (left, right, to) {";
-        str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
+        let str = "_.add = function (left, right, to) {\n";
+        str += "to = (typeof to !== 'undefined') ? to : _.create ();\n";
         for (let i = 0; i < dim; ++i) {
-            str += "to[" + i + "] = left[" + i + "] + right[" + i + "]; ";
+            str += "to[" + i + "] = left[" + i + "] + right[" + i + "];\n";
         }
-        str += "return to; ";
-        str += "}; ";
+        str += "return to;\n";
+        str += "};\n";
         return str;
     } ());
 
@@ -565,9 +565,8 @@ let FloatN = function (dim) {
         let str = "_.subtract = function (left, right, to) {\n";
         str += "to = (typeof to !== 'undefined') ? to : _.create ();\n";
         for (let i = 0; i < dim; ++i) {
-            str += "to[" + i + "] = left[" + i + "] - right[" + i + "]; ";
+            str += "to[" + i + "] = left[" + i + "] - right[" + i + "];\n";
         }
-        str += "\n";
         str += "return to;\n";
         str += "};\n";
         return str;
@@ -584,13 +583,13 @@ let FloatN = function (dim) {
      *
      */
     eval (function () {
-        let str = "_.scale = function (from, scale, to) {";
-        str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
+        let str = "_.scale = function (from, scale, to) {\n";
+        str += "to = (typeof to !== 'undefined') ? to : _.create ();\n";
         for (let i = 0; i < dim; ++i) {
-            str += "to[" + i + "] = from[" + i + "] * scale; ";
+            str += "to[" + i + "] = from[" + i + "] * scale;\n";
         }
-        str += "return to; ";
-        str += "}; ";
+        str += "return to;\n";
+        str += "};\n";
         return str;
     } ());
 
@@ -605,13 +604,13 @@ let FloatN = function (dim) {
      *
      */
     eval (function () {
-        let str = "_.fixNum = function (from, precision, to) {";
-        str += "to = (typeof to !== 'undefined') ? to : _.create (); ";
+        let str = "_.fixNum = function (from, precision, to) {\n";
+        str += "to = (typeof to !== 'undefined') ? to : _.create ();\n";
         for (let i = 0; i < dim; ++i) {
-            str += "to[" + i + "] = Utility.fixNum (from[" + i + "], precision); ";
+            str += "to[" + i + "] = Utility.fixNum (from[" + i + "], precision);\n";
         }
-        str += "return to; ";
-        str += "}; ";
+        str += "return to;\n";
+        str += "};\n";
         return str;
     } ());
 
@@ -624,7 +623,7 @@ let FloatN = function (dim) {
         str += "let minorIndex = 0, minorValue = from[minorIndex];\n";
         for (let i = 1; i < dim; ++i) {
             str += "nextValue = from[" + i +"]; ";
-            str += "if (minorValue > nextValue) { minorIndex = " + i + "; minorValue = nextValue;}; ";
+            str += "if (minorValue > nextValue) { minorIndex = " + i + "; minorValue = nextValue;};\n";
         }
         str += "return minorIndex;\n";
         str += "};\n";
@@ -640,7 +639,7 @@ let FloatN = function (dim) {
         str += "let majorIndex = 0, majorValue = from[majorIndex];\n";
         for (let i = 1; i < dim; ++i) {
             str += "nextValue = from[" + i +"]; ";
-            str += "if (majorValue < nextValue) { majorIndex = " + i + "; majorValue = nextValue;}; ";
+            str += "if (majorValue < nextValue) { majorIndex = " + i + "; majorValue = nextValue;};\n";
         }
         str += "return majorIndex;\n";
         str += "};\n";
@@ -655,13 +654,13 @@ let FloatN = function (dim) {
      *
      */
     eval (function () {
-        let str = "_.str = function (from) {";
+        let str = "_.str = function (from) {\n";
         str += "return '(' + from[0]";
         for (let i = 1; i < dim; ++i) {
-            str += " + ', ' +  + from[" + i + "].toFixed (7)";
+            str += "\n + ', ' +  + from[" + i + "].toFixed (7)";
         }
-        str += " + ')'; ";
-        str += "}; ";
+        str += " + ')';\n";
+        str += "};\n";
         return str;
     } ());
 

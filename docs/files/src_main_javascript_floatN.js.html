@@ -102,13 +102,13 @@ let FloatN = function (dim) {
      *
      */
     eval (function () {
-        let str = &quot;_.copy = function (from, to) { &quot;;
-        str += &quot;to = (typeof to !== &#x27;undefined&#x27;) ? to : _.create (); &quot;;
+        let str = &quot;_.copy = function (from, to) {\n&quot;;
+        str += &quot;to = (typeof to !== &#x27;undefined&#x27;) ? to : _.create ();\n&quot;;
         for (let i = 0; i &lt; dim; ++i) {
-            str += &quot;to[&quot; + i + &quot;] = from[&quot; + i + &quot;]; &quot;;
+            str += &quot;to[&quot; + i + &quot;] = from[&quot; + i + &quot;];\n&quot;;
         }
-        str += &quot;return to; &quot;;
-        str += &quot;}; &quot;;
+        str += &quot;return to;\n&quot;;
+        str += &quot;};\n&quot;;
         return str;
     } ());
 
@@ -122,15 +122,15 @@ let FloatN = function (dim) {
      *
      */
     eval (function () {
-        let str = &quot;_.point = function (from, to) {&quot;;
-        str += &quot;to = (typeof to !== &#x27;undefined&#x27;) ? to : _.create (); &quot;;
+        let str = &quot;_.point = function (from, to) {\n&quot;;
+        str += &quot;to = (typeof to !== &#x27;undefined&#x27;) ? to : _.create ();\n&quot;;
         let end = dim - 1;
         for (let i = 0; i &lt; end; ++i) {
-            str += &quot;to[&quot; + i + &quot;] = from[&quot; + i + &quot;]; &quot;;
+            str += &quot;to[&quot; + i + &quot;] = from[&quot; + i + &quot;];\n&quot;;
         }
-        str += &quot;to[&quot; + end + &quot;] = 1; &quot;;
-        str += &quot;return to; &quot;;
-        str += &quot;}; &quot;;
+        str += &quot;to[&quot; + end + &quot;] = 1;\n&quot;;
+        str += &quot;return to;\n&quot;;
+        str += &quot;};\n&quot;;
         return str;
     } ());
 
@@ -144,15 +144,15 @@ let FloatN = function (dim) {
      *
      */
     eval (function () {
-        let str = &quot;_.vector = function (from, to) {&quot;;
-        str += &quot;to = (typeof to !== &#x27;undefined&#x27;) ? to : _.create (); &quot;;
+        let str = &quot;_.vector = function (from, to) {\n&quot;;
+        str += &quot;to = (typeof to !== &#x27;undefined&#x27;) ? to : _.create ();\n&quot;;
         let end = dim - 1;
         for (let i = 0; i &lt; end; ++i) {
-            str += &quot;to[&quot; + i + &quot;] = from[&quot; + i + &quot;]; &quot;;
+            str += &quot;to[&quot; + i + &quot;] = from[&quot; + i + &quot;];\n&quot;;
         }
-        str += &quot;to[&quot; + end + &quot;] = 0; &quot;;
-        str += &quot;return to; &quot;;
-        str += &quot;}; &quot;;
+        str += &quot;to[&quot; + end + &quot;] = 0;\n&quot;;
+        str += &quot;return to;\n&quot;;
+        str += &quot;};\n&quot;;
         return str;
     } ());
 
@@ -165,13 +165,13 @@ let FloatN = function (dim) {
      *
      */
     eval (function () {
-        let str = &quot;_.dot = function (left, right) {&quot;;
+        let str = &quot;_.dot = function (left, right) {\n&quot;;
         str += &quot;return (left[0] * right[0])&quot;;
         for (let i = 1; i &lt; dim; ++i) {
-            str += &quot; + (left[&quot; + i + &quot;] * right[&quot; + i + &quot;])&quot;;
+            str += &quot;\n + (left[&quot; + i + &quot;] * right[&quot; + i + &quot;])&quot;;
         }
-        str += &quot;; &quot;;
-        str += &quot;}; &quot;;
+        str += &quot;;\n&quot;;
+        str += &quot;};\n&quot;;
         return str;
     } ());
 
@@ -222,13 +222,13 @@ let FloatN = function (dim) {
      *
      */
     eval (function () {
-        let str = &quot;_.add = function (left, right, to) {&quot;;
-        str += &quot;to = (typeof to !== &#x27;undefined&#x27;) ? to : _.create (); &quot;;
+        let str = &quot;_.add = function (left, right, to) {\n&quot;;
+        str += &quot;to = (typeof to !== &#x27;undefined&#x27;) ? to : _.create ();\n&quot;;
         for (let i = 0; i &lt; dim; ++i) {
-            str += &quot;to[&quot; + i + &quot;] = left[&quot; + i + &quot;] + right[&quot; + i + &quot;]; &quot;;
+            str += &quot;to[&quot; + i + &quot;] = left[&quot; + i + &quot;] + right[&quot; + i + &quot;];\n&quot;;
         }
-        str += &quot;return to; &quot;;
-        str += &quot;}; &quot;;
+        str += &quot;return to;\n&quot;;
+        str += &quot;};\n&quot;;
         return str;
     } ());
 
@@ -246,9 +246,8 @@ let FloatN = function (dim) {
         let str = &quot;_.subtract = function (left, right, to) {\n&quot;;
         str += &quot;to = (typeof to !== &#x27;undefined&#x27;) ? to : _.create ();\n&quot;;
         for (let i = 0; i &lt; dim; ++i) {
-            str += &quot;to[&quot; + i + &quot;] = left[&quot; + i + &quot;] - right[&quot; + i + &quot;]; &quot;;
+            str += &quot;to[&quot; + i + &quot;] = left[&quot; + i + &quot;] - right[&quot; + i + &quot;];\n&quot;;
         }
-        str += &quot;\n&quot;;
         str += &quot;return to;\n&quot;;
         str += &quot;};\n&quot;;
         return str;
@@ -265,13 +264,13 @@ let FloatN = function (dim) {
      *
      */
     eval (function () {
-        let str = &quot;_.scale = function (from, scale, to) {&quot;;
-        str += &quot;to = (typeof to !== &#x27;undefined&#x27;) ? to : _.create (); &quot;;
+        let str = &quot;_.scale = function (from, scale, to) {\n&quot;;
+        str += &quot;to = (typeof to !== &#x27;undefined&#x27;) ? to : _.create ();\n&quot;;
         for (let i = 0; i &lt; dim; ++i) {
-            str += &quot;to[&quot; + i + &quot;] = from[&quot; + i + &quot;] * scale; &quot;;
+            str += &quot;to[&quot; + i + &quot;] = from[&quot; + i + &quot;] * scale;\n&quot;;
         }
-        str += &quot;return to; &quot;;
-        str += &quot;}; &quot;;
+        str += &quot;return to;\n&quot;;
+        str += &quot;};\n&quot;;
         return str;
     } ());
 
@@ -286,13 +285,13 @@ let FloatN = function (dim) {
      *
      */
     eval (function () {
-        let str = &quot;_.fixNum = function (from, precision, to) {&quot;;
-        str += &quot;to = (typeof to !== &#x27;undefined&#x27;) ? to : _.create (); &quot;;
+        let str = &quot;_.fixNum = function (from, precision, to) {\n&quot;;
+        str += &quot;to = (typeof to !== &#x27;undefined&#x27;) ? to : _.create ();\n&quot;;
         for (let i = 0; i &lt; dim; ++i) {
-            str += &quot;to[&quot; + i + &quot;] = Utility.fixNum (from[&quot; + i + &quot;], precision); &quot;;
+            str += &quot;to[&quot; + i + &quot;] = Utility.fixNum (from[&quot; + i + &quot;], precision);\n&quot;;
         }
-        str += &quot;return to; &quot;;
-        str += &quot;}; &quot;;
+        str += &quot;return to;\n&quot;;
+        str += &quot;};\n&quot;;
         return str;
     } ());
 
@@ -305,7 +304,7 @@ let FloatN = function (dim) {
         str += &quot;let minorIndex = 0, minorValue = from[minorIndex];\n&quot;;
         for (let i = 1; i &lt; dim; ++i) {
             str += &quot;nextValue = from[&quot; + i +&quot;]; &quot;;
-            str += &quot;if (minorValue &gt; nextValue) { minorIndex = &quot; + i + &quot;; minorValue = nextValue;}; &quot;;
+            str += &quot;if (minorValue &gt; nextValue) { minorIndex = &quot; + i + &quot;; minorValue = nextValue;};\n&quot;;
         }
         str += &quot;return minorIndex;\n&quot;;
         str += &quot;};\n&quot;;
@@ -321,7 +320,7 @@ let FloatN = function (dim) {
         str += &quot;let majorIndex = 0, majorValue = from[majorIndex];\n&quot;;
         for (let i = 1; i &lt; dim; ++i) {
             str += &quot;nextValue = from[&quot; + i +&quot;]; &quot;;
-            str += &quot;if (majorValue &lt; nextValue) { majorIndex = &quot; + i + &quot;; majorValue = nextValue;}; &quot;;
+            str += &quot;if (majorValue &lt; nextValue) { majorIndex = &quot; + i + &quot;; majorValue = nextValue;};\n&quot;;
         }
         str += &quot;return majorIndex;\n&quot;;
         str += &quot;};\n&quot;;
@@ -336,13 +335,13 @@ let FloatN = function (dim) {
      *
      */
     eval (function () {
-        let str = &quot;_.str = function (from) {&quot;;
+        let str = &quot;_.str = function (from) {\n&quot;;
         str += &quot;return &#x27;(&#x27; + from[0]&quot;;
         for (let i = 1; i &lt; dim; ++i) {
-            str += &quot; + &#x27;, &#x27; +  + from[&quot; + i + &quot;].toFixed (7)&quot;;
+            str += &quot;\n + &#x27;, &#x27; +  + from[&quot; + i + &quot;].toFixed (7)&quot;;
         }
-        str += &quot; + &#x27;)&#x27;; &quot;;
-        str += &quot;}; &quot;;
+        str += &quot; + &#x27;)&#x27;;\n&quot;;
+        str += &quot;};\n&quot;;
         return str;
     } ());
 

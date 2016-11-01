@@ -781,32 +781,32 @@
         },
         {
             "file": "src/main/javascript/floatN.js",
-            "line": 177,
+            "line": 176,
             "class": "FloatNxN"
         },
         {
             "file": "src/main/javascript/floatN.js",
-            "line": 198,
+            "line": 197,
             "class": "FloatNxN"
         },
         {
             "file": "src/main/javascript/floatN.js",
-            "line": 213,
+            "line": 212,
             "class": "FloatNxN"
         },
         {
             "file": "src/main/javascript/floatN.js",
-            "line": 229,
+            "line": 228,
             "class": "FloatNxN"
         },
         {
             "file": "src/main/javascript/floatN.js",
-            "line": 248,
+            "line": 247,
             "class": "FloatNxN"
         },
         {
             "file": "src/main/javascript/floatN.js",
-            "line": 262,
+            "line": 261,
             "params": [
                 {
                     "name": "left",
@@ -825,7 +825,7 @@
         },
         {
             "file": "src/main/javascript/floatN.js",
-            "line": 278,
+            "line": 277,
             "params": [
                 {
                     "name": "from",
@@ -844,7 +844,7 @@
         },
         {
             "file": "src/main/javascript/floatN.js",
-            "line": 290,
+            "line": 289,
             "params": [
                 {
                     "name": "left",
@@ -863,7 +863,7 @@
         },
         {
             "file": "src/main/javascript/floatN.js",
-            "line": 306,
+            "line": 305,
             "params": [
                 {
                     "name": "left",
@@ -1842,39 +1842,39 @@
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/floatN.js:177"
+            "line": " src/main/javascript/floatN.js:176"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/floatN.js:198"
+            "line": " src/main/javascript/floatN.js:197"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/floatN.js:213"
+            "line": " src/main/javascript/floatN.js:212"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/floatN.js:229"
+            "line": " src/main/javascript/floatN.js:228"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/floatN.js:248"
+            "line": " src/main/javascript/floatN.js:247"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/floatN.js:262"
+            "line": " src/main/javascript/floatN.js:261"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/floatN.js:278"
+            "line": " src/main/javascript/floatN.js:277"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/floatN.js:290"
+            "line": " src/main/javascript/floatN.js:289"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/floatN.js:306"
+            "line": " src/main/javascript/floatN.js:305"
         },
         {
             "message": "Missing item type",
