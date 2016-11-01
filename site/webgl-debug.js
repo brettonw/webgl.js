@@ -971,7 +971,7 @@ let Float4x4 = function () {
      * @param to
      * @return {*}
      */
-    _.preMultiplyFloat4 = function (f4, f4x4, to) {
+    _.preMultiply = function (f4, f4x4, to) {
         to = (((typeof to !== "undefined") && (to != null)) ? to : Float4.create ());
         let f40 = f4[0], f41 = f4[1], f42 = f4[2], f43 = f4[3];
         to[0] = (f4x4[0] * f40) + (f4x4[4] * f41) + (f4x4[8] * f42) + (f4x4[12] * f43);
@@ -988,7 +988,7 @@ let Float4x4 = function () {
      * @param to
      * @return {*}
      */
-    _.postMultiplyFloat4 = function (f4x4, f4, to) {
+    _.postMultiply = function (f4x4, f4, to) {
         to = (((typeof to !== "undefined") && (to != null)) ? to : Float4.create ());
         let f40 = f4[0], f41 = f4[1], f42 = f4[2], f43 = f4[3];
         to[0] = (f4x4[0] * f40) + (f4x4[1] * f41) + (f4x4[2] * f42) + (f4x4[3] * f43);
