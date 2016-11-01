@@ -121,7 +121,7 @@ let FloatN = function (dim) {
      */
     _.normalize = function (from, to) {
         let n = _.norm (from);
-        return (Math.abs (n - 1.0) > 1.0e-6) ? _.scale (from, 1 / n, to) : _.copy (from);
+        return (Math.abs (n - 1.0) > 1.0e-6) ? _.scale (from, 1 / n, to) : _.copy (from, to);
     };
 
     // _.add (left, right, to)
