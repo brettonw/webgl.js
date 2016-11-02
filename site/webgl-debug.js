@@ -2089,7 +2089,7 @@ let Node = function () {
     _.getTransform = function (root) {
         let transform = ("transform" in this) ? this.transform : Float4x4.identity();
         // walk to the root, and concatenate the transformations on the return stack
-        if ((this == root) || (!("parent" in this))) {
+        if (((typeof root !== "undefined") && (this == root)) || (!("parent" in this))) {
             return transform;
         } else {
             return Float4x4.multiply (transform, this.parent.getTransform(root));

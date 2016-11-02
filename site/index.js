@@ -32,8 +32,8 @@ let draw = function (deltaPosition) {
 
     // setup the view matrix
     let viewMatrix = Float4x4.lookAt (goalOpposite, fov, [0, 2, 7], [0, 1.5, 0]);
-    console.log ("LOOK AT: " + Float3.str ([0, 1.5, 0]));
-    console.log ("LOOK ALONG: " + Float3.str ([0, 2, 7]));
+    //console.log ("LOOK AT: " + Float3.str ([0, 1.5, 0]));
+    //console.log ("LOOK ALONG: " + Float3.str ([0, 2, 7]));
     currentAngle += deltaPosition[0] * 180;
     viewMatrix = Float4x4.chain (Float4x4.rotateY(Utility.degreesToRadians(currentAngle)), viewMatrix);
 
@@ -43,7 +43,7 @@ let draw = function (deltaPosition) {
     // compute the camera position and set it in the standard uniforms
     let vmi = Float4x4.inverse (viewMatrix);
     standardUniforms.CAMERA_POSITION = [vmi[12], vmi[13], vmi[14]];
-    console.log ("CAMERA AT: " + Float3.str (standardUniforms.CAMERA_POSITION));
+    //console.log ("CAMERA AT: " + Float3.str (standardUniforms.CAMERA_POSITION));
 
     // draw the scene
     scene.traverse (standardUniforms);
