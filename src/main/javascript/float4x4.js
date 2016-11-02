@@ -195,8 +195,8 @@ let Float4x4 = function () {
     let lookFrom = function (from, along, up) {
         up = Float3.normalize (Utility.defaultValue (up, [0.0, 1.0, 0.0]));
         let zAxis = Float3.normalize (along);
-        let xAxis = Float3.cross (up, zAxis);
-        let yAxis = Float3.cross (zAxis, xAxis);
+        let xAxis = Float3.normalize (Float3.cross (up, zAxis));
+        let yAxis = Float3.normalize (Float3.cross (zAxis, xAxis));
         return viewMatrix (xAxis, yAxis, zAxis, from);
     };
     _.lookFrom = lookFrom;
@@ -235,7 +235,7 @@ let Float4x4 = function () {
         up = Utility.defaultFunction(up, function () { return [0, 1, 0]; });
         zAxis = Float3.normalize (zAxis);
         let xAxis = Float3.normalize (Float3.cross (up, zAxis));
-        let yAxis = Float3.cross (zAxis, xAxis);
+        let yAxis = Float3.normalize (Float3.cross (zAxis, xAxis));
         let to = _.create();
         to[0] = xAxis[X]; to[1] = xAxis[Y]; to[2] = xAxis[Z]; to[3] = 0;
         to[4] = yAxis[X]; to[5] = yAxis[Y]; to[6] = yAxis[Z]; to[7] = 0;
@@ -254,7 +254,7 @@ let Float4x4 = function () {
         up = Utility.defaultFunction(up, function () { return [0, 1, 0]; });
         xAxis = Float3.normalize (xAxis);
         let zAxis = Float3.normalize (Float3.cross (xAxis, up));
-        let yAxis = Float3.cross (zAxis, xAxis);
+        let yAxis = Float3.normalize (Float3.cross (zAxis, xAxis));
         let to = _.create();
         to[0] = xAxis[X]; to[1] = xAxis[Y]; to[2] = xAxis[Z]; to[3] = 0;
         to[4] = yAxis[X]; to[5] = yAxis[Y]; to[6] = yAxis[Z]; to[7] = 0;
