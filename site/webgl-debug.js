@@ -803,6 +803,8 @@ let FloatNxN = function (dim) {
         return str;
     } ());
 
+    _.IDENTITY = _.identity ();
+
     // _.transpose (from, to)
     // from: FloatNxN
     // to: FloatNxN
