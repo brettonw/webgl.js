@@ -137,8 +137,8 @@ let Texture = function () {
      * @return {Texture}
      */
     _.new = function (name, url, parameters, onReady) {
-        afExtension = DEFAULT_FUNCTION (afExtension, function () { return context.getExtension (&quot;EXT_texture_filter_anisotropic&quot;) });
-        parameters = DEFAULT_VALUE(parameters, {});
+        DEFAULT_FUNCTION (afExtension, function () { return context.getExtension (&quot;EXT_texture_filter_anisotropic&quot;) });
+        DEFAULT_VALUE(parameters, {});
         // make sure anisotropic filtering is defined, and has a reasonable default value
         parameters.anisotropicFiltering = Math.min (context.getParameter(afExtension.MAX_TEXTURE_MAX_ANISOTROPY_EXT), (&quot;anisotropicFiltering&quot; in parameters)? parameters.anisotropicFiltering : 4);
         return Object.create (_).construct (name, url, parameters, onReady);

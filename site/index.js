@@ -10,6 +10,8 @@ let framingRange;
 
 
 let draw = function (deltaPosition) {
+    Thing.updateAll(new Date ().getTime());
+
     // set up the projection matrix (earth radius is 1 and we want it to occupy about 75% of the
     // view in the vertical direction - the view is probably wider than that)
     let fovRangeValue = fovRange.value;
@@ -128,6 +130,16 @@ let buildScene = function () {
         shape: "icosahedron",
         children: false
     }));
+
+    Thing.new ({ node: "cylinder", update: function (time) {
+        let node = Node.get(this.node);
+        node.transform = Float4x4.chain(
+            Float4x4.rotateZ(Math.PI / 3),
+            Float4x4.rotateX (0.25),
+            Float4x4.rotateY (Math.PI * time * 0.001),
+            Float4x4.translate([0, 1.5, 0])
+        );
+    }});
 
     //LogLevel.set (LogLevel.TRACE);
     draw ([0, 0]);

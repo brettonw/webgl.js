@@ -5,7 +5,7 @@ let Primitive = function () {
     };
 
     _.makeFromBuilder = function (name, builder) {
-        name = DEFAULT_VALUE(name, this.name);
+        DEFAULT_VALUE(name, this.name);
         return Shape.new(name, function () {
             return builder.makeFacets();
         });

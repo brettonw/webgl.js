@@ -13,7 +13,7 @@ let FloatNxN = function (dim) {
     };
 
     let defineTo = function (to) {
-        to = DEFAULT_VALUE(to, "to");
+        DEFAULT_VALUE(to, "to");
         return to + " = (typeof " + to + " !== 'undefined') ? " + to + " : _.create ();\n";
     };
 

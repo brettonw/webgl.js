@@ -61,6 +61,7 @@ let Loader = function () {
         if (this.items.length > 0) {
             // have work to do, kick off a fetch
             let item = this.items.shift ();
+            //this.pendingItem = item.type.new (item.name, item.url, item.parameters, OnReady.new (this, this.finish));
             this.pendingItem = item.type.new (item.name, item.url, item.parameters, OnReady.new (this, this.finish));
         } else {
             // all done, inform our waiting handler

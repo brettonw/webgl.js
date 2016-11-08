@@ -17,7 +17,7 @@ let Render = function () {
      */
     _.construct = function (canvasId, aspectRatio) {
         let canvas = this.canvas = document.getElementById (canvasId);
-        aspectRatio = DEFAULT_VALUE(aspectRatio, 16.0 / 9.0);
+        DEFAULT_VALUE(aspectRatio, 16.0 / 9.0);
 
         // high DPI devices need to have the canvas drawing surface scaled up while leaving the style
         // size as indicated

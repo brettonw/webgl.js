@@ -1,36 +1,13 @@
 let Thing = function () {
-    let _ = Object.create (null);
+    let _ = Named (NAME_GENERATED);
 
-    let things = Object.create (null);
-
-    _.construct = function (name, node, update) {
-        this.name = name;
-        this.node = node;
-        this.update = update;
-        return this;
-    };
-
-    _.new = function (name, node, update) {
-        return (things[name] = Object.create (_).construct (name, node, update));
-    };
-
-    /**
-     * fetch a thing by name.
-     *
-     * @method get
-     * @static
-     * @param {string} name the name of the thing to return
-     * @return {Thing}
-     */
-    _.get = function (name) {
-        return things[name];
+    _.construct = function (parameters) {
+        this.node = parameters.node;
+        this.update = parameters.update;
     };
 
     _.updateAll = function (time) {
-        for (let name in things) {
-            let thing = things[name];
-            thing.update (time);
-        }
+        _.forEach(function (thing) { thing.update (time); });
     };
 
     return _;

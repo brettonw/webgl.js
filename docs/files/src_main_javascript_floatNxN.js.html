@@ -100,7 +100,7 @@ let FloatNxN = function (dim) {
     };
 
     let defineTo = function (to) {
-        to = DEFAULT_VALUE(to, &quot;to&quot;);
+        DEFAULT_VALUE(to, &quot;to&quot;);
         return to + &quot; = (typeof &quot; + to + &quot; !== &#x27;undefined&#x27;) ? &quot; + to + &quot; : _.create ();\n&quot;;
     };
 

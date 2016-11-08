@@ -73,6 +73,77 @@ let OnReady = function () {
 
     return _;
 } ();
+const NAME_REQUIRED = "NAME_REQUIRED";
+const NAME_GENERATED = "NAME_GENERATED";
+const NAME_OPTIONAL = "NAME_OPTIONAL";
+
+let Named = function (nameRequired) {
+    (nameRequired = (((typeof nameRequired !== "undefined") && (nameRequired != null)) ? nameRequired : NAME_OPTIONAL));
+    let _ = Object.create (null);
+
+    // the container for names
+    let namedIndex = Object.create (null);
+
+    // name handling has several cases:
+    // 1) it is supplied
+    // 2) it is not supplied, but is auto-generated
+    // 3) it is not supplied, and that is ok
+    // 4) it is not supplied and that is an error
+    // so a flag is needed indicating how to handle a name that is not present
+    let uniqueNameId = 0;
+    let validateName = function (name) {
+        // if the name was supplied, it's all good
+        if ((typeof name !== "undefined") && (name != null)) { return name; }
+
+        // otherwise, we have to decide what to do, based on some construction parameters
+        switch (nameRequired) {
+            case NAME_REQUIRED:
+                throw "Name is required";
+            case NAME_GENERATED:
+                return "id" + Utility.padNum(++uniqueNameId, 5);
+            case NAME_OPTIONAL:
+                return null;
+        }
+    };
+
+    _.new = function (parameters, name) {
+        // ensure that we have parameters, and the ones we have are correct
+        (parameters = (((typeof parameters !== "undefined") && (parameters != null)) ? parameters : Object.create (null)));
+        let validate = ("validate" in _) ? type.validate : function (parameters) { return true; };
+        if (validate (parameters)) {
+            // create the object
+            let named = Object.create (_);
+
+            // validate the name, if it's valid, then index the object
+            if ((name = validateName(name)) != null) {
+                named.name = name;
+                namedIndex[name] = named;
+            }
+
+            // construct the object, and then return it
+            named.construct (parameters);
+            return named;
+        }
+        throw "Invalid parameters";
+    };
+
+    _.get = function (name) {
+        return namedIndex[name];
+    };
+
+    _.getIndex = function () {
+        return namedIndex;
+    };
+
+    _.forEach = function (todo) {
+        for (let name in namedIndex) {
+            let named = namedIndex[name];
+            todo (named);
+        }
+    };
+
+    return _;
+};
 "use strict;"
 
 let MouseTracker = function () {
@@ -125,7 +196,7 @@ let MouseTracker = function () {
 
     _.construct = function (canvasId, onReadyIn, stepSizeIn) {
         onReady = onReadyIn;
-        stepSize = (((typeof stepSizeIn !== "undefined") && (stepSizeIn != null)) ? stepSizeIn : 0.05);
+        stepSize = (stepSizeIn = (((typeof stepSizeIn !== "undefined") && (stepSizeIn != null)) ? stepSizeIn : 0.05));
 
         let canvas = document.getElementById(canvasId);
 
@@ -157,8 +228,8 @@ let Loader = function () {
      * @return {Loader}
      */
     _.construct = function (parameters) {
-        this.onFinishedAll = (((typeof parameters.onFinishedAll !== "undefined") && (parameters.onFinishedAll != null)) ? parameters.onFinishedAll : { notify: function (x) {} });
-        this.onFinishedItem = (((typeof parameters.onFinishedItem !== "undefined") && (parameters.onFinishedItem != null)) ? parameters.onFinishedItem : { notify: function (x) {} });
+        this.onFinishedAll = (parameters.onFinishedAll = (((typeof parameters.onFinishedAll !== "undefined") && (parameters.onFinishedAll != null)) ? parameters.onFinishedAll : { notify: function (x) {} }));
+        this.onFinishedItem = (parameters.onFinishedItem = (((typeof parameters.onFinishedItem !== "undefined") && (parameters.onFinishedItem != null)) ? parameters.onFinishedItem : { notify: function (x) {} }));
         this.items = [];
         return this;
     };
@@ -189,8 +260,8 @@ let Loader = function () {
      * @chainable
      */
     _.go = function (onFinishedEach, onFinishedAll) {
-        this.onFinishedEach = (((typeof onFinishedEach !== "undefined") && (onFinishedEach != null)) ? onFinishedEach : { notify: function (x) {} });
-        this.onFinishedAll = (((typeof onFinishedAll !== "undefined") && (onFinishedAll != null)) ? onFinishedAll : { notify: function (x) {} });
+        this.onFinishedEach = (onFinishedEach = (((typeof onFinishedEach !== "undefined") && (onFinishedEach != null)) ? onFinishedEach : { notify: function (x) {} }));
+        this.onFinishedAll = (onFinishedAll = (((typeof onFinishedAll !== "undefined") && (onFinishedAll != null)) ? onFinishedAll : { notify: function (x) {} }));
         this.next ();
     };
 
@@ -343,7 +414,7 @@ let Render = function () {
      */
     _.construct = function (canvasId, aspectRatio) {
         let canvas = this.canvas = document.getElementById (canvasId);
-        aspectRatio = (((typeof aspectRatio !== "undefined") && (aspectRatio != null)) ? aspectRatio : 16.0 / 9.0);
+        (aspectRatio = (((typeof aspectRatio !== "undefined") && (aspectRatio != null)) ? aspectRatio : 16.0 / 9.0));
 
         // high DPI devices need to have the canvas drawing surface scaled up while leaving the style
         // size as indicated
@@ -687,7 +758,7 @@ let Float2 = function () {
      * @return {*}
      */
     _.perpendicular = function (from, to) {
-        to = (((typeof to !== "undefined") && (to != null)) ? to : _.create ());
+        to = (to = (((typeof to !== "undefined") && (to != null)) ? to : _.create ()));
         to[0] = from[1]; to[1] = -from[0];
         return to;
     };
@@ -716,7 +787,7 @@ let Float3 = function () {
      * @return {*}
      */
     _.cross = function (left, right, to) {
-        to = (((typeof to !== "undefined") && (to != null)) ? to : _.create ());
+        to = (to = (((typeof to !== "undefined") && (to != null)) ? to : _.create ()));
         to[0] = (left[1] * right[2]) - (left[2] * right[1]);
         to[1] = (left[2] * right[0]) - (left[0] * right[2]);
         to[2] = (left[0] * right[1]) - (left[1] * right[0]);
@@ -745,7 +816,7 @@ let FloatNxN = function (dim) {
     };
 
     let defineTo = function (to) {
-        to = (((typeof to !== "undefined") && (to != null)) ? to : "to");
+        (to = (((typeof to !== "undefined") && (to != null)) ? to : "to"));
         return to + " = (typeof " + to + " !== 'undefined') ? " + to + " : _.create ();\n";
     };
 
@@ -947,7 +1018,7 @@ let Float4x4 = function () {
      */
     _.inverse = function (from, to) {
         // adapted from a bit of obfuscated, unwound, code
-        to = (((typeof to !== "undefined") && (to != null)) ? to : _.create ());
+        to = (to = (((typeof to !== "undefined") && (to != null)) ? to : _.create ()));
         let A = from[0] * from[5] - from[1] * from[4], B = from[0] * from[6] - from[2] * from[4],
             C = from[9] * from[14] - from[10] * from[13], D = from[9] * from[15] - from[11] * from[13],
             E = from[10] * from[15] - from[11] * from[14], F = from[0] * from[7] - from[3] * from[4],
@@ -982,7 +1053,7 @@ let Float4x4 = function () {
      * @return {*}
      */
     _.preMultiply = function (f4, f4x4, to) {
-        to = (((typeof to !== "undefined") && (to != null)) ? to : Float4.create ());
+        to = (to = (((typeof to !== "undefined") && (to != null)) ? to : Float4.create ()));
         let f40 = f4[0], f41 = f4[1], f42 = f4[2], f43 = f4[3];
         to[0] = (f4x4[0] * f40) + (f4x4[4] * f41) + (f4x4[8] * f42) + (f4x4[12] * f43);
         to[1] = (f4x4[1] * f40) + (f4x4[5] * f41) + (f4x4[9] * f42) + (f4x4[13] * f43);
@@ -999,7 +1070,7 @@ let Float4x4 = function () {
      * @return {*}
      */
     _.postMultiply = function (f4x4, f4, to) {
-        to = (((typeof to !== "undefined") && (to != null)) ? to : Float4.create ());
+        to = (to = (((typeof to !== "undefined") && (to != null)) ? to : Float4.create ()));
         let f40 = f4[0], f41 = f4[1], f42 = f4[2], f43 = f4[3];
         to[0] = (f4x4[0] * f40) + (f4x4[1] * f41) + (f4x4[2] * f42) + (f4x4[3] * f43);
         to[1] = (f4x4[4] * f40) + (f4x4[5] * f41) + (f4x4[6] * f42) + (f4x4[7] * f43);
@@ -1053,7 +1124,7 @@ let Float4x4 = function () {
      * @return {*}
      */
     let frustum = function (left, right, bottom, top, near, far, to) {
-        to = (((typeof to !== "undefined") && (to != null)) ? to : _.create ());
+        to = (to = (((typeof to !== "undefined") && (to != null)) ? to : _.create ()));
         let width = right - left, height = top - bottom, depth = far - near;
         to[0] = (near * 2) / width; to[1] = 0; to[2] = 0; to[3] = 0;
         to[4] = 0; to[5] = (near * 2) / height; to[6] = 0; to[7] = 0;
@@ -1089,7 +1160,7 @@ let Float4x4 = function () {
      * @return {*}
      */
     _.orthographic = function (left, right, bottom, top, near, far, to) {
-        to = (((typeof to !== "undefined") && (to != null)) ? to : _.create ());
+        to = (to = (((typeof to !== "undefined") && (to != null)) ? to : _.create ()));
         let width = right - left, height = top - bottom, depth = far - near;
         to[0] = 2 / width; to[1] = 0; to[2] = 0; to[3] = 0;
         to[4] = 0; to[5] = 2 / height; to[6] = 0; to[7] = 0;
@@ -1239,7 +1310,7 @@ let Shader = function () {
      * @return {Shader}
      */
     _.new = function (name, url, parameters, onReady) {
-        parameters = (((typeof parameters !== "undefined") && (parameters != null)) ? parameters : {});
+        (parameters = (((typeof parameters !== "undefined") && (parameters != null)) ? parameters : Object.create (null)));
         return (shaders[name] = Object.create (_).construct (name, url, parameters, onReady));
     };
 
@@ -1523,11 +1594,11 @@ let Program = function () {
      */
     _.new = function (name, parameters) {
         // default value for the parameters
-        parameters = (((typeof parameters !== "undefined") && (parameters != null)) ? parameters : function () { return Object.create (null); } ());
+        parameters = (parameters = (((typeof parameters !== "undefined") && (parameters != null)) ? parameters : function () { return Object.create (null); } ()));
 
         // default value for the shader names
-        parameters.vertexShader = "vertex-" + (((typeof parameters.vertexShader !== "undefined") && (parameters.vertexShader != null)) ? parameters.vertexShader : name);
-        parameters.fragmentShader = "fragment-" + (((typeof parameters.fragmentShader !== "undefined") && (parameters.fragmentShader != null)) ? parameters.fragmentShader : name);
+        parameters.vertexShader = "vertex-" + (parameters.vertexShader = (((typeof parameters.vertexShader !== "undefined") && (parameters.vertexShader != null)) ? parameters.vertexShader : name));
+        parameters.fragmentShader = "fragment-" + (parameters.fragmentShader = (((typeof parameters.fragmentShader !== "undefined") && (parameters.fragmentShader != null)) ? parameters.fragmentShader : name));
 
         // default values for the attribute mapping
         if (!("attributeMapping" in parameters)) {
@@ -1785,8 +1856,8 @@ let Texture = function () {
      * @return {Texture}
      */
     _.new = function (name, url, parameters, onReady) {
-        afExtension = (((typeof afExtension !== "undefined") && (afExtension != null)) ? afExtension : function () { return context.getExtension ("EXT_texture_filter_anisotropic") } ());
-        parameters = (((typeof parameters !== "undefined") && (parameters != null)) ? parameters : {});
+        (afExtension = (((typeof afExtension !== "undefined") && (afExtension != null)) ? afExtension : function () { return context.getExtension ("EXT_texture_filter_anisotropic") } ()));
+        (parameters = (((typeof parameters !== "undefined") && (parameters != null)) ? parameters : {}));
         // make sure anisotropic filtering is defined, and has a reasonable default value
         parameters.anisotropicFiltering = Math.min (context.getParameter(afExtension.MAX_TEXTURE_MAX_ANISOTROPY_EXT), ("anisotropicFiltering" in parameters)? parameters.anisotropicFiltering : 4);
         return Object.create (_).construct (name, url, parameters, onReady);
@@ -1868,7 +1939,7 @@ let Node = function () {
             }
 
             // by default, nodes are enabled
-            this.enabled = (((typeof parameters.enabled !== "undefined") && (parameters.enabled != null)) ? parameters.enabled : true);
+            this.enabled = (parameters.enabled = (((typeof parameters.enabled !== "undefined") && (parameters.enabled != null)) ? parameters.enabled : true));
 
             // children are special, the default is to include children, but we want a way to say
             // the current node is a leaf node, so { children: false } is the way to do that
@@ -2404,7 +2475,7 @@ let ShapeBuilder = function () {
     let _ = Object.create (null);
 
     _.construct = function (precision) {
-        this.precision = (((typeof precision !== "undefined") && (precision != null)) ? precision : 7);
+        this.precision = (precision = (((typeof precision !== "undefined") && (precision != null)) ? precision : 7));
         this.vertexIndex = Object.create (null);
         this.vertices = [];
         this.faces = [];
@@ -2521,7 +2592,7 @@ let Primitive = function () {
     };
 
     _.makeFromBuilder = function (name, builder) {
-        name = (((typeof name !== "undefined") && (name != null)) ? name : this.name);
+        (name = (((typeof name !== "undefined") && (name != null)) ? name : this.name));
         return Shape.new(name, function () {
             return builder.makeFacets();
         });
@@ -2748,7 +2819,7 @@ let Sphere = function () {
     };
 
     _.makeFromBuilder = function (name, builder) {
-        name = (((typeof name !== "undefined") && (name != null)) ? name : this.name);
+        (name = (((typeof name !== "undefined") && (name != null)) ? name : this.name));
         return Shape.new (name, function () {
             let buffers = builder.makeBuffers ();
             buffers.normal = buffers.position;
@@ -2803,7 +2874,7 @@ let makeRevolve = function (name, outline, normal, steps, projection) {
 
     // default projection is a plate carree, equirectangular projection
     // https://en.wikipedia.org/wiki/Equirectangular_projection
-    projection = (((typeof projection !== "undefined") && (projection != null)) ? projection : function (uvY) { return uvY; });
+    (projection = (((typeof projection !== "undefined") && (projection != null)) ? projection : function (uvY) { return uvY; }));
 
     return Shape.new (name, function () {
         // compute the steps we need to make to build the rotated shape
@@ -3000,9 +3071,24 @@ let Utility = function () {
      * @return {number}
      */
     _.fixNum = function (number, precision) {
-        let fix = (((typeof precision !== "undefined") && (precision != null)) ? precision : 7);
-        return Number.parseFloat (number.toFixed (fix));
+        (precision = (((typeof precision !== "undefined") && (precision != null)) ? precision : 7));
+        return Number.parseFloat (number.toFixed (precision));
     };
+
+    /**
+     * zero pad a number to a specific width
+     *
+     * @method padNum
+     * @param {number} number the number to pad
+     * @param {integer} width how many places the final number should be
+     * @param {char} fill the character to pad with (default is "0")
+     * @returns {*}
+     */
+    _.padNum = function (number, width, fill) {
+        fill = fill || "0";
+        number = number + "";
+        return number.length >= width ? number : new Array(width - number.length + 1).join(fill) + number;
+    }
 
     /**
      * provide a default value if the requested value is undefined. this is
@@ -3014,7 +3100,7 @@ let Utility = function () {
      * @return {any}
      */
     _.defaultValue = function (value, defaultValue) {
-        return (((typeof value !== "undefined") && (value != null)) ? value : defaultValue);
+        return (value = (((typeof value !== "undefined") && (value != null)) ? value : defaultValue));
     };
 
     /**
@@ -3027,7 +3113,7 @@ let Utility = function () {
      * @return {any}
      */
     _.defaultFunction = function (value, defaultFunction) {
-        return (((typeof value !== "undefined") && (value != null)) ? value : defaultFunction ());
+        return (value = (((typeof value !== "undefined") && (value != null)) ? value : defaultFunction ()));
     };
 
     /**
@@ -3048,38 +3134,15 @@ let Utility = function () {
     return _;
 } ();
 let Thing = function () {
-    let _ = Object.create (null);
+    let _ = Named (NAME_GENERATED);
 
-    let things = Object.create (null);
-
-    _.construct = function (name, node, update) {
-        this.name = name;
-        this.node = node;
-        this.update = update;
-        return this;
-    };
-
-    _.new = function (name, node, update) {
-        return (things[name] = Object.create (_).construct (name, node, update));
-    };
-
-    /**
-     * fetch a thing by name.
-     *
-     * @method get
-     * @static
-     * @param {string} name the name of the thing to return
-     * @return {Thing}
-     */
-    _.get = function (name) {
-        return things[name];
+    _.construct = function (parameters) {
+        this.node = parameters.node;
+        this.update = parameters.update;
     };
 
     _.updateAll = function (time) {
-        for (let name in things) {
-            let thing = things[name];
-            thing.update (time);
-        }
+        _.forEach(function (thing) { thing.update (time); });
     };
 
     return _;

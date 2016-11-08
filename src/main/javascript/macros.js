@@ -18,8 +18,8 @@
 #define SUPER   Object.getPrototypeOf(_)
 
 // default values...
-#define DEFAULT_VALUE(value, defaultValue) (((typeof value !== "undefined") && (value != null)) ? value : defaultValue)
-#define DEFAULT_FUNCTION(value, defaultFunction) (((typeof value !== "undefined") && (value != null)) ? value : defaultFunction ())
+#define DEFAULT_VALUE(value, defaultValue) (value = (((typeof value !== "undefined") && (value != null)) ? value : defaultValue))
+#define DEFAULT_FUNCTION(value, defaultFunction) (value = (((typeof value !== "undefined") && (value != null)) ? value : defaultFunction ()))
 
 // vector manipulation macros
 #define X 0

@@ -128,7 +128,7 @@ let Shader = function () {
      * @return {Shader}
      */
     _.new = function (name, url, parameters, onReady) {
-        parameters = DEFAULT_VALUE(parameters, {});
+        DEFAULT_VALUE(parameters, Object.create (null));
         return (shaders[name] = Object.create (_).construct (name, url, parameters, onReady));
     };
 

@@ -1,12 +1,11 @@
 let Texture = function () {
-    let _ = Object.create (null);
+    let _ = Named (NAME_REQUIRED);
 
     let textures = Object.create (null);
     let afExtension;
 
-    _.construct  = function (name, url, parameters, onReady) {
-        this.name = name;
-        LOG(LogLevel.INFO, "Texture: " + name);
+    _.construct  = function (url, parameters, onReady) {
+        LOG(LogLevel.INFO, "Texture: " + this.name);
 
         let texture = this.texture = context.createTexture();
         let image = new Image();
@@ -27,15 +26,22 @@ let Texture = function () {
             }
             context.bindTexture (context.TEXTURE_2D, null);
 
-            // set the texture in the textures
-            textures[name] = scope;
-
                 // call the onReady handler
             onReady.notify (scope);
         };
-        image.src = url;
+        image.src = parameters.url;
 
         return this;
+    };
+
+    _.validate = function (parameters) {
+        // make sure anisotropic filtering is defined, and has a reasonable default value
+        DEFAULT_FUNCTION (afExtension, function () { return context.getExtension ("EXT_texture_filter_anisotropic") });
+        parameters.anisotropicFiltering = Math.min (context.getParameter(afExtension.MAX_TEXTURE_MAX_ANISOTROPY_EXT), ("anisotropicFiltering" in parameters)? parameters.anisotropicFiltering : 4);
+
+        // there must be a url and a notifier
+        if (typeof parameters.url === "undefined") throw "URL Required";
+        if (typeof parameters.onReady === "undefined") throw "Notifier Required";
     };
 
     /**
@@ -50,10 +56,6 @@ let Texture = function () {
      * @return {Texture}
      */
     _.new = function (name, url, parameters, onReady) {
-        afExtension = DEFAULT_FUNCTION (afExtension, function () { return context.getExtension ("EXT_texture_filter_anisotropic") });
-        parameters = DEFAULT_VALUE(parameters, {});
-        // make sure anisotropic filtering is defined, and has a reasonable default value
-        parameters.anisotropicFiltering = Math.min (context.getParameter(afExtension.MAX_TEXTURE_MAX_ANISOTROPY_EXT), ("anisotropicFiltering" in parameters)? parameters.anisotropicFiltering : 4);
         return Object.create (_).construct (name, url, parameters, onReady);
     };
 

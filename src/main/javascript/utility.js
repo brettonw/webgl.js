@@ -110,9 +110,24 @@ let Utility = function () {
      * @return {number}
      */
     _.fixNum = function (number, precision) {
-        let fix = DEFAULT_VALUE(precision, 7);
-        return Number.parseFloat (number.toFixed (fix));
+        DEFAULT_VALUE(precision, 7);
+        return Number.parseFloat (number.toFixed (precision));
     };
+
+    /**
+     * zero pad a number to a specific width
+     *
+     * @method padNum
+     * @param {number} number the number to pad
+     * @param {integer} width how many places the final number should be
+     * @param {char} fill the character to pad with (default is "0")
+     * @returns {*}
+     */
+    _.padNum = function (number, width, fill) {
+        fill = fill || "0";
+        number = number + "";
+        return number.length >= width ? number : new Array(width - number.length + 1).join(fill) + number;
+    }
 
     /**
      * provide a default value if the requested value is undefined. this is

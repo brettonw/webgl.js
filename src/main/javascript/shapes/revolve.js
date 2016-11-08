@@ -38,7 +38,7 @@ let makeRevolve = function (name, outline, normal, steps, projection) {
 
     // default projection is a plate carree, equirectangular projection
     // https://en.wikipedia.org/wiki/Equirectangular_projection
-    projection = DEFAULT_VALUE(projection, function (uvY) { return uvY; });
+    DEFAULT_VALUE(projection, function (uvY) { return uvY; });
 
     return Shape.new (name, function () {
         // compute the steps we need to make to build the rotated shape
