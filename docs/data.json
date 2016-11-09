@@ -100,20 +100,6 @@
             "fors": {},
             "namespaces": {}
         },
-        "src/main/javascript/shader.js": {
-            "name": "src/main/javascript/shader.js",
-            "modules": {},
-            "classes": {},
-            "fors": {},
-            "namespaces": {}
-        },
-        "src/main/javascript/texture.js": {
-            "name": "src/main/javascript/texture.js",
-            "modules": {},
-            "classes": {},
-            "fors": {},
-            "namespaces": {}
-        },
         "src/main/javascript/utility.js": {
             "name": "src/main/javascript/utility.js",
             "modules": {},
@@ -1014,7 +1000,7 @@
         },
         {
             "file": "src/main/javascript/loader.js",
-            "line": 40,
+            "line": 42,
             "description": "start the fetch process for all the loadable items.",
             "itemtype": "method",
             "name": "go",
@@ -1030,7 +1016,7 @@
         },
         {
             "file": "src/main/javascript/loader.js",
-            "line": 54,
+            "line": 56,
             "description": "continue the fetch process for all the loadable items.",
             "itemtype": "method",
             "name": "next",
@@ -1039,7 +1025,7 @@
         },
         {
             "file": "src/main/javascript/loader.js",
-            "line": 71,
+            "line": 73,
             "description": "static method to create and construct a new Loader.",
             "itemtype": "method",
             "name": "new",
@@ -1181,16 +1167,11 @@
         },
         {
             "file": "src/main/javascript/program.js",
-            "line": 36,
+            "line": 35,
             "description": "the initializer for a shader.",
             "itemtype": "method",
             "name": "construct",
             "params": [
-                {
-                    "name": "name",
-                    "description": "name to retrieve this shader",
-                    "type": "String"
-                },
                 {
                     "name": "parameters",
                     "description": "shader construction parameters",
@@ -1304,18 +1285,6 @@
         {
             "file": "src/main/javascript/program.js",
             "line": 220,
-            "description": "get the name of this shader",
-            "itemtype": "method",
-            "name": "getName",
-            "return": {
-                "description": "the name of this shader.",
-                "type": "String"
-            },
-            "class": "Program"
-        },
-        {
-            "file": "src/main/javascript/program.js",
-            "line": 230,
             "description": "static method to create and construct a new Program.",
             "itemtype": "method",
             "name": "new",
@@ -1332,19 +1301,6 @@
                     "type": "Object"
                 }
             ],
-            "return": {
-                "description": "",
-                "type": "Program"
-            },
-            "class": "Program"
-        },
-        {
-            "file": "src/main/javascript/program.js",
-            "line": 305,
-            "description": "fetch a program by name.",
-            "itemtype": "method",
-            "name": "get",
-            "static": 1,
             "return": {
                 "description": "",
                 "type": "Program"
@@ -1402,116 +1358,6 @@
                 "type": "Render"
             },
             "class": "Render"
-        },
-        {
-            "file": "src/main/javascript/shader.js",
-            "line": 31,
-            "description": "static method to create and construct a new Shader.",
-            "itemtype": "method",
-            "name": "new",
-            "static": 1,
-            "params": [
-                {
-                    "name": "name",
-                    "description": "the name to use to refer to this shader",
-                    "type": "String"
-                },
-                {
-                    "name": "url",
-                    "description": "where to get this shader",
-                    "type": "String"
-                },
-                {
-                    "name": "parameters",
-                    "description": "shader construction parameters, typically url and type, where\ntype is one of (context.VERTEX_SHADER, context.FRAGMENT_SHADER)",
-                    "type": "Object"
-                },
-                {
-                    "name": "onReady",
-                    "description": "an object specifying the scope and callback to call when ready",
-                    "type": "Object"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "Shader"
-            },
-            "class": "Utility"
-        },
-        {
-            "file": "src/main/javascript/shader.js",
-            "line": 48,
-            "description": "fetch a shader by name.",
-            "itemtype": "method",
-            "name": "get",
-            "static": 1,
-            "params": [
-                {
-                    "name": "name",
-                    "description": "the name of the shader to return",
-                    "type": "String"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "Shader"
-            },
-            "class": "Utility"
-        },
-        {
-            "file": "src/main/javascript/texture.js",
-            "line": 41,
-            "description": "static method to create and construct a new Texture.",
-            "itemtype": "method",
-            "name": "new",
-            "static": 1,
-            "params": [
-                {
-                    "name": "name",
-                    "description": "the name to use to refer to this texture",
-                    "type": "String"
-                },
-                {
-                    "name": "url",
-                    "description": "where to get this texture",
-                    "type": "String"
-                },
-                {
-                    "name": "parameters",
-                    "description": "texture construction parameters",
-                    "type": "Object"
-                },
-                {
-                    "name": "onReady",
-                    "description": "an object specifying the scope and callback to call when ready",
-                    "type": "Object"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "Texture"
-            },
-            "class": "Utility"
-        },
-        {
-            "file": "src/main/javascript/texture.js",
-            "line": 60,
-            "description": "fetch a texture by name.",
-            "itemtype": "method",
-            "name": "get",
-            "static": 1,
-            "params": [
-                {
-                    "name": "name",
-                    "description": "the name of the texture to return",
-                    "type": "String"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "Texture"
-            },
-            "class": "Utility"
         },
         {
             "file": "src/main/javascript/utility.js",

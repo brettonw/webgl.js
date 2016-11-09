@@ -4,7 +4,7 @@
  * @class Program
  */
 let Program = function () {
-    let _ = Object.create (null);
+    let _ = Named (NAME_REQUIRED);
 
     /**
      * the name for the standard POSITION buffer attribute in a shader.
@@ -30,20 +30,21 @@ let Program = function () {
      */
     _.TEXTURE_ATTRIBUTE = "TEXTURE_ATTRIBUTE";
 
-    let programs = Object.create (null);
     let currentProgram;
 
     /**
      * the initializer for a shader.
      *
      * @method construct
-     * @param {string} name name to retrieve this shader
      * @param {Object} parameters shader construction parameters
      * @return {Program}
      */
-    _.construct = function (name, parameters) {
-        this.name = name;
+    _.construct = function (parameters) {
         LOG (LogLevel.INFO, "Program: " + this.name);
+
+        // default value for the shader names
+        parameters.vertexShader = "vertex-" + DEFAULT_VALUE(parameters.vertexShader, this.name);
+        parameters.fragmentShader = "fragment-" + DEFAULT_VALUE(parameters.fragmentShader, this.name);
 
         this.currentShape = null;
 
@@ -97,7 +98,6 @@ let Program = function () {
                 attributes[reverseAttributeMapping[activeAttributeName]] = ProgramAttribute.new (program, activeAttribute);
             }
         }
-        return this;
     };
 
     /**
@@ -218,16 +218,6 @@ let Program = function () {
     };
 
     /**
-     * get the name of this shader
-     *
-     * @method getName
-     * @return {string} the name of this shader.
-     */
-    _.getName = function () {
-        return this.name;
-    };
-
-    /**
      * static method to create and construct a new Program.
      *
      * @method new
@@ -262,14 +252,7 @@ let Program = function () {
      * * SPECULAR_EXPONENT:"specularExponent"
      * @return {Program}
      */
-    _.new = function (name, parameters) {
-        // default value for the parameters
-        parameters = DEFAULT_FUNCTION (parameters, function () { return Object.create (null); });
-
-        // default value for the shader names
-        parameters.vertexShader = "vertex-" + DEFAULT_VALUE(parameters.vertexShader, name);
-        parameters.fragmentShader = "fragment-" + DEFAULT_VALUE(parameters.fragmentShader, name);
-
+    _.validate = function (parameters) {
         // default values for the attribute mapping
         if (!("attributeMapping" in parameters)) {
             parameters.attributeMapping = {
@@ -299,18 +282,6 @@ let Program = function () {
                 SPECULAR_EXPONENT:"specularExponent"
             };
         };
-        return (programs[name] = Object.create (_).construct (name, parameters));
-    };
-
-    /**
-     * fetch a program by name.
-     *
-     * @method get
-     * @static
-     * @return {Program}
-     */
-    _.get = function (name) {
-        return programs[name];
     };
 
     return _;

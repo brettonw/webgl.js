@@ -24,8 +24,8 @@ let LoaderPath = function () {
     _.addItems = function (names, parameters) {
         names = Array.isArray(names) ? names : Array(1).fill(names);
         for (let name of names) {
-            let url = this.path.replace ("@", name);
-            SUPER.addItem.call(this, this.type, name, url, parameters);
+            let params = Object.assign ({}, parameters, { url:this.path.replace ("@", name) });
+            SUPER.addItem.call(this, this.type, name, params);
         }
         return this;
     };

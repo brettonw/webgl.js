@@ -17,11 +17,13 @@ let Loader = function () {
         this.onFinishedAll = DEFAULT_VALUE (parameters.onFinishedAll, { notify: function (x) {} });
         this.onFinishedItem = DEFAULT_VALUE (parameters.onFinishedItem, { notify: function (x) {} });
         this.items = [];
+        this.onReady = OnReady.new (this, this.finish);
         return this;
     };
 
-    _.addItem = function (type, name, url, parameters) {
-        let item = { type: type, name: name, url: url, parameters: parameters };
+    _.addItem = function (type, name, parameters) {
+        parameters.onReady = this.onReady;
+        let item = { type: type, name: name, parameters: parameters };
         this.items.push (item);
         return this;
     };
@@ -61,8 +63,7 @@ let Loader = function () {
         if (this.items.length > 0) {
             // have work to do, kick off a fetch
             let item = this.items.shift ();
-            //this.pendingItem = item.type.new (item.name, item.url, item.parameters, OnReady.new (this, this.finish));
-            this.pendingItem = item.type.new (item.name, item.url, item.parameters, OnReady.new (this, this.finish));
+            this.pendingItem = item.type.new (item.parameters, item.name);
         } else {
             // all done, inform our waiting handler
             this.onFinishedAll.notify (this);

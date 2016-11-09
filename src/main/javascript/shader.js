@@ -1,10 +1,9 @@
 let Shader = function () {
-    let _ = Object.create (null);
+    let _ = Named ();
 
     let shaders = Object.create (null);
 
-    _.construct  = function (name, url, parameters, onReady) {
-        this.name = name;
+    _.construct  = function (parameters) {
         LOG (LogLevel.INFO, "Shader: " + this.name);
 
         let scope = this;
@@ -18,43 +17,22 @@ let Shader = function () {
                     LOG (LogLevel.ERROR, "Shader compilation failed for " + this.name + ":\n" + context.getShaderInfoLog (shader));
                 } else {
                     scope.compiledShader = shader;
-                    onReady.notify (scope);
+
+                    // call the onReady handler if one was provided
+                    if (typeof parameters.onReady !== "undefined") {
+                        parameters.onReady.notify (scope);
+                    }
                 }
             }
         };
-        request.open("GET", url);
+        request.open("GET", parameters.url);
         request.send();
-
-        return this;
     };
 
-    /**
-     * static method to create and construct a new Shader.
-     *
-     * @method new
-     * @static
-     * @param {string} name the name to use to refer to this shader
-     * @param {string} url where to get this shader
-     * @param {Object} parameters shader construction parameters, typically url and type, where
-     * type is one of (context.VERTEX_SHADER, context.FRAGMENT_SHADER)
-     * @param {Object} onReady an object specifying the scope and callback to call when ready
-     * @return {Shader}
-     */
-    _.new = function (name, url, parameters, onReady) {
-        DEFAULT_VALUE(parameters, Object.create (null));
-        return (shaders[name] = Object.create (_).construct (name, url, parameters, onReady));
-    };
-
-    /**
-     * fetch a shader by name.
-     *
-     * @method get
-     * @static
-     * @param {string} name the name of the shader to return
-     * @return {Shader}
-     */
-    _.get = function (name) {
-        return shaders[name];
+    _.validate = function (parameters) {
+        // there must be a type and url
+        if (typeof parameters.type === "undefined") throw "Shader type Required";
+        if (typeof parameters.url === "undefined") throw "Shader URL Required";
     };
 
     return _;

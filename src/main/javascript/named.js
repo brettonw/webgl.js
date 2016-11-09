@@ -32,24 +32,22 @@ let Named = function (nameRequired) {
     };
 
     _.new = function (parameters, name) {
+        // create the object
+        let named = Object.create (_);
+
+        // validate the name, if it's valid, then index the object
+        if ((name = validateName(name)) != null) {
+            named.name = name;
+            namedIndex[name] = named;
+        }
+
         // ensure that we have parameters, and the ones we have are correct
         DEFAULT_VALUE (parameters, Object.create (null));
-        let validate = ("validate" in _) ? type.validate : function (parameters) { return true; };
-        if (validate (parameters)) {
-            // create the object
-            let named = Object.create (_);
+        if ("validate" in _) _.validate (parameters);
 
-            // validate the name, if it's valid, then index the object
-            if ((name = validateName(name)) != null) {
-                named.name = name;
-                namedIndex[name] = named;
-            }
-
-            // construct the object, and then return it
-            named.construct (parameters);
-            return named;
-        }
-        throw "Invalid parameters";
+        // construct the object, and then return it
+        named.construct (parameters);
+        return named;
     };
 
     _.get = function (name) {

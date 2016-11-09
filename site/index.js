@@ -160,12 +160,12 @@ let onBodyLoad = function () {
         .addVertexShaders ("basic")
         .addFragmentShaders([ "basic", "basic-texture", "color", "overlay", "rgb", "texture" ])
         .go (null, OnReady.new (null, function (x) {
-            Program.new ("basic");
-            Program.new ("basic-texture", { vertexShader: "basic" });
-            Program.new ("color", { vertexShader: "basic" });
-            Program.new ("overlay", { vertexShader: "basic" });
-            Program.new ("rgb", { vertexShader: "basic" });
-            Program.new ("texture", { vertexShader: "basic" });
+            Program.new ({}, "basic");
+            Program.new ({ vertexShader: "basic" }, "basic-texture");
+            Program.new ({ vertexShader: "basic" }, "color");
+            Program.new ({ vertexShader: "basic" }, "overlay");
+            Program.new ({ vertexShader: "basic" }, "rgb");
+            Program.new ({ vertexShader: "basic" }, "texture");
 
             // load the textures
             LoaderPath.new ({ type:Texture, path:"textures/@.png"})

@@ -107,24 +107,22 @@ let Named = function (nameRequired) {
     };
 
     _.new = function (parameters, name) {
+        // create the object
+        let named = Object.create (_);
+
+        // validate the name, if it's valid, then index the object
+        if ((name = validateName(name)) != null) {
+            named.name = name;
+            namedIndex[name] = named;
+        }
+
         // ensure that we have parameters, and the ones we have are correct
         (parameters = (((typeof parameters !== "undefined") && (parameters != null)) ? parameters : Object.create (null)));
-        let validate = ("validate" in _) ? type.validate : function (parameters) { return true; };
-        if (validate (parameters)) {
-            // create the object
-            let named = Object.create (_);
+        if ("validate" in _) _.validate (parameters);
 
-            // validate the name, if it's valid, then index the object
-            if ((name = validateName(name)) != null) {
-                named.name = name;
-                namedIndex[name] = named;
-            }
-
-            // construct the object, and then return it
-            named.construct (parameters);
-            return named;
-        }
-        throw "Invalid parameters";
+        // construct the object, and then return it
+        named.construct (parameters);
+        return named;
     };
 
     _.get = function (name) {
@@ -231,11 +229,13 @@ let Loader = function () {
         this.onFinishedAll = (parameters.onFinishedAll = (((typeof parameters.onFinishedAll !== "undefined") && (parameters.onFinishedAll != null)) ? parameters.onFinishedAll : { notify: function (x) {} }));
         this.onFinishedItem = (parameters.onFinishedItem = (((typeof parameters.onFinishedItem !== "undefined") && (parameters.onFinishedItem != null)) ? parameters.onFinishedItem : { notify: function (x) {} }));
         this.items = [];
+        this.onReady = OnReady.new (this, this.finish);
         return this;
     };
 
-    _.addItem = function (type, name, url, parameters) {
-        let item = { type: type, name: name, url: url, parameters: parameters };
+    _.addItem = function (type, name, parameters) {
+        parameters.onReady = this.onReady;
+        let item = { type: type, name: name, parameters: parameters };
         this.items.push (item);
         return this;
     };
@@ -275,7 +275,7 @@ let Loader = function () {
         if (this.items.length > 0) {
             // have work to do, kick off a fetch
             let item = this.items.shift ();
-            this.pendingItem = item.type.new (item.name, item.url, item.parameters, OnReady.new (this, this.finish));
+            this.pendingItem = item.type.new (item.parameters, item.name);
         } else {
             // all done, inform our waiting handler
             this.onFinishedAll.notify (this);
@@ -323,8 +323,8 @@ let LoaderPath = function () {
     _.addItems = function (names, parameters) {
         names = Array.isArray(names) ? names : Array(1).fill(names);
         for (let name of names) {
-            let url = this.path.replace ("@", name);
-            Object.getPrototypeOf(_).addItem.call(this, this.type, name, url, parameters);
+            let params = Object.assign ({}, parameters, { url:this.path.replace ("@", name) });
+            Object.getPrototypeOf(_).addItem.call(this, this.type, name, params);
         }
         return this;
     };
@@ -1268,12 +1268,11 @@ let Float4x4 = function () {
     return _;
 } ();
 let Shader = function () {
-    let _ = Object.create (null);
+    let _ = Named ();
 
     let shaders = Object.create (null);
 
-    _.construct = function (name, url, parameters, onReady) {
-        this.name = name;
+    _.construct = function (parameters) {
         LogLevel.say (LogLevel.INFO, "Shader: " + this.name);
 
         let scope = this;
@@ -1287,43 +1286,22 @@ let Shader = function () {
                     LogLevel.say (LogLevel.ERROR, "Shader compilation failed for " + this.name + ":\n" + context.getShaderInfoLog (shader));
                 } else {
                     scope.compiledShader = shader;
-                    onReady.notify (scope);
+
+                    // call the onReady handler if one was provided
+                    if (typeof parameters.onReady !== "undefined") {
+                        parameters.onReady.notify (scope);
+                    }
                 }
             }
         };
-        request.open("GET", url);
+        request.open("GET", parameters.url);
         request.send();
-
-        return this;
     };
 
-    /**
-     * static method to create and construct a new Shader.
-     *
-     * @method new
-     * @static
-     * @param {string} name the name to use to refer to this shader
-     * @param {string} url where to get this shader
-     * @param {Object} parameters shader construction parameters, typically url and type, where
-     * type is one of (context.VERTEX_SHADER, context.FRAGMENT_SHADER)
-     * @param {Object} onReady an object specifying the scope and callback to call when ready
-     * @return {Shader}
-     */
-    _.new = function (name, url, parameters, onReady) {
-        (parameters = (((typeof parameters !== "undefined") && (parameters != null)) ? parameters : Object.create (null)));
-        return (shaders[name] = Object.create (_).construct (name, url, parameters, onReady));
-    };
-
-    /**
-     * fetch a shader by name.
-     *
-     * @method get
-     * @static
-     * @param {string} name the name of the shader to return
-     * @return {Shader}
-     */
-    _.get = function (name) {
-        return shaders[name];
+    _.validate = function (parameters) {
+        // there must be a type and url
+        if (typeof parameters.type === "undefined") throw "Shader type Required";
+        if (typeof parameters.url === "undefined") throw "Shader URL Required";
     };
 
     return _;
@@ -1334,7 +1312,7 @@ let Shader = function () {
  * @class Program
  */
 let Program = function () {
-    let _ = Object.create (null);
+    let _ = Named (NAME_REQUIRED);
 
     /**
      * the name for the standard POSITION buffer attribute in a shader.
@@ -1360,20 +1338,21 @@ let Program = function () {
      */
     _.TEXTURE_ATTRIBUTE = "TEXTURE_ATTRIBUTE";
 
-    let programs = Object.create (null);
     let currentProgram;
 
     /**
      * the initializer for a shader.
      *
      * @method construct
-     * @param {string} name name to retrieve this shader
      * @param {Object} parameters shader construction parameters
      * @return {Program}
      */
-    _.construct = function (name, parameters) {
-        this.name = name;
+    _.construct = function (parameters) {
         LogLevel.say (LogLevel.INFO, "Program: " + this.name);
+
+        // default value for the shader names
+        parameters.vertexShader = "vertex-" + (parameters.vertexShader = (((typeof parameters.vertexShader !== "undefined") && (parameters.vertexShader != null)) ? parameters.vertexShader : this.name));
+        parameters.fragmentShader = "fragment-" + (parameters.fragmentShader = (((typeof parameters.fragmentShader !== "undefined") && (parameters.fragmentShader != null)) ? parameters.fragmentShader : this.name));
 
         this.currentShape = null;
 
@@ -1427,7 +1406,6 @@ let Program = function () {
                 attributes[reverseAttributeMapping[activeAttributeName]] = ProgramAttribute.new (program, activeAttribute);
             }
         }
-        return this;
     };
 
     /**
@@ -1548,16 +1526,6 @@ let Program = function () {
     };
 
     /**
-     * get the name of this shader
-     *
-     * @method getName
-     * @return {string} the name of this shader.
-     */
-    _.getName = function () {
-        return this.name;
-    };
-
-    /**
      * static method to create and construct a new Program.
      *
      * @method new
@@ -1592,14 +1560,7 @@ let Program = function () {
      * * SPECULAR_EXPONENT:"specularExponent"
      * @return {Program}
      */
-    _.new = function (name, parameters) {
-        // default value for the parameters
-        parameters = (parameters = (((typeof parameters !== "undefined") && (parameters != null)) ? parameters : function () { return Object.create (null); } ()));
-
-        // default value for the shader names
-        parameters.vertexShader = "vertex-" + (parameters.vertexShader = (((typeof parameters.vertexShader !== "undefined") && (parameters.vertexShader != null)) ? parameters.vertexShader : name));
-        parameters.fragmentShader = "fragment-" + (parameters.fragmentShader = (((typeof parameters.fragmentShader !== "undefined") && (parameters.fragmentShader != null)) ? parameters.fragmentShader : name));
-
+    _.validate = function (parameters) {
         // default values for the attribute mapping
         if (!("attributeMapping" in parameters)) {
             parameters.attributeMapping = {
@@ -1629,18 +1590,6 @@ let Program = function () {
                 SPECULAR_EXPONENT:"specularExponent"
             };
         };
-        return (programs[name] = Object.create (_).construct (name, parameters));
-    };
-
-    /**
-     * fetch a program by name.
-     *
-     * @method get
-     * @static
-     * @return {Program}
-     */
-    _.get = function (name) {
-        return programs[name];
     };
 
     return _;
@@ -1805,14 +1754,12 @@ let ProgramAttribute = function () {
     return _;
 } ();
 let Texture = function () {
-    let _ = Object.create (null);
+    let _ = Named (NAME_REQUIRED);
 
-    let textures = Object.create (null);
     let afExtension;
 
-    _.construct = function (name, url, parameters, onReady) {
-        this.name = name;
-        LogLevel.say (LogLevel.INFO, "Texture: " + name);
+    _.construct = function (parameters) {
+        LogLevel.say (LogLevel.INFO, "Texture: " + this.name);
 
         let texture = this.texture = context.createTexture();
         let image = new Image();
@@ -1833,49 +1780,21 @@ let Texture = function () {
             }
             context.bindTexture (context.TEXTURE_2D, null);
 
-            // set the texture in the textures
-            textures[name] = scope;
-
-                // call the onReady handler
-            onReady.notify (scope);
+            // call the onReady handler if one was provided
+            if (typeof parameters.onReady !== "undefined") {
+                parameters.onReady.notify (scope);
+            }
         };
-        image.src = url;
-
-        return this;
+        image.src = parameters.url;
     };
 
-    /**
-     * static method to create and construct a new Texture.
-     *
-     * @method new
-     * @static
-     * @param {string} name the name to use to refer to this texture
-     * @param {string} url where to get this texture
-     * @param {Object} parameters texture construction parameters
-     * @param {Object} onReady an object specifying the scope and callback to call when ready
-     * @return {Texture}
-     */
-    _.new = function (name, url, parameters, onReady) {
-        (afExtension = (((typeof afExtension !== "undefined") && (afExtension != null)) ? afExtension : function () { return context.getExtension ("EXT_texture_filter_anisotropic") } ()));
-        (parameters = (((typeof parameters !== "undefined") && (parameters != null)) ? parameters : {}));
+    _.validate = function (parameters) {
         // make sure anisotropic filtering is defined, and has a reasonable default value
+        (afExtension = (((typeof afExtension !== "undefined") && (afExtension != null)) ? afExtension : function () { return context.getExtension ("EXT_texture_filter_anisotropic") } ()));
         parameters.anisotropicFiltering = Math.min (context.getParameter(afExtension.MAX_TEXTURE_MAX_ANISOTROPY_EXT), ("anisotropicFiltering" in parameters)? parameters.anisotropicFiltering : 4);
-        return Object.create (_).construct (name, url, parameters, onReady);
-    };
 
-    /**
-     * fetch a texture by name.
-     *
-     * @method get
-     * @static
-     * @param {string} name the name of the texture to return
-     * @return {Texture}
-     */
-    _.get = function (name) {
-        if (name in textures) {
-            return textures[name];
-        }
-        LogLevel.say (LogLevel.WARNNG, "Texture not found: " + name);
+        // there must be a url
+        if (typeof parameters.url === "undefined") throw "Texture URL Required";
     };
 
     return _;
