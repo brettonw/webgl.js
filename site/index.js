@@ -8,19 +8,23 @@ let currentAngle = 0;
 let fovRange;
 let framingRange;
 
-
 let refreshTimeoutId = 0;
+let lastTime = new Date ().getTime ();
+let globalTime = 0;
 let draw = function (deltaPosition) {
     // don't duplicate frames if drawing gets called for some other reason, like dragging
     if (refreshTimeoutId != 0) {
         clearTimeout (refreshTimeoutId);
     }
+
+    let nowTime = new Date ().getTime ();
     if (animateCheckbox.checked) {
+        globalTime += nowTime - lastTime;
         // draw again as fast as possible
         refreshTimeoutId = setTimeout (function () { draw ([0, 0]); }, 0);
+        Thing.updateAll (globalTime / 5.0);
     }
-
-    Thing.updateAll (new Date ().getTime ());
+    lastTime = nowTime;
 
     // set up the projection matrix (earth radius is 1 and we want it to occupy about 75% of the
     // view in the vertical direction - the view is probably wider than that)
@@ -61,6 +65,13 @@ let draw = function (deltaPosition) {
     scene.traverse (standardUniforms);
 
 
+};
+
+let clickAnimateCheckbox = function () {
+    if (animateCheckbox.checked) {
+        lastTime = new Date ().getTime ();
+        draw ([0, 0]);
+    }
 };
 
 let buildScene = function () {
