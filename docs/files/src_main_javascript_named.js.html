@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>src/main/javascript/named.js - WebGL</title>
+    <link rel="stylesheet" href="">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="stylesheet" href="../assets/css/custom.css">
+    <link rel="stylesheet" href="../assets/css/lucid.css">
+    <link rel="stylesheet" href="../assets/vendor/bootstrap/css/bootstrap.css">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+</head>
+<body class="yui3-skin-sam">
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <h1 class="brand" style="padding: 10px 16px 10px; height: 20px; line-height: 20px; margin-left: 0;">
+            WebGL
+        </h1>
+	<div class="nav">
+            <li class="divider-vertical"></li>
+            <li>
+                <p class="navbar-text">
+                    API Docs for Version: <b>1.0.0</b>
+                </p>
+            </li>
+        </div>
+        <form class="navbar-form pull-right" style="line-height: 40px; height: 40px;">
+            <input style="margin-top: 0;" type="text" class="search-query" placeholder="Search for classes/modules..." data-obj='["classes/Cloud", "classes/Float4x4", "classes/FloatNxN", "classes/Loader", "classes/LoaderPath", "classes/LoaderShader", "classes/Node", "classes/Program", "classes/Render", "classes/Utility"]'>
+        </form>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="span3">
+<div>
+    <div id="sidebar">
+    <div id="classes">
+        <ul id="api-classes" class="nav nav-list">
+                <li><a href="../classes/Cloud.html">Cloud</a></li>
+                <li><a href="../classes/Float4x4.html">Float4x4</a></li>
+                <li><a href="../classes/FloatNxN.html">FloatNxN</a></li>
+                <li><a href="../classes/Loader.html">Loader</a></li>
+                <li><a href="../classes/LoaderPath.html">LoaderPath</a></li>
+                <li><a href="../classes/LoaderShader.html">LoaderShader</a></li>
+                <li><a href="../classes/Node.html">Node</a></li>
+                <li><a href="../classes/Program.html">Program</a></li>
+                <li><a href="../classes/Render.html">Render</a></li>
+                <li><a href="../classes/Utility.html">Utility</a></li>
+        </ul>
+    </div>
+    </div>
+</div>
+        </div>
+        <div class="span9">
+    <form id="options-form" class="form-inline pull-right">
+        Show:
+        <label for="api-show-inherited" class="checkbox">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected" class="checkbox">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private" class="checkbox">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated" class="checkbox">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </form>
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+<div class="page-header">
+    <h1>src/main/javascript/named.js <small>File</small></h1>
+</div>
+
+<div class="file">
+    <pre class="prettyprint linenums">
+const NAME_REQUIRED = &quot;NAME_REQUIRED&quot;;
+const NAME_GENERATED = &quot;NAME_GENERATED&quot;;
+const NAME_OPTIONAL = &quot;NAME_OPTIONAL&quot;;
+
+let Named = function (nameRequired) {
+    DEFAULT_VALUE (nameRequired, NAME_OPTIONAL);
+    let _ = Object.create (null);
+
+    // the container for names
+    let namedIndex = Object.create (null);
+
+    // name handling has several cases:
+    // 1) it is supplied
+    // 2) it is not supplied, but is auto-generated
+    // 3) it is not supplied, and that is ok
+    // 4) it is not supplied and that is an error
+    // so a flag is needed indicating how to handle a name that is not present
+    let uniqueNameId = 0;
+    let validateName = function (name) {
+        // if the name was supplied, it&#x27;s all good
+        if ((typeof name !== &quot;undefined&quot;) &amp;&amp; (name != null)) {
+            // but make sure it&#x27;s not already in the index
+            if (!(name in namedIndex)) {
+                return name;
+            }
+            throw &quot;Duplicate name (&quot; + name + &quot;)&quot;;
+        }
+
+        // otherwise, we have to decide what to do, based on some construction parameters
+        switch (nameRequired) {
+            case NAME_REQUIRED:
+                throw &quot;Name is required&quot;;
+            case NAME_GENERATED:
+                return &quot;id&quot; + Utility.padNum(++uniqueNameId, 5);
+            case NAME_OPTIONAL:
+                return null;
+        }
+    };
+
+    /**
+     *
+     * @param parameters
+     * @param name
+     * @returns {_}
+     */
+    _.new = function (parameters, name) {
+        // create the object
+        let named = Object.create (_);
+
+        // validate the name, if it&#x27;s valid, then index the object
+        if ((name = validateName(name)) != null) {
+            named.name = name;
+            namedIndex[name] = named;
+        }
+
+        // ensure that we have parameters, and the ones we have are correct
+        DEFAULT_VALUE (parameters, Object.create (null));
+        if (&quot;validate&quot; in _) _.validate (parameters);
+
+        // construct the object, and then return it
+        named.construct (parameters);
+        return named;
+    };
+
+    /**
+     *
+     * @param name
+     * @returns {*}
+     */
+    _.get = function (name) {
+        return namedIndex[name];
+    };
+
+    /**
+     * get the name of this named thing (if it has one).
+     *
+     * @method getName
+     * @return {string} the name of this node, or just &quot;node&quot;.
+     */
+    _.getName = function () {
+        return (&quot;name&quot; in this) ? this.name : &quot;node&quot;;
+    };
+
+    /**
+     *
+     * @returns {Object}
+     */
+    _.getIndex = function () {
+        return namedIndex;
+    };
+
+    /**
+     *
+     * @param todo
+     */
+    _.forEach = function (todo) {
+        for (let name in namedIndex) {
+            let named = namedIndex[name];
+            todo (named);
+        }
+    };
+
+    return _;
+};
+
+    </pre>
+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/jquery/jquery-1.8.2.min.js"></script>
+<script src="../assets/vendor/bootstrap/js/bootstrap.js"></script>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script src="../assets/js/yuidoc-bootstrap.js"></script>
+<script>prettyPrint();</script>
+</body>
+</html>

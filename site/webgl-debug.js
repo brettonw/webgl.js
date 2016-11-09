@@ -93,7 +93,13 @@ let Named = function (nameRequired) {
     let uniqueNameId = 0;
     let validateName = function (name) {
         // if the name was supplied, it's all good
-        if ((typeof name !== "undefined") && (name != null)) { return name; }
+        if ((typeof name !== "undefined") && (name != null)) {
+            // but make sure it's not already in the index
+            if (!(name in namedIndex)) {
+                return name;
+            }
+            throw "Duplicate name (" + name + ")";
+        }
 
         // otherwise, we have to decide what to do, based on some construction parameters
         switch (nameRequired) {
@@ -106,6 +112,12 @@ let Named = function (nameRequired) {
         }
     };
 
+    /**
+     *
+     * @param parameters
+     * @param name
+     * @returns {_}
+     */
     _.new = function (parameters, name) {
         // create the object
         let named = Object.create (_);
@@ -125,14 +137,37 @@ let Named = function (nameRequired) {
         return named;
     };
 
+    /**
+     *
+     * @param name
+     * @returns {*}
+     */
     _.get = function (name) {
         return namedIndex[name];
     };
 
+    /**
+     * get the name of this named thing (if it has one).
+     *
+     * @method getName
+     * @return {string} the name of this node, or just "node".
+     */
+    _.getName = function () {
+        return ("name" in this) ? this.name : "node";
+    };
+
+    /**
+     *
+     * @returns {Object}
+     */
     _.getIndex = function () {
         return namedIndex;
     };
 
+    /**
+     *
+     * @param todo
+     */
     _.forEach = function (todo) {
         for (let name in namedIndex) {
             let named = namedIndex[name];
@@ -1270,8 +1305,6 @@ let Float4x4 = function () {
 let Shader = function () {
     let _ = Named ();
 
-    let shaders = Object.create (null);
-
     _.construct = function (parameters) {
         LogLevel.say (LogLevel.INFO, "Shader: " + this.name);
 
@@ -1805,9 +1838,7 @@ let Texture = function () {
  * @class Node
  */
 let Node = function () {
-    let _ = Object.create (null);
-
-    let nodes = Object.create (null);
+    let _ = Named (NAME_GENERATED);
 
     /**
      * the initializer for a scene graph node.
@@ -1815,7 +1846,6 @@ let Node = function () {
      * @method construct
      * @param {Object} parameters an object with optional information to include in the node. The
      * possibilities are:
-     * * name {string}: nodes can be named if they need to be retrieved later.
      * * transform {Float4x4}: a transformation matrix to apply before drawing or traversing children.
      * * state {function}: a parameter-less function to call before drawing or traversing children.
      * this function may set any render state needed.
@@ -1836,38 +1866,27 @@ let Node = function () {
         let traverseFunctionIndex = 0;
 
         // collect the parameters, and accumulate the flags for the features
-        if (typeof parameters !== "undefined") {
-            if ("name" in parameters) {
-                this.name = parameters.name;
-                nodes[this.name] = this;
-            }
+        if ("transform" in parameters) {
+            this.transform = parameters.transform;
+            traverseFunctionIndex += HAS_TRANSFORM;
+        }
 
-             if ("transform" in parameters) {
-                 this.transform = parameters.transform;
-                 traverseFunctionIndex += HAS_TRANSFORM;
-             }
+        if ("state" in parameters) {
+            this.state = parameters.state;
+            traverseFunctionIndex += HAS_STATE;
+        }
 
-            if ("state" in parameters) {
-                this.state = parameters.state;
-                traverseFunctionIndex += HAS_STATE;
-            }
+        if ("shape" in parameters) {
+            this.shape = Shape.get (parameters.shape);
+            traverseFunctionIndex += HAS_SHAPE;
+        }
 
-            if ("shape" in parameters) {
-                this.shape = Shape.get (parameters.shape);
-                traverseFunctionIndex += HAS_SHAPE;
-            }
+        // by default, nodes are enabled
+        this.enabled = (parameters.enabled = (((typeof parameters.enabled !== "undefined") && (parameters.enabled != null)) ? parameters.enabled : true));
 
-            // by default, nodes are enabled
-            this.enabled = (parameters.enabled = (((typeof parameters.enabled !== "undefined") && (parameters.enabled != null)) ? parameters.enabled : true));
-
-            // children are special, the default is to include children, but we want a way to say
-            // the current node is a leaf node, so { children: false } is the way to do that
-            if ((!("children" in parameters)) || (parameters.children != false)) {
-                this.children = [];
-                traverseFunctionIndex += HAS_CHILDREN;
-            }
-        } else {
-            // default is just a parent node
+        // children are special, the default is to include children, but we want a way to say the
+        // current node is a leaf node, so { children: false } is the way to do that
+        if ((!("children" in parameters)) || (parameters.children != false)) {
             this.children = [];
             traverseFunctionIndex += HAS_CHILDREN;
         }
@@ -1890,7 +1909,7 @@ let Node = function () {
             // 4 shape only
             function (standardUniforms) {
                 if (this.enabled) {
-                    LogLevel.say (LogLevel.TRACE, "Traverse: " + (this.name ? this.name : "unnamed"));
+                    LogLevel.say (LogLevel.TRACE, "Traverse: " + this.name);
                     this.draw (standardUniforms);
                 }
                 return this;
@@ -1898,7 +1917,7 @@ let Node = function () {
             // 5 transform, shape
             function (standardUniforms) {
                 if (this.enabled) {
-                    LogLevel.say (LogLevel.TRACE, "Traverse: " + (this.name ? this.name : "unnamed"));
+                    LogLevel.say (LogLevel.TRACE, "Traverse: " + this.name);
                     standardUniforms.MODEL_MATRIX_PARAMETER = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
                     this.draw (standardUniforms);
                 }
@@ -1907,7 +1926,7 @@ let Node = function () {
             // 6 state, shape
             function (standardUniforms) {
                 if (this.enabled) {
-                    LogLevel.say (LogLevel.TRACE, "Traverse: " + (this.name ? this.name : "unnamed"));
+                    LogLevel.say (LogLevel.TRACE, "Traverse: " + this.name);
                     this.state (standardUniforms);
                     this.draw (standardUniforms);
                 }
@@ -1916,7 +1935,7 @@ let Node = function () {
             // 7 transform, state, shape
             function (standardUniforms) {
                 if (this.enabled) {
-                    LogLevel.say (LogLevel.TRACE, "Traverse: " + (this.name ? this.name : "unnamed"));
+                    LogLevel.say (LogLevel.TRACE, "Traverse: " + this.name);
                     this.state (standardUniforms);
                     standardUniforms.MODEL_MATRIX_PARAMETER = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
                     this.draw (standardUniforms);
@@ -1926,7 +1945,7 @@ let Node = function () {
             // 8 children only
             function (standardUniforms) {
                 if (this.enabled) {
-                    LogLevel.say (LogLevel.TRACE, "Traverse: " + (this.name ? this.name : "unnamed"));
+                    LogLevel.say (LogLevel.TRACE, "Traverse: " + this.name);
                     let modelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER;
                     for (let child of this.children) {
                         standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
@@ -1938,7 +1957,7 @@ let Node = function () {
             // 9 transform, children
             function (standardUniforms) {
                 if (this.enabled) {
-                    LogLevel.say (LogLevel.TRACE, "Traverse: " + (this.name ? this.name : "unnamed"));
+                    LogLevel.say (LogLevel.TRACE, "Traverse: " + this.name);
                     let modelMatrix = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
                     for (let child of this.children) {
                         standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
@@ -1950,7 +1969,7 @@ let Node = function () {
             // 10 state, children
             function (standardUniforms) {
                 if (this.enabled) {
-                    LogLevel.say (LogLevel.TRACE, "Traverse: " + (this.name ? this.name : "unnamed"));
+                    LogLevel.say (LogLevel.TRACE, "Traverse: " + this.name);
                     this.state (standardUniforms);
                     let modelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER;
                     for (let child of this.children) {
@@ -1963,7 +1982,7 @@ let Node = function () {
             // 11 transform, state, children
             function (standardUniforms) {
                 if (this.enabled) {
-                    LogLevel.say (LogLevel.TRACE, "Traverse: " + (this.name ? this.name : "unnamed"));
+                    LogLevel.say (LogLevel.TRACE, "Traverse: " + this.name);
                     this.state (standardUniforms);
                     let modelMatrix = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
                     for (let child of this.children) {
@@ -1976,7 +1995,7 @@ let Node = function () {
             // 12 shape, children
             function (standardUniforms) {
                 if (this.enabled) {
-                    LogLevel.say (LogLevel.TRACE, "Traverse: " + (this.name ? this.name : "unnamed"));
+                    LogLevel.say (LogLevel.TRACE, "Traverse: " + this.name);
                     let modelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER;
                     this.draw (standardUniforms);
                     for (let child of this.children) {
@@ -1989,7 +2008,7 @@ let Node = function () {
             // 13 transform, shape, children
             function (standardUniforms) {
                 if (this.enabled) {
-                    LogLevel.say (LogLevel.TRACE, "Traverse: " + (this.name ? this.name : "unnamed"));
+                    LogLevel.say (LogLevel.TRACE, "Traverse: " + this.name);
                     let modelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
                     this.draw (standardUniforms);
                     for (let child of this.children) {
@@ -2002,7 +2021,7 @@ let Node = function () {
             // 14 state, shape, children
             function (standardUniforms) {
                 if (this.enabled) {
-                    LogLevel.say (LogLevel.TRACE, "Traverse: " + (this.name ? this.name : "unnamed"));
+                    LogLevel.say (LogLevel.TRACE, "Traverse: " + this.name);
                     this.state (standardUniforms);
                     this.draw (standardUniforms);
                     let modelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER;
@@ -2016,7 +2035,7 @@ let Node = function () {
             // 15 transform, state, shape, children
             function (standardUniforms) {
                 if (this.enabled) {
-                    LogLevel.say (LogLevel.TRACE, "Traverse: " + (this.name ? this.name : "unnamed"));
+                    LogLevel.say (LogLevel.TRACE, "Traverse: " + this.name);
                     this.state (standardUniforms);
                     let modelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
                     this.draw (standardUniforms);
@@ -2086,40 +2105,6 @@ let Node = function () {
         } else {
             return Float4x4.multiply (transform, this.parent.getTransform(root));
         }
-    };
-
-    /**
-     * get the name of this node (if it has one).
-     *
-     * @method getName
-     * @return {string} the name of this node, or just "node".
-     */
-    _.getName = function () {
-        return ("name" in this) ? this.name : "node";
-    };
-
-    /**
-     * get a node by name.
-     *
-     * @method get
-     * @param {string} name the name of the node to retrieve.
-     * @return {Node}
-     */
-    _.get = function (name) {
-        return nodes[name];
-    };
-
-    /**
-     * static method to create and construct a new scene graph node.
-     *
-     * @method new
-     * @static
-     * @param {Object} parameters an object with optional information to include in the node (see
-     * "construct" for more information)
-     * @return {Node}
-     */
-    _.new = function (parameters) {
-        return Object.create (_).construct (parameters);
     };
 
     return _;
@@ -2208,12 +2193,12 @@ let Cloud = function () {
     return _;
 } ();
 let Shape = function () {
-    let _ = Object.create (null);
+    let _ = Named (NAME_REQUIRED);
 
-    let shapes = Object.create (null);
+    _.construct = function (parameters) {
+        LogLevel.say (LogLevel.INFO, "Shape: " + this.name);
 
-    _.construct = function (name, buffers) {
-        this.name = name;
+        let buffers = parameters.buffers ();
 
         let makeBuffer = function (bufferType, source, itemSize) {
             let buffer = context.createBuffer ();
@@ -2380,14 +2365,6 @@ let Shape = function () {
         return this;
     };
 
-    _.new = function (name, buffers) {
-        return (shapes[name] = Object.create (_).construct (name, buffers ()));
-    };
-
-    _.get = function (name) {
-        return shapes[name];
-    };
-
     return _;
 } ();
 let ShapeBuilder = function () {
@@ -2512,9 +2489,11 @@ let Primitive = function () {
 
     _.makeFromBuilder = function (name, builder) {
         (name = (((typeof name !== "undefined") && (name != null)) ? name : this.name));
-        return Shape.new(name, function () {
-            return builder.makeFacets();
-        });
+        return Shape.new({
+            buffers: function () {
+                return builder.makeFacets ();
+            }
+        }, name);
     };
 
     _.make = function (name) {
@@ -2739,11 +2718,13 @@ let Sphere = function () {
 
     _.makeFromBuilder = function (name, builder) {
         (name = (((typeof name !== "undefined") && (name != null)) ? name : this.name));
-        return Shape.new (name, function () {
-            let buffers = builder.makeBuffers ();
-            buffers.normal = buffers.position;
-            return buffers;
-        });
+        return Shape.new ({
+            buffers: function () {
+                let buffers = builder.makeBuffers ();
+                buffers.normal = buffers.position;
+                return buffers;
+            }
+        }, name);
     };
 
     _.makeN = function (n) {
@@ -2795,61 +2776,65 @@ let makeRevolve = function (name, outline, normal, steps, projection) {
     // https://en.wikipedia.org/wiki/Equirectangular_projection
     (projection = (((typeof projection !== "undefined") && (projection != null)) ? projection : function (uvY) { return uvY; }));
 
-    return Shape.new (name, function () {
-        // compute the steps we need to make to build the rotated shape
-        LogLevel.say (LogLevel.TRACE, "Make revolved outline");
-        let builder = ShapeBuilder.new ();
-        let stepAngle = (-2.0 * Math.PI) / steps;
-        for (let i = 0; i < steps; ++i) {
-            // this could be just i + 1, but doing the modulus might help prevent a crack
-            let j = i + 1;
-            let iAngle = i * stepAngle, iCosAngle = Math.cos (iAngle), iSinAngle = Math.sin (iAngle);
-            let jAngle = (j % steps) * stepAngle, jCosAngle = Math.cos (jAngle), jSinAngle = Math.sin (jAngle);
-            for (let m = 0; m < last; ++m) {
-                // the line segment mn is now going to be swept over the angle range ij
-                let n = m + 1;
-                let vm = outline[m], nm = normal[m];
-                let vn = outline[n], nn = normal[n];
 
-                // we allow degenerate faces by duplicating vertices in the outline, if the length
-                // between the two components is below the threshold, we skip this facet altogether.
-                if (Float2.norm (vm, vn) > epsilon) {
-                    // for each facet of the wedge, it's either a degenerate segment, an upward
-                    // facing triangle, a downward facing triangle, or a quad.
-                    let facetType = ((vm[0] < epsilon) ? 0 : 2) + ((vn[0] < epsilon) ? 0 : 1);
-                    switch (facetType) {
-                        case 0: // degenerate, emit nothing
-                            break;
-                        case 1: { // top cap, emit 1 triangle
-                            let vim = builder.addVertexNormalTexture ([0, vm[1], 0], [nm[0] * iCosAngle, nm[1], nm[0] * iSinAngle], [i / steps, projection (m / last)]);
-                            let vin = builder.addVertexNormalTexture ([vn[0] * iCosAngle, vn[1], vn[0] * iSinAngle], [nn[0] * iCosAngle, nn[1], nn[0] * iSinAngle], [i / steps, projection (n / last)]);
-                            let vjn = builder.addVertexNormalTexture ([vn[0] * jCosAngle, vn[1], vn[0] * jSinAngle], [nn[0] * jCosAngle, nn[1], nn[0] * jSinAngle], [j / steps, projection (n / last)]);
-                            builder.addFace ([vim, vin, vjn]);
-                            break;
-                        }
-                        case 2: { // bottom cap, emit 1 triangle
-                            let vim = builder.addVertexNormalTexture ([vm[0] * iCosAngle, vm[1], vm[0] * iSinAngle], [nm[0] * iCosAngle, nm[1], nm[0] * iSinAngle], [i / steps, projection (m / last)]);
-                            let vjm = builder.addVertexNormalTexture ([vm[0] * jCosAngle, vm[1], vm[0] * jSinAngle], [nm[0] * jCosAngle, nm[1], nm[0] * jSinAngle], [j / steps, projection (m / last)]);
-                            let vin = builder.addVertexNormalTexture ([0, vn[1], 0], [nn[0] * iCosAngle, nn[1], nn[0] * iSinAngle], [i / steps, projection (n / last)]);
-                            builder.addFace ([vim, vin, vjm]);
-                            break;
-                        }
-                        case 3: { // quad, emit 2 triangles
-                            let vim = builder.addVertexNormalTexture ([vm[0] * iCosAngle, vm[1], vm[0] * iSinAngle], [nm[0] * iCosAngle, nm[1], nm[0] * iSinAngle], [i / steps, projection (m / last)]);
-                            let vin = builder.addVertexNormalTexture ([vn[0] * iCosAngle, vn[1], vn[0] * iSinAngle], [nn[0] * iCosAngle, nn[1], nn[0] * iSinAngle], [i / steps, projection (n / last)]);
-                            let vjm = builder.addVertexNormalTexture ([vm[0] * jCosAngle, vm[1], vm[0] * jSinAngle], [nm[0] * jCosAngle, nm[1], nm[0] * jSinAngle], [j / steps, projection (m / last)]);
-                            let vjn = builder.addVertexNormalTexture ([vn[0] * jCosAngle, vn[1], vn[0] * jSinAngle], [nn[0] * jCosAngle, nn[1], nn[0] * jSinAngle], [j / steps, projection (n / last)]);
-                            builder.addFace ([vjm, vim, vjn]);
-                            builder.addFace ([vjn, vim, vin]);
-                            break;
+
+    return Shape.new ({
+        buffers: function () {
+            // compute the steps we need to make to build the rotated shape
+            LogLevel.say (LogLevel.TRACE, "Make revolved outline");
+            let builder = ShapeBuilder.new ();
+            let stepAngle = (-2.0 * Math.PI) / steps;
+            for (let i = 0; i < steps; ++i) {
+                // this could be just i + 1, but doing the modulus might help prevent a crack
+                let j = i + 1;
+                let iAngle = i * stepAngle, iCosAngle = Math.cos (iAngle), iSinAngle = Math.sin (iAngle);
+                let jAngle = (j % steps) * stepAngle, jCosAngle = Math.cos (jAngle), jSinAngle = Math.sin (jAngle);
+                for (let m = 0; m < last; ++m) {
+                    // the line segment mn is now going to be swept over the angle range ij
+                    let n = m + 1;
+                    let vm = outline[m], nm = normal[m];
+                    let vn = outline[n], nn = normal[n];
+
+                    // we allow degenerate faces by duplicating vertices in the outline, if the length
+                    // between the two components is below the threshold, we skip this facet altogether.
+                    if (Float2.norm (vm, vn) > epsilon) {
+                        // for each facet of the wedge, it's either a degenerate segment, an upward
+                        // facing triangle, a downward facing triangle, or a quad.
+                        let facetType = ((vm[0] < epsilon) ? 0 : 2) + ((vn[0] < epsilon) ? 0 : 1);
+                        switch (facetType) {
+                            case 0: // degenerate, emit nothing
+                                break;
+                            case 1: { // top cap, emit 1 triangle
+                                let vim = builder.addVertexNormalTexture ([0, vm[1], 0], [nm[0] * iCosAngle, nm[1], nm[0] * iSinAngle], [i / steps, projection (m / last)]);
+                                let vin = builder.addVertexNormalTexture ([vn[0] * iCosAngle, vn[1], vn[0] * iSinAngle], [nn[0] * iCosAngle, nn[1], nn[0] * iSinAngle], [i / steps, projection (n / last)]);
+                                let vjn = builder.addVertexNormalTexture ([vn[0] * jCosAngle, vn[1], vn[0] * jSinAngle], [nn[0] * jCosAngle, nn[1], nn[0] * jSinAngle], [j / steps, projection (n / last)]);
+                                builder.addFace ([vim, vin, vjn]);
+                                break;
+                            }
+                            case 2: { // bottom cap, emit 1 triangle
+                                let vim = builder.addVertexNormalTexture ([vm[0] * iCosAngle, vm[1], vm[0] * iSinAngle], [nm[0] * iCosAngle, nm[1], nm[0] * iSinAngle], [i / steps, projection (m / last)]);
+                                let vjm = builder.addVertexNormalTexture ([vm[0] * jCosAngle, vm[1], vm[0] * jSinAngle], [nm[0] * jCosAngle, nm[1], nm[0] * jSinAngle], [j / steps, projection (m / last)]);
+                                let vin = builder.addVertexNormalTexture ([0, vn[1], 0], [nn[0] * iCosAngle, nn[1], nn[0] * iSinAngle], [i / steps, projection (n / last)]);
+                                builder.addFace ([vim, vin, vjm]);
+                                break;
+                            }
+                            case 3: { // quad, emit 2 triangles
+                                let vim = builder.addVertexNormalTexture ([vm[0] * iCosAngle, vm[1], vm[0] * iSinAngle], [nm[0] * iCosAngle, nm[1], nm[0] * iSinAngle], [i / steps, projection (m / last)]);
+                                let vin = builder.addVertexNormalTexture ([vn[0] * iCosAngle, vn[1], vn[0] * iSinAngle], [nn[0] * iCosAngle, nn[1], nn[0] * iSinAngle], [i / steps, projection (n / last)]);
+                                let vjm = builder.addVertexNormalTexture ([vm[0] * jCosAngle, vm[1], vm[0] * jSinAngle], [nm[0] * jCosAngle, nm[1], nm[0] * jSinAngle], [j / steps, projection (m / last)]);
+                                let vjn = builder.addVertexNormalTexture ([vn[0] * jCosAngle, vn[1], vn[0] * jSinAngle], [nn[0] * jCosAngle, nn[1], nn[0] * jSinAngle], [j / steps, projection (n / last)]);
+                                builder.addFace ([vjm, vim, vjn]);
+                                builder.addFace ([vjn, vim, vin]);
+                                break;
+                            }
                         }
                     }
                 }
             }
-        }
 
-        return builder.makeBuffers();
-    });
+            return builder.makeBuffers ();
+        }
+    }, name);
 };
 let makeBall = function (name, steps) {
     LogLevel.say (LogLevel.TRACE, "Make ball...");

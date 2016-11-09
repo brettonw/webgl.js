@@ -6,9 +6,11 @@ let Primitive = function () {
 
     _.makeFromBuilder = function (name, builder) {
         DEFAULT_VALUE(name, this.name);
-        return Shape.new(name, function () {
-            return builder.makeFacets();
-        });
+        return Shape.new({
+            buffers: function () {
+                return builder.makeFacets ();
+            }
+        }, name);
     };
 
     _.make = function (name) {

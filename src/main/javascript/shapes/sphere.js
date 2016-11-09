@@ -56,11 +56,13 @@ let Sphere = function () {
 
     _.makeFromBuilder = function (name, builder) {
         DEFAULT_VALUE(name, this.name);
-        return Shape.new (name, function () {
-            let buffers = builder.makeBuffers ();
-            buffers.normal = buffers.position;
-            return buffers;
-        });
+        return Shape.new ({
+            buffers: function () {
+                let buffers = builder.makeBuffers ();
+                buffers.normal = buffers.position;
+                return buffers;
+            }
+        }, name);
     };
 
     _.makeN = function (n) {

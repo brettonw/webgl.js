@@ -60,7 +60,6 @@ let buildScene = function () {
     makeBall ("ball-small", 36);
 
     scene = Node.new ({
-        name: "root",
         state: function (standardUniforms) {
             // ordinarily, webGl will automatically present and clear when we return control to the
             // event loop from the draw function, but we overrode that to have explicit control.
@@ -93,10 +92,10 @@ let buildScene = function () {
             standardUniforms.SPECULAR_CONTRIBUTION = 0.05;
             standardUniforms.SPECULAR_EXPONENT = 8.0;
         }
-    });
+    }, "root")
 
     // just put down the platonic solids...
-    scene.addChild (Node.new ({
+        .addChild (Node.new ({
         name: "moon",
         transform: Float4x4.chain(Float4x4.rotateXAxisTo([0, 0, -1]), Float4x4.translate([-3, 1.5, 0])),
         //transform: Float4x4.translate([-3, 1.5, 0]),
@@ -107,10 +106,9 @@ let buildScene = function () {
         },
         shape: "ball",
         children: false
-    }));
+    }, "moon"))
 
-    scene.addChild (Node.new ({
-        name: "cylinder",
+    .addChild (Node.new ({
         transform: Float4x4.chain(Float4x4.rotateZ(Math.PI / 3), Float4x4.rotateX (0.25), Float4x4.translate([0, 1.5, 0])),
         state: function (standardUniforms) {
             Program.get ("basic").use ();
@@ -118,10 +116,9 @@ let buildScene = function () {
         },
         shape: "cylinder",
         children: false
-    }));
+    }, "cylinder"))
 
-    scene.addChild (Node.new ({
-        name: "ball",
+    .addChild (Node.new ({
         transform: Float4x4.translate([3, 1.5, 0]),
         state: function (standardUniforms) {
             Program.get ("basic").use ();
@@ -129,7 +126,7 @@ let buildScene = function () {
         },
         shape: "icosahedron",
         children: false
-    }));
+    }, "ball"));
 
     Thing.new ({ node: "cylinder", update: function (time) {
         let node = Node.get(this.node);

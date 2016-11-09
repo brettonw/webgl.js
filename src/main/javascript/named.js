@@ -37,6 +37,12 @@ let Named = function (nameRequired) {
         }
     };
 
+    /**
+     *
+     * @param parameters
+     * @param name
+     * @returns {_}
+     */
     _.new = function (parameters, name) {
         // create the object
         let named = Object.create (_);
@@ -56,14 +62,37 @@ let Named = function (nameRequired) {
         return named;
     };
 
+    /**
+     *
+     * @param name
+     * @returns {*}
+     */
     _.get = function (name) {
         return namedIndex[name];
     };
 
+    /**
+     * get the name of this named thing (if it has one).
+     *
+     * @method getName
+     * @return {string} the name of this node, or just "node".
+     */
+    _.getName = function () {
+        return ("name" in this) ? this.name : "node";
+    };
+
+    /**
+     *
+     * @returns {Object}
+     */
     _.getIndex = function () {
         return namedIndex;
     };
 
+    /**
+     *
+     * @param todo
+     */
     _.forEach = function (todo) {
         for (let name in namedIndex) {
             let named = namedIndex[name];

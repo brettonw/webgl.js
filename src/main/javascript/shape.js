@@ -2,6 +2,10 @@ let Shape = function () {
     let _ = Named (NAME_REQUIRED);
 
     _.construct = function (parameters) {
+        LOG (LogLevel.INFO, "Shape: " + this.name);
+
+        let buffers = parameters.buffers ();
+
         let makeBuffer = function (bufferType, source, itemSize) {
             let buffer = context.createBuffer ();
             context.bindBuffer (bufferType, buffer);
@@ -26,24 +30,24 @@ let Shape = function () {
         let HAS_TEXTURE = 2;
         let HAS_INDEX = 4;
         let drawFunctionIndex = 0;
-        if ("position" in parameters) {
-            this.positionBuffer = makeBuffer (context.ARRAY_BUFFER, new Float32Array (parameters.position), 3);
+        if ("position" in buffers) {
+            this.positionBuffer = makeBuffer (context.ARRAY_BUFFER, new Float32Array (buffers.position), 3);
         } else {
             LOG (LogLevel.ERROR, "What you talking about willis?");
         }
 
-        if ("normal" in parameters) {
-            this.normalBuffer = makeBuffer (context.ARRAY_BUFFER, new Float32Array (parameters.normal), 3);
+        if ("normal" in buffers) {
+            this.normalBuffer = makeBuffer (context.ARRAY_BUFFER, new Float32Array (buffers.normal), 3);
             drawFunctionIndex += HAS_NORMAL;
         }
 
-        if ("texture" in parameters) {
-            this.textureBuffer = makeBuffer (context.ARRAY_BUFFER, new Float32Array (parameters.texture), 2);
+        if ("texture" in buffers) {
+            this.textureBuffer = makeBuffer (context.ARRAY_BUFFER, new Float32Array (buffers.texture), 2);
             drawFunctionIndex += HAS_TEXTURE;
         }
 
-        if ("index" in parameters) {
-            this.indexBuffer = makeBuffer (context.ELEMENT_ARRAY_BUFFER, new Uint16Array (parameters.index), 1);
+        if ("index" in buffers) {
+            this.indexBuffer = makeBuffer (context.ELEMENT_ARRAY_BUFFER, new Uint16Array (buffers.index), 1);
             drawFunctionIndex += HAS_INDEX;
         }
 
