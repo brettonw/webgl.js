@@ -1,7 +1,7 @@
 "use strict;"
 
 let scene;
-let standardUniforms = Object.create(null);
+let standardUniforms = Object.create (null);
 
 let currentAngle = 0;
 
@@ -10,7 +10,7 @@ let framingRange;
 
 
 let draw = function (deltaPosition) {
-    Thing.updateAll(new Date ().getTime());
+    Thing.updateAll (new Date ().getTime ());
 
     // set up the projection matrix (earth radius is 1 and we want it to occupy about 75% of the
     // view in the vertical direction - the view is probably wider than that)
@@ -37,7 +37,7 @@ let draw = function (deltaPosition) {
     //console.log ("LOOK AT: " + Float3.str ([0, 1.5, 0]));
     //console.log ("LOOK ALONG: " + Float3.str ([0, 2, 7]));
     currentAngle += deltaPosition[0] * 180;
-    viewMatrix = Float4x4.chain (Float4x4.rotateY(Utility.degreesToRadians(currentAngle)), viewMatrix);
+    viewMatrix = Float4x4.chain (Float4x4.rotateY (Utility.degreesToRadians (currentAngle)), viewMatrix);
 
     standardUniforms.VIEW_MATRIX_PARAMETER = viewMatrix;
     standardUniforms.MODEL_MATRIX_PARAMETER = Float4x4.identity ();
@@ -94,57 +94,58 @@ let buildScene = function () {
         }
     }, "root")
 
-    // just put down the platonic solids...
+        // put down the platonic solids...
         .addChild (Node.new ({
-        name: "moon",
-        transform: Float4x4.chain(Float4x4.rotateXAxisTo([0, 0, -1]), Float4x4.translate([-3, 1.5, 0])),
-        //transform: Float4x4.translate([-3, 1.5, 0]),
-        state: function (standardUniforms) {
-            Program.get ("basic-texture").use ();
-            standardUniforms.TEXTURE_SAMPLER = "moon";
-            standardUniforms.MODEL_COLOR = [1.0, 1.0, 1.0];
-        },
-        shape: "ball",
-        children: false
-    }, "moon"))
+            transform: Float4x4.chain (Float4x4.rotateXAxisTo ([0, 0, -1]), Float4x4.translate ([-3, 1.5, 0])),
+            //transform: Float4x4.translate([-3, 1.5, 0]),
+            state: function (standardUniforms) {
+                Program.get ("basic-texture").use ();
+                standardUniforms.TEXTURE_SAMPLER = "moon";
+                standardUniforms.MODEL_COLOR = [1.0, 1.0, 1.0];
+            },
+            shape: "ball",
+            children: false
+        }))
 
-    .addChild (Node.new ({
-        transform: Float4x4.chain(Float4x4.rotateZ(Math.PI / 3), Float4x4.rotateX (0.25), Float4x4.translate([0, 1.5, 0])),
-        state: function (standardUniforms) {
-            Program.get ("basic").use ();
-            standardUniforms.MODEL_COLOR = [1.0, 0.5, 0.5];
-        },
-        shape: "cylinder",
-        children: false
-    }, "cylinder"))
+        .addChild (Node.new ({
+            transform: Float4x4.chain (Float4x4.rotateZ (Math.PI / 3), Float4x4.rotateX (0.25), Float4x4.translate ([0, 1.5, 0])),
+            state: function (standardUniforms) {
+                Program.get ("basic").use ();
+                standardUniforms.MODEL_COLOR = [1.0, 0.5, 0.5];
+            },
+            shape: "cylinder",
+            children: false
+        }, "cylinder"))
 
-    .addChild (Node.new ({
-        transform: Float4x4.translate([3, 1.5, 0]),
-        state: function (standardUniforms) {
-            Program.get ("basic").use ();
-            standardUniforms.MODEL_COLOR = [1.0, 1.0, 0.25];
-        },
-        shape: "icosahedron",
-        children: false
-    }, "ball"));
+        .addChild (Node.new ({
+            transform: Float4x4.translate ([3, 1.5, 0]),
+            state: function (standardUniforms) {
+                Program.get ("basic").use ();
+                standardUniforms.MODEL_COLOR = [1.0, 1.0, 0.25];
+            },
+            shape: "icosahedron",
+            children: false
+        }));
 
-    Thing.new ({ node: "cylinder", update: function (time) {
-        let node = Node.get(this.node);
-        node.transform = Float4x4.chain(
-            Float4x4.rotateZ(Math.PI / 3),
-            Float4x4.rotateX (0.25),
-            Float4x4.rotateY (Math.PI * time * 0.001),
-            Float4x4.translate([0, 1.5, 0])
-        );
-    }});
+    Thing.new ({
+        node: "cylinder", update: function (time) {
+            let node = Node.get (this.node);
+            node.transform = Float4x4.chain (
+                Float4x4.rotateZ (Math.PI / 3),
+                Float4x4.rotateX (0.25),
+                Float4x4.rotateY (Math.PI * time * 0.001),
+                Float4x4.translate ([0, 1.5, 0])
+            );
+        }
+    });
 
     //LogLevel.set (LogLevel.TRACE);
     draw ([0, 0]);
 };
 
 let onBodyLoad = function () {
-    fovRange = document.getElementById("fovRange");
-    framingRange = document.getElementById("framingRange");
+    fovRange = document.getElementById ("fovRange");
+    framingRange = document.getElementById ("framingRange");
 
     MouseTracker.new ("render-canvas", OnReady.new (null, function (deltaPosition) {
         draw (deltaPosition);
@@ -155,7 +156,7 @@ let onBodyLoad = function () {
     // load the shaders, and build the programs
     LoaderShader.new ("shaders/@.glsl")
         .addVertexShaders ("basic")
-        .addFragmentShaders([ "basic", "basic-texture", "color", "overlay", "rgb", "texture" ])
+        .addFragmentShaders (["basic", "basic-texture", "color", "overlay", "rgb", "texture"])
         .go (null, OnReady.new (null, function (x) {
             Program.new ({}, "basic");
             Program.new ({ vertexShader: "basic" }, "basic-texture");
@@ -165,7 +166,7 @@ let onBodyLoad = function () {
             Program.new ({ vertexShader: "basic" }, "texture");
 
             // load the textures
-            LoaderPath.new ({ type:Texture, path:"textures/@.png"})
+            LoaderPath.new ({ type: Texture, path: "textures/@.png" })
                 .addItems ("moon", { generateMipMap: true })
                 .go (null, OnReady.new (null, function (x) {
                     buildScene ();
