@@ -2,6 +2,8 @@
 // class hierarchy
 
 
+
+
 // default values...
 
 
@@ -73,16 +75,37 @@ let OnReady = function () {
 
     return _;
 } ();
-const NAME_REQUIRED = "NAME_REQUIRED";
-const NAME_GENERATED = "NAME_GENERATED";
-const NAME_OPTIONAL = "NAME_OPTIONAL";
-
-let Named = function (nameRequired) {
-    (nameRequired = (((typeof nameRequired !== "undefined") && (nameRequired != null)) ? nameRequired : NAME_OPTIONAL));
+let ClassBase = function () {
     let _ = Object.create (null);
 
+    /**
+     *
+     * @param parameters
+     * @returns {_}
+     */
+    _.new = function (parameters) {
+        // create the object. this is a bit tricky here, as "this" is referring to a static instance
+        // of the class we are deriving from ("new" probably isn't overloaded)
+        let baseClass = Object.create (this);
+
+        // ensure that we have parameters, then construct the object
+        (parameters = (((typeof parameters !== "undefined") && (parameters != null)) ? parameters : Object.create (null)));
+        baseClass.construct (parameters);
+        return baseClass;
+    };
+
+    return _;
+} ();
+const CLASS_NAME_REQUIRED = "CLASS_NAME_REQUIRED";
+const CLASS_NAME_GENERATED = "CLASS_NAME_GENERATED";
+const CLASS_NAME_OPTIONAL = "CLASS_NAME_OPTIONAL";
+
+let ClassNamed = function (nameRequired) {
+    (nameRequired = (((typeof nameRequired !== "undefined") && (nameRequired != null)) ? nameRequired : CLASS_NAME_OPTIONAL));
+    let _ = Object.create (ClassBase);
+
     // the container for names
-    let namedIndex = Object.create (null);
+    let index = Object.create (null);
 
     // name handling has several cases:
     // 1) it is supplied
@@ -95,7 +118,7 @@ let Named = function (nameRequired) {
         // if the name was supplied, it's all good
         if ((typeof name !== "undefined") && (name != null)) {
             // but make sure it's not already in the index
-            if (!(name in namedIndex)) {
+            if (!(name in index)) {
                 return name;
             }
             throw "Duplicate name (" + name + ")";
@@ -103,11 +126,11 @@ let Named = function (nameRequired) {
 
         // otherwise, we have to decide what to do, based on some construction parameters
         switch (nameRequired) {
-            case NAME_REQUIRED:
+            case CLASS_NAME_REQUIRED:
                 throw "Name is required";
-            case NAME_GENERATED:
+            case CLASS_NAME_GENERATED:
                 return "id" + Utility.padNum(++uniqueNameId, 5);
-            case NAME_OPTIONAL:
+            case CLASS_NAME_OPTIONAL:
                 return null;
         }
     };
@@ -119,22 +142,23 @@ let Named = function (nameRequired) {
      * @returns {_}
      */
     _.new = function (parameters, name) {
-        // create the object
-        let named = Object.create (_);
+        // ensure parameters is a valid object
+        (parameters = (((typeof parameters !== "undefined") && (parameters != null)) ? parameters : Object.create (null)));
 
-        // validate the name, if it's valid, then index the object
-        if ((name = validateName(name)) != null) {
-            named.name = name;
-            namedIndex[name] = named;
+        // validate the name, store a valid one in the parameters
+        if ((name = validateName(name)) != null) parameters.name = name;
+
+        // create the object the normal way. carefully, "this" is the static instance of the class
+        // we are deriving from ("new" probably isn't overloaded)
+        let classNamed = Object.getPrototypeOf(_).new.call (this, parameters);
+
+        // index the object if we have a valid name
+        if (name != null) {
+            classNamed.name = name;
+            index[name] = classNamed;
         }
 
-        // ensure that we have parameters, and the ones we have are correct
-        (parameters = (((typeof parameters !== "undefined") && (parameters != null)) ? parameters : Object.create (null)));
-        if ("validate" in _) _.validate (parameters);
-
-        // construct the object, and then return it
-        named.construct (parameters);
-        return named;
+        return classNamed;
     };
 
     /**
@@ -143,7 +167,7 @@ let Named = function (nameRequired) {
      * @returns {*}
      */
     _.get = function (name) {
-        return namedIndex[name];
+        return index[name];
     };
 
     /**
@@ -161,7 +185,7 @@ let Named = function (nameRequired) {
      * @returns {Object}
      */
     _.getIndex = function () {
-        return namedIndex;
+        return index;
     };
 
     /**
@@ -169,8 +193,8 @@ let Named = function (nameRequired) {
      * @param todo
      */
     _.forEach = function (todo) {
-        for (let name in namedIndex) {
-            let named = namedIndex[name];
+        for (let name in index) {
+            let named = index[name];
             todo (named);
         }
     };
@@ -253,13 +277,14 @@ let MouseTracker = function () {
  * @class Loader
  */
 let Loader = function () {
-    let _ = Object.create (null);
+    let _ = Object.create (ClassBase);
 
     /**
      * the initializer for a loader.
      *
      * @method construct
-     * @param {Object} parameters an object specifying callback parameters (see "new")
+     * @param {Object} parameters an object specifying the scope and callback to call when an item
+     * is finished, and when all items are finished (onFinishedAll, onFinishedItem).
      * @return {Loader}
      */
     _.construct = function (parameters) {
@@ -319,19 +344,6 @@ let Loader = function () {
         }
     };
 
-    /**
-     * static method to create and construct a new Loader.
-     *
-     * @method new
-     * @static
-     * @param {Object} parameters an object specifying the scope and callback to call when an item
-     * is finished, and when all items are finished (onFinishedAll, onFinishedItem).
-     * @return {Loader}
-     */
-    _.new = function (parameters) {
-        return Object.create (_).construct (parameters);
-    };
-
     return _;
 } ();
 /**
@@ -360,7 +372,7 @@ let LoaderPath = function () {
     _.addItems = function (names, parameters) {
         names = Array.isArray(names) ? names : Array(1).fill(names);
         for (let name of names) {
-            let params = Object.assign ({}, parameters, { url:this.path.replace ("@", name) });
+            let params = Object.assign (Object.create (null), parameters, { url:this.path.replace ("@", name) });
             Object.getPrototypeOf(_).addItem.call(this, this.type, name, params);
         }
         return this;
@@ -1305,10 +1317,14 @@ let Float4x4 = function () {
     return _;
 } ();
 let Shader = function () {
-    let _ = Named ();
+    let _ = ClassNamed ();
 
     _.construct = function (parameters) {
-        LogLevel.say (LogLevel.INFO, "Shader: " + this.name);
+        LogLevel.say (LogLevel.INFO, "Shader: " + parameters.name);
+
+        // there must be a type and url
+        if (typeof parameters.type === "undefined") throw "Shader type Required";
+        if (typeof parameters.url === "undefined") throw "Shader URL Required";
 
         let scope = this;
         let request = new XMLHttpRequest();
@@ -1318,7 +1334,7 @@ let Shader = function () {
                 context.shaderSource (shader, request.responseText);
                 context.compileShader (shader);
                 if (!context.getShaderParameter (shader, context.COMPILE_STATUS)) {
-                    LogLevel.say (LogLevel.ERROR, "Shader compilation failed for " + this.name + ":\n" + context.getShaderInfoLog (shader));
+                    LogLevel.say (LogLevel.ERROR, "Shader compilation failed for " + parameters.name + ":\n" + context.getShaderInfoLog (shader));
                 } else {
                     scope.compiledShader = shader;
 
@@ -1333,12 +1349,6 @@ let Shader = function () {
         request.send();
     };
 
-    _.validate = function (parameters) {
-        // there must be a type and url
-        if (typeof parameters.type === "undefined") throw "Shader type Required";
-        if (typeof parameters.url === "undefined") throw "Shader URL Required";
-    };
-
     return _;
 } ();
 /**
@@ -1347,7 +1357,7 @@ let Shader = function () {
  * @class Program
  */
 let Program = function () {
-    let _ = Named (NAME_REQUIRED);
+    let _ = ClassNamed (CLASS_NAME_REQUIRED);
 
     /**
      * the name for the standard POSITION buffer attribute in a shader.
@@ -1380,14 +1390,70 @@ let Program = function () {
      *
      * @method construct
      * @param {Object} parameters shader construction parameters
+     * vertexShader name of the vertex shader to use
+     * fragmentShader name of the fragment shader to use
+     * attributeMapping maps POSITION, NORMAL, and TEXTURE attributes to the
+     * attribute names in the shader. This allows the engine to manage the attributes without
+     * forcing the shader author to use "standard" names for everything. Defaults to:
+     * * POSITION_ATTRIBUTE: "inputPosition"
+     * * NORMAL_ATTRIBUTE: "inputNormal"
+     * * TEXTURE_ATTRIBUTE: "inputTexture"
+     * parameterMapping maps standard parameters to the parameter names in the
+     * shader. This allows the engine to manage setting the standard set of parameters on the shader
+     * without forcing the shader author to use "standard" names. Defaults to:
+     * * MODEL_MATRIX_PARAMETER: "modelMatrix"
+     * * VIEW_MATRIX_PARAMETER: "viewMatrix"
+     * * PROJECTION_MATRIX_PARAMETER: "projectionMatrix"
+     * * NORMAL_MATRIX_PARAMETER: "normalMatrix"
+     * * CAMERA_POSITION: "cameraPosition"
+     * * OUTPUT_ALPHA_PARAMETER: "outputAlpha"
+     * * TEXTURE_SAMPLER: "textureSampler"
+     * * MODEL_COLOR:"modelColor"
+     * * AMBIENT_LIGHT_COLOR: "ambientLightColor"
+     * * AMBIENT_CONTRIBUTION:"ambientContribution"
+     * * LIGHT_DIRECTION: "lightDirection"
+     * * LIGHT_COLOR:"lightColor"
+     * * DIFFUSE_CONTRIBUTION:"diffuseContribution"
+     * * SPECULAR_CONTRIBUTION:"specularContribution"
+     * * SPECULAR_EXPONENT:"specularExponent"
      * @return {Program}
      */
     _.construct = function (parameters) {
-        LogLevel.say (LogLevel.INFO, "Program: " + this.name);
+        LogLevel.say (LogLevel.INFO, "Program: " + parameters.name);
 
         // default value for the shader names
-        parameters.vertexShader = "vertex-" + (parameters.vertexShader = (((typeof parameters.vertexShader !== "undefined") && (parameters.vertexShader != null)) ? parameters.vertexShader : this.name));
-        parameters.fragmentShader = "fragment-" + (parameters.fragmentShader = (((typeof parameters.fragmentShader !== "undefined") && (parameters.fragmentShader != null)) ? parameters.fragmentShader : this.name));
+        parameters.vertexShader = "vertex-" + (parameters.vertexShader = (((typeof parameters.vertexShader !== "undefined") && (parameters.vertexShader != null)) ? parameters.vertexShader : parameters.name));
+        parameters.fragmentShader = "fragment-" + (parameters.fragmentShader = (((typeof parameters.fragmentShader !== "undefined") && (parameters.fragmentShader != null)) ? parameters.fragmentShader : parameters.name));
+
+        // default values for the attribute mapping
+        if (!("attributeMapping" in parameters)) {
+            parameters.attributeMapping = {
+                POSITION_ATTRIBUTE: "inputPosition",
+                NORMAL_ATTRIBUTE: "inputNormal",
+                TEXTURE_ATTRIBUTE: "inputTexture"
+            };
+        }
+
+        // default values for the parameter mapping
+        if (!("parameterMapping" in parameters)) {
+            parameters.parameterMapping = {
+                MODEL_MATRIX_PARAMETER: "modelMatrix",
+                VIEW_MATRIX_PARAMETER: "viewMatrix",
+                PROJECTION_MATRIX_PARAMETER: "projectionMatrix",
+                NORMAL_MATRIX_PARAMETER: "normalMatrix",
+                CAMERA_POSITION: "cameraPosition",
+                OUTPUT_ALPHA_PARAMETER: "outputAlpha",
+                TEXTURE_SAMPLER: "textureSampler",
+                MODEL_COLOR:"modelColor",
+                AMBIENT_LIGHT_COLOR: "ambientLightColor",
+                AMBIENT_CONTRIBUTION:"ambientContribution",
+                LIGHT_DIRECTION: "lightDirection",
+                LIGHT_COLOR:"lightColor",
+                DIFFUSE_CONTRIBUTION:"diffuseContribution",
+                SPECULAR_CONTRIBUTION:"specularContribution",
+                SPECULAR_EXPONENT:"specularExponent"
+            };
+        }
 
         this.currentShape = null;
 
@@ -1560,73 +1626,6 @@ let Program = function () {
         return false;
     };
 
-    /**
-     * static method to create and construct a new Program.
-     *
-     * @method new
-     * @static
-     * @param {string} name name to retrieve this shader
-     * @param {Object} parameters shader construction parameters
-     * vertexShader name of the vertex shader to use
-     * fragmentShader name of the fragment shader to use
-     * attributeMapping maps POSITION, NORMAL, and TEXTURE attributes to the
-     * attribute names in the shader. This allows the engine to manage the attributes without
-     * forcing the shader author to use "standard" names for everything. Defaults to:
-     * * POSITION_ATTRIBUTE: "inputPosition"
-     * * NORMAL_ATTRIBUTE: "inputNormal"
-     * * TEXTURE_ATTRIBUTE: "inputTexture"
-     * parameterMapping maps standard parameters to the parameter names in the
-     * shader. This allows the engine to manage setting the standard set of parameters on the shader
-     * without forcing the shader author to use "standard" names. Defaults to:
-     * * MODEL_MATRIX_PARAMETER: "modelMatrix"
-     * * VIEW_MATRIX_PARAMETER: "viewMatrix"
-     * * PROJECTION_MATRIX_PARAMETER: "projectionMatrix"
-     * * NORMAL_MATRIX_PARAMETER: "normalMatrix"
-     * * CAMERA_POSITION: "cameraPosition"
-     * * OUTPUT_ALPHA_PARAMETER: "outputAlpha"
-     * * TEXTURE_SAMPLER: "textureSampler"
-     * * MODEL_COLOR:"modelColor"
-     * * AMBIENT_LIGHT_COLOR: "ambientLightColor"
-     * * AMBIENT_CONTRIBUTION:"ambientContribution"
-     * * LIGHT_DIRECTION: "lightDirection"
-     * * LIGHT_COLOR:"lightColor"
-     * * DIFFUSE_CONTRIBUTION:"diffuseContribution"
-     * * SPECULAR_CONTRIBUTION:"specularContribution"
-     * * SPECULAR_EXPONENT:"specularExponent"
-     * @return {Program}
-     */
-    _.validate = function (parameters) {
-        // default values for the attribute mapping
-        if (!("attributeMapping" in parameters)) {
-            parameters.attributeMapping = {
-                POSITION_ATTRIBUTE: "inputPosition",
-                NORMAL_ATTRIBUTE: "inputNormal",
-                TEXTURE_ATTRIBUTE: "inputTexture"
-            };
-        }
-
-        // default values for the parameter mapping
-        if (!("parameterMapping" in parameters)) {
-            parameters.parameterMapping = {
-                MODEL_MATRIX_PARAMETER: "modelMatrix",
-                VIEW_MATRIX_PARAMETER: "viewMatrix",
-                PROJECTION_MATRIX_PARAMETER: "projectionMatrix",
-                NORMAL_MATRIX_PARAMETER: "normalMatrix",
-                CAMERA_POSITION: "cameraPosition",
-                OUTPUT_ALPHA_PARAMETER: "outputAlpha",
-                TEXTURE_SAMPLER: "textureSampler",
-                MODEL_COLOR:"modelColor",
-                AMBIENT_LIGHT_COLOR: "ambientLightColor",
-                AMBIENT_CONTRIBUTION:"ambientContribution",
-                LIGHT_DIRECTION: "lightDirection",
-                LIGHT_COLOR:"lightColor",
-                DIFFUSE_CONTRIBUTION:"diffuseContribution",
-                SPECULAR_CONTRIBUTION:"specularContribution",
-                SPECULAR_EXPONENT:"specularExponent"
-            };
-        };
-    };
-
     return _;
 } ();
 
@@ -1789,12 +1788,19 @@ let ProgramAttribute = function () {
     return _;
 } ();
 let Texture = function () {
-    let _ = Named (NAME_REQUIRED);
+    let _ = ClassNamed (CLASS_NAME_REQUIRED);
 
     let afExtension;
 
     _.construct = function (parameters) {
-        LogLevel.say (LogLevel.INFO, "Texture: " + this.name);
+        LogLevel.say (LogLevel.INFO, "Texture: " + parameters.name);
+
+        // make sure anisotropic filtering is defined, and has a reasonable default value
+        (afExtension = (((typeof afExtension !== "undefined") && (afExtension != null)) ? afExtension : function () { return context.getExtension ("EXT_texture_filter_anisotropic") } ()));
+        parameters.anisotropicFiltering = Math.min (context.getParameter(afExtension.MAX_TEXTURE_MAX_ANISOTROPY_EXT), ("anisotropicFiltering" in parameters)? parameters.anisotropicFiltering : 4);
+
+        // there must be a url
+        if (typeof parameters.url === "undefined") throw "Texture URL Required";
 
         let texture = this.texture = context.createTexture();
         let image = new Image();
@@ -1823,15 +1829,6 @@ let Texture = function () {
         image.src = parameters.url;
     };
 
-    _.validate = function (parameters) {
-        // make sure anisotropic filtering is defined, and has a reasonable default value
-        (afExtension = (((typeof afExtension !== "undefined") && (afExtension != null)) ? afExtension : function () { return context.getExtension ("EXT_texture_filter_anisotropic") } ()));
-        parameters.anisotropicFiltering = Math.min (context.getParameter(afExtension.MAX_TEXTURE_MAX_ANISOTROPY_EXT), ("anisotropicFiltering" in parameters)? parameters.anisotropicFiltering : 4);
-
-        // there must be a url
-        if (typeof parameters.url === "undefined") throw "Texture URL Required";
-    };
-
     return _;
 } ();
 /**
@@ -1840,7 +1837,7 @@ let Texture = function () {
  * @class Node
  */
 let Node = function () {
-    let _ = Named (NAME_GENERATED);
+    let _ = ClassNamed (CLASS_NAME_GENERATED);
 
     /**
      * the initializer for a scene graph node.
@@ -1858,6 +1855,8 @@ let Node = function () {
      * @return {Node}
      */
     _.construct = function (parameters) {
+        LogLevel.say (LogLevel.INFO, "Node: " + parameters.name);
+
         // we select the traverse function based on the feature requested for the node. these are
         // the bit flags to indicate the features and the value we accumulate them into. note that
         // some combinations are invalid
@@ -1898,7 +1897,7 @@ let Node = function () {
             LogLevel.say (LogLevel.WARNING, "INVALID TRAVERSE");
             return this;
         };
-        LogLevel.say (LogLevel.TRACE, "Node (" + this.getName () + "): traverse (" + traverseFunctionIndex + ")");
+        LogLevel.say (LogLevel.TRACE, "Node (" + parameters.name + "): traverse (" + traverseFunctionIndex + ")");
         this.traverse = [
             // 0 nothing
             INVALID_TRAVERSE,
@@ -2195,10 +2194,10 @@ let Cloud = function () {
     return _;
 } ();
 let Shape = function () {
-    let _ = Named (NAME_REQUIRED);
+    let _ = ClassNamed (CLASS_NAME_REQUIRED);
 
     _.construct = function (parameters) {
-        LogLevel.say (LogLevel.INFO, "Shape: " + this.name);
+        LogLevel.say (LogLevel.INFO, "Shape: " + parameters.name);
 
         let buffers = parameters.buffers ();
 
@@ -2484,7 +2483,7 @@ let ShapeBuilder = function () {
     return _;
 } ();
 let Primitive = function () {
-    let _ = Object.create(null);
+    let _ = Object.create (null);
 
     _.getShapeBuilder = function () {
     };
@@ -3030,7 +3029,7 @@ let Utility = function () {
      * @return {object}
      */
     _.reverseMap = function (mapping) {
-        let reverseMapping = Object.create(null);
+        let reverseMapping = Object.create (null);
         for (let name in mapping) {
             reverseMapping[mapping[name]] = name;
         }
@@ -3040,9 +3039,11 @@ let Utility = function () {
     return _;
 } ();
 let Thing = function () {
-    let _ = Named (NAME_GENERATED);
+    let _ = ClassNamed (CLASS_NAME_GENERATED);
 
     _.construct = function (parameters) {
+        LogLevel.say (LogLevel.INFO, "Thing: " + parameters.name);
+
         this.node = parameters.node;
         this.update = parameters.update;
     };

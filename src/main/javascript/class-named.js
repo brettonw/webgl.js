@@ -1,13 +1,13 @@
-const NAME_REQUIRED = "NAME_REQUIRED";
-const NAME_GENERATED = "NAME_GENERATED";
-const NAME_OPTIONAL = "NAME_OPTIONAL";
+const CLASS_NAME_REQUIRED = "CLASS_NAME_REQUIRED";
+const CLASS_NAME_GENERATED = "CLASS_NAME_GENERATED";
+const CLASS_NAME_OPTIONAL = "CLASS_NAME_OPTIONAL";
 
-let Named = function (nameRequired) {
-    DEFAULT_VALUE (nameRequired, NAME_OPTIONAL);
-    let _ = Object.create (null);
+let ClassNamed = function (nameRequired) {
+    DEFAULT_VALUE (nameRequired, CLASS_NAME_OPTIONAL);
+    let _ = Object.create (ClassBase);
 
     // the container for names
-    let namedIndex = Object.create (null);
+    let index = OBJ;
 
     // name handling has several cases:
     // 1) it is supplied
@@ -20,7 +20,7 @@ let Named = function (nameRequired) {
         // if the name was supplied, it's all good
         if ((typeof name !== "undefined") && (name != null)) {
             // but make sure it's not already in the index
-            if (!(name in namedIndex)) {
+            if (!(name in index)) {
                 return name;
             }
             throw "Duplicate name (" + name + ")";
@@ -28,11 +28,11 @@ let Named = function (nameRequired) {
 
         // otherwise, we have to decide what to do, based on some construction parameters
         switch (nameRequired) {
-            case NAME_REQUIRED:
+            case CLASS_NAME_REQUIRED:
                 throw "Name is required";
-            case NAME_GENERATED:
+            case CLASS_NAME_GENERATED:
                 return "id" + Utility.padNum(++uniqueNameId, 5);
-            case NAME_OPTIONAL:
+            case CLASS_NAME_OPTIONAL:
                 return null;
         }
     };
@@ -44,22 +44,23 @@ let Named = function (nameRequired) {
      * @returns {_}
      */
     _.new = function (parameters, name) {
-        // create the object
-        let named = Object.create (_);
+        // ensure parameters is a valid object
+        DEFAULT_VALUE (parameters, OBJ);
 
-        // validate the name, if it's valid, then index the object
-        if ((name = validateName(name)) != null) {
-            named.name = name;
-            namedIndex[name] = named;
+        // validate the name, store a valid one in the parameters
+        if ((name = validateName(name)) != null) parameters.name = name;
+
+        // create the object the normal way. carefully, "this" is the static instance of the class
+        // we are deriving from ("new" probably isn't overloaded)
+        let classNamed = SUPER.new.call (this, parameters);
+
+        // index the object if we have a valid name
+        if (name != null) {
+            classNamed.name = name;
+            index[name] = classNamed;
         }
 
-        // ensure that we have parameters, and the ones we have are correct
-        DEFAULT_VALUE (parameters, Object.create (null));
-        if ("validate" in _) _.validate (parameters);
-
-        // construct the object, and then return it
-        named.construct (parameters);
-        return named;
+        return classNamed;
     };
 
     /**
@@ -68,7 +69,7 @@ let Named = function (nameRequired) {
      * @returns {*}
      */
     _.get = function (name) {
-        return namedIndex[name];
+        return index[name];
     };
 
     /**
@@ -86,7 +87,7 @@ let Named = function (nameRequired) {
      * @returns {Object}
      */
     _.getIndex = function () {
-        return namedIndex;
+        return index;
     };
 
     /**
@@ -94,8 +95,8 @@ let Named = function (nameRequired) {
      * @param todo
      */
     _.forEach = function (todo) {
-        for (let name in namedIndex) {
-            let named = namedIndex[name];
+        for (let name in index) {
+            let named = index[name];
             todo (named);
         }
     };

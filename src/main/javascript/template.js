@@ -3,7 +3,7 @@ let Template = function () {
     let _ = Object.create (superclass);
 
     // the container for names
-    let templates = Object.create (null);
+    let templates = OBJ;
 
     _.new = function (name, parameters) {
 

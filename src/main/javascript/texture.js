@@ -1,10 +1,17 @@
 let Texture = function () {
-    let _ = Named (NAME_REQUIRED);
+    let _ = ClassNamed (CLASS_NAME_REQUIRED);
 
     let afExtension;
 
     _.construct  = function (parameters) {
-        LOG(LogLevel.INFO, "Texture: " + this.name);
+        LOG(LogLevel.INFO, "Texture: " + parameters.name);
+
+        // make sure anisotropic filtering is defined, and has a reasonable default value
+        DEFAULT_FUNCTION (afExtension, function () { return context.getExtension ("EXT_texture_filter_anisotropic") });
+        parameters.anisotropicFiltering = Math.min (context.getParameter(afExtension.MAX_TEXTURE_MAX_ANISOTROPY_EXT), ("anisotropicFiltering" in parameters)? parameters.anisotropicFiltering : 4);
+
+        // there must be a url
+        if (typeof parameters.url === "undefined") throw "Texture URL Required";
 
         let texture = this.texture = context.createTexture();
         let image = new Image();
@@ -31,15 +38,6 @@ let Texture = function () {
             }
         };
         image.src = parameters.url;
-    };
-
-    _.validate = function (parameters) {
-        // make sure anisotropic filtering is defined, and has a reasonable default value
-        DEFAULT_FUNCTION (afExtension, function () { return context.getExtension ("EXT_texture_filter_anisotropic") });
-        parameters.anisotropicFiltering = Math.min (context.getParameter(afExtension.MAX_TEXTURE_MAX_ANISOTROPY_EXT), ("anisotropicFiltering" in parameters)? parameters.anisotropicFiltering : 4);
-
-        // there must be a url
-        if (typeof parameters.url === "undefined") throw "Texture URL Required";
     };
 
     return _;

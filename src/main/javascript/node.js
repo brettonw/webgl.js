@@ -4,7 +4,7 @@
  * @class Node
  */
 let Node = function () {
-    let _ = Named (NAME_GENERATED);
+    let _ = ClassNamed (CLASS_NAME_GENERATED);
 
     /**
      * the initializer for a scene graph node.
@@ -22,6 +22,8 @@ let Node = function () {
      * @return {Node}
      */
     _.construct = function (parameters) {
+        LOG (LogLevel.INFO, "Node: " + parameters.name);
+
         // we select the traverse function based on the feature requested for the node. these are
         // the bit flags to indicate the features and the value we accumulate them into. note that
         // some combinations are invalid
@@ -62,7 +64,7 @@ let Node = function () {
             LOG (LogLevel.WARNING, "INVALID TRAVERSE");
             return this;
         };
-        LOG (LogLevel.TRACE, "Node (" + this.getName () + "): traverse (" + traverseFunctionIndex + ")");
+        LOG (LogLevel.TRACE, "Node (" + parameters.name + "): traverse (" + traverseFunctionIndex + ")");
         this.traverse = [
             // 0 nothing
             INVALID_TRAVERSE,

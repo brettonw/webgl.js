@@ -16,6 +16,8 @@
 
 // class hierarchy
 #define SUPER   Object.getPrototypeOf(_)
+#define OBJ  Object.create (null)
+#define CLASS_BASE   Object.create (ClassBase)
 
 // default values...
 #define DEFAULT_VALUE(value, defaultValue) (value = (((typeof value !== "undefined") && (value != null)) ? value : defaultValue))

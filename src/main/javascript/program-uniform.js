@@ -1,5 +1,5 @@
 let ProgramUniform = function () {
-    let _ = Object.create (null);
+    let _ = OBJ;
 
     _.construct = function (program, i) {
         let activeUniform = context.getActiveUniform (program, i);

@@ -12,6 +12,20 @@
             "fors": {},
             "namespaces": {}
         },
+        "src/main/javascript/class-base.js": {
+            "name": "src/main/javascript/class-base.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/main/javascript/class-named.js": {
+            "name": "src/main/javascript/class-named.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
         "src/main/javascript/cloud.js": {
             "name": "src/main/javascript/cloud.js",
             "modules": {},
@@ -70,13 +84,6 @@
             "classes": {
                 "Loader": 1
             },
-            "fors": {},
-            "namespaces": {}
-        },
-        "src/main/javascript/named.js": {
-            "name": "src/main/javascript/named.js",
-            "modules": {},
-            "classes": {},
             "fors": {},
             "namespaces": {}
         },
@@ -281,6 +288,87 @@
                 },
                 {
                     "name": "filmSize",
+                    "description": ""
+                }
+            ],
+            "class": "Cloud"
+        },
+        {
+            "file": "src/main/javascript/class-base.js",
+            "line": 4,
+            "params": [
+                {
+                    "name": "parameters",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "_"
+            },
+            "class": "Cloud"
+        },
+        {
+            "file": "src/main/javascript/class-named.js",
+            "line": 40,
+            "params": [
+                {
+                    "name": "parameters",
+                    "description": ""
+                },
+                {
+                    "name": "name",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "_"
+            },
+            "class": "Cloud"
+        },
+        {
+            "file": "src/main/javascript/class-named.js",
+            "line": 66,
+            "params": [
+                {
+                    "name": "name",
+                    "description": ""
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "*"
+            },
+            "class": "Cloud"
+        },
+        {
+            "file": "src/main/javascript/class-named.js",
+            "line": 75,
+            "description": "get the name of this named thing (if it has one).",
+            "itemtype": "method",
+            "name": "getName",
+            "return": {
+                "description": "the name of this node, or just \"node\".",
+                "type": "String"
+            },
+            "class": "Cloud"
+        },
+        {
+            "file": "src/main/javascript/class-named.js",
+            "line": 85,
+            "return": {
+                "description": "",
+                "type": "Object"
+            },
+            "class": "Cloud"
+        },
+        {
+            "file": "src/main/javascript/class-named.js",
+            "line": 93,
+            "params": [
+                {
+                    "name": "todo",
                     "description": ""
                 }
             ],
@@ -995,7 +1083,7 @@
             "params": [
                 {
                     "name": "parameters",
-                    "description": "an object specifying callback parameters (see \"new\")",
+                    "description": "an object specifying the scope and callback to call when an item\nis finished, and when all items are finished (onFinishedAll, onFinishedItem).",
                     "type": "Object"
                 }
             ],
@@ -1007,7 +1095,7 @@
         },
         {
             "file": "src/main/javascript/loader.js",
-            "line": 42,
+            "line": 43,
             "description": "start the fetch process for all the loadable items.",
             "itemtype": "method",
             "name": "go",
@@ -1023,98 +1111,12 @@
         },
         {
             "file": "src/main/javascript/loader.js",
-            "line": 56,
+            "line": 57,
             "description": "continue the fetch process for all the loadable items.",
             "itemtype": "method",
             "name": "next",
             "chainable": 1,
             "class": "Loader"
-        },
-        {
-            "file": "src/main/javascript/loader.js",
-            "line": 73,
-            "description": "static method to create and construct a new Loader.",
-            "itemtype": "method",
-            "name": "new",
-            "static": 1,
-            "params": [
-                {
-                    "name": "parameters",
-                    "description": "an object specifying the scope and callback to call when an item\nis finished, and when all items are finished (onFinishedAll, onFinishedItem).",
-                    "type": "Object"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "Loader"
-            },
-            "class": "Loader"
-        },
-        {
-            "file": "src/main/javascript/named.js",
-            "line": 40,
-            "params": [
-                {
-                    "name": "parameters",
-                    "description": ""
-                },
-                {
-                    "name": "name",
-                    "description": ""
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "_"
-            },
-            "class": "Node"
-        },
-        {
-            "file": "src/main/javascript/named.js",
-            "line": 65,
-            "params": [
-                {
-                    "name": "name",
-                    "description": ""
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "*"
-            },
-            "class": "Node"
-        },
-        {
-            "file": "src/main/javascript/named.js",
-            "line": 74,
-            "description": "get the name of this named thing (if it has one).",
-            "itemtype": "method",
-            "name": "getName",
-            "return": {
-                "description": "the name of this node, or just \"node\".",
-                "type": "String"
-            },
-            "class": "Node"
-        },
-        {
-            "file": "src/main/javascript/named.js",
-            "line": 84,
-            "return": {
-                "description": "",
-                "type": "Object"
-            },
-            "class": "Node"
-        },
-        {
-            "file": "src/main/javascript/named.js",
-            "line": 92,
-            "params": [
-                {
-                    "name": "todo",
-                    "description": ""
-                }
-            ],
-            "class": "Node"
         },
         {
             "file": "src/main/javascript/node.js",
@@ -1137,7 +1139,7 @@
         },
         {
             "file": "src/main/javascript/node.js",
-            "line": 220,
+            "line": 222,
             "description": "add a child node (only applies to non-leaf nodes).",
             "itemtype": "method",
             "name": "addChild",
@@ -1153,7 +1155,7 @@
         },
         {
             "file": "src/main/javascript/node.js",
-            "line": 237,
+            "line": 239,
             "description": "draw this node's contents.",
             "itemtype": "method",
             "name": "draw",
@@ -1168,7 +1170,7 @@
         },
         {
             "file": "src/main/javascript/node.js",
-            "line": 250,
+            "line": 252,
             "description": "traverse this node and its contents. this function is a place-holder that is replaced by the\nactual function called depending on the parameters passed during construction.",
             "itemtype": "method",
             "name": "traverse",
@@ -1184,7 +1186,7 @@
         },
         {
             "file": "src/main/javascript/node.js",
-            "line": 263,
+            "line": 265,
             "class": "Node"
         },
         {
@@ -1196,7 +1198,7 @@
             "params": [
                 {
                     "name": "parameters",
-                    "description": "shader construction parameters",
+                    "description": "shader construction parameters\nvertexShader name of the vertex shader to use\nfragmentShader name of the fragment shader to use\nattributeMapping maps POSITION, NORMAL, and TEXTURE attributes to the\nattribute names in the shader. This allows the engine to manage the attributes without\nforcing the shader author to use \"standard\" names for everything. Defaults to:\n* POSITION_ATTRIBUTE: \"inputPosition\"\n* NORMAL_ATTRIBUTE: \"inputNormal\"\n* TEXTURE_ATTRIBUTE: \"inputTexture\"\nparameterMapping maps standard parameters to the parameter names in the\nshader. This allows the engine to manage setting the standard set of parameters on the shader\nwithout forcing the shader author to use \"standard\" names. Defaults to:\n* MODEL_MATRIX_PARAMETER: \"modelMatrix\"\n* VIEW_MATRIX_PARAMETER: \"viewMatrix\"\n* PROJECTION_MATRIX_PARAMETER: \"projectionMatrix\"\n* NORMAL_MATRIX_PARAMETER: \"normalMatrix\"\n* CAMERA_POSITION: \"cameraPosition\"\n* OUTPUT_ALPHA_PARAMETER: \"outputAlpha\"\n* TEXTURE_SAMPLER: \"textureSampler\"\n* MODEL_COLOR:\"modelColor\"\n* AMBIENT_LIGHT_COLOR: \"ambientLightColor\"\n* AMBIENT_CONTRIBUTION:\"ambientContribution\"\n* LIGHT_DIRECTION: \"lightDirection\"\n* LIGHT_COLOR:\"lightColor\"\n* DIFFUSE_CONTRIBUTION:\"diffuseContribution\"\n* SPECULAR_CONTRIBUTION:\"specularContribution\"\n* SPECULAR_EXPONENT:\"specularExponent\"",
                     "type": "Object"
                 }
             ],
@@ -1208,7 +1210,7 @@
         },
         {
             "file": "src/main/javascript/program.js",
-            "line": 103,
+            "line": 159,
             "description": "set the standard shader parameters in one call.",
             "itemtype": "method",
             "name": "setStandardUniforms",
@@ -1224,7 +1226,7 @@
         },
         {
             "file": "src/main/javascript/program.js",
-            "line": 130,
+            "line": 186,
             "description": "bind the POSITION attribute to the given buffer.",
             "itemtype": "method",
             "name": "bindPositionAttribute",
@@ -1240,7 +1242,7 @@
         },
         {
             "file": "src/main/javascript/program.js",
-            "line": 141,
+            "line": 197,
             "description": "bind the NORMAL attribute to the given buffer.",
             "itemtype": "method",
             "name": "bindNormalAttribute",
@@ -1256,7 +1258,7 @@
         },
         {
             "file": "src/main/javascript/program.js",
-            "line": 152,
+            "line": 208,
             "description": "bind the TEXTURE attribute to the given buffer.",
             "itemtype": "method",
             "name": "bindTextureAttribute",
@@ -1272,7 +1274,7 @@
         },
         {
             "file": "src/main/javascript/program.js",
-            "line": 164,
+            "line": 220,
             "description": "disable the enabled buffers.",
             "itemtype": "method",
             "name": "unbindAttributes",
@@ -1284,7 +1286,7 @@
         },
         {
             "file": "src/main/javascript/program.js",
-            "line": 176,
+            "line": 232,
             "description": "fetch the shader currently in use.",
             "itemtype": "method",
             "name": "getCurrentProgram",
@@ -1297,36 +1299,11 @@
         },
         {
             "file": "src/main/javascript/program.js",
-            "line": 187,
+            "line": 243,
             "description": "set this as the current shader in the rendering context.",
             "itemtype": "method",
             "name": "use",
             "chainable": 1,
-            "class": "Program"
-        },
-        {
-            "file": "src/main/javascript/program.js",
-            "line": 220,
-            "description": "static method to create and construct a new Program.",
-            "itemtype": "method",
-            "name": "new",
-            "static": 1,
-            "params": [
-                {
-                    "name": "name",
-                    "description": "name to retrieve this shader",
-                    "type": "String"
-                },
-                {
-                    "name": "parameters",
-                    "description": "shader construction parameters\nvertexShader name of the vertex shader to use\nfragmentShader name of the fragment shader to use\nattributeMapping maps POSITION, NORMAL, and TEXTURE attributes to the\nattribute names in the shader. This allows the engine to manage the attributes without\nforcing the shader author to use \"standard\" names for everything. Defaults to:\n* POSITION_ATTRIBUTE: \"inputPosition\"\n* NORMAL_ATTRIBUTE: \"inputNormal\"\n* TEXTURE_ATTRIBUTE: \"inputTexture\"\nparameterMapping maps standard parameters to the parameter names in the\nshader. This allows the engine to manage setting the standard set of parameters on the shader\nwithout forcing the shader author to use \"standard\" names. Defaults to:\n* MODEL_MATRIX_PARAMETER: \"modelMatrix\"\n* VIEW_MATRIX_PARAMETER: \"viewMatrix\"\n* PROJECTION_MATRIX_PARAMETER: \"projectionMatrix\"\n* NORMAL_MATRIX_PARAMETER: \"normalMatrix\"\n* CAMERA_POSITION: \"cameraPosition\"\n* OUTPUT_ALPHA_PARAMETER: \"outputAlpha\"\n* TEXTURE_SAMPLER: \"textureSampler\"\n* MODEL_COLOR:\"modelColor\"\n* AMBIENT_LIGHT_COLOR: \"ambientLightColor\"\n* AMBIENT_CONTRIBUTION:\"ambientContribution\"\n* LIGHT_DIRECTION: \"lightDirection\"\n* LIGHT_COLOR:\"lightColor\"\n* DIFFUSE_CONTRIBUTION:\"diffuseContribution\"\n* SPECULAR_CONTRIBUTION:\"specularContribution\"\n* SPECULAR_EXPONENT:\"specularExponent\"",
-                    "type": "Object"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "Program"
-            },
             "class": "Program"
         },
         {
@@ -1600,6 +1577,22 @@
     "warnings": [
         {
             "message": "replacing incorrect tag: returns with return",
+            "line": " src/main/javascript/class-base.js:4"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " src/main/javascript/class-named.js:40"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " src/main/javascript/class-named.js:66"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " src/main/javascript/class-named.js:85"
+        },
+        {
+            "message": "replacing incorrect tag: returns with return",
             "line": " src/main/javascript/float4x4.js:188"
         },
         {
@@ -1612,23 +1605,31 @@
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src/main/javascript/named.js:40"
-        },
-        {
-            "message": "replacing incorrect tag: returns with return",
-            "line": " src/main/javascript/named.js:65"
-        },
-        {
-            "message": "replacing incorrect tag: returns with return",
-            "line": " src/main/javascript/named.js:84"
-        },
-        {
-            "message": "replacing incorrect tag: returns with return",
             "line": " src/main/javascript/utility.js:117"
         },
         {
             "message": "Missing item type",
             "line": " src/main/javascript/camera.js:18"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src/main/javascript/class-base.js:4"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src/main/javascript/class-named.js:40"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src/main/javascript/class-named.js:66"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src/main/javascript/class-named.js:85"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src/main/javascript/class-named.js:93"
         },
         {
             "message": "Missing item type",
@@ -1764,23 +1765,7 @@
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/named.js:40"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src/main/javascript/named.js:65"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src/main/javascript/named.js:84"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src/main/javascript/named.js:92"
-        },
-        {
-            "message": "Missing item type",
-            "line": " src/main/javascript/node.js:263"
+            "line": " src/main/javascript/node.js:265"
         }
     ]
 }

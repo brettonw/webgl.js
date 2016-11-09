@@ -1,5 +1,5 @@
 let Primitive = function () {
-    let _ = Object.create(null);
+    let _ = OBJ;
 
     _.getShapeBuilder = function () {
     };

@@ -4,7 +4,7 @@
  * @class FloatNxN
  */
 let FloatNxN = function (dim) {
-    let _ = Object.create (null);
+    let _ = OBJ;
     let _FloatN = FloatN (dim);
     let size = dim * dim;
 

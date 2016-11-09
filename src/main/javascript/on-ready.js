@@ -1,5 +1,5 @@
 let OnReady = function () {
-    let _ = Object.create (null);
+    let _ = OBJ;
 
     _.construct = function (scope, callback) {
         this.scope = scope;

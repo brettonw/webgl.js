@@ -4,13 +4,14 @@
  * @class Loader
  */
 let Loader = function () {
-    let _ = Object.create (null);
+    let _ = CLASS_BASE;
 
     /**
      * the initializer for a loader.
      *
      * @method construct
-     * @param {Object} parameters an object specifying callback parameters (see "new")
+     * @param {Object} parameters an object specifying the scope and callback to call when an item
+     * is finished, and when all items are finished (onFinishedAll, onFinishedItem).
      * @return {Loader}
      */
     _.construct = function (parameters) {
@@ -68,19 +69,6 @@ let Loader = function () {
             // all done, inform our waiting handler
             this.onFinishedAll.notify (this);
         }
-    };
-
-    /**
-     * static method to create and construct a new Loader.
-     *
-     * @method new
-     * @static
-     * @param {Object} parameters an object specifying the scope and callback to call when an item
-     * is finished, and when all items are finished (onFinishedAll, onFinishedItem).
-     * @return {Loader}
-     */
-    _.new = function (parameters) {
-        return Object.create (_).construct (parameters);
     };
 
     return _;

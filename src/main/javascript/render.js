@@ -6,7 +6,7 @@ let context;
  * @class Render
  */
 let Render = function () {
-    let _ = Object.create (null);
+    let _ = OBJ;
 
     /**
      * The initializer for a rendering context.

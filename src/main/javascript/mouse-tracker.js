@@ -1,7 +1,7 @@
 "use strict;"
 
 let MouseTracker = function () {
-    let _ = Object.create (null);
+    let _ = OBJ;
 
     let mouseDownPosition;
     let bound;

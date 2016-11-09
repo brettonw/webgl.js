@@ -1,5 +1,5 @@
 let LogLevel = function () {
-    let _ = Object.create (null);
+    let _ = OBJ;
 
     _.TRACE = 0;
     _.INFO = 1;

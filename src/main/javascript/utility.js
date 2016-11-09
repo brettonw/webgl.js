@@ -4,7 +4,7 @@
  * @class Utility
  */
 let Utility = function () {
-    let _ = Object.create (null);
+    let _ = OBJ;
 
     const TWO_PI = Math.PI * 2.0;
 
@@ -163,7 +163,7 @@ let Utility = function () {
      * @return {object}
      */
     _.reverseMap = function (mapping) {
-        let reverseMapping = Object.create(null);
+        let reverseMapping = OBJ;
         for (let name in mapping) {
             reverseMapping[mapping[name]] = name;
         }

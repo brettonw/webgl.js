@@ -4,7 +4,7 @@
  * @class Program
  */
 let Program = function () {
-    let _ = Named (NAME_REQUIRED);
+    let _ = ClassNamed (CLASS_NAME_REQUIRED);
 
     /**
      * the name for the standard POSITION buffer attribute in a shader.
@@ -37,14 +37,70 @@ let Program = function () {
      *
      * @method construct
      * @param {Object} parameters shader construction parameters
+     * vertexShader name of the vertex shader to use
+     * fragmentShader name of the fragment shader to use
+     * attributeMapping maps POSITION, NORMAL, and TEXTURE attributes to the
+     * attribute names in the shader. This allows the engine to manage the attributes without
+     * forcing the shader author to use "standard" names for everything. Defaults to:
+     * * POSITION_ATTRIBUTE: "inputPosition"
+     * * NORMAL_ATTRIBUTE: "inputNormal"
+     * * TEXTURE_ATTRIBUTE: "inputTexture"
+     * parameterMapping maps standard parameters to the parameter names in the
+     * shader. This allows the engine to manage setting the standard set of parameters on the shader
+     * without forcing the shader author to use "standard" names. Defaults to:
+     * * MODEL_MATRIX_PARAMETER: "modelMatrix"
+     * * VIEW_MATRIX_PARAMETER: "viewMatrix"
+     * * PROJECTION_MATRIX_PARAMETER: "projectionMatrix"
+     * * NORMAL_MATRIX_PARAMETER: "normalMatrix"
+     * * CAMERA_POSITION: "cameraPosition"
+     * * OUTPUT_ALPHA_PARAMETER: "outputAlpha"
+     * * TEXTURE_SAMPLER: "textureSampler"
+     * * MODEL_COLOR:"modelColor"
+     * * AMBIENT_LIGHT_COLOR: "ambientLightColor"
+     * * AMBIENT_CONTRIBUTION:"ambientContribution"
+     * * LIGHT_DIRECTION: "lightDirection"
+     * * LIGHT_COLOR:"lightColor"
+     * * DIFFUSE_CONTRIBUTION:"diffuseContribution"
+     * * SPECULAR_CONTRIBUTION:"specularContribution"
+     * * SPECULAR_EXPONENT:"specularExponent"
      * @return {Program}
      */
     _.construct = function (parameters) {
-        LOG (LogLevel.INFO, "Program: " + this.name);
+        LOG (LogLevel.INFO, "Program: " + parameters.name);
 
         // default value for the shader names
-        parameters.vertexShader = "vertex-" + DEFAULT_VALUE(parameters.vertexShader, this.name);
-        parameters.fragmentShader = "fragment-" + DEFAULT_VALUE(parameters.fragmentShader, this.name);
+        parameters.vertexShader = "vertex-" + DEFAULT_VALUE(parameters.vertexShader, parameters.name);
+        parameters.fragmentShader = "fragment-" + DEFAULT_VALUE(parameters.fragmentShader, parameters.name);
+
+        // default values for the attribute mapping
+        if (!("attributeMapping" in parameters)) {
+            parameters.attributeMapping = {
+                POSITION_ATTRIBUTE: "inputPosition",
+                NORMAL_ATTRIBUTE: "inputNormal",
+                TEXTURE_ATTRIBUTE: "inputTexture"
+            };
+        }
+
+        // default values for the parameter mapping
+        if (!("parameterMapping" in parameters)) {
+            parameters.parameterMapping = {
+                MODEL_MATRIX_PARAMETER: "modelMatrix",
+                VIEW_MATRIX_PARAMETER: "viewMatrix",
+                PROJECTION_MATRIX_PARAMETER: "projectionMatrix",
+                NORMAL_MATRIX_PARAMETER: "normalMatrix",
+                CAMERA_POSITION: "cameraPosition",
+                OUTPUT_ALPHA_PARAMETER: "outputAlpha",
+                TEXTURE_SAMPLER: "textureSampler",
+                MODEL_COLOR:"modelColor",
+                AMBIENT_LIGHT_COLOR: "ambientLightColor",
+                AMBIENT_CONTRIBUTION:"ambientContribution",
+                LIGHT_DIRECTION: "lightDirection",
+                LIGHT_COLOR:"lightColor",
+                DIFFUSE_CONTRIBUTION:"diffuseContribution",
+                SPECULAR_CONTRIBUTION:"specularContribution",
+                SPECULAR_EXPONENT:"specularExponent"
+            };
+        }
 
         this.currentShape = null;
 
@@ -72,7 +128,7 @@ let Program = function () {
         // the ones we know about
         let parameterMapping = parameters.parameterMapping;
         let reverseParameterMapping = Utility.reverseMap (parameterMapping);
-        let standardParameterMapping = this.standardParameterMapping = Object.create (null);
+        let standardParameterMapping = this.standardParameterMapping = OBJ;
         for (let i = 0, end = context.getProgramParameter (program, context.ACTIVE_UNIFORMS); i < end; i++) {
             let programUniform = ProgramUniform.new (program, i);
             let programUniformName = programUniform.name;
@@ -90,7 +146,7 @@ let Program = function () {
 
         // loop over the found active attributes, and map the ones we know about
         let reverseAttributeMapping = Utility.reverseMap (parameters.attributeMapping);
-        let attributes = this.attributes = Object.create (null);
+        let attributes = this.attributes = OBJ;
         for (let i = 0, end = context.getProgramParameter (program, context.ACTIVE_ATTRIBUTES); i < end; i++) {
             let activeAttribute = context.getActiveAttrib (program, i);
             let activeAttributeName = activeAttribute.name;
@@ -215,73 +271,6 @@ let Program = function () {
             return true;
         }
         return false;
-    };
-
-    /**
-     * static method to create and construct a new Program.
-     *
-     * @method new
-     * @static
-     * @param {string} name name to retrieve this shader
-     * @param {Object} parameters shader construction parameters
-     * vertexShader name of the vertex shader to use
-     * fragmentShader name of the fragment shader to use
-     * attributeMapping maps POSITION, NORMAL, and TEXTURE attributes to the
-     * attribute names in the shader. This allows the engine to manage the attributes without
-     * forcing the shader author to use "standard" names for everything. Defaults to:
-     * * POSITION_ATTRIBUTE: "inputPosition"
-     * * NORMAL_ATTRIBUTE: "inputNormal"
-     * * TEXTURE_ATTRIBUTE: "inputTexture"
-     * parameterMapping maps standard parameters to the parameter names in the
-     * shader. This allows the engine to manage setting the standard set of parameters on the shader
-     * without forcing the shader author to use "standard" names. Defaults to:
-     * * MODEL_MATRIX_PARAMETER: "modelMatrix"
-     * * VIEW_MATRIX_PARAMETER: "viewMatrix"
-     * * PROJECTION_MATRIX_PARAMETER: "projectionMatrix"
-     * * NORMAL_MATRIX_PARAMETER: "normalMatrix"
-     * * CAMERA_POSITION: "cameraPosition"
-     * * OUTPUT_ALPHA_PARAMETER: "outputAlpha"
-     * * TEXTURE_SAMPLER: "textureSampler"
-     * * MODEL_COLOR:"modelColor"
-     * * AMBIENT_LIGHT_COLOR: "ambientLightColor"
-     * * AMBIENT_CONTRIBUTION:"ambientContribution"
-     * * LIGHT_DIRECTION: "lightDirection"
-     * * LIGHT_COLOR:"lightColor"
-     * * DIFFUSE_CONTRIBUTION:"diffuseContribution"
-     * * SPECULAR_CONTRIBUTION:"specularContribution"
-     * * SPECULAR_EXPONENT:"specularExponent"
-     * @return {Program}
-     */
-    _.validate = function (parameters) {
-        // default values for the attribute mapping
-        if (!("attributeMapping" in parameters)) {
-            parameters.attributeMapping = {
-                POSITION_ATTRIBUTE: "inputPosition",
-                NORMAL_ATTRIBUTE: "inputNormal",
-                TEXTURE_ATTRIBUTE: "inputTexture"
-            };
-        }
-
-        // default values for the parameter mapping
-        if (!("parameterMapping" in parameters)) {
-            parameters.parameterMapping = {
-                MODEL_MATRIX_PARAMETER: "modelMatrix",
-                VIEW_MATRIX_PARAMETER: "viewMatrix",
-                PROJECTION_MATRIX_PARAMETER: "projectionMatrix",
-                NORMAL_MATRIX_PARAMETER: "normalMatrix",
-                CAMERA_POSITION: "cameraPosition",
-                OUTPUT_ALPHA_PARAMETER: "outputAlpha",
-                TEXTURE_SAMPLER: "textureSampler",
-                MODEL_COLOR:"modelColor",
-                AMBIENT_LIGHT_COLOR: "ambientLightColor",
-                AMBIENT_CONTRIBUTION:"ambientContribution",
-                LIGHT_DIRECTION: "lightDirection",
-                LIGHT_COLOR:"lightColor",
-                DIFFUSE_CONTRIBUTION:"diffuseContribution",
-                SPECULAR_CONTRIBUTION:"specularContribution",
-                SPECULAR_EXPONENT:"specularExponent"
-            };
-        };
     };
 
     return _;

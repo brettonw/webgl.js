@@ -1,9 +1,9 @@
 let ShapeBuilder = function () {
-    let _ = Object.create (null);
+    let _ = OBJ;
 
     _.construct = function (precision) {
         this.precision = DEFAULT_VALUE(precision, 7);
-        this.vertexIndex = Object.create (null);
+        this.vertexIndex = OBJ;
         this.vertices = [];
         this.faces = [];
         this.normals = [];

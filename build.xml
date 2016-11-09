@@ -35,7 +35,8 @@
             <fileset dir="${source-dir}" includes="macros.js"/>
             <fileset dir="${source-dir}" includes="log-level.js"/>
             <fileset dir="${source-dir}" includes="on-ready.js"/>
-            <fileset dir="${source-dir}" includes="named.js"/>
+            <fileset dir="${source-dir}" includes="class-base.js"/>
+            <fileset dir="${source-dir}" includes="class-named.js"/>
             <fileset dir="${source-dir}" includes="mouse-tracker.js"/>
             <fileset dir="${source-dir}" includes="loader.js" />
             <fileset dir="${source-dir}" includes="loader-path.js" />

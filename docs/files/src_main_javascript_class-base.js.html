@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>src/main/javascript/named.js - WebGL</title>
+    <title>src/main/javascript/class-base.js - WebGL</title>
     <link rel="stylesheet" href="">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -80,115 +80,32 @@
                 <div id="docs-main">
                     <div class="content">
 <div class="page-header">
-    <h1>src/main/javascript/named.js <small>File</small></h1>
+    <h1>src/main/javascript/class-base.js <small>File</small></h1>
 </div>
 
 <div class="file">
     <pre class="prettyprint linenums">
-const NAME_REQUIRED = &quot;NAME_REQUIRED&quot;;
-const NAME_GENERATED = &quot;NAME_GENERATED&quot;;
-const NAME_OPTIONAL = &quot;NAME_OPTIONAL&quot;;
-
-let Named = function (nameRequired) {
-    DEFAULT_VALUE (nameRequired, NAME_OPTIONAL);
-    let _ = Object.create (null);
-
-    // the container for names
-    let namedIndex = Object.create (null);
-
-    // name handling has several cases:
-    // 1) it is supplied
-    // 2) it is not supplied, but is auto-generated
-    // 3) it is not supplied, and that is ok
-    // 4) it is not supplied and that is an error
-    // so a flag is needed indicating how to handle a name that is not present
-    let uniqueNameId = 0;
-    let validateName = function (name) {
-        // if the name was supplied, it&#x27;s all good
-        if ((typeof name !== &quot;undefined&quot;) &amp;&amp; (name != null)) {
-            // but make sure it&#x27;s not already in the index
-            if (!(name in namedIndex)) {
-                return name;
-            }
-            throw &quot;Duplicate name (&quot; + name + &quot;)&quot;;
-        }
-
-        // otherwise, we have to decide what to do, based on some construction parameters
-        switch (nameRequired) {
-            case NAME_REQUIRED:
-                throw &quot;Name is required&quot;;
-            case NAME_GENERATED:
-                return &quot;id&quot; + Utility.padNum(++uniqueNameId, 5);
-            case NAME_OPTIONAL:
-                return null;
-        }
-    };
+let ClassBase = function () {
+    let _ = OBJ;
 
     /**
      *
      * @param parameters
-     * @param name
      * @returns {_}
      */
-    _.new = function (parameters, name) {
-        // create the object
-        let named = Object.create (_);
+    _.new = function (parameters) {
+        // create the object. this is a bit tricky here, as &quot;this&quot; is referring to a static instance
+        // of the class we are deriving from (&quot;new&quot; probably isn&#x27;t overloaded)
+        let baseClass = Object.create (this);
 
-        // validate the name, if it&#x27;s valid, then index the object
-        if ((name = validateName(name)) != null) {
-            named.name = name;
-            namedIndex[name] = named;
-        }
-
-        // ensure that we have parameters, and the ones we have are correct
-        DEFAULT_VALUE (parameters, Object.create (null));
-        if (&quot;validate&quot; in _) _.validate (parameters);
-
-        // construct the object, and then return it
-        named.construct (parameters);
-        return named;
-    };
-
-    /**
-     *
-     * @param name
-     * @returns {*}
-     */
-    _.get = function (name) {
-        return namedIndex[name];
-    };
-
-    /**
-     * get the name of this named thing (if it has one).
-     *
-     * @method getName
-     * @return {string} the name of this node, or just &quot;node&quot;.
-     */
-    _.getName = function () {
-        return (&quot;name&quot; in this) ? this.name : &quot;node&quot;;
-    };
-
-    /**
-     *
-     * @returns {Object}
-     */
-    _.getIndex = function () {
-        return namedIndex;
-    };
-
-    /**
-     *
-     * @param todo
-     */
-    _.forEach = function (todo) {
-        for (let name in namedIndex) {
-            let named = namedIndex[name];
-            todo (named);
-        }
+        // ensure that we have parameters, then construct the object
+        DEFAULT_VALUE (parameters, OBJ);
+        baseClass.construct (parameters);
+        return baseClass;
     };
 
     return _;
-};
+} ();
 
     </pre>
 </div>

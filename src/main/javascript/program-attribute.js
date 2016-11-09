@@ -1,5 +1,5 @@
 let ProgramAttribute = function () {
-    let _ = Object.create (null);
+    let _ = OBJ;
 
     _.construct = function (program, activeAttribute) {
         this.name = activeAttribute.name;

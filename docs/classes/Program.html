@@ -117,7 +117,6 @@
 			<strong>Static Methods</strong>
 			<ul>
 				<li><a href="#method-getCurrentProgram"><span class="im">Program.getCurrentProgram</span>()</a></li>
-				<li><a href="#method-new"><span class="im">Program.new</span>(<span class="ia">name</span><span class="ia">parameters</span>)</a></li>
 			</ul>
 		</li>
 	</ul>
@@ -151,7 +150,7 @@
 	<div class="meta">
 				<p>
 				Defined in
-		<a href="../files/src_main_javascript_program.js.html#l141"><code>src&#x2F;main&#x2F;javascript&#x2F;program.js:141</code></a>
+		<a href="../files/src_main_javascript_program.js.html#l197"><code>src&#x2F;main&#x2F;javascript&#x2F;program.js:197</code></a>
 		</p>
 
 
@@ -201,7 +200,7 @@
 	<div class="meta">
 				<p>
 				Defined in
-		<a href="../files/src_main_javascript_program.js.html#l130"><code>src&#x2F;main&#x2F;javascript&#x2F;program.js:130</code></a>
+		<a href="../files/src_main_javascript_program.js.html#l186"><code>src&#x2F;main&#x2F;javascript&#x2F;program.js:186</code></a>
 		</p>
 
 
@@ -251,7 +250,7 @@
 	<div class="meta">
 				<p>
 				Defined in
-		<a href="../files/src_main_javascript_program.js.html#l152"><code>src&#x2F;main&#x2F;javascript&#x2F;program.js:152</code></a>
+		<a href="../files/src_main_javascript_program.js.html#l208"><code>src&#x2F;main&#x2F;javascript&#x2F;program.js:208</code></a>
 		</p>
 
 
@@ -322,7 +321,35 @@
 						<span class="type">Object</span>
 
 
-					<div class="param-description"><p>shader construction parameters</p>
+					<div class="param-description"><p>shader construction parameters
+vertexShader name of the vertex shader to use
+fragmentShader name of the fragment shader to use
+attributeMapping maps POSITION, NORMAL, and TEXTURE attributes to the
+attribute names in the shader. This allows the engine to manage the attributes without
+forcing the shader author to use "standard" names for everything. Defaults to:</p>
+<ul>
+<li>POSITION_ATTRIBUTE: "inputPosition"</li>
+<li>NORMAL_ATTRIBUTE: "inputNormal"</li>
+<li>TEXTURE_ATTRIBUTE: "inputTexture"
+parameterMapping maps standard parameters to the parameter names in the
+shader. This allows the engine to manage setting the standard set of parameters on the shader
+without forcing the shader author to use "standard" names. Defaults to:</li>
+<li>MODEL_MATRIX_PARAMETER: "modelMatrix"</li>
+<li>VIEW_MATRIX_PARAMETER: "viewMatrix"</li>
+<li>PROJECTION_MATRIX_PARAMETER: "projectionMatrix"</li>
+<li>NORMAL_MATRIX_PARAMETER: "normalMatrix"</li>
+<li>CAMERA_POSITION: "cameraPosition"</li>
+<li>OUTPUT_ALPHA_PARAMETER: "outputAlpha"</li>
+<li>TEXTURE_SAMPLER: "textureSampler"</li>
+<li>MODEL_COLOR:"modelColor"</li>
+<li>AMBIENT_LIGHT_COLOR: "ambientLightColor"</li>
+<li>AMBIENT_CONTRIBUTION:"ambientContribution"</li>
+<li>LIGHT_DIRECTION: "lightDirection"</li>
+<li>LIGHT_COLOR:"lightColor"</li>
+<li>DIFFUSE_CONTRIBUTION:"diffuseContribution"</li>
+<li>SPECULAR_CONTRIBUTION:"specularContribution"</li>
+<li>SPECULAR_EXPONENT:"specularExponent"</li>
+</ul>
 </div>
 
 				</li>
@@ -360,7 +387,7 @@
 	<div class="meta">
 				<p>
 				Defined in
-		<a href="../files/src_main_javascript_program.js.html#l103"><code>src&#x2F;main&#x2F;javascript&#x2F;program.js:103</code></a>
+		<a href="../files/src_main_javascript_program.js.html#l159"><code>src&#x2F;main&#x2F;javascript&#x2F;program.js:159</code></a>
 		</p>
 
 
@@ -407,7 +434,7 @@ the initialization of the shader</p>
 	<div class="meta">
 				<p>
 				Defined in
-		<a href="../files/src_main_javascript_program.js.html#l164"><code>src&#x2F;main&#x2F;javascript&#x2F;program.js:164</code></a>
+		<a href="../files/src_main_javascript_program.js.html#l220"><code>src&#x2F;main&#x2F;javascript&#x2F;program.js:220</code></a>
 		</p>
 
 
@@ -443,7 +470,7 @@ the initialization of the shader</p>
 	<div class="meta">
 				<p>
 				Defined in
-		<a href="../files/src_main_javascript_program.js.html#l187"><code>src&#x2F;main&#x2F;javascript&#x2F;program.js:187</code></a>
+		<a href="../files/src_main_javascript_program.js.html#l243"><code>src&#x2F;main&#x2F;javascript&#x2F;program.js:243</code></a>
 		</p>
 
 
@@ -483,7 +510,7 @@ the initialization of the shader</p>
 	<div class="meta">
 				<p>
 				Defined in
-		<a href="../files/src_main_javascript_program.js.html#l176"><code>src&#x2F;main&#x2F;javascript&#x2F;program.js:176</code></a>
+		<a href="../files/src_main_javascript_program.js.html#l232"><code>src&#x2F;main&#x2F;javascript&#x2F;program.js:232</code></a>
 		</p>
 
 
@@ -493,105 +520,6 @@ the initialization of the shader</p>
 	<div class="description"><p>fetch the shader currently in use.</p>
 </div>
 
-
-		<div class="returns">
-			<h4>Returns:</h4>
-
-			<div class="returns-description">
-						<span class="type"><a href="../classes/Program.html" class="crosslink">Program</a></span>
-			</div>
-		</div>
-
-</div>
-<div id="method-new" class="method item">
-	<div class="method-signature">
-	<span class="name"><code>Program.new</code></span>
-
-		<div class="args">
-			<span class="paren">(</span><ul class="args-list inline commas">
-				<li class="arg">
-						<code>name</code>
-				</li>
-				<li class="arg">
-						<code>parameters</code>
-				</li>
-			</ul><span class="paren">)</span>
-		</div>
-		<span class="returns-inline">
-			<span class="type"><a href="../classes/Program.html" class="crosslink">Program</a></span>
-		</span>
-	</div>
-
-
-
-
-
-
-	<div class="meta">
-				<p>
-				Defined in
-		<a href="../files/src_main_javascript_program.js.html#l220"><code>src&#x2F;main&#x2F;javascript&#x2F;program.js:220</code></a>
-		</p>
-
-
-
-	</div>
-
-	<div class="description"><p>static method to create and construct a new Program.</p>
-</div>
-
-		<div class="params">
-			<h4>Parameters:</h4>
-
-			<ul class="params-list">
-				<li class="param">
-						<code class="param-name">name</code>
-						<span class="type">String</span>
-
-
-					<div class="param-description"><p>name to retrieve this shader</p>
-</div>
-
-				</li>
-				<li class="param">
-						<code class="param-name">parameters</code>
-						<span class="type">Object</span>
-
-
-					<div class="param-description"><p>shader construction parameters
-vertexShader name of the vertex shader to use
-fragmentShader name of the fragment shader to use
-attributeMapping maps POSITION, NORMAL, and TEXTURE attributes to the
-attribute names in the shader. This allows the engine to manage the attributes without
-forcing the shader author to use "standard" names for everything. Defaults to:</p>
-<ul>
-<li>POSITION_ATTRIBUTE: "inputPosition"</li>
-<li>NORMAL_ATTRIBUTE: "inputNormal"</li>
-<li>TEXTURE_ATTRIBUTE: "inputTexture"
-parameterMapping maps standard parameters to the parameter names in the
-shader. This allows the engine to manage setting the standard set of parameters on the shader
-without forcing the shader author to use "standard" names. Defaults to:</li>
-<li>MODEL_MATRIX_PARAMETER: "modelMatrix"</li>
-<li>VIEW_MATRIX_PARAMETER: "viewMatrix"</li>
-<li>PROJECTION_MATRIX_PARAMETER: "projectionMatrix"</li>
-<li>NORMAL_MATRIX_PARAMETER: "normalMatrix"</li>
-<li>CAMERA_POSITION: "cameraPosition"</li>
-<li>OUTPUT_ALPHA_PARAMETER: "outputAlpha"</li>
-<li>TEXTURE_SAMPLER: "textureSampler"</li>
-<li>MODEL_COLOR:"modelColor"</li>
-<li>AMBIENT_LIGHT_COLOR: "ambientLightColor"</li>
-<li>AMBIENT_CONTRIBUTION:"ambientContribution"</li>
-<li>LIGHT_DIRECTION: "lightDirection"</li>
-<li>LIGHT_COLOR:"lightColor"</li>
-<li>DIFFUSE_CONTRIBUTION:"diffuseContribution"</li>
-<li>SPECULAR_CONTRIBUTION:"specularContribution"</li>
-<li>SPECULAR_EXPONENT:"specularExponent"</li>
-</ul>
-</div>
-
-				</li>
-			</ul>
-		</div>
 
 		<div class="returns">
 			<h4>Returns:</h4>

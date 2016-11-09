@@ -1,5 +1,5 @@
 let FloatN = function (dim) {
-    let _ = Object.create (null);
+    let _ = OBJ;
 
     _.create = function () {
         return new glMatrixArrayType (dim);

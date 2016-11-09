@@ -1,8 +1,8 @@
 let Shape = function () {
-    let _ = Named (NAME_REQUIRED);
+    let _ = ClassNamed (CLASS_NAME_REQUIRED);
 
     _.construct = function (parameters) {
-        LOG (LogLevel.INFO, "Shape: " + this.name);
+        LOG (LogLevel.INFO, "Shape: " + parameters.name);
 
         let buffers = parameters.buffers ();
 

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>src/main/javascript/render.js - WebGL</title>
+    <title>src/main/javascript/class-named.js - WebGL</title>
     <link rel="stylesheet" href="">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -80,90 +80,116 @@
                 <div id="docs-main">
                     <div class="content">
 <div class="page-header">
-    <h1>src/main/javascript/render.js <small>File</small></h1>
+    <h1>src/main/javascript/class-named.js <small>File</small></h1>
 </div>
 
 <div class="file">
     <pre class="prettyprint linenums">
-let context;
+const CLASS_NAME_REQUIRED = &quot;CLASS_NAME_REQUIRED&quot;;
+const CLASS_NAME_GENERATED = &quot;CLASS_NAME_GENERATED&quot;;
+const CLASS_NAME_OPTIONAL = &quot;CLASS_NAME_OPTIONAL&quot;;
 
-/**
- * A Rendering context.
- *
- * @class Render
- */
-let Render = function () {
-    let _ = OBJ;
+let ClassNamed = function (nameRequired) {
+    DEFAULT_VALUE (nameRequired, CLASS_NAME_OPTIONAL);
+    let _ = Object.create (ClassBase);
 
-    /**
-     * The initializer for a rendering context.
-     *
-     * @method construct
-     * @param {string} canvasId the id of the canvas element to use for the rendering context
-     * @return {Render}
-     */
-    _.construct = function (canvasId, aspectRatio) {
-        let canvas = this.canvas = document.getElementById (canvasId);
-        DEFAULT_VALUE(aspectRatio, 16.0 / 9.0);
+    // the container for names
+    let index = OBJ;
 
-        // high DPI devices need to have the canvas drawing surface scaled up while leaving the style
-        // size as indicated
-        let width = canvas.width;
-        let height = width / aspectRatio;
+    // name handling has several cases:
+    // 1) it is supplied
+    // 2) it is not supplied, but is auto-generated
+    // 3) it is not supplied, and that is ok
+    // 4) it is not supplied and that is an error
+    // so a flag is needed indicating how to handle a name that is not present
+    let uniqueNameId = 0;
+    let validateName = function (name) {
+        // if the name was supplied, it&#x27;s all good
+        if ((typeof name !== &quot;undefined&quot;) &amp;&amp; (name != null)) {
+            // but make sure it&#x27;s not already in the index
+            if (!(name in index)) {
+                return name;
+            }
+            throw &quot;Duplicate name (&quot; + name + &quot;)&quot;;
+        }
 
-        // get the display size of the canvas.
-        canvas.style.width = width + &quot;px&quot;;
-        canvas.style.height = height + &quot;px&quot;;
-
-        // set the size of the drawingBuffer
-        let devicePixelRatio = window.devicePixelRatio || 1;
-        canvas.width = width * devicePixelRatio;
-        canvas.height = height * devicePixelRatio;
-        LOG(LogLevel.TRACE, &quot;Scaling display at &quot; + devicePixelRatio + &quot;:1 to (&quot; + canvas.width + &quot;x&quot; + canvas.height + &quot;)&quot;);
-
-        // get the actual rendering context
-        context = this.context = canvas.getContext (&quot;webgl&quot;, { preserveDrawingBuffer: true, alpha: false });
-        context.viewportWidth = canvas.width;
-        context.viewportHeight = canvas.height;
-        context.viewport (0, 0, context.viewportWidth, context.viewportHeight);
-
-        // make some shapes we might use
-        Tetrahedron.make();
-        Hexahedron.make();
-        Octahedron.make();
-        Icosahedron.make();
-        Square.make();
-        Sphere.makeN(2);
-        Sphere.makeN(3);
-        Sphere.makeN(5);
-
-        return this;
+        // otherwise, we have to decide what to do, based on some construction parameters
+        switch (nameRequired) {
+            case CLASS_NAME_REQUIRED:
+                throw &quot;Name is required&quot;;
+            case CLASS_NAME_GENERATED:
+                return &quot;id&quot; + Utility.padNum(++uniqueNameId, 5);
+            case CLASS_NAME_OPTIONAL:
+                return null;
+        }
     };
 
     /**
-     * Set the global rendering context.
      *
-     * @method use
+     * @param parameters
+     * @param name
+     * @returns {_}
      */
-    _.use = function () {
-        context = this.context;
+    _.new = function (parameters, name) {
+        // ensure parameters is a valid object
+        DEFAULT_VALUE (parameters, OBJ);
+
+        // validate the name, store a valid one in the parameters
+        if ((name = validateName(name)) != null) parameters.name = name;
+
+        // create the object the normal way. carefully, &quot;this&quot; is the static instance of the class
+        // we are deriving from (&quot;new&quot; probably isn&#x27;t overloaded)
+        let classNamed = SUPER.new.call (this, parameters);
+
+        // index the object if we have a valid name
+        if (name != null) {
+            classNamed.name = name;
+            index[name] = classNamed;
+        }
+
+        return classNamed;
     };
 
     /**
-     * Static method to create and construct a new rendering context.
      *
-     * @method new
-     * @static
-     * @param {string} canvasId the id of the canvas element to use for the rendering context.
-     * @param {number} aspectRatio the width / height of the canvas.
-     * @return {Render}
+     * @param name
+     * @returns {*}
      */
-    _.new = function (canvasId, aspectRatio) {
-        return (render = Object.create (_).construct (canvasId, aspectRatio));
+    _.get = function (name) {
+        return index[name];
+    };
+
+    /**
+     * get the name of this named thing (if it has one).
+     *
+     * @method getName
+     * @return {string} the name of this node, or just &quot;node&quot;.
+     */
+    _.getName = function () {
+        return (&quot;name&quot; in this) ? this.name : &quot;node&quot;;
+    };
+
+    /**
+     *
+     * @returns {Object}
+     */
+    _.getIndex = function () {
+        return index;
+    };
+
+    /**
+     *
+     * @param todo
+     */
+    _.forEach = function (todo) {
+        for (let name in index) {
+            let named = index[name];
+            todo (named);
+        }
     };
 
     return _;
-} ();
+};
 
     </pre>
 </div>

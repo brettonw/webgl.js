@@ -1,8 +1,12 @@
 let Shader = function () {
-    let _ = Named ();
+    let _ = ClassNamed ();
 
     _.construct  = function (parameters) {
-        LOG (LogLevel.INFO, "Shader: " + this.name);
+        LOG (LogLevel.INFO, "Shader: " + parameters.name);
+
+        // there must be a type and url
+        if (typeof parameters.type === "undefined") throw "Shader type Required";
+        if (typeof parameters.url === "undefined") throw "Shader URL Required";
 
         let scope = this;
         let request = new XMLHttpRequest();
@@ -12,7 +16,7 @@ let Shader = function () {
                 context.shaderSource (shader, request.responseText);
                 context.compileShader (shader);
                 if (!context.getShaderParameter (shader, context.COMPILE_STATUS)) {
-                    LOG (LogLevel.ERROR, "Shader compilation failed for " + this.name + ":\n" + context.getShaderInfoLog (shader));
+                    LOG (LogLevel.ERROR, "Shader compilation failed for " + parameters.name + ":\n" + context.getShaderInfoLog (shader));
                 } else {
                     scope.compiledShader = shader;
 
@@ -25,12 +29,6 @@ let Shader = function () {
         };
         request.open("GET", parameters.url);
         request.send();
-    };
-
-    _.validate = function (parameters) {
-        // there must be a type and url
-        if (typeof parameters.type === "undefined") throw "Shader type Required";
-        if (typeof parameters.url === "undefined") throw "Shader URL Required";
     };
 
     return _;
