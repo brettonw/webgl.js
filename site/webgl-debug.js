@@ -200,8 +200,10 @@ let MouseTracker = function () {
             mouseMovedPosition.x - mouseDownPosition.x,
             mouseMovedPosition.y - mouseDownPosition.y
         ];
-        mouseDownPosition = mouseMovedPosition;
-        onReady.notify (deltaPosition);
+        if (Float2.normSq (deltaPosition) > 0) {
+            mouseDownPosition = mouseMovedPosition;
+            onReady.notify (deltaPosition);
+        }
     };
 
     let mouseUp = function (event) {

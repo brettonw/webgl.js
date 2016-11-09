@@ -9,7 +9,17 @@ let fovRange;
 let framingRange;
 
 
+let refreshTimeoutId = 0;
 let draw = function (deltaPosition) {
+    // don't duplicate frames if drawing gets called for some other reason, like dragging
+    if (refreshTimeoutId != 0) {
+        clearTimeout (refreshTimeoutId);
+    }
+    if (animateCheckbox.checked) {
+        // draw again as fast as possible
+        refreshTimeoutId = setTimeout (function () { draw ([0, 0]); }, 0);
+    }
+
     Thing.updateAll (new Date ().getTime ());
 
     // set up the projection matrix (earth radius is 1 and we want it to occupy about 75% of the
@@ -49,6 +59,8 @@ let draw = function (deltaPosition) {
 
     // draw the scene
     scene.traverse (standardUniforms);
+
+
 };
 
 let buildScene = function () {
@@ -146,6 +158,7 @@ let buildScene = function () {
 let onBodyLoad = function () {
     fovRange = document.getElementById ("fovRange");
     framingRange = document.getElementById ("framingRange");
+    animateCheckbox = document.getElementById("animateCheckbox");
 
     MouseTracker.new ("render-canvas", OnReady.new (null, function (deltaPosition) {
         draw (deltaPosition);
