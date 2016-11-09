@@ -18,7 +18,13 @@ let Named = function (nameRequired) {
     let uniqueNameId = 0;
     let validateName = function (name) {
         // if the name was supplied, it's all good
-        if ((typeof name !== "undefined") && (name != null)) { return name; }
+        if ((typeof name !== "undefined") && (name != null)) {
+            // but make sure it's not already in the index
+            if (!(name in namedIndex)) {
+                return name;
+            }
+            throw "Duplicate name (" + name + ")";
+        }
 
         // otherwise, we have to decide what to do, based on some construction parameters
         switch (nameRequired) {

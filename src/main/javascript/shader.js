@@ -1,8 +1,6 @@
 let Shader = function () {
     let _ = Named ();
 
-    let shaders = Object.create (null);
-
     _.construct  = function (parameters) {
         LOG (LogLevel.INFO, "Shader: " + this.name);
 

@@ -4,9 +4,7 @@
  * @class Node
  */
 let Node = function () {
-    let _ = Object.create (null);
-
-    let nodes = Object.create (null);
+    let _ = Named (NAME_OPTIONAL);
 
     /**
      * the initializer for a scene graph node.
@@ -296,31 +294,7 @@ let Node = function () {
     _.getName = function () {
         return ("name" in this) ? this.name : "node";
     };
-
-    /**
-     * get a node by name.
-     *
-     * @method get
-     * @param {string} name the name of the node to retrieve.
-     * @return {Node}
-     */
-    _.get = function (name) {
-        return nodes[name];
-    };
-
-    /**
-     * static method to create and construct a new scene graph node.
-     *
-     * @method new
-     * @static
-     * @param {Object} parameters an object with optional information to include in the node (see
-     * "construct" for more information)
-     * @return {Node}
-     */
-    _.new = function (parameters) {
-        return Object.create (_).construct (parameters);
-    };
-
+    
     return _;
 } ();
 
