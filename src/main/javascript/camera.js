@@ -1,5 +1,5 @@
 let Camera = function () {
-    let _ = Object.create (null);
+    let _ = Named (NAME_GENERATED);
 
     _.apply = function (standardUniforms) {
         // set the standard uniforms for the perspective transformation matrix and the view
