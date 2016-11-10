@@ -7,22 +7,32 @@ let currentAngle = 0;
 
 let fovRange;
 let framingRange;
+let animateCheckbox;
+let displayFpsSpan;
 
-let refreshTimeoutId = 0;
 let lastTime = new Date ().getTime ();
 let globalTime = 0;
-let draw = function (deltaPosition) {
-    // don't duplicate frames if drawing gets called for some other reason, like dragging
-    if (refreshTimeoutId != 0) {
-        clearTimeout (refreshTimeoutId);
-    }
-
+const fpsHistoryCount = 50;
+let fpsHistory = Array (fpsHistoryCount).fill (0);
+let fpsHistoryIndex = 0;
+let fpsHistoryAverage = 0;
+let drawFrame = function () {
     let nowTime = new Date ().getTime ();
     if (animateCheckbox.checked) {
-        globalTime += nowTime - lastTime;
+        // compute the updated time
+        let deltaTime = nowTime - lastTime;
+        globalTime += deltaTime;
+
+        // update the fps
+        fpsHistoryAverage -= fpsHistory[fpsHistoryIndex];
+        fpsHistoryAverage += (fpsHistory[fpsHistoryIndex] = deltaTime);
+        fpsHistoryIndex = (fpsHistoryIndex + 1) % fpsHistoryCount;
+        let fps = 1000.0 / (fpsHistoryAverage / fpsHistoryCount);
+        displayFpsSpan.innerHTML = Utility.padNum(fps.toFixed(1), 3) + "fps";
+
         // draw again as fast as possible
-        refreshTimeoutId = setTimeout (function () { draw ([0, 0]); }, 0);
-        Thing.updateAll (globalTime / 5.0);
+        window.requestAnimationFrame (drawFrame);
+        Thing.updateAll (globalTime);
     }
     lastTime = nowTime;
 
@@ -50,7 +60,6 @@ let draw = function (deltaPosition) {
     let viewMatrix = Float4x4.lookAt (goalOpposite, fov, [0, 2, 7], [0, 1.5, 0]);
     //console.log ("LOOK AT: " + Float3.str ([0, 1.5, 0]));
     //console.log ("LOOK ALONG: " + Float3.str ([0, 2, 7]));
-    currentAngle += deltaPosition[0] * 180;
     viewMatrix = Float4x4.chain (Float4x4.rotateY (Utility.degreesToRadians (currentAngle)), viewMatrix);
 
     standardUniforms.VIEW_MATRIX_PARAMETER = viewMatrix;
@@ -70,7 +79,7 @@ let draw = function (deltaPosition) {
 let clickAnimateCheckbox = function () {
     if (animateCheckbox.checked) {
         lastTime = new Date ().getTime ();
-        draw ([0, 0]);
+        drawFrame ();
     }
 };
 
@@ -156,23 +165,27 @@ let buildScene = function () {
             node.transform = Float4x4.chain (
                 Float4x4.rotateZ (Math.PI / 3),
                 Float4x4.rotateX (0.25),
-                Float4x4.rotateY (Math.PI * time * 0.001),
+                Float4x4.rotateY (Math.PI * time * 0.0005),
                 Float4x4.translate ([0, 1.5, 0])
             );
         }
     });
 
     //LogLevel.set (LogLevel.TRACE);
-    draw ([0, 0]);
+    drawFrame ();
 };
 
 let onBodyLoad = function () {
     fovRange = document.getElementById ("fovRange");
     framingRange = document.getElementById ("framingRange");
     animateCheckbox = document.getElementById("animateCheckbox");
+    displayFpsSpan = document.getElementById("displayFpsSpan");
 
     MouseTracker.new ("render-canvas", OnReady.new (null, function (deltaPosition) {
-        draw (deltaPosition);
+        currentAngle += deltaPosition[0] * 180;
+        if (! animateCheckbox.checked) {
+            window.requestAnimationFrame (drawFrame);
+        }
     }), 0.01);
 
     Render.new ("render-canvas");

@@ -13,12 +13,13 @@
 <body onload="onBodyLoad ();">
 <div id="title"><span style="margin-top:0px;font-size:24px;">webgl.js</span></div>
 <div>
-    <canvas id="render-canvas" style="border:none;margin:0;" width="840px" tabindex="0"></canvas>
+    <canvas id="render-canvas" style="border:none;margin:0;" width="854px" tabindex="0"></canvas>
 </div>
 <div style="font-size:12px;height:34px; margin-top:2px;margin-bottom:2px;vertical-align:middle;">
-    FOV <input type="range" class="myRange" style="width:200px;vertical-align:middle;" id="fovRange" min="0" max="100" step="1" value="60" oninput="draw ([0, 0]);">
-    Framing <input type="range" class="myRange" style="width:200px;vertical-align:middle;" id="framingRange" min="0" max="100" step="1" value="90" oninput="draw ([0, 0]);">
+    FOV <input type="range" class="myRange" style="width:200px;vertical-align:middle;" id="fovRange" min="0" max="100" step="1" value="60" oninput="draw ();">
+    Framing <input type="range" class="myRange" style="width:200px;vertical-align:middle;" id="framingRange" min="0" max="100" step="1" value="90" oninput="draw ();">
     Animated <input type="checkbox" id="animateCheckbox" onchange="clickAnimateCheckbox ();" CHECKED>
+    <span style="float:right;" id="displayFpsSpan">0</span>
 </div>
 <div id="footer">
     <a href="../docs" style="float:left;font-size:14px;text-decoration:none;color:white;">docs</a>
