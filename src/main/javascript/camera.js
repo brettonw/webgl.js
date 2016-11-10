@@ -1,6 +1,9 @@
 let Camera = function () {
     let _ = ClassNamed (CLASS_NAME_GENERATED);
 
+    _.construct = function (parameters) {
+    };
+
     _.apply = function (standardUniforms) {
         // set the standard uniforms for the perspective transformation matrix and the view
         // transformation matrix
@@ -26,10 +29,6 @@ let Camera = function () {
 
     _.lookFromTo = function (from, to, fov) {
 
-    };
-
-    _.new = function (parameters) {
-        return
     };
 
     return _;
