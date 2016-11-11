@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>src/main/javascript/loader-path.js - WebGL</title>
+    <title>src/main/javascript/common/class-base.js - WebGL</title>
     <link rel="stylesheet" href="">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -80,55 +80,30 @@
                 <div id="docs-main">
                     <div class="content">
 <div class="page-header">
-    <h1>src/main/javascript/loader-path.js <small>File</small></h1>
+    <h1>src/main/javascript/common/class-base.js <small>File</small></h1>
 </div>
 
 <div class="file">
     <pre class="prettyprint linenums">
-/**
- * A loader for external assets, which assumes assets reside in a common base path, and are named as
- * the file element is named.
- *
- * @class LoaderPath
- */
-let LoaderPath = function () {
-    let _ = Object.create (Loader);
+let ClassBase = function () {
+    let _ = OBJ;
 
     /**
-     * the initializer for a path loader.
      *
-     * @method construct
-     * @param {Object} parameters an object specifying the loader class parameters
-     * @return {Loader}
-     */
-    _.construct = function (parameters) {
-        SUPER.construct.call(this, parameters);
-        this.type = parameters.type;
-        this.path = parameters.path;
-        return this;
-    };
-
-    _.addItems = function (names, parameters) {
-        names = Array.isArray(names) ? names : Array(1).fill(names);
-        for (let name of names) {
-            let params = Object.assign (OBJ, parameters, { url:this.path.replace (&quot;@&quot;, name) });
-            SUPER.addItem.call(this, this.type, name, params);
-        }
-        return this;
-    };
-
-    /**
-     * static method to create and construct a new LoaderPath.
-     *
-     * @method new
-     * @static
-     * @param {Object} parameters an object including Loader class parameters, as well as the type
-     * and path to use for all operations. The &quot;path&quot; parameter should contain a &quot;@&quot; to be replaced
-     * with the fetch name.
-     * @return {LoaderPath}
+     * @param parameters
+     * @returns {_}
      */
     _.new = function (parameters) {
-        return Object.create (_).construct (parameters);
+        // create the object. this is a bit tricky here, as &quot;this&quot; is referring to a static instance
+        // of the class we are deriving from (&quot;new&quot; probably isn&#x27;t overloaded)
+        let baseClass = Object.create (this);
+
+        // if there is a constructor... ensure that we have parameters, then construct the object
+        if (&quot;construct&quot; in baseClass) {
+            DEFAULT_VALUE (parameters, OBJ);
+            baseClass.construct (parameters);
+        }
+        return baseClass;
     };
 
     return _;

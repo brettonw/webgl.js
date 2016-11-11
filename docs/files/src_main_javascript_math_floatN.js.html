@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>src/main/javascript/floatN.js - WebGL</title>
+    <title>src/main/javascript/math/floatN.js - WebGL</title>
     <link rel="stylesheet" href="">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -80,7 +80,7 @@
                 <div id="docs-main">
                     <div class="content">
 <div class="page-header">
-    <h1>src/main/javascript/floatN.js <small>File</small></h1>
+    <h1>src/main/javascript/math/floatN.js <small>File</small></h1>
 </div>
 
 <div class="file">
@@ -89,7 +89,7 @@ let FloatN = function (dim) {
     let _ = OBJ;
 
     _.create = function () {
-        return new glMatrixArrayType (dim);
+        return new Float32Array(dim);
     };
 
     // _.copy (from, to)

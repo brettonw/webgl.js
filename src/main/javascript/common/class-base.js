@@ -11,9 +11,11 @@ let ClassBase = function () {
         // of the class we are deriving from ("new" probably isn't overloaded)
         let baseClass = Object.create (this);
 
-        // ensure that we have parameters, then construct the object
-        DEFAULT_VALUE (parameters, OBJ);
-        baseClass.construct (parameters);
+        // if there is a constructor... ensure that we have parameters, then construct the object
+        if ("construct" in baseClass) {
+            DEFAULT_VALUE (parameters, OBJ);
+            baseClass.construct (parameters);
+        }
         return baseClass;
     };
 

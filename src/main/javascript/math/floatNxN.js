@@ -25,7 +25,7 @@ let FloatNxN = function (dim) {
      * @return {FloatNxN}
      */
     _.create = function () {
-        return new glMatrixArrayType (size);
+        return new Float32Array (size);
     };
 
     /**

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>src/main/javascript/loader.js - WebGL</title>
+    <title>src/main/javascript/common/class-named.js - WebGL</title>
     <link rel="stylesheet" href="">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -80,86 +80,116 @@
                 <div id="docs-main">
                     <div class="content">
 <div class="page-header">
-    <h1>src/main/javascript/loader.js <small>File</small></h1>
+    <h1>src/main/javascript/common/class-named.js <small>File</small></h1>
 </div>
 
 <div class="file">
     <pre class="prettyprint linenums">
-/**
- * A loader for external assets.
- *
- * @class Loader
- */
-let Loader = function () {
-    let _ = CLASS_BASE;
+const CLASS_NAME_REQUIRED = &quot;CLASS_NAME_REQUIRED&quot;;
+const CLASS_NAME_GENERATED = &quot;CLASS_NAME_GENERATED&quot;;
+const CLASS_NAME_OPTIONAL = &quot;CLASS_NAME_OPTIONAL&quot;;
 
-    /**
-     * the initializer for a loader.
-     *
-     * @method construct
-     * @param {Object} parameters an object specifying the scope and callback to call when an item
-     * is finished, and when all items are finished (onFinishedAll, onFinishedItem).
-     * @return {Loader}
-     */
-    _.construct = function (parameters) {
-        this.onFinishedAll = DEFAULT_VALUE (parameters.onFinishedAll, { notify: function (x) {} });
-        this.onFinishedItem = DEFAULT_VALUE (parameters.onFinishedItem, { notify: function (x) {} });
-        this.items = [];
-        this.onReady = OnReady.new (this, this.finish);
-        return this;
-    };
+let ClassNamed = function (nameRequired) {
+    DEFAULT_VALUE (nameRequired, CLASS_NAME_OPTIONAL);
+    let _ = Object.create (ClassBase);
 
-    _.addItem = function (type, name, parameters) {
-        parameters.onReady = this.onReady;
-        let item = { type: type, name: name, parameters: parameters };
-        this.items.push (item);
-        return this;
-    };
+    // the container for names
+    let index = OBJ;
 
-    _.finish = function (finishedItem) {
-        if (finishedItem === this.pendingItem) {
-            // clear the pending item, and go
-            delete this.pendingItem;
-            this.onFinishedItem.notify(finishedItem);
-            this.next ();
-        } else {
-            LOG (LogLevel.ERROR, &quot;WHAT&#x27;S UP WILLIS?&quot;);
+    // name handling has several cases:
+    // 1) it is supplied
+    // 2) it is not supplied, but is auto-generated
+    // 3) it is not supplied, and that is ok
+    // 4) it is not supplied and that is an error
+    // so a flag is needed indicating how to handle a name that is not present
+    let uniqueNameId = 0;
+    let validateName = function (name) {
+        // if the name was supplied, it&#x27;s all good
+        if ((typeof name !== &quot;undefined&quot;) &amp;&amp; (name != null)) {
+            // but make sure it&#x27;s not already in the index
+            if (!(name in index)) {
+                return name;
+            }
+            throw &quot;Duplicate name (&quot; + name + &quot;)&quot;;
+        }
+
+        // otherwise, we have to decide what to do, based on some construction parameters
+        switch (nameRequired) {
+            case CLASS_NAME_REQUIRED:
+                throw &quot;Name is required&quot;;
+            case CLASS_NAME_GENERATED:
+                return &quot;id&quot; + Utility.padNum(++uniqueNameId, 5);
+            case CLASS_NAME_OPTIONAL:
+                return null;
         }
     };
 
     /**
-     * start the fetch process for all the loadable items.
      *
-     * @method go
-     * @param {Object} parameters an object specifying the scope and callback to call when an item
-     * is finished, and when all items are finished (onFinishedAll, onFinishedItem).
-     * @chainable
+     * @param parameters
+     * @param name
+     * @returns {_}
      */
-    _.go = function (onFinishedEach, onFinishedAll) {
-        this.onFinishedEach = DEFAULT_VALUE(onFinishedEach, { notify: function (x) {} });
-        this.onFinishedAll = DEFAULT_VALUE(onFinishedAll, { notify: function (x) {} });
-        this.next ();
+    _.new = function (parameters, name) {
+        // ensure parameters is a valid object
+        DEFAULT_VALUE (parameters, OBJ);
+
+        // validate the name, store a valid one in the parameters
+        if ((name = validateName(name)) != null) parameters.name = name;
+
+        // create the object the normal way. carefully, &quot;this&quot; is the static instance of the class
+        // we are deriving from (&quot;new&quot; probably isn&#x27;t overloaded)
+        let classNamed = SUPER.new.call (this, parameters);
+
+        // index the object if we have a valid name
+        if (name != null) {
+            classNamed.name = name;
+            index[name] = classNamed;
+        }
+
+        return classNamed;
     };
 
     /**
-     * continue the fetch process for all the loadable items.
      *
-     * @method next
-     * @chainable
+     * @param name
+     * @returns {*}
      */
-    _.next = function () {
-        if (this.items.length &gt; 0) {
-            // have work to do, kick off a fetch
-            let item = this.items.shift ();
-            this.pendingItem = item.type.new (item.parameters, item.name);
-        } else {
-            // all done, inform our waiting handler
-            this.onFinishedAll.notify (this);
+    _.get = function (name) {
+        return index[name];
+    };
+
+    /**
+     * get the name of this named thing (if it has one).
+     *
+     * @method getName
+     * @return {string} the name of this node, or just &quot;node&quot;.
+     */
+    _.getName = function () {
+        return (&quot;name&quot; in this) ? this.name : &quot;node&quot;;
+    };
+
+    /**
+     *
+     * @returns {Object}
+     */
+    _.getIndex = function () {
+        return index;
+    };
+
+    /**
+     *
+     * @param todo
+     */
+    _.forEach = function (todo) {
+        for (let name in index) {
+            let named = index[name];
+            todo (named);
         }
     };
 
     return _;
-} ();
+};
 
     </pre>
 </div>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>src/main/javascript/class-named.js - WebGL</title>
+    <title>src/main/javascript/core/cloud.js - WebGL</title>
     <link rel="stylesheet" href="">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -80,116 +80,86 @@
                 <div id="docs-main">
                     <div class="content">
 <div class="page-header">
-    <h1>src/main/javascript/class-named.js <small>File</small></h1>
+    <h1>src/main/javascript/core/cloud.js <small>File</small></h1>
 </div>
 
 <div class="file">
     <pre class="prettyprint linenums">
-const CLASS_NAME_REQUIRED = &quot;CLASS_NAME_REQUIRED&quot;;
-const CLASS_NAME_GENERATED = &quot;CLASS_NAME_GENERATED&quot;;
-const CLASS_NAME_OPTIONAL = &quot;CLASS_NAME_OPTIONAL&quot;;
+/**
+ * A Cloud, a scene graph node for displaying points in space.
+ *
+ * @class Cloud
+ */
+let Cloud = function () {
+    let _ = Object.create (Node);
 
-let ClassNamed = function (nameRequired) {
-    DEFAULT_VALUE (nameRequired, CLASS_NAME_OPTIONAL);
-    let _ = Object.create (ClassBase);
+    /**
+     * the initializer for a cloud.
+     *
+     * @method construct
+     * @param {Object} parameters an object with optional information for the cloud node, including:
+     * * pointShape: (default = &quot;sphere2&quot;)
+     * * pointSize: (default = 0.02)
+     * @return {Cloud}
+     */
+    _.construct = function (parameters) {
+        // call the superclass constructor on this object
+        SUPER.construct.call(this, parameters);
 
-    // the container for names
-    let index = OBJ;
+        // look to see if the user has provided a point shape or size to use
+        this.pointShape =  (&quot;pointShape&quot; in parameters) ? parameters.pointShape : &quot;sphere2&quot;;
+        this.pointSize =  (&quot;pointSize&quot; in parameters) ? parameters.pointSize : 0.02;
 
-    // name handling has several cases:
-    // 1) it is supplied
-    // 2) it is not supplied, but is auto-generated
-    // 3) it is not supplied, and that is ok
-    // 4) it is not supplied and that is an error
-    // so a flag is needed indicating how to handle a name that is not present
-    let uniqueNameId = 0;
-    let validateName = function (name) {
-        // if the name was supplied, it&#x27;s all good
-        if ((typeof name !== &quot;undefined&quot;) &amp;&amp; (name != null)) {
-            // but make sure it&#x27;s not already in the index
-            if (!(name in index)) {
-                return name;
-            }
-            throw &quot;Duplicate name (&quot; + name + &quot;)&quot;;
+        return this;
+    };
+
+    /**
+     * add a point to the cloud.
+     *
+     * @method addPoint
+     * @param {Float3} point the location of the new point.
+     * @chainable
+     */
+    _.addPoint = function (point) {
+        let transform = Float4x4.multiply (Float4x4.scale (this.pointSize), Float4x4.translate (point));
+        this.addChild (Node.new ({
+            transform: transform,
+            shape: this.pointShape,
+            children: false
+        }));
+        return this;
+    };
+
+    /**
+     * add multiple points to the cloud.
+     *
+     * @method addPoints
+     * @param {Array} points an array of Float3 points to be added.
+     * @chainable
+     */
+    _.addPoints = function (points) {
+        for (let point of points) {
+            this.addPoint(point);
         }
-
-        // otherwise, we have to decide what to do, based on some construction parameters
-        switch (nameRequired) {
-            case CLASS_NAME_REQUIRED:
-                throw &quot;Name is required&quot;;
-            case CLASS_NAME_GENERATED:
-                return &quot;id&quot; + Utility.padNum(++uniqueNameId, 5);
-            case CLASS_NAME_OPTIONAL:
-                return null;
-        }
-    };
+    }
 
     /**
+     * static method to create and construct a new cloud node.
      *
-     * @param parameters
-     * @param name
-     * @returns {_}
+     * @method new
+     * @static
+     * @param {Object} parameters an object with optional information to include in the node (see
+     * &quot;Node.construct&quot; for more information)
+     * @return {Cloud}
      */
-    _.new = function (parameters, name) {
-        // ensure parameters is a valid object
-        DEFAULT_VALUE (parameters, OBJ);
-
-        // validate the name, store a valid one in the parameters
-        if ((name = validateName(name)) != null) parameters.name = name;
-
-        // create the object the normal way. carefully, &quot;this&quot; is the static instance of the class
-        // we are deriving from (&quot;new&quot; probably isn&#x27;t overloaded)
-        let classNamed = SUPER.new.call (this, parameters);
-
-        // index the object if we have a valid name
-        if (name != null) {
-            classNamed.name = name;
-            index[name] = classNamed;
-        }
-
-        return classNamed;
-    };
-
-    /**
-     *
-     * @param name
-     * @returns {*}
-     */
-    _.get = function (name) {
-        return index[name];
-    };
-
-    /**
-     * get the name of this named thing (if it has one).
-     *
-     * @method getName
-     * @return {string} the name of this node, or just &quot;node&quot;.
-     */
-    _.getName = function () {
-        return (&quot;name&quot; in this) ? this.name : &quot;node&quot;;
-    };
-
-    /**
-     *
-     * @returns {Object}
-     */
-    _.getIndex = function () {
-        return index;
-    };
-
-    /**
-     *
-     * @param todo
-     */
-    _.forEach = function (todo) {
-        for (let name in index) {
-            let named = index[name];
-            todo (named);
-        }
+    _.new = function (parameters) {
+        // ensure that we have children enabled
+        parameters.children = true;
+        return Object.create (_).construct (parameters);
     };
 
     return _;
-};
+} ();
 
     </pre>
 </div>

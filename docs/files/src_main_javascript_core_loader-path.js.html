@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>src/main/javascript/loader-shader.js - WebGL</title>
+    <title>src/main/javascript/core/loader-path.js - WebGL</title>
     <link rel="stylesheet" href="">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -80,45 +80,41 @@
                 <div id="docs-main">
                     <div class="content">
 <div class="page-header">
-    <h1>src/main/javascript/loader-shader.js <small>File</small></h1>
+    <h1>src/main/javascript/core/loader-path.js <small>File</small></h1>
 </div>
 
 <div class="file">
     <pre class="prettyprint linenums">
 /**
- * A loader for external shader assets.
+ * A loader for external assets, which assumes assets reside in a common base path, and are named as
+ * the file element is named.
  *
- * @class LoaderShader
+ * @class LoaderPath
  */
-let LoaderShader = function () {
-    let _ = Object.create (LoaderPath);
+let LoaderPath = function () {
+    let _ = Object.create (Loader);
 
     /**
-     * the initializer for a shader loader.
+     * the initializer for a path loader.
      *
      * @method construct
-     * @param {string} path the common path for a path loader.
-     * @return {LoaderShader}
+     * @param {Object} parameters an object specifying the loader class parameters
+     * @return {Loader}
      */
-    _.construct = function (path) {
-        return SUPER.construct.call(this, { type: Shader, path: path });
+    _.construct = function (parameters) {
+        SUPER.construct.call(this, parameters);
+        this.type = parameters.type;
+        this.path = parameters.path;
+        return this;
     };
 
-    let addNames = function (names, prefix) {
+    _.addItems = function (names, parameters) {
         names = Array.isArray(names) ? names : Array(1).fill(names);
-        let result = [];
         for (let name of names) {
-            result.push (prefix + &quot;-&quot; + name);
+            let params = Object.assign (OBJ, parameters, { url:this.path.replace (&quot;@&quot;, name) });
+            SUPER.addItem.call(this, this.type, name, params);
         }
-        return result;
-    }
-
-    _.addVertexShaders = function (names) {
-        return SUPER.addItems.call (this, addNames (names, &quot;vertex&quot;), { type: context.VERTEX_SHADER });
-    };
-
-    _.addFragmentShaders = function (names) {
-        return SUPER.addItems.call (this, addNames (names, &quot;fragment&quot;), { type: context.FRAGMENT_SHADER });
+        return this;
     };
 
     /**
@@ -126,11 +122,13 @@ let LoaderShader = function () {
      *
      * @method new
      * @static
-     * @param {string} path the common path for a path loader.
-     * @return {LoaderShader}
+     * @param {Object} parameters an object including Loader class parameters, as well as the type
+     * and path to use for all operations. The &quot;path&quot; parameter should contain a &quot;@&quot; to be replaced
+     * with the fetch name.
+     * @return {LoaderPath}
      */
-    _.new = function (path) {
-        return Object.create (_).construct (path);
+    _.new = function (parameters) {
+        return Object.create (_).construct (parameters);
     };
 
     return _;

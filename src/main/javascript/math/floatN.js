@@ -2,7 +2,7 @@ let FloatN = function (dim) {
     let _ = OBJ;
 
     _.create = function () {
-        return new glMatrixArrayType (dim);
+        return new Float32Array(dim);
     };
 
     // _.copy (from, to)

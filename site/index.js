@@ -17,22 +17,26 @@ let fpsHistory = Array (fpsHistoryCount).fill (0);
 let fpsHistoryIndex = 0;
 let fpsHistoryAverage = 0;
 let drawFrame = function () {
+    if (document.hidden) {
+        animateCheckbox.checked = false;
+        return;
+    }
     let nowTime = new Date ().getTime ();
     if (animateCheckbox.checked) {
         // compute the updated time
         let deltaTime = nowTime - lastTime;
         globalTime += deltaTime;
+        Thing.updateAll (globalTime);
 
         // update the fps
         fpsHistoryAverage -= fpsHistory[fpsHistoryIndex];
         fpsHistoryAverage += (fpsHistory[fpsHistoryIndex] = deltaTime);
         fpsHistoryIndex = (fpsHistoryIndex + 1) % fpsHistoryCount;
         let fps = 1000.0 / (fpsHistoryAverage / fpsHistoryCount);
-        displayFpsSpan.innerHTML = Utility.padNum(fps.toFixed(1), 3) + "fps";
+        displayFpsSpan.innerHTML = Utility.padNum(fps.toFixed(1), 3) + " fps";
 
         // draw again as fast as possible
         window.requestAnimationFrame (drawFrame);
-        Thing.updateAll (globalTime);
     }
     lastTime = nowTime;
 

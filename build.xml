@@ -32,29 +32,35 @@
         <mkdir dir="${target-dir}"/>
         <concat destfile="${target-dir}/${concat-target}">
             <!-- file order is important -->
-            <fileset dir="${source-dir}" includes="macros.js"/>
-            <fileset dir="${source-dir}" includes="log-level.js"/>
-            <fileset dir="${source-dir}" includes="on-ready.js"/>
-            <fileset dir="${source-dir}" includes="class-base.js"/>
-            <fileset dir="${source-dir}" includes="class-named.js"/>
-            <fileset dir="${source-dir}" includes="mouse-tracker.js"/>
-            <fileset dir="${source-dir}" includes="loader.js" />
-            <fileset dir="${source-dir}" includes="loader-path.js" />
-            <fileset dir="${source-dir}" includes="loader-shader.js" />
-            <fileset dir="${source-dir}" includes="render.js" />
-            <fileset dir="${source-dir}" includes="types.js" />
-            <fileset dir="${source-dir}" includes="floatN.js" />
-            <fileset dir="${source-dir}" includes="floatNxN.js" />
-            <fileset dir="${source-dir}" includes="float4x4.js" />
-            <fileset dir="${source-dir}" includes="shader.js" />
-            <fileset dir="${source-dir}" includes="program.js" />
-            <fileset dir="${source-dir}" includes="program-uniform.js" />
-            <fileset dir="${source-dir}" includes="program-attribute.js" />
-            <fileset dir="${source-dir}" includes="texture.js"/>
-            <fileset dir="${source-dir}" includes="node.js"/>
-            <fileset dir="${source-dir}" includes="cloud.js" />
-            <fileset dir="${source-dir}" includes="shape.js"/>
-            <fileset dir="${source-dir}" includes="shape-builder.js"/>
+            <fileset dir="${source-dir}/common" includes="macros.js"/>
+            <fileset dir="${source-dir}/common" includes="log-level.js"/>
+            <fileset dir="${source-dir}/common" includes="utility.js"/>
+            <fileset dir="${source-dir}/common" includes="class-base.js"/>
+            <fileset dir="${source-dir}/common" includes="class-named.js"/>
+            <fileset dir="${source-dir}/common" includes="on-ready.js"/>
+            <fileset dir="${source-dir}/common" includes="mouse-tracker.js"/>
+            <fileset dir="${source-dir}/common" includes="document-helper.js"/>
+
+            <fileset dir="${source-dir}/math" includes="floatN.js"/>
+            <fileset dir="${source-dir}/math" includes="floatNxN.js"/>
+            <fileset dir="${source-dir}/math" includes="float4x4.js"/>
+
+            <fileset dir="${source-dir}/core" includes="render.js"/>
+            <fileset dir="${source-dir}/core" includes="types.js"/>
+            <fileset dir="${source-dir}/core" includes="loader.js" />
+            <fileset dir="${source-dir}/core" includes="loader-path.js" />
+            <fileset dir="${source-dir}/core" includes="loader-shader.js" />
+            <fileset dir="${source-dir}/core" includes="shader.js" />
+            <fileset dir="${source-dir}/core" includes="program.js" />
+            <fileset dir="${source-dir}/core" includes="program-uniform.js" />
+            <fileset dir="${source-dir}/core" includes="program-attribute.js" />
+            <fileset dir="${source-dir}/core" includes="texture.js"/>
+            <fileset dir="${source-dir}/core" includes="node.js"/>
+            <fileset dir="${source-dir}/core" includes="cloud.js" />
+            <fileset dir="${source-dir}/core" includes="shape.js"/>
+            <fileset dir="${source-dir}/core" includes="thing.js"/>
+
+            <fileset dir="${source-dir}/shapes" includes="shape-builder.js"/>
             <fileset dir="${source-dir}/shapes" includes="primitive.js"/>
             <fileset dir="${source-dir}/shapes" includes="tetrahedron.js"/>
             <fileset dir="${source-dir}/shapes" includes="hexahedron.js" />
@@ -66,8 +72,6 @@
             <fileset dir="${source-dir}/shapes" includes="ball.js" />
             <fileset dir="${source-dir}/shapes" includes="extrude.js" />
             <fileset dir="${source-dir}/shapes" includes="triangulate.js" />
-            <fileset dir="${source-dir}" includes="utility.js" />
-            <fileset dir="${source-dir}" includes="thing.js" />
         </concat>
     </target>
 

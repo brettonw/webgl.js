@@ -5,29 +5,45 @@
         "version": "1.0.0"
     },
     "files": {
-        "src/main/javascript/camera.js": {
-            "name": "src/main/javascript/camera.js",
+        "src/main/javascript/common/class-base.js": {
+            "name": "src/main/javascript/common/class-base.js",
             "modules": {},
             "classes": {},
             "fors": {},
             "namespaces": {}
         },
-        "src/main/javascript/class-base.js": {
-            "name": "src/main/javascript/class-base.js",
+        "src/main/javascript/common/class-named.js": {
+            "name": "src/main/javascript/common/class-named.js",
             "modules": {},
             "classes": {},
             "fors": {},
             "namespaces": {}
         },
-        "src/main/javascript/class-named.js": {
-            "name": "src/main/javascript/class-named.js",
+        "src/main/javascript/common/document-helper.js": {
+            "name": "src/main/javascript/common/document-helper.js",
             "modules": {},
             "classes": {},
             "fors": {},
             "namespaces": {}
         },
-        "src/main/javascript/cloud.js": {
-            "name": "src/main/javascript/cloud.js",
+        "src/main/javascript/common/utility.js": {
+            "name": "src/main/javascript/common/utility.js",
+            "modules": {},
+            "classes": {
+                "Utility": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/main/javascript/core/camera.js": {
+            "name": "src/main/javascript/core/camera.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/main/javascript/core/cloud.js": {
+            "name": "src/main/javascript/core/cloud.js",
             "modules": {},
             "classes": {
                 "Cloud": 1
@@ -35,33 +51,8 @@
             "fors": {},
             "namespaces": {}
         },
-        "src/main/javascript/float4x4.js": {
-            "name": "src/main/javascript/float4x4.js",
-            "modules": {},
-            "classes": {
-                "Float4x4": 1
-            },
-            "fors": {},
-            "namespaces": {}
-        },
-        "src/main/javascript/floatN.js": {
-            "name": "src/main/javascript/floatN.js",
-            "modules": {},
-            "classes": {},
-            "fors": {},
-            "namespaces": {}
-        },
-        "src/main/javascript/floatNxN.js": {
-            "name": "src/main/javascript/floatNxN.js",
-            "modules": {},
-            "classes": {
-                "FloatNxN": 1
-            },
-            "fors": {},
-            "namespaces": {}
-        },
-        "src/main/javascript/loader-path.js": {
-            "name": "src/main/javascript/loader-path.js",
+        "src/main/javascript/core/loader-path.js": {
+            "name": "src/main/javascript/core/loader-path.js",
             "modules": {},
             "classes": {
                 "LoaderPath": 1
@@ -69,8 +60,8 @@
             "fors": {},
             "namespaces": {}
         },
-        "src/main/javascript/loader-shader.js": {
-            "name": "src/main/javascript/loader-shader.js",
+        "src/main/javascript/core/loader-shader.js": {
+            "name": "src/main/javascript/core/loader-shader.js",
             "modules": {},
             "classes": {
                 "LoaderShader": 1
@@ -78,8 +69,8 @@
             "fors": {},
             "namespaces": {}
         },
-        "src/main/javascript/loader.js": {
-            "name": "src/main/javascript/loader.js",
+        "src/main/javascript/core/loader.js": {
+            "name": "src/main/javascript/core/loader.js",
             "modules": {},
             "classes": {
                 "Loader": 1
@@ -87,8 +78,8 @@
             "fors": {},
             "namespaces": {}
         },
-        "src/main/javascript/node.js": {
-            "name": "src/main/javascript/node.js",
+        "src/main/javascript/core/node.js": {
+            "name": "src/main/javascript/core/node.js",
             "modules": {},
             "classes": {
                 "Node": 1
@@ -96,8 +87,8 @@
             "fors": {},
             "namespaces": {}
         },
-        "src/main/javascript/program.js": {
-            "name": "src/main/javascript/program.js",
+        "src/main/javascript/core/program.js": {
+            "name": "src/main/javascript/core/program.js",
             "modules": {},
             "classes": {
                 "Program": 1
@@ -105,8 +96,8 @@
             "fors": {},
             "namespaces": {}
         },
-        "src/main/javascript/render.js": {
-            "name": "src/main/javascript/render.js",
+        "src/main/javascript/core/render.js": {
+            "name": "src/main/javascript/core/render.js",
             "modules": {},
             "classes": {
                 "Render": 1
@@ -114,11 +105,27 @@
             "fors": {},
             "namespaces": {}
         },
-        "src/main/javascript/utility.js": {
-            "name": "src/main/javascript/utility.js",
+        "src/main/javascript/math/float4x4.js": {
+            "name": "src/main/javascript/math/float4x4.js",
             "modules": {},
             "classes": {
-                "Utility": 1
+                "Float4x4": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/main/javascript/math/floatN.js": {
+            "name": "src/main/javascript/math/floatN.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/main/javascript/math/floatNxN.js": {
+            "name": "src/main/javascript/math/floatNxN.js",
+            "modules": {},
+            "classes": {
+                "FloatNxN": 1
             },
             "fors": {},
             "namespaces": {}
@@ -126,6 +133,18 @@
     },
     "modules": {},
     "classes": {
+        "Utility": {
+            "name": "Utility",
+            "shortname": "Utility",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src/main/javascript/common/utility.js",
+            "line": 1,
+            "description": "A collection of utility functions."
+        },
         "Cloud": {
             "name": "Cloud",
             "shortname": "Cloud",
@@ -134,9 +153,81 @@
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
-            "file": "src/main/javascript/cloud.js",
+            "file": "src/main/javascript/core/cloud.js",
             "line": 1,
             "description": "A Cloud, a scene graph node for displaying points in space."
+        },
+        "LoaderPath": {
+            "name": "LoaderPath",
+            "shortname": "LoaderPath",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src/main/javascript/core/loader-path.js",
+            "line": 1,
+            "description": "A loader for external assets, which assumes assets reside in a common base path, and are named as\nthe file element is named."
+        },
+        "LoaderShader": {
+            "name": "LoaderShader",
+            "shortname": "LoaderShader",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src/main/javascript/core/loader-shader.js",
+            "line": 1,
+            "description": "A loader for external shader assets."
+        },
+        "Loader": {
+            "name": "Loader",
+            "shortname": "Loader",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src/main/javascript/core/loader.js",
+            "line": 1,
+            "description": "A loader for external assets."
+        },
+        "Node": {
+            "name": "Node",
+            "shortname": "Node",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src/main/javascript/core/node.js",
+            "line": 1,
+            "description": "A node in a scene graph."
+        },
+        "Program": {
+            "name": "Program",
+            "shortname": "Program",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src/main/javascript/core/program.js",
+            "line": 1,
+            "description": "A Vertex and Fragment \"shader\" pairing, and utilities for setting attributes and parameters."
+        },
+        "Render": {
+            "name": "Render",
+            "shortname": "Render",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src/main/javascript/core/render.js",
+            "line": 3,
+            "description": "A Rendering context."
         },
         "Float4x4": {
             "name": "Float4x4",
@@ -146,7 +237,7 @@
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
-            "file": "src/main/javascript/float4x4.js",
+            "file": "src/main/javascript/math/float4x4.js",
             "line": 1,
             "description": "A 4x4 matrix used as a 3D transformation",
             "extends": "FloatNxN"
@@ -159,100 +250,16 @@
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
-            "file": "src/main/javascript/floatNxN.js",
+            "file": "src/main/javascript/math/floatNxN.js",
             "line": 1,
             "description": "A (square) NxN matrix"
-        },
-        "LoaderPath": {
-            "name": "LoaderPath",
-            "shortname": "LoaderPath",
-            "classitems": [],
-            "plugins": [],
-            "extensions": [],
-            "plugin_for": [],
-            "extension_for": [],
-            "file": "src/main/javascript/loader-path.js",
-            "line": 1,
-            "description": "A loader for external assets, which assumes assets reside in a common base path, and are named as\nthe file element is named."
-        },
-        "LoaderShader": {
-            "name": "LoaderShader",
-            "shortname": "LoaderShader",
-            "classitems": [],
-            "plugins": [],
-            "extensions": [],
-            "plugin_for": [],
-            "extension_for": [],
-            "file": "src/main/javascript/loader-shader.js",
-            "line": 1,
-            "description": "A loader for external shader assets."
-        },
-        "Loader": {
-            "name": "Loader",
-            "shortname": "Loader",
-            "classitems": [],
-            "plugins": [],
-            "extensions": [],
-            "plugin_for": [],
-            "extension_for": [],
-            "file": "src/main/javascript/loader.js",
-            "line": 1,
-            "description": "A loader for external assets."
-        },
-        "Node": {
-            "name": "Node",
-            "shortname": "Node",
-            "classitems": [],
-            "plugins": [],
-            "extensions": [],
-            "plugin_for": [],
-            "extension_for": [],
-            "file": "src/main/javascript/node.js",
-            "line": 1,
-            "description": "A node in a scene graph."
-        },
-        "Program": {
-            "name": "Program",
-            "shortname": "Program",
-            "classitems": [],
-            "plugins": [],
-            "extensions": [],
-            "plugin_for": [],
-            "extension_for": [],
-            "file": "src/main/javascript/program.js",
-            "line": 1,
-            "description": "A Vertex and Fragment \"shader\" pairing, and utilities for setting attributes and parameters."
-        },
-        "Render": {
-            "name": "Render",
-            "shortname": "Render",
-            "classitems": [],
-            "plugins": [],
-            "extensions": [],
-            "plugin_for": [],
-            "extension_for": [],
-            "file": "src/main/javascript/render.js",
-            "line": 3,
-            "description": "A Rendering context."
-        },
-        "Utility": {
-            "name": "Utility",
-            "shortname": "Utility",
-            "classitems": [],
-            "plugins": [],
-            "extensions": [],
-            "plugin_for": [],
-            "extension_for": [],
-            "file": "src/main/javascript/utility.js",
-            "line": 1,
-            "description": "A collection of utility functions."
         }
     },
     "elements": {
         "POSITION_ATTRIBUTE": {
             "name": "POSITION_ATTRIBUTE",
             "attributes": [],
-            "file": "src/main/javascript/program.js",
+            "file": "src/main/javascript/core/program.js",
             "line": 9,
             "description": "the name for the standard POSITION buffer attribute in a shader.",
             "type": "{string}",
@@ -261,7 +268,7 @@
         "NORMAL_ATTRIBUTE": {
             "name": "NORMAL_ATTRIBUTE",
             "attributes": [],
-            "file": "src/main/javascript/program.js",
+            "file": "src/main/javascript/core/program.js",
             "line": 17,
             "description": "the name for the standard NORMAL buffer attribute in a shader.",
             "type": "{string}",
@@ -270,7 +277,7 @@
         "TEXTURE_ATTRIBUTE": {
             "name": "TEXTURE_ATTRIBUTE",
             "attributes": [],
-            "file": "src/main/javascript/program.js",
+            "file": "src/main/javascript/core/program.js",
             "line": 25,
             "description": "the name for the standard TEXTURE buffer attribute in a shader.",
             "type": "{string}",
@@ -279,22 +286,7 @@
     },
     "classitems": [
         {
-            "file": "src/main/javascript/camera.js",
-            "line": 18,
-            "params": [
-                {
-                    "name": "focalLength",
-                    "description": ""
-                },
-                {
-                    "name": "filmSize",
-                    "description": ""
-                }
-            ],
-            "class": "Cloud"
-        },
-        {
-            "file": "src/main/javascript/class-base.js",
+            "file": "src/main/javascript/common/class-base.js",
             "line": 4,
             "params": [
                 {
@@ -306,10 +298,10 @@
                 "description": "",
                 "type": "_"
             },
-            "class": "Cloud"
+            "class": "Utility"
         },
         {
-            "file": "src/main/javascript/class-named.js",
+            "file": "src/main/javascript/common/class-named.js",
             "line": 40,
             "params": [
                 {
@@ -325,10 +317,10 @@
                 "description": "",
                 "type": "_"
             },
-            "class": "Cloud"
+            "class": "Utility"
         },
         {
-            "file": "src/main/javascript/class-named.js",
+            "file": "src/main/javascript/common/class-named.js",
             "line": 66,
             "params": [
                 {
@@ -340,10 +332,10 @@
                 "description": "",
                 "type": "*"
             },
-            "class": "Cloud"
+            "class": "Utility"
         },
         {
-            "file": "src/main/javascript/class-named.js",
+            "file": "src/main/javascript/common/class-named.js",
             "line": 75,
             "description": "get the name of this named thing (if it has one).",
             "itemtype": "method",
@@ -352,19 +344,19 @@
                 "description": "the name of this node, or just \"node\".",
                 "type": "String"
             },
-            "class": "Cloud"
+            "class": "Utility"
         },
         {
-            "file": "src/main/javascript/class-named.js",
+            "file": "src/main/javascript/common/class-named.js",
             "line": 85,
             "return": {
                 "description": "",
                 "type": "Object"
             },
-            "class": "Cloud"
+            "class": "Utility"
         },
         {
-            "file": "src/main/javascript/class-named.js",
+            "file": "src/main/javascript/common/class-named.js",
             "line": 93,
             "params": [
                 {
@@ -372,10 +364,267 @@
                     "description": ""
                 }
             ],
+            "class": "Utility"
+        },
+        {
+            "file": "src/main/javascript/common/document-helper.js",
+            "line": 4,
+            "params": [
+                {
+                    "name": "id",
+                    "description": ""
+                }
+            ],
+            "class": "Utility"
+        },
+        {
+            "file": "src/main/javascript/common/document-helper.js",
+            "line": 13,
+            "params": [
+                {
+                    "name": "ids",
+                    "description": ""
+                }
+            ],
+            "class": "Utility"
+        },
+        {
+            "file": "src/main/javascript/common/document-helper.js",
+            "line": 24,
+            "class": "Utility"
+        },
+        {
+            "file": "src/main/javascript/common/utility.js",
+            "line": 31,
+            "description": "Convert an angle measured in degrees to radians.",
+            "itemtype": "method",
+            "name": "degreesToRadians",
+            "params": [
+                {
+                    "name": "degrees",
+                    "description": "the degree measure to be converted",
+                    "type": "Float"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Float"
+            },
+            "class": "Utility"
+        },
+        {
+            "file": "src/main/javascript/common/utility.js",
+            "line": 54,
+            "description": "Convert an angle measured in radians to degrees.",
+            "itemtype": "method",
+            "name": "radiansToDegrees",
+            "params": [
+                {
+                    "name": "radians",
+                    "description": "the radian measure to be converted",
+                    "type": "Float"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Float"
+            },
+            "class": "Utility"
+        },
+        {
+            "file": "src/main/javascript/common/utility.js",
+            "line": 65,
+            "description": "Make the first letter of a string be upper case.",
+            "itemtype": "method",
+            "name": "uppercase",
+            "params": [
+                {
+                    "name": "string",
+                    "description": "the text to convert to upper case",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "String"
+            },
+            "class": "Utility"
+        },
+        {
+            "file": "src/main/javascript/common/utility.js",
+            "line": 76,
+            "description": "Make the first letter of a string be lower case.",
+            "itemtype": "method",
+            "name": "lowercase",
+            "params": [
+                {
+                    "name": "string",
+                    "description": "the text to convert to lower case",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "String"
+            },
+            "class": "Utility"
+        },
+        {
+            "file": "src/main/javascript/common/utility.js",
+            "line": 87,
+            "description": "Convert an array of arrays to a single array of values (in order).",
+            "itemtype": "method",
+            "name": "flatten",
+            "params": [
+                {
+                    "name": "array",
+                    "description": "the input array of arrays",
+                    "type": "Array"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Array"
+            },
+            "class": "Utility"
+        },
+        {
+            "file": "src/main/javascript/common/utility.js",
+            "line": 104,
+            "description": "truncate a number to a specific precision, equivalent to discretization",
+            "itemtype": "method",
+            "name": "fixNum",
+            "params": [
+                {
+                    "name": "number",
+                    "description": "the number to discretize",
+                    "type": "Float"
+                },
+                {
+                    "name": "precision",
+                    "description": "how many decimal places to force",
+                    "type": "Integer"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Number"
+            },
+            "class": "Utility"
+        },
+        {
+            "file": "src/main/javascript/common/utility.js",
+            "line": 117,
+            "description": "zero pad a number to a specific width",
+            "itemtype": "method",
+            "name": "padNum",
+            "params": [
+                {
+                    "name": "number",
+                    "description": "the number to pad",
+                    "type": "Number"
+                },
+                {
+                    "name": "width",
+                    "description": "how many places the final number should be",
+                    "type": "Integer"
+                },
+                {
+                    "name": "fill",
+                    "description": "the character to pad with (default is \"0\")",
+                    "type": "Char"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "*"
+            },
+            "class": "Utility"
+        },
+        {
+            "file": "src/main/javascript/common/utility.js",
+            "line": 132,
+            "description": "provide a default value if the requested value is undefined. this is\nhere because the macro doesn't handle multiline values.",
+            "itemtype": "method",
+            "name": "defaultValue",
+            "params": [
+                {
+                    "name": "value",
+                    "description": "the value to test for undefined",
+                    "type": "Any"
+                },
+                {
+                    "name": "defaultValue",
+                    "description": "the default value to provide if value is undefined",
+                    "type": "Any"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Any"
+            },
+            "class": "Utility"
+        },
+        {
+            "file": "src/main/javascript/common/utility.js",
+            "line": 145,
+            "description": "provide a default value if the requested value is undefined by calling a function. this is\nhere because the macro doesn't handle multiline values.",
+            "itemtype": "method",
+            "name": "defaultFunction",
+            "params": [
+                {
+                    "name": "value",
+                    "description": "the value to test for undefined",
+                    "type": "Any"
+                },
+                {
+                    "name": "defaultFunction",
+                    "description": "the function to call if value is undefined",
+                    "type": "Function"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Any"
+            },
+            "class": "Utility"
+        },
+        {
+            "file": "src/main/javascript/common/utility.js",
+            "line": 158,
+            "description": "create a reversed mapping from a given object (assumes 1:1 values)",
+            "itemtype": "method",
+            "name": "reverseMap",
+            "params": [
+                {
+                    "name": "mapping",
+                    "description": "the the object containing the mapping to be reversed",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Object"
+            },
+            "class": "Utility"
+        },
+        {
+            "file": "src/main/javascript/core/camera.js",
+            "line": 21,
+            "params": [
+                {
+                    "name": "focalLength",
+                    "description": ""
+                },
+                {
+                    "name": "filmSize",
+                    "description": ""
+                }
+            ],
             "class": "Cloud"
         },
         {
-            "file": "src/main/javascript/cloud.js",
+            "file": "src/main/javascript/core/cloud.js",
             "line": 9,
             "description": "the initializer for a cloud.",
             "itemtype": "method",
@@ -394,7 +643,7 @@
             "class": "Cloud"
         },
         {
-            "file": "src/main/javascript/cloud.js",
+            "file": "src/main/javascript/core/cloud.js",
             "line": 29,
             "description": "add a point to the cloud.",
             "itemtype": "method",
@@ -410,7 +659,7 @@
             "class": "Cloud"
         },
         {
-            "file": "src/main/javascript/cloud.js",
+            "file": "src/main/javascript/core/cloud.js",
             "line": 46,
             "description": "add multiple points to the cloud.",
             "itemtype": "method",
@@ -426,7 +675,7 @@
             "class": "Cloud"
         },
         {
-            "file": "src/main/javascript/cloud.js",
+            "file": "src/main/javascript/core/cloud.js",
             "line": 59,
             "description": "static method to create and construct a new cloud node.",
             "itemtype": "method",
@@ -446,7 +695,369 @@
             "class": "Cloud"
         },
         {
-            "file": "src/main/javascript/float4x4.js",
+            "file": "src/main/javascript/core/loader-path.js",
+            "line": 10,
+            "description": "the initializer for a path loader.",
+            "itemtype": "method",
+            "name": "construct",
+            "params": [
+                {
+                    "name": "parameters",
+                    "description": "an object specifying the loader class parameters",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Loader"
+            },
+            "class": "LoaderPath"
+        },
+        {
+            "file": "src/main/javascript/core/loader-path.js",
+            "line": 33,
+            "description": "static method to create and construct a new LoaderPath.",
+            "itemtype": "method",
+            "name": "new",
+            "static": 1,
+            "params": [
+                {
+                    "name": "parameters",
+                    "description": "an object including Loader class parameters, as well as the type\nand path to use for all operations. The \"path\" parameter should contain a \"@\" to be replaced\nwith the fetch name.",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "LoaderPath"
+            },
+            "class": "LoaderPath"
+        },
+        {
+            "file": "src/main/javascript/core/loader-shader.js",
+            "line": 9,
+            "description": "the initializer for a shader loader.",
+            "itemtype": "method",
+            "name": "construct",
+            "params": [
+                {
+                    "name": "path",
+                    "description": "the common path for a path loader.",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "LoaderShader"
+            },
+            "class": "LoaderShader"
+        },
+        {
+            "file": "src/main/javascript/core/loader-shader.js",
+            "line": 37,
+            "description": "static method to create and construct a new LoaderPath.",
+            "itemtype": "method",
+            "name": "new",
+            "static": 1,
+            "params": [
+                {
+                    "name": "path",
+                    "description": "the common path for a path loader.",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "LoaderShader"
+            },
+            "class": "LoaderShader"
+        },
+        {
+            "file": "src/main/javascript/core/loader.js",
+            "line": 9,
+            "description": "the initializer for a loader.",
+            "itemtype": "method",
+            "name": "construct",
+            "params": [
+                {
+                    "name": "parameters",
+                    "description": "an object specifying the scope and callback to call when an item\nis finished, and when all items are finished (onFinishedAll, onFinishedItem).",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Loader"
+            },
+            "class": "Loader"
+        },
+        {
+            "file": "src/main/javascript/core/loader.js",
+            "line": 43,
+            "description": "start the fetch process for all the loadable items.",
+            "itemtype": "method",
+            "name": "go",
+            "params": [
+                {
+                    "name": "parameters",
+                    "description": "an object specifying the scope and callback to call when an item\nis finished, and when all items are finished (onFinishedAll, onFinishedItem).",
+                    "type": "Object"
+                }
+            ],
+            "chainable": 1,
+            "class": "Loader"
+        },
+        {
+            "file": "src/main/javascript/core/loader.js",
+            "line": 57,
+            "description": "continue the fetch process for all the loadable items.",
+            "itemtype": "method",
+            "name": "next",
+            "chainable": 1,
+            "class": "Loader"
+        },
+        {
+            "file": "src/main/javascript/core/node.js",
+            "line": 9,
+            "description": "the initializer for a scene graph node.",
+            "itemtype": "method",
+            "name": "construct",
+            "params": [
+                {
+                    "name": "parameters",
+                    "description": "an object with optional information to include in the node. The\npossibilities are:\n* transform {Float4x4}: a transformation matrix to apply before drawing or traversing children.\n* state {function}: a parameter-less function to call before drawing or traversing children.\nthis function may set any render state needed.\n* shape {string}: the name of a shape to draw.\n* children: the node will have an array of children by default, but if the node is intended\nto be a leaf, you can save the space and time associated with an empty list by setting this\nvalue to \"false\".",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Node"
+            },
+            "class": "Node"
+        },
+        {
+            "file": "src/main/javascript/core/node.js",
+            "line": 222,
+            "description": "add a child node (only applies to non-leaf nodes).",
+            "itemtype": "method",
+            "name": "addChild",
+            "params": [
+                {
+                    "name": "node",
+                    "description": "the node to add as a child.",
+                    "type": "Node"
+                }
+            ],
+            "chainable": 1,
+            "class": "Node"
+        },
+        {
+            "file": "src/main/javascript/core/node.js",
+            "line": 239,
+            "description": "draw this node's contents.",
+            "itemtype": "method",
+            "name": "draw",
+            "params": [
+                {
+                    "name": "standardUniforms",
+                    "description": "the container for standard parameters, as documented in\nProgram",
+                    "type": "Object"
+                }
+            ],
+            "class": "Node"
+        },
+        {
+            "file": "src/main/javascript/core/node.js",
+            "line": 252,
+            "description": "traverse this node and its contents. this function is a place-holder that is replaced by the\nactual function called depending on the parameters passed during construction.",
+            "itemtype": "method",
+            "name": "traverse",
+            "params": [
+                {
+                    "name": "standardUniforms",
+                    "description": "the container for standard parameters, as documented in\nProgram",
+                    "type": "Object"
+                }
+            ],
+            "chainable": 1,
+            "class": "Node"
+        },
+        {
+            "file": "src/main/javascript/core/node.js",
+            "line": 265,
+            "class": "Node"
+        },
+        {
+            "file": "src/main/javascript/core/program.js",
+            "line": 35,
+            "description": "the initializer for a shader.",
+            "itemtype": "method",
+            "name": "construct",
+            "params": [
+                {
+                    "name": "parameters",
+                    "description": "shader construction parameters\nvertexShader name of the vertex shader to use\nfragmentShader name of the fragment shader to use\nattributeMapping maps POSITION, NORMAL, and TEXTURE attributes to the\nattribute names in the shader. This allows the engine to manage the attributes without\nforcing the shader author to use \"standard\" names for everything. Defaults to:\n* POSITION_ATTRIBUTE: \"inputPosition\"\n* NORMAL_ATTRIBUTE: \"inputNormal\"\n* TEXTURE_ATTRIBUTE: \"inputTexture\"\nparameterMapping maps standard parameters to the parameter names in the\nshader. This allows the engine to manage setting the standard set of parameters on the shader\nwithout forcing the shader author to use \"standard\" names. Defaults to:\n* MODEL_MATRIX_PARAMETER: \"modelMatrix\"\n* VIEW_MATRIX_PARAMETER: \"viewMatrix\"\n* PROJECTION_MATRIX_PARAMETER: \"projectionMatrix\"\n* NORMAL_MATRIX_PARAMETER: \"normalMatrix\"\n* CAMERA_POSITION: \"cameraPosition\"\n* OUTPUT_ALPHA_PARAMETER: \"outputAlpha\"\n* TEXTURE_SAMPLER: \"textureSampler\"\n* MODEL_COLOR:\"modelColor\"\n* AMBIENT_LIGHT_COLOR: \"ambientLightColor\"\n* AMBIENT_CONTRIBUTION:\"ambientContribution\"\n* LIGHT_DIRECTION: \"lightDirection\"\n* LIGHT_COLOR:\"lightColor\"\n* DIFFUSE_CONTRIBUTION:\"diffuseContribution\"\n* SPECULAR_CONTRIBUTION:\"specularContribution\"\n* SPECULAR_EXPONENT:\"specularExponent\"",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Program"
+            },
+            "class": "Program"
+        },
+        {
+            "file": "src/main/javascript/core/program.js",
+            "line": 159,
+            "description": "set the standard shader parameters in one call.",
+            "itemtype": "method",
+            "name": "setStandardUniforms",
+            "params": [
+                {
+                    "name": "parameters",
+                    "description": "a mapping of standard parameter names to values, as specified in\nthe initialization of the shader",
+                    "type": "Object"
+                }
+            ],
+            "chainable": 1,
+            "class": "Program"
+        },
+        {
+            "file": "src/main/javascript/core/program.js",
+            "line": 186,
+            "description": "bind the POSITION attribute to the given buffer.",
+            "itemtype": "method",
+            "name": "bindPositionAttribute",
+            "params": [
+                {
+                    "name": "buffer",
+                    "description": "WebGL buffer to bind",
+                    "type": "Object"
+                }
+            ],
+            "chainable": 1,
+            "class": "Program"
+        },
+        {
+            "file": "src/main/javascript/core/program.js",
+            "line": 197,
+            "description": "bind the NORMAL attribute to the given buffer.",
+            "itemtype": "method",
+            "name": "bindNormalAttribute",
+            "params": [
+                {
+                    "name": "buffer",
+                    "description": "WebGL buffer to bind",
+                    "type": "Object"
+                }
+            ],
+            "chainable": 1,
+            "class": "Program"
+        },
+        {
+            "file": "src/main/javascript/core/program.js",
+            "line": 208,
+            "description": "bind the TEXTURE attribute to the given buffer.",
+            "itemtype": "method",
+            "name": "bindTextureAttribute",
+            "params": [
+                {
+                    "name": "buffer",
+                    "description": "WebGL buffer to bind",
+                    "type": "Object"
+                }
+            ],
+            "chainable": 1,
+            "class": "Program"
+        },
+        {
+            "file": "src/main/javascript/core/program.js",
+            "line": 220,
+            "description": "disable the enabled buffers.",
+            "itemtype": "method",
+            "name": "unbindAttributes",
+            "return": {
+                "description": "",
+                "type": "Program"
+            },
+            "class": "Program"
+        },
+        {
+            "file": "src/main/javascript/core/program.js",
+            "line": 232,
+            "description": "fetch the shader currently in use.",
+            "itemtype": "method",
+            "name": "getCurrentProgram",
+            "static": 1,
+            "return": {
+                "description": "",
+                "type": "Program"
+            },
+            "class": "Program"
+        },
+        {
+            "file": "src/main/javascript/core/program.js",
+            "line": 243,
+            "description": "set this as the current shader in the rendering context.",
+            "itemtype": "method",
+            "name": "use",
+            "chainable": 1,
+            "class": "Program"
+        },
+        {
+            "file": "src/main/javascript/core/render.js",
+            "line": 11,
+            "description": "The initializer for a rendering context.",
+            "itemtype": "method",
+            "name": "construct",
+            "params": [
+                {
+                    "name": "canvasId",
+                    "description": "the id of the canvas element to use for the rendering context",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Render"
+            },
+            "class": "Render"
+        },
+        {
+            "file": "src/main/javascript/core/render.js",
+            "line": 56,
+            "description": "Set the global rendering context.",
+            "itemtype": "method",
+            "name": "use",
+            "class": "Render"
+        },
+        {
+            "file": "src/main/javascript/core/render.js",
+            "line": 65,
+            "description": "Static method to create and construct a new rendering context.",
+            "itemtype": "method",
+            "name": "new",
+            "static": 1,
+            "params": [
+                {
+                    "name": "canvasId",
+                    "description": "the id of the canvas element to use for the rendering context.",
+                    "type": "String"
+                },
+                {
+                    "name": "aspectRatio",
+                    "description": "the width / height of the canvas.",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Render"
+            },
+            "class": "Render"
+        },
+        {
+            "file": "src/main/javascript/math/float4x4.js",
             "line": 11,
             "params": [
                 {
@@ -465,7 +1076,7 @@
             "class": "Float4x4"
         },
         {
-            "file": "src/main/javascript/float4x4.js",
+            "file": "src/main/javascript/math/float4x4.js",
             "line": 46,
             "params": [
                 {
@@ -488,7 +1099,7 @@
             "class": "Float4x4"
         },
         {
-            "file": "src/main/javascript/float4x4.js",
+            "file": "src/main/javascript/math/float4x4.js",
             "line": 63,
             "params": [
                 {
@@ -511,7 +1122,7 @@
             "class": "Float4x4"
         },
         {
-            "file": "src/main/javascript/float4x4.js",
+            "file": "src/main/javascript/math/float4x4.js",
             "line": 80,
             "params": [
                 {
@@ -522,7 +1133,7 @@
             "class": "Float4x4"
         },
         {
-            "file": "src/main/javascript/float4x4.js",
+            "file": "src/main/javascript/math/float4x4.js",
             "line": 91,
             "params": [
                 {
@@ -533,7 +1144,7 @@
             "class": "Float4x4"
         },
         {
-            "file": "src/main/javascript/float4x4.js",
+            "file": "src/main/javascript/math/float4x4.js",
             "line": 102,
             "params": [
                 {
@@ -544,7 +1155,7 @@
             "class": "Float4x4"
         },
         {
-            "file": "src/main/javascript/float4x4.js",
+            "file": "src/main/javascript/math/float4x4.js",
             "line": 113,
             "params": [
                 {
@@ -583,7 +1194,7 @@
             "class": "Float4x4"
         },
         {
-            "file": "src/main/javascript/float4x4.js",
+            "file": "src/main/javascript/math/float4x4.js",
             "line": 135,
             "params": [
                 {
@@ -610,7 +1221,7 @@
             "class": "Float4x4"
         },
         {
-            "file": "src/main/javascript/float4x4.js",
+            "file": "src/main/javascript/math/float4x4.js",
             "line": 149,
             "params": [
                 {
@@ -649,7 +1260,7 @@
             "class": "Float4x4"
         },
         {
-            "file": "src/main/javascript/float4x4.js",
+            "file": "src/main/javascript/math/float4x4.js",
             "line": 170,
             "params": [
                 {
@@ -676,7 +1287,7 @@
             "class": "Float4x4"
         },
         {
-            "file": "src/main/javascript/float4x4.js",
+            "file": "src/main/javascript/math/float4x4.js",
             "line": 188,
             "params": [
                 {
@@ -699,7 +1310,7 @@
             "class": "Float4x4"
         },
         {
-            "file": "src/main/javascript/float4x4.js",
+            "file": "src/main/javascript/math/float4x4.js",
             "line": 204,
             "params": [
                 {
@@ -718,7 +1329,7 @@
             "class": "Float4x4"
         },
         {
-            "file": "src/main/javascript/float4x4.js",
+            "file": "src/main/javascript/math/float4x4.js",
             "line": 214,
             "params": [
                 {
@@ -745,7 +1356,7 @@
             "class": "Float4x4"
         },
         {
-            "file": "src/main/javascript/float4x4.js",
+            "file": "src/main/javascript/math/float4x4.js",
             "line": 228,
             "params": [
                 {
@@ -764,7 +1375,7 @@
             "class": "Float4x4"
         },
         {
-            "file": "src/main/javascript/float4x4.js",
+            "file": "src/main/javascript/math/float4x4.js",
             "line": 247,
             "params": [
                 {
@@ -783,27 +1394,27 @@
             "class": "Float4x4"
         },
         {
-            "file": "src/main/javascript/floatN.js",
+            "file": "src/main/javascript/math/floatN.js",
             "line": 14,
             "class": "FloatNxN"
         },
         {
-            "file": "src/main/javascript/floatN.js",
+            "file": "src/main/javascript/math/floatN.js",
             "line": 34,
             "class": "FloatNxN"
         },
         {
-            "file": "src/main/javascript/floatN.js",
+            "file": "src/main/javascript/math/floatN.js",
             "line": 56,
             "class": "FloatNxN"
         },
         {
-            "file": "src/main/javascript/floatN.js",
+            "file": "src/main/javascript/math/floatN.js",
             "line": 77,
             "class": "FloatNxN"
         },
         {
-            "file": "src/main/javascript/floatN.js",
+            "file": "src/main/javascript/math/floatN.js",
             "line": 95,
             "params": [
                 {
@@ -814,7 +1425,7 @@
             "class": "FloatNxN"
         },
         {
-            "file": "src/main/javascript/floatN.js",
+            "file": "src/main/javascript/math/floatN.js",
             "line": 107,
             "params": [
                 {
@@ -829,7 +1440,7 @@
             "class": "FloatNxN"
         },
         {
-            "file": "src/main/javascript/floatN.js",
+            "file": "src/main/javascript/math/floatN.js",
             "line": 117,
             "params": [
                 {
@@ -844,42 +1455,42 @@
             "class": "FloatNxN"
         },
         {
-            "file": "src/main/javascript/floatN.js",
+            "file": "src/main/javascript/math/floatN.js",
             "line": 134,
             "class": "FloatNxN"
         },
         {
-            "file": "src/main/javascript/floatN.js",
+            "file": "src/main/javascript/math/floatN.js",
             "line": 155,
             "class": "FloatNxN"
         },
         {
-            "file": "src/main/javascript/floatN.js",
+            "file": "src/main/javascript/math/floatN.js",
             "line": 176,
             "class": "FloatNxN"
         },
         {
-            "file": "src/main/javascript/floatN.js",
+            "file": "src/main/javascript/math/floatN.js",
             "line": 197,
             "class": "FloatNxN"
         },
         {
-            "file": "src/main/javascript/floatN.js",
+            "file": "src/main/javascript/math/floatN.js",
             "line": 212,
             "class": "FloatNxN"
         },
         {
-            "file": "src/main/javascript/floatN.js",
+            "file": "src/main/javascript/math/floatN.js",
             "line": 228,
             "class": "FloatNxN"
         },
         {
-            "file": "src/main/javascript/floatN.js",
+            "file": "src/main/javascript/math/floatN.js",
             "line": 247,
             "class": "FloatNxN"
         },
         {
-            "file": "src/main/javascript/floatN.js",
+            "file": "src/main/javascript/math/floatN.js",
             "line": 261,
             "params": [
                 {
@@ -898,7 +1509,7 @@
             "class": "FloatNxN"
         },
         {
-            "file": "src/main/javascript/floatN.js",
+            "file": "src/main/javascript/math/floatN.js",
             "line": 277,
             "params": [
                 {
@@ -917,7 +1528,7 @@
             "class": "FloatNxN"
         },
         {
-            "file": "src/main/javascript/floatN.js",
+            "file": "src/main/javascript/math/floatN.js",
             "line": 289,
             "params": [
                 {
@@ -936,7 +1547,7 @@
             "class": "FloatNxN"
         },
         {
-            "file": "src/main/javascript/floatN.js",
+            "file": "src/main/javascript/math/floatN.js",
             "line": 305,
             "params": [
                 {
@@ -959,7 +1570,7 @@
             "class": "FloatNxN"
         },
         {
-            "file": "src/main/javascript/floatNxN.js",
+            "file": "src/main/javascript/math/floatNxN.js",
             "line": 20,
             "description": "Create a new FloatNxN.",
             "itemtype": "method",
@@ -972,7 +1583,7 @@
             "class": "FloatNxN"
         },
         {
-            "file": "src/main/javascript/floatNxN.js",
+            "file": "src/main/javascript/math/floatNxN.js",
             "line": 31,
             "description": "Copy contents from an array into a FloatNxN and return the result.",
             "itemtype": "method",
@@ -995,777 +1606,212 @@
                 "type": "FloatNxN"
             },
             "class": "FloatNxN"
-        },
-        {
-            "file": "src/main/javascript/loader-path.js",
-            "line": 10,
-            "description": "the initializer for a path loader.",
-            "itemtype": "method",
-            "name": "construct",
-            "params": [
-                {
-                    "name": "parameters",
-                    "description": "an object specifying the loader class parameters",
-                    "type": "Object"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "Loader"
-            },
-            "class": "LoaderPath"
-        },
-        {
-            "file": "src/main/javascript/loader-path.js",
-            "line": 33,
-            "description": "static method to create and construct a new LoaderPath.",
-            "itemtype": "method",
-            "name": "new",
-            "static": 1,
-            "params": [
-                {
-                    "name": "parameters",
-                    "description": "an object including Loader class parameters, as well as the type\nand path to use for all operations. The \"path\" parameter should contain a \"@\" to be replaced\nwith the fetch name.",
-                    "type": "Object"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "LoaderPath"
-            },
-            "class": "LoaderPath"
-        },
-        {
-            "file": "src/main/javascript/loader-shader.js",
-            "line": 9,
-            "description": "the initializer for a shader loader.",
-            "itemtype": "method",
-            "name": "construct",
-            "params": [
-                {
-                    "name": "path",
-                    "description": "the common path for a path loader.",
-                    "type": "String"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "LoaderShader"
-            },
-            "class": "LoaderShader"
-        },
-        {
-            "file": "src/main/javascript/loader-shader.js",
-            "line": 37,
-            "description": "static method to create and construct a new LoaderPath.",
-            "itemtype": "method",
-            "name": "new",
-            "static": 1,
-            "params": [
-                {
-                    "name": "path",
-                    "description": "the common path for a path loader.",
-                    "type": "String"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "LoaderShader"
-            },
-            "class": "LoaderShader"
-        },
-        {
-            "file": "src/main/javascript/loader.js",
-            "line": 9,
-            "description": "the initializer for a loader.",
-            "itemtype": "method",
-            "name": "construct",
-            "params": [
-                {
-                    "name": "parameters",
-                    "description": "an object specifying the scope and callback to call when an item\nis finished, and when all items are finished (onFinishedAll, onFinishedItem).",
-                    "type": "Object"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "Loader"
-            },
-            "class": "Loader"
-        },
-        {
-            "file": "src/main/javascript/loader.js",
-            "line": 43,
-            "description": "start the fetch process for all the loadable items.",
-            "itemtype": "method",
-            "name": "go",
-            "params": [
-                {
-                    "name": "parameters",
-                    "description": "an object specifying the scope and callback to call when an item\nis finished, and when all items are finished (onFinishedAll, onFinishedItem).",
-                    "type": "Object"
-                }
-            ],
-            "chainable": 1,
-            "class": "Loader"
-        },
-        {
-            "file": "src/main/javascript/loader.js",
-            "line": 57,
-            "description": "continue the fetch process for all the loadable items.",
-            "itemtype": "method",
-            "name": "next",
-            "chainable": 1,
-            "class": "Loader"
-        },
-        {
-            "file": "src/main/javascript/node.js",
-            "line": 9,
-            "description": "the initializer for a scene graph node.",
-            "itemtype": "method",
-            "name": "construct",
-            "params": [
-                {
-                    "name": "parameters",
-                    "description": "an object with optional information to include in the node. The\npossibilities are:\n* transform {Float4x4}: a transformation matrix to apply before drawing or traversing children.\n* state {function}: a parameter-less function to call before drawing or traversing children.\nthis function may set any render state needed.\n* shape {string}: the name of a shape to draw.\n* children: the node will have an array of children by default, but if the node is intended\nto be a leaf, you can save the space and time associated with an empty list by setting this\nvalue to \"false\".",
-                    "type": "Object"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "Node"
-            },
-            "class": "Node"
-        },
-        {
-            "file": "src/main/javascript/node.js",
-            "line": 222,
-            "description": "add a child node (only applies to non-leaf nodes).",
-            "itemtype": "method",
-            "name": "addChild",
-            "params": [
-                {
-                    "name": "node",
-                    "description": "the node to add as a child.",
-                    "type": "Node"
-                }
-            ],
-            "chainable": 1,
-            "class": "Node"
-        },
-        {
-            "file": "src/main/javascript/node.js",
-            "line": 239,
-            "description": "draw this node's contents.",
-            "itemtype": "method",
-            "name": "draw",
-            "params": [
-                {
-                    "name": "standardUniforms",
-                    "description": "the container for standard parameters, as documented in\nProgram",
-                    "type": "Object"
-                }
-            ],
-            "class": "Node"
-        },
-        {
-            "file": "src/main/javascript/node.js",
-            "line": 252,
-            "description": "traverse this node and its contents. this function is a place-holder that is replaced by the\nactual function called depending on the parameters passed during construction.",
-            "itemtype": "method",
-            "name": "traverse",
-            "params": [
-                {
-                    "name": "standardUniforms",
-                    "description": "the container for standard parameters, as documented in\nProgram",
-                    "type": "Object"
-                }
-            ],
-            "chainable": 1,
-            "class": "Node"
-        },
-        {
-            "file": "src/main/javascript/node.js",
-            "line": 265,
-            "class": "Node"
-        },
-        {
-            "file": "src/main/javascript/program.js",
-            "line": 35,
-            "description": "the initializer for a shader.",
-            "itemtype": "method",
-            "name": "construct",
-            "params": [
-                {
-                    "name": "parameters",
-                    "description": "shader construction parameters\nvertexShader name of the vertex shader to use\nfragmentShader name of the fragment shader to use\nattributeMapping maps POSITION, NORMAL, and TEXTURE attributes to the\nattribute names in the shader. This allows the engine to manage the attributes without\nforcing the shader author to use \"standard\" names for everything. Defaults to:\n* POSITION_ATTRIBUTE: \"inputPosition\"\n* NORMAL_ATTRIBUTE: \"inputNormal\"\n* TEXTURE_ATTRIBUTE: \"inputTexture\"\nparameterMapping maps standard parameters to the parameter names in the\nshader. This allows the engine to manage setting the standard set of parameters on the shader\nwithout forcing the shader author to use \"standard\" names. Defaults to:\n* MODEL_MATRIX_PARAMETER: \"modelMatrix\"\n* VIEW_MATRIX_PARAMETER: \"viewMatrix\"\n* PROJECTION_MATRIX_PARAMETER: \"projectionMatrix\"\n* NORMAL_MATRIX_PARAMETER: \"normalMatrix\"\n* CAMERA_POSITION: \"cameraPosition\"\n* OUTPUT_ALPHA_PARAMETER: \"outputAlpha\"\n* TEXTURE_SAMPLER: \"textureSampler\"\n* MODEL_COLOR:\"modelColor\"\n* AMBIENT_LIGHT_COLOR: \"ambientLightColor\"\n* AMBIENT_CONTRIBUTION:\"ambientContribution\"\n* LIGHT_DIRECTION: \"lightDirection\"\n* LIGHT_COLOR:\"lightColor\"\n* DIFFUSE_CONTRIBUTION:\"diffuseContribution\"\n* SPECULAR_CONTRIBUTION:\"specularContribution\"\n* SPECULAR_EXPONENT:\"specularExponent\"",
-                    "type": "Object"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "Program"
-            },
-            "class": "Program"
-        },
-        {
-            "file": "src/main/javascript/program.js",
-            "line": 159,
-            "description": "set the standard shader parameters in one call.",
-            "itemtype": "method",
-            "name": "setStandardUniforms",
-            "params": [
-                {
-                    "name": "parameters",
-                    "description": "a mapping of standard parameter names to values, as specified in\nthe initialization of the shader",
-                    "type": "Object"
-                }
-            ],
-            "chainable": 1,
-            "class": "Program"
-        },
-        {
-            "file": "src/main/javascript/program.js",
-            "line": 186,
-            "description": "bind the POSITION attribute to the given buffer.",
-            "itemtype": "method",
-            "name": "bindPositionAttribute",
-            "params": [
-                {
-                    "name": "buffer",
-                    "description": "WebGL buffer to bind",
-                    "type": "Object"
-                }
-            ],
-            "chainable": 1,
-            "class": "Program"
-        },
-        {
-            "file": "src/main/javascript/program.js",
-            "line": 197,
-            "description": "bind the NORMAL attribute to the given buffer.",
-            "itemtype": "method",
-            "name": "bindNormalAttribute",
-            "params": [
-                {
-                    "name": "buffer",
-                    "description": "WebGL buffer to bind",
-                    "type": "Object"
-                }
-            ],
-            "chainable": 1,
-            "class": "Program"
-        },
-        {
-            "file": "src/main/javascript/program.js",
-            "line": 208,
-            "description": "bind the TEXTURE attribute to the given buffer.",
-            "itemtype": "method",
-            "name": "bindTextureAttribute",
-            "params": [
-                {
-                    "name": "buffer",
-                    "description": "WebGL buffer to bind",
-                    "type": "Object"
-                }
-            ],
-            "chainable": 1,
-            "class": "Program"
-        },
-        {
-            "file": "src/main/javascript/program.js",
-            "line": 220,
-            "description": "disable the enabled buffers.",
-            "itemtype": "method",
-            "name": "unbindAttributes",
-            "return": {
-                "description": "",
-                "type": "Program"
-            },
-            "class": "Program"
-        },
-        {
-            "file": "src/main/javascript/program.js",
-            "line": 232,
-            "description": "fetch the shader currently in use.",
-            "itemtype": "method",
-            "name": "getCurrentProgram",
-            "static": 1,
-            "return": {
-                "description": "",
-                "type": "Program"
-            },
-            "class": "Program"
-        },
-        {
-            "file": "src/main/javascript/program.js",
-            "line": 243,
-            "description": "set this as the current shader in the rendering context.",
-            "itemtype": "method",
-            "name": "use",
-            "chainable": 1,
-            "class": "Program"
-        },
-        {
-            "file": "src/main/javascript/render.js",
-            "line": 11,
-            "description": "The initializer for a rendering context.",
-            "itemtype": "method",
-            "name": "construct",
-            "params": [
-                {
-                    "name": "canvasId",
-                    "description": "the id of the canvas element to use for the rendering context",
-                    "type": "String"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "Render"
-            },
-            "class": "Render"
-        },
-        {
-            "file": "src/main/javascript/render.js",
-            "line": 56,
-            "description": "Set the global rendering context.",
-            "itemtype": "method",
-            "name": "use",
-            "class": "Render"
-        },
-        {
-            "file": "src/main/javascript/render.js",
-            "line": 65,
-            "description": "Static method to create and construct a new rendering context.",
-            "itemtype": "method",
-            "name": "new",
-            "static": 1,
-            "params": [
-                {
-                    "name": "canvasId",
-                    "description": "the id of the canvas element to use for the rendering context.",
-                    "type": "String"
-                },
-                {
-                    "name": "aspectRatio",
-                    "description": "the width / height of the canvas.",
-                    "type": "Number"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "Render"
-            },
-            "class": "Render"
-        },
-        {
-            "file": "src/main/javascript/utility.js",
-            "line": 31,
-            "description": "Convert an angle measured in degrees to radians.",
-            "itemtype": "method",
-            "name": "degreesToRadians",
-            "params": [
-                {
-                    "name": "degrees",
-                    "description": "the degree measure to be converted",
-                    "type": "Float"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "Float"
-            },
-            "class": "Utility"
-        },
-        {
-            "file": "src/main/javascript/utility.js",
-            "line": 54,
-            "description": "Convert an angle measured in radians to degrees.",
-            "itemtype": "method",
-            "name": "radiansToDegrees",
-            "params": [
-                {
-                    "name": "radians",
-                    "description": "the radian measure to be converted",
-                    "type": "Float"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "Float"
-            },
-            "class": "Utility"
-        },
-        {
-            "file": "src/main/javascript/utility.js",
-            "line": 65,
-            "description": "Make the first letter of a string be upper case.",
-            "itemtype": "method",
-            "name": "uppercase",
-            "params": [
-                {
-                    "name": "string",
-                    "description": "the text to convert to upper case",
-                    "type": "String"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "String"
-            },
-            "class": "Utility"
-        },
-        {
-            "file": "src/main/javascript/utility.js",
-            "line": 76,
-            "description": "Make the first letter of a string be lower case.",
-            "itemtype": "method",
-            "name": "lowercase",
-            "params": [
-                {
-                    "name": "string",
-                    "description": "the text to convert to lower case",
-                    "type": "String"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "String"
-            },
-            "class": "Utility"
-        },
-        {
-            "file": "src/main/javascript/utility.js",
-            "line": 87,
-            "description": "Convert an array of arrays to a single array of values (in order).",
-            "itemtype": "method",
-            "name": "flatten",
-            "params": [
-                {
-                    "name": "array",
-                    "description": "the input array of arrays",
-                    "type": "Array"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "Array"
-            },
-            "class": "Utility"
-        },
-        {
-            "file": "src/main/javascript/utility.js",
-            "line": 104,
-            "description": "truncate a number to a specific precision, equivalent to discretization",
-            "itemtype": "method",
-            "name": "fixNum",
-            "params": [
-                {
-                    "name": "number",
-                    "description": "the number to discretize",
-                    "type": "Float"
-                },
-                {
-                    "name": "precision",
-                    "description": "how many decimal places to force",
-                    "type": "Integer"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "Number"
-            },
-            "class": "Utility"
-        },
-        {
-            "file": "src/main/javascript/utility.js",
-            "line": 117,
-            "description": "zero pad a number to a specific width",
-            "itemtype": "method",
-            "name": "padNum",
-            "params": [
-                {
-                    "name": "number",
-                    "description": "the number to pad",
-                    "type": "Number"
-                },
-                {
-                    "name": "width",
-                    "description": "how many places the final number should be",
-                    "type": "Integer"
-                },
-                {
-                    "name": "fill",
-                    "description": "the character to pad with (default is \"0\")",
-                    "type": "Char"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "*"
-            },
-            "class": "Utility"
-        },
-        {
-            "file": "src/main/javascript/utility.js",
-            "line": 132,
-            "description": "provide a default value if the requested value is undefined. this is\nhere because the macro doesn't handle multiline values.",
-            "itemtype": "method",
-            "name": "defaultValue",
-            "params": [
-                {
-                    "name": "value",
-                    "description": "the value to test for undefined",
-                    "type": "Any"
-                },
-                {
-                    "name": "defaultValue",
-                    "description": "the default value to provide if value is undefined",
-                    "type": "Any"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "Any"
-            },
-            "class": "Utility"
-        },
-        {
-            "file": "src/main/javascript/utility.js",
-            "line": 145,
-            "description": "provide a default value if the requested value is undefined by calling a function. this is\nhere because the macro doesn't handle multiline values.",
-            "itemtype": "method",
-            "name": "defaultFunction",
-            "params": [
-                {
-                    "name": "value",
-                    "description": "the value to test for undefined",
-                    "type": "Any"
-                },
-                {
-                    "name": "defaultFunction",
-                    "description": "the function to call if value is undefined",
-                    "type": "Function"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "Any"
-            },
-            "class": "Utility"
-        },
-        {
-            "file": "src/main/javascript/utility.js",
-            "line": 158,
-            "description": "create a reversed mapping from a given object (assumes 1:1 values)",
-            "itemtype": "method",
-            "name": "reverseMap",
-            "params": [
-                {
-                    "name": "mapping",
-                    "description": "the the object containing the mapping to be reversed",
-                    "type": "Object"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "Object"
-            },
-            "class": "Utility"
         }
     ],
     "warnings": [
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src/main/javascript/class-base.js:4"
+            "line": " src/main/javascript/common/class-base.js:4"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src/main/javascript/class-named.js:40"
+            "line": " src/main/javascript/common/class-named.js:40"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src/main/javascript/class-named.js:66"
+            "line": " src/main/javascript/common/class-named.js:66"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src/main/javascript/class-named.js:85"
+            "line": " src/main/javascript/common/class-named.js:85"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src/main/javascript/float4x4.js:188"
+            "line": " src/main/javascript/common/utility.js:117"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src/main/javascript/float4x4.js:228"
+            "line": " src/main/javascript/math/float4x4.js:188"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src/main/javascript/float4x4.js:247"
+            "line": " src/main/javascript/math/float4x4.js:228"
         },
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src/main/javascript/utility.js:117"
+            "line": " src/main/javascript/math/float4x4.js:247"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/camera.js:18"
+            "line": " src/main/javascript/common/class-base.js:4"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/class-base.js:4"
+            "line": " src/main/javascript/common/class-named.js:40"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/class-named.js:40"
+            "line": " src/main/javascript/common/class-named.js:66"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/class-named.js:66"
+            "line": " src/main/javascript/common/class-named.js:85"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/class-named.js:85"
+            "line": " src/main/javascript/common/class-named.js:93"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/class-named.js:93"
+            "line": " src/main/javascript/common/document-helper.js:4"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/float4x4.js:11"
+            "line": " src/main/javascript/common/document-helper.js:13"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/float4x4.js:46"
+            "line": " src/main/javascript/common/document-helper.js:24"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/float4x4.js:63"
+            "line": " src/main/javascript/core/camera.js:21"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/float4x4.js:80"
+            "line": " src/main/javascript/core/node.js:265"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/float4x4.js:91"
+            "line": " src/main/javascript/math/float4x4.js:11"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/float4x4.js:102"
+            "line": " src/main/javascript/math/float4x4.js:46"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/float4x4.js:113"
+            "line": " src/main/javascript/math/float4x4.js:63"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/float4x4.js:135"
+            "line": " src/main/javascript/math/float4x4.js:80"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/float4x4.js:149"
+            "line": " src/main/javascript/math/float4x4.js:91"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/float4x4.js:170"
+            "line": " src/main/javascript/math/float4x4.js:102"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/float4x4.js:188"
+            "line": " src/main/javascript/math/float4x4.js:113"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/float4x4.js:204"
+            "line": " src/main/javascript/math/float4x4.js:135"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/float4x4.js:214"
+            "line": " src/main/javascript/math/float4x4.js:149"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/float4x4.js:228"
+            "line": " src/main/javascript/math/float4x4.js:170"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/float4x4.js:247"
+            "line": " src/main/javascript/math/float4x4.js:188"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/floatN.js:14"
+            "line": " src/main/javascript/math/float4x4.js:204"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/floatN.js:34"
+            "line": " src/main/javascript/math/float4x4.js:214"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/floatN.js:56"
+            "line": " src/main/javascript/math/float4x4.js:228"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/floatN.js:77"
+            "line": " src/main/javascript/math/float4x4.js:247"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/floatN.js:95"
+            "line": " src/main/javascript/math/floatN.js:14"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/floatN.js:107"
+            "line": " src/main/javascript/math/floatN.js:34"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/floatN.js:117"
+            "line": " src/main/javascript/math/floatN.js:56"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/floatN.js:134"
+            "line": " src/main/javascript/math/floatN.js:77"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/floatN.js:155"
+            "line": " src/main/javascript/math/floatN.js:95"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/floatN.js:176"
+            "line": " src/main/javascript/math/floatN.js:107"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/floatN.js:197"
+            "line": " src/main/javascript/math/floatN.js:117"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/floatN.js:212"
+            "line": " src/main/javascript/math/floatN.js:134"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/floatN.js:228"
+            "line": " src/main/javascript/math/floatN.js:155"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/floatN.js:247"
+            "line": " src/main/javascript/math/floatN.js:176"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/floatN.js:261"
+            "line": " src/main/javascript/math/floatN.js:197"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/floatN.js:277"
+            "line": " src/main/javascript/math/floatN.js:212"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/floatN.js:289"
+            "line": " src/main/javascript/math/floatN.js:228"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/floatN.js:305"
+            "line": " src/main/javascript/math/floatN.js:247"
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/node.js:265"
+            "line": " src/main/javascript/math/floatN.js:261"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src/main/javascript/math/floatN.js:277"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src/main/javascript/math/floatN.js:289"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src/main/javascript/math/floatN.js:305"
         }
     ]
 }

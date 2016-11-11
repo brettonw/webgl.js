@@ -56,21 +56,176 @@ let LogLevel = function () {
 } ();
 
 LogLevel.set (LogLevel.INFO);
-let OnReady = function () {
+/**
+ * A collection of utility functions.
+ *
+ * @class Utility
+ */
+let Utility = function () {
     let _ = Object.create (null);
 
-    _.construct = function (scope, callback) {
-        this.scope = scope;
-        this.callback = callback;
-        return this;
+    const TWO_PI = Math.PI * 2.0;
+
+    let unwind = _.unwind = function (value, cap) {
+        value -= Math.floor (value / cap) * cap;
+        while (value >= cap) {
+            value -= cap;
+        }
+        while (value < 0) {
+            value += cap;
+        }
+        return value;
     };
 
-    _.notify = function (parameter) {
-        this.callback.call (this.scope, parameter);
+
+    _.unwindRadians = function (radians) {
+        return _.unwind (radians, TWO_PI);
     };
 
-    _.new = function (scope, callback) {
-        return Object.create (_).construct(scope, callback);
+    _.unwindDegrees = function (degrees) {
+        return _.unwind (degrees, 360.0);
+    };
+
+    /**
+     * Convert an angle measured in degrees to radians.
+     *
+     * @method degreesToRadians
+     * @param {float} degrees the degree measure to be converted
+     * @return {float}
+     */
+    _.degreesToRadians = function (degrees) {
+        return unwind (degrees / 180.0, 2.0) * Math.PI;
+    };
+
+    _.cos = function (degrees) {
+        return Math.cos (_.degreesToRadians (degrees));
+    };
+
+    _.sin = function (degrees) {
+        return Math.sin (_.degreesToRadians (degrees));
+    };
+
+    _.tan = function (degrees) {
+        return Math.tan (_.degreesToRadians (degrees));
+    };
+
+    /**
+     * Convert an angle measured in radians to degrees.
+     *
+     * @method radiansToDegrees
+     * @param {float} radians the radian measure to be converted
+     * @return {float}
+     */
+    _.radiansToDegrees = function (radians) {
+        return (unwind (radians, TWO_PI) / Math.PI) * 180;
+    };
+
+    /**
+     * Make the first letter of a string be upper case.
+     *
+     * @method uppercase
+     * @param {string} string the text to convert to upper case
+     * @return {string}
+     */
+    _.uppercase = function (string) {
+        return string[0].toUpperCase () + string.slice (1);
+    };
+
+    /**
+     * Make the first letter of a string be lower case.
+     *
+     * @method lowercase
+     * @param {string} string the text to convert to lower case
+     * @return {string}
+     */
+    _.lowercase = function (string) {
+        return string[0].toLowerCase () + string.slice (1);
+    };
+
+    /**
+     * Convert an array of arrays to a single array of values (in order).
+     *
+     * @method flatten
+     * @param {Array} array the input array of arrays
+     * @return {Array}
+     */
+    _.flatten = function (array) {
+        let result = [];
+        for (let element of array) {
+            for (let value of element) {
+                result.push (value);
+            }
+        }
+        return result;
+    };
+
+    /**
+     * truncate a number to a specific precision, equivalent to discretization
+     *
+     * @method fixNum
+     * @param {float} number the number to discretize
+     * @param {integer} precision how many decimal places to force
+     * @return {number}
+     */
+    _.fixNum = function (number, precision) {
+        (precision = (((typeof precision !== "undefined") && (precision != null)) ? precision : 7));
+        return Number.parseFloat (number.toFixed (precision));
+    };
+
+    /**
+     * zero pad a number to a specific width
+     *
+     * @method padNum
+     * @param {number} number the number to pad
+     * @param {integer} width how many places the final number should be
+     * @param {char} fill the character to pad with (default is "0")
+     * @returns {*}
+     */
+    _.padNum = function (number, width, fill) {
+        fill = fill || "0";
+        number = number + "";
+        return number.length >= width ? number : new Array(width - number.length + 1).join(fill) + number;
+    }
+
+    /**
+     * provide a default value if the requested value is undefined. this is
+     * here because the macro doesn't handle multiline values.
+     *
+     * @method defaultValue
+     * @param {any} value the value to test for undefined
+     * @param {any} defaultValue the default value to provide if value is undefined
+     * @return {any}
+     */
+    _.defaultValue = function (value, defaultValue) {
+        return (value = (((typeof value !== "undefined") && (value != null)) ? value : defaultValue));
+    };
+
+    /**
+     * provide a default value if the requested value is undefined by calling a function. this is
+     * here because the macro doesn't handle multiline values.
+     *
+     * @method defaultFunction
+     * @param {any} value the value to test for undefined
+     * @param {function} defaultFunction the function to call if value is undefined
+     * @return {any}
+     */
+    _.defaultFunction = function (value, defaultFunction) {
+        return (value = (((typeof value !== "undefined") && (value != null)) ? value : defaultFunction ()));
+    };
+
+    /**
+     * create a reversed mapping from a given object (assumes 1:1 values)
+     *
+     * @method reverseMap
+     * @param {object} mapping the the object containing the mapping to be reversed
+     * @return {object}
+     */
+    _.reverseMap = function (mapping) {
+        let reverseMapping = Object.create (null);
+        for (let name in mapping) {
+            reverseMapping[mapping[name]] = name;
+        }
+        return reverseMapping;
     };
 
     return _;
@@ -88,9 +243,11 @@ let ClassBase = function () {
         // of the class we are deriving from ("new" probably isn't overloaded)
         let baseClass = Object.create (this);
 
-        // ensure that we have parameters, then construct the object
-        (parameters = (((typeof parameters !== "undefined") && (parameters != null)) ? parameters : Object.create (null)));
-        baseClass.construct (parameters);
+        // if there is a constructor... ensure that we have parameters, then construct the object
+        if ("construct" in baseClass) {
+            (parameters = (((typeof parameters !== "undefined") && (parameters != null)) ? parameters : Object.create (null)));
+            baseClass.construct (parameters);
+        }
         return baseClass;
     };
 
@@ -201,6 +358,25 @@ let ClassNamed = function (nameRequired) {
 
     return _;
 };
+let OnReady = function () {
+    let _ = Object.create (null);
+
+    _.construct = function (scope, callback) {
+        this.scope = scope;
+        this.callback = callback;
+        return this;
+    };
+
+    _.notify = function (parameter) {
+        this.callback.call (this.scope, parameter);
+    };
+
+    _.new = function (scope, callback) {
+        return Object.create (_).construct(scope, callback);
+    };
+
+    return _;
+} ();
 "use strict;"
 
 let MouseTracker = function () {
@@ -271,264 +447,44 @@ let MouseTracker = function () {
 
     return _;
 } ();
-/**
- * A loader for external assets.
- *
- * @class Loader
- */
-let Loader = function () {
+let DocumentHelper = function () {
     let _ = Object.create (ClassBase);
 
     /**
-     * the initializer for a loader.
-     *
-     * @method construct
-     * @param {Object} parameters an object specifying the scope and callback to call when an item
-     * is finished, and when all items are finished (onFinishedAll, onFinishedItem).
-     * @return {Loader}
+     * 
+     * @param id
      */
-    _.construct = function (parameters) {
-        this.onFinishedAll = (parameters.onFinishedAll = (((typeof parameters.onFinishedAll !== "undefined") && (parameters.onFinishedAll != null)) ? parameters.onFinishedAll : { notify: function (x) {} }));
-        this.onFinishedItem = (parameters.onFinishedItem = (((typeof parameters.onFinishedItem !== "undefined") && (parameters.onFinishedItem != null)) ? parameters.onFinishedItem : { notify: function (x) {} }));
-        this.items = [];
-        this.onReady = OnReady.new (this, this.finish);
+    _.element = function (id) {
+        this[id] = document.getElementById (id);
         return this;
     };
 
-    _.addItem = function (type, name, parameters) {
-        parameters.onReady = this.onReady;
-        let item = { type: type, name: name, parameters: parameters };
-        this.items.push (item);
-        return this;
-    };
-
-    _.finish = function (finishedItem) {
-        if (finishedItem === this.pendingItem) {
-            // clear the pending item, and go
-            delete this.pendingItem;
-            this.onFinishedItem.notify(finishedItem);
-            this.next ();
-        } else {
-            LogLevel.say (LogLevel.ERROR, "WHAT'S UP WILLIS?");
-        }
-    };
-
     /**
-     * start the fetch process for all the loadable items.
-     *
-     * @method go
-     * @param {Object} parameters an object specifying the scope and callback to call when an item
-     * is finished, and when all items are finished (onFinishedAll, onFinishedItem).
-     * @chainable
+     * 
+     * @param ids
      */
-    _.go = function (onFinishedEach, onFinishedAll) {
-        this.onFinishedEach = (onFinishedEach = (((typeof onFinishedEach !== "undefined") && (onFinishedEach != null)) ? onFinishedEach : { notify: function (x) {} }));
-        this.onFinishedAll = (onFinishedAll = (((typeof onFinishedAll !== "undefined") && (onFinishedAll != null)) ? onFinishedAll : { notify: function (x) {} }));
-        this.next ();
-    };
-
-    /**
-     * continue the fetch process for all the loadable items.
-     *
-     * @method next
-     * @chainable
-     */
-    _.next = function () {
-        if (this.items.length > 0) {
-            // have work to do, kick off a fetch
-            let item = this.items.shift ();
-            this.pendingItem = item.type.new (item.parameters, item.name);
-        } else {
-            // all done, inform our waiting handler
-            this.onFinishedAll.notify (this);
-        }
-    };
-
-    return _;
-} ();
-/**
- * A loader for external assets, which assumes assets reside in a common base path, and are named as
- * the file element is named.
- *
- * @class LoaderPath
- */
-let LoaderPath = function () {
-    let _ = Object.create (Loader);
-
-    /**
-     * the initializer for a path loader.
-     *
-     * @method construct
-     * @param {Object} parameters an object specifying the loader class parameters
-     * @return {Loader}
-     */
-    _.construct = function (parameters) {
-        Object.getPrototypeOf(_).construct.call(this, parameters);
-        this.type = parameters.type;
-        this.path = parameters.path;
-        return this;
-    };
-
-    _.addItems = function (names, parameters) {
-        names = Array.isArray(names) ? names : Array(1).fill(names);
-        for (let name of names) {
-            let params = Object.assign (Object.create (null), parameters, { url:this.path.replace ("@", name) });
-            Object.getPrototypeOf(_).addItem.call(this, this.type, name, params);
+    _.elements = function (...ids) {
+        for (let id of ids) {
+            this.element (id);
         }
         return this;
     };
 
     /**
-     * static method to create and construct a new LoaderPath.
-     *
-     * @method new
-     * @static
-     * @param {Object} parameters an object including Loader class parameters, as well as the type
-     * and path to use for all operations. The "path" parameter should contain a "@" to be replaced
-     * with the fetch name.
-     * @return {LoaderPath}
+     * 
      */
-    _.new = function (parameters) {
-        return Object.create (_).construct (parameters);
-    };
-
-    return _;
-} ();
-/**
- * A loader for external shader assets.
- *
- * @class LoaderShader
- */
-let LoaderShader = function () {
-    let _ = Object.create (LoaderPath);
-
-    /**
-     * the initializer for a shader loader.
-     *
-     * @method construct
-     * @param {string} path the common path for a path loader.
-     * @return {LoaderShader}
-     */
-    _.construct = function (path) {
-        return Object.getPrototypeOf(_).construct.call(this, { type: Shader, path: path });
-    };
-
-    let addNames = function (names, prefix) {
-        names = Array.isArray(names) ? names : Array(1).fill(names);
-        let result = [];
-        for (let name of names) {
-            result.push (prefix + "-" + name);
-        }
-        return result;
-    }
-
-    _.addVertexShaders = function (names) {
-        return Object.getPrototypeOf(_).addItems.call (this, addNames (names, "vertex"), { type: context.VERTEX_SHADER });
-    };
-
-    _.addFragmentShaders = function (names) {
-        return Object.getPrototypeOf(_).addItems.call (this, addNames (names, "fragment"), { type: context.FRAGMENT_SHADER });
-    };
-
-    /**
-     * static method to create and construct a new LoaderPath.
-     *
-     * @method new
-     * @static
-     * @param {string} path the common path for a path loader.
-     * @return {LoaderShader}
-     */
-    _.new = function (path) {
-        return Object.create (_).construct (path);
-    };
-
-    return _;
-} ();
-let context;
-
-/**
- * A Rendering context.
- *
- * @class Render
- */
-let Render = function () {
-    let _ = Object.create (null);
-
-    /**
-     * The initializer for a rendering context.
-     *
-     * @method construct
-     * @param {string} canvasId the id of the canvas element to use for the rendering context
-     * @return {Render}
-     */
-    _.construct = function (canvasId, aspectRatio) {
-        let canvas = this.canvas = document.getElementById (canvasId);
-        (aspectRatio = (((typeof aspectRatio !== "undefined") && (aspectRatio != null)) ? aspectRatio : 16.0 / 9.0));
-
-        // high DPI devices need to have the canvas drawing surface scaled up while leaving the style
-        // size as indicated
-        let width = canvas.width;
-        let height = width / aspectRatio;
-
-        // get the display size of the canvas.
-        canvas.style.width = width + "px";
-        canvas.style.height = height + "px";
-
-        // set the size of the drawingBuffer
-        let devicePixelRatio = window.devicePixelRatio || 1;
-        canvas.width = width * devicePixelRatio;
-        canvas.height = height * devicePixelRatio;
-        LogLevel.say (LogLevel.TRACE, "Scaling display at " + devicePixelRatio + ":1 to (" + canvas.width + "x" + canvas.height + ")");
-
-        // get the actual rendering context
-        context = this.context = canvas.getContext ("webgl", { preserveDrawingBuffer: true, alpha: false });
-        context.viewportWidth = canvas.width;
-        context.viewportHeight = canvas.height;
-        context.viewport (0, 0, context.viewportWidth, context.viewportHeight);
-
-        // make some shapes we might use
-        Tetrahedron.make();
-        Hexahedron.make();
-        Octahedron.make();
-        Icosahedron.make();
-        Square.make();
-        Sphere.makeN(2);
-        Sphere.makeN(3);
-        Sphere.makeN(5);
-
+    _.all = function () {
+        // find all of the elements in the document with ids...
         return this;
     };
 
-    /**
-     * Set the global rendering context.
-     *
-     * @method use
-     */
-    _.use = function () {
-        context = this.context;
-    };
-
-    /**
-     * Static method to create and construct a new rendering context.
-     *
-     * @method new
-     * @static
-     * @param {string} canvasId the id of the canvas element to use for the rendering context.
-     * @param {number} aspectRatio the width / height of the canvas.
-     * @return {Render}
-     */
-    _.new = function (canvasId, aspectRatio) {
-        return (render = Object.create (_).construct (canvasId, aspectRatio));
-    };
-
     return _;
 } ();
-let glMatrixArrayType = ((typeof Float32Array) != "undefined") ? Float32Array : ((typeof WebGLFloatArray) != "undefined") ? WebGLFloatArray : Array;
 let FloatN = function (dim) {
     let _ = Object.create (null);
 
     _.create = function () {
-        return new glMatrixArrayType (dim);
+        return new Float32Array(dim);
     };
 
     // _.copy (from, to)
@@ -877,7 +833,7 @@ let FloatNxN = function (dim) {
      * @return {FloatNxN}
      */
     _.create = function () {
-        return new glMatrixArrayType (size);
+        return new Float32Array (size);
     };
 
     /**
@@ -1312,6 +1268,259 @@ let Float4x4 = function () {
         to[8] = zAxis[0]; to[9] = zAxis[1]; to[10] = zAxis[2]; to[11] = 0;
         to[12] = 0; to[13] = 0; to[14] = 0; to[15] = 1;
         return to;
+    };
+
+    return _;
+} ();
+let context;
+
+/**
+ * A Rendering context.
+ *
+ * @class Render
+ */
+let Render = function () {
+    let _ = Object.create (null);
+
+    /**
+     * The initializer for a rendering context.
+     *
+     * @method construct
+     * @param {string} canvasId the id of the canvas element to use for the rendering context
+     * @return {Render}
+     */
+    _.construct = function (canvasId, aspectRatio) {
+        let canvas = this.canvas = document.getElementById (canvasId);
+        (aspectRatio = (((typeof aspectRatio !== "undefined") && (aspectRatio != null)) ? aspectRatio : 16.0 / 9.0));
+
+        // high DPI devices need to have the canvas drawing surface scaled up while leaving the style
+        // size as indicated
+        let width = canvas.width;
+        let height = width / aspectRatio;
+
+        // get the display size of the canvas.
+        canvas.style.width = width + "px";
+        canvas.style.height = height + "px";
+
+        // set the size of the drawingBuffer
+        let devicePixelRatio = window.devicePixelRatio || 1;
+        canvas.width = width * devicePixelRatio;
+        canvas.height = height * devicePixelRatio;
+        LogLevel.say (LogLevel.TRACE, "Scaling display at " + devicePixelRatio + ":1 to (" + canvas.width + "x" + canvas.height + ")");
+
+        // get the actual rendering context
+        context = this.context = canvas.getContext ("webgl", { preserveDrawingBuffer: true, alpha: false });
+        context.viewportWidth = canvas.width;
+        context.viewportHeight = canvas.height;
+        context.viewport (0, 0, context.viewportWidth, context.viewportHeight);
+
+        // make some shapes we might use
+        Tetrahedron.make();
+        Hexahedron.make();
+        Octahedron.make();
+        Icosahedron.make();
+        Square.make();
+        Sphere.makeN(2);
+        Sphere.makeN(3);
+        Sphere.makeN(5);
+
+        return this;
+    };
+
+    /**
+     * Set the global rendering context.
+     *
+     * @method use
+     */
+    _.use = function () {
+        context = this.context;
+    };
+
+    /**
+     * Static method to create and construct a new rendering context.
+     *
+     * @method new
+     * @static
+     * @param {string} canvasId the id of the canvas element to use for the rendering context.
+     * @param {number} aspectRatio the width / height of the canvas.
+     * @return {Render}
+     */
+    _.new = function (canvasId, aspectRatio) {
+        return (render = Object.create (_).construct (canvasId, aspectRatio));
+    };
+
+    return _;
+} ();
+let glMatrixArrayType = Array;//((typeof Float32Array) != "undefined") ? Float32Array : ((typeof WebGLFloatArray) != "undefined") ? WebGLFloatArray : Array;
+/**
+ * A loader for external assets.
+ *
+ * @class Loader
+ */
+let Loader = function () {
+    let _ = Object.create (ClassBase);
+
+    /**
+     * the initializer for a loader.
+     *
+     * @method construct
+     * @param {Object} parameters an object specifying the scope and callback to call when an item
+     * is finished, and when all items are finished (onFinishedAll, onFinishedItem).
+     * @return {Loader}
+     */
+    _.construct = function (parameters) {
+        this.onFinishedAll = (parameters.onFinishedAll = (((typeof parameters.onFinishedAll !== "undefined") && (parameters.onFinishedAll != null)) ? parameters.onFinishedAll : { notify: function (x) {} }));
+        this.onFinishedItem = (parameters.onFinishedItem = (((typeof parameters.onFinishedItem !== "undefined") && (parameters.onFinishedItem != null)) ? parameters.onFinishedItem : { notify: function (x) {} }));
+        this.items = [];
+        this.onReady = OnReady.new (this, this.finish);
+        return this;
+    };
+
+    _.addItem = function (type, name, parameters) {
+        parameters.onReady = this.onReady;
+        let item = { type: type, name: name, parameters: parameters };
+        this.items.push (item);
+        return this;
+    };
+
+    _.finish = function (finishedItem) {
+        if (finishedItem === this.pendingItem) {
+            // clear the pending item, and go
+            delete this.pendingItem;
+            this.onFinishedItem.notify(finishedItem);
+            this.next ();
+        } else {
+            LogLevel.say (LogLevel.ERROR, "WHAT'S UP WILLIS?");
+        }
+    };
+
+    /**
+     * start the fetch process for all the loadable items.
+     *
+     * @method go
+     * @param {Object} parameters an object specifying the scope and callback to call when an item
+     * is finished, and when all items are finished (onFinishedAll, onFinishedItem).
+     * @chainable
+     */
+    _.go = function (onFinishedEach, onFinishedAll) {
+        this.onFinishedEach = (onFinishedEach = (((typeof onFinishedEach !== "undefined") && (onFinishedEach != null)) ? onFinishedEach : { notify: function (x) {} }));
+        this.onFinishedAll = (onFinishedAll = (((typeof onFinishedAll !== "undefined") && (onFinishedAll != null)) ? onFinishedAll : { notify: function (x) {} }));
+        this.next ();
+    };
+
+    /**
+     * continue the fetch process for all the loadable items.
+     *
+     * @method next
+     * @chainable
+     */
+    _.next = function () {
+        if (this.items.length > 0) {
+            // have work to do, kick off a fetch
+            let item = this.items.shift ();
+            this.pendingItem = item.type.new (item.parameters, item.name);
+        } else {
+            // all done, inform our waiting handler
+            this.onFinishedAll.notify (this);
+        }
+    };
+
+    return _;
+} ();
+/**
+ * A loader for external assets, which assumes assets reside in a common base path, and are named as
+ * the file element is named.
+ *
+ * @class LoaderPath
+ */
+let LoaderPath = function () {
+    let _ = Object.create (Loader);
+
+    /**
+     * the initializer for a path loader.
+     *
+     * @method construct
+     * @param {Object} parameters an object specifying the loader class parameters
+     * @return {Loader}
+     */
+    _.construct = function (parameters) {
+        Object.getPrototypeOf(_).construct.call(this, parameters);
+        this.type = parameters.type;
+        this.path = parameters.path;
+        return this;
+    };
+
+    _.addItems = function (names, parameters) {
+        names = Array.isArray(names) ? names : Array(1).fill(names);
+        for (let name of names) {
+            let params = Object.assign (Object.create (null), parameters, { url:this.path.replace ("@", name) });
+            Object.getPrototypeOf(_).addItem.call(this, this.type, name, params);
+        }
+        return this;
+    };
+
+    /**
+     * static method to create and construct a new LoaderPath.
+     *
+     * @method new
+     * @static
+     * @param {Object} parameters an object including Loader class parameters, as well as the type
+     * and path to use for all operations. The "path" parameter should contain a "@" to be replaced
+     * with the fetch name.
+     * @return {LoaderPath}
+     */
+    _.new = function (parameters) {
+        return Object.create (_).construct (parameters);
+    };
+
+    return _;
+} ();
+/**
+ * A loader for external shader assets.
+ *
+ * @class LoaderShader
+ */
+let LoaderShader = function () {
+    let _ = Object.create (LoaderPath);
+
+    /**
+     * the initializer for a shader loader.
+     *
+     * @method construct
+     * @param {string} path the common path for a path loader.
+     * @return {LoaderShader}
+     */
+    _.construct = function (path) {
+        return Object.getPrototypeOf(_).construct.call(this, { type: Shader, path: path });
+    };
+
+    let addNames = function (names, prefix) {
+        names = Array.isArray(names) ? names : Array(1).fill(names);
+        let result = [];
+        for (let name of names) {
+            result.push (prefix + "-" + name);
+        }
+        return result;
+    }
+
+    _.addVertexShaders = function (names) {
+        return Object.getPrototypeOf(_).addItems.call (this, addNames (names, "vertex"), { type: context.VERTEX_SHADER });
+    };
+
+    _.addFragmentShaders = function (names) {
+        return Object.getPrototypeOf(_).addItems.call (this, addNames (names, "fragment"), { type: context.FRAGMENT_SHADER });
+    };
+
+    /**
+     * static method to create and construct a new LoaderPath.
+     *
+     * @method new
+     * @static
+     * @param {string} path the common path for a path loader.
+     * @return {LoaderShader}
+     */
+    _.new = function (path) {
+        return Object.create (_).construct (path);
     };
 
     return _;
@@ -2368,6 +2577,22 @@ let Shape = function () {
 
     return _;
 } ();
+let Thing = function () {
+    let _ = ClassNamed (CLASS_NAME_GENERATED);
+
+    _.construct = function (parameters) {
+        LogLevel.say (LogLevel.INFO, "Thing: " + parameters.name);
+
+        this.node = parameters.node;
+        this.update = parameters.update;
+    };
+
+    _.updateAll = function (time) {
+        _.forEach(function (thing) { thing.update (time); });
+    };
+
+    return _;
+} ();
 let ShapeBuilder = function () {
     let _ = Object.create (null);
 
@@ -2864,196 +3089,6 @@ let makeBall = function (name, steps) {
         return result;
     });
 };
-/**
- * A collection of utility functions.
- *
- * @class Utility
- */
-let Utility = function () {
-    let _ = Object.create (null);
-
-    const TWO_PI = Math.PI * 2.0;
-
-    let unwind = _.unwind = function (value, cap) {
-        value -= Math.floor (value / cap) * cap;
-        while (value >= cap) {
-            value -= cap;
-        }
-        while (value < 0) {
-            value += cap;
-        }
-        return value;
-    };
-
-
-    _.unwindRadians = function (radians) {
-        return _.unwind (radians, TWO_PI);
-    };
-
-    _.unwindDegrees = function (degrees) {
-        return _.unwind (degrees, 360.0);
-    };
-
-    /**
-     * Convert an angle measured in degrees to radians.
-     *
-     * @method degreesToRadians
-     * @param {float} degrees the degree measure to be converted
-     * @return {float}
-     */
-    _.degreesToRadians = function (degrees) {
-        return unwind (degrees / 180.0, 2.0) * Math.PI;
-    };
-
-    _.cos = function (degrees) {
-        return Math.cos (_.degreesToRadians (degrees));
-    };
-
-    _.sin = function (degrees) {
-        return Math.sin (_.degreesToRadians (degrees));
-    };
-
-    _.tan = function (degrees) {
-        return Math.tan (_.degreesToRadians (degrees));
-    };
-
-    /**
-     * Convert an angle measured in radians to degrees.
-     *
-     * @method radiansToDegrees
-     * @param {float} radians the radian measure to be converted
-     * @return {float}
-     */
-    _.radiansToDegrees = function (radians) {
-        return (unwind (radians, TWO_PI) / Math.PI) * 180;
-    };
-
-    /**
-     * Make the first letter of a string be upper case.
-     *
-     * @method uppercase
-     * @param {string} string the text to convert to upper case
-     * @return {string}
-     */
-    _.uppercase = function (string) {
-        return string[0].toUpperCase () + string.slice (1);
-    };
-
-    /**
-     * Make the first letter of a string be lower case.
-     *
-     * @method lowercase
-     * @param {string} string the text to convert to lower case
-     * @return {string}
-     */
-    _.lowercase = function (string) {
-        return string[0].toLowerCase () + string.slice (1);
-    };
-
-    /**
-     * Convert an array of arrays to a single array of values (in order).
-     *
-     * @method flatten
-     * @param {Array} array the input array of arrays
-     * @return {Array}
-     */
-    _.flatten = function (array) {
-        let result = [];
-        for (let element of array) {
-            for (let value of element) {
-                result.push (value);
-            }
-        }
-        return result;
-    };
-
-    /**
-     * truncate a number to a specific precision, equivalent to discretization
-     *
-     * @method fixNum
-     * @param {float} number the number to discretize
-     * @param {integer} precision how many decimal places to force
-     * @return {number}
-     */
-    _.fixNum = function (number, precision) {
-        (precision = (((typeof precision !== "undefined") && (precision != null)) ? precision : 7));
-        return Number.parseFloat (number.toFixed (precision));
-    };
-
-    /**
-     * zero pad a number to a specific width
-     *
-     * @method padNum
-     * @param {number} number the number to pad
-     * @param {integer} width how many places the final number should be
-     * @param {char} fill the character to pad with (default is "0")
-     * @returns {*}
-     */
-    _.padNum = function (number, width, fill) {
-        fill = fill || "0";
-        number = number + "";
-        return number.length >= width ? number : new Array(width - number.length + 1).join(fill) + number;
-    }
-
-    /**
-     * provide a default value if the requested value is undefined. this is
-     * here because the macro doesn't handle multiline values.
-     *
-     * @method defaultValue
-     * @param {any} value the value to test for undefined
-     * @param {any} defaultValue the default value to provide if value is undefined
-     * @return {any}
-     */
-    _.defaultValue = function (value, defaultValue) {
-        return (value = (((typeof value !== "undefined") && (value != null)) ? value : defaultValue));
-    };
-
-    /**
-     * provide a default value if the requested value is undefined by calling a function. this is
-     * here because the macro doesn't handle multiline values.
-     *
-     * @method defaultFunction
-     * @param {any} value the value to test for undefined
-     * @param {function} defaultFunction the function to call if value is undefined
-     * @return {any}
-     */
-    _.defaultFunction = function (value, defaultFunction) {
-        return (value = (((typeof value !== "undefined") && (value != null)) ? value : defaultFunction ()));
-    };
-
-    /**
-     * create a reversed mapping from a given object (assumes 1:1 values)
-     *
-     * @method reverseMap
-     * @param {object} mapping the the object containing the mapping to be reversed
-     * @return {object}
-     */
-    _.reverseMap = function (mapping) {
-        let reverseMapping = Object.create (null);
-        for (let name in mapping) {
-            reverseMapping[mapping[name]] = name;
-        }
-        return reverseMapping;
-    };
-
-    return _;
-} ();
-let Thing = function () {
-    let _ = ClassNamed (CLASS_NAME_GENERATED);
-
-    _.construct = function (parameters) {
-        LogLevel.say (LogLevel.INFO, "Thing: " + parameters.name);
-
-        this.node = parameters.node;
-        this.update = parameters.update;
-    };
-
-    _.updateAll = function (time) {
-        _.forEach(function (thing) { thing.update (time); });
-    };
-
-    return _;
-} ();
 var TestContainer = function () {
     var _ = Object.create (null);
 
