@@ -13,6 +13,7 @@ let Shader = function () {
         request.onload = function (event) {
             if (request.status === 200) {
                 let shader = context.createShader (parameters.type);
+                // XXX can I do a shader include mechanism of some sort?
                 context.shaderSource (shader, request.responseText);
                 context.compileShader (shader);
                 if (!context.getShaderParameter (shader, context.COMPILE_STATUS)) {
