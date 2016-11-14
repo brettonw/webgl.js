@@ -1,7 +1,7 @@
 # webgl.js
 Javascript drawing in 3D 
 
-Deployed at: http://webgl-js.azurewebsites.net/.
+Deployed at: https://brettonw.github.io/webgl.js/site/index.html or http://webgl-js.azurewebsites.net/.
 
 <center><img src="http://webgl-js.azurewebsites.net/site/img/sample.png" alt="Drawing" style="width: 320px;"/></center>
 
