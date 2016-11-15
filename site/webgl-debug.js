@@ -3012,7 +3012,7 @@ let makeRevolve = function (name, outline, normal, steps, projection) {
         // perpendicular to the segment ac as the normal.
         if (Float2.equals (outline[0], outline[last])) {
             // the shape is closed, so we want to wrap around
-            for (b = 0; b < length; ++b) {
+            for (b = 0; b <= last; ++b) {
                 let a = outline[((b - 1) + last) % last];
                 let c = outline[(b + 1) % last];
                 pushNormal (a, c);
@@ -3054,7 +3054,7 @@ let makeRevolve = function (name, outline, normal, steps, projection) {
 
                     // we allow degenerate faces by duplicating vertices in the outline, if the length
                     // between the two components is below the threshold, we skip this facet altogether.
-                    if (Float2.norm (vm, vn) > epsilon) {
+                    if (Float2.norm (Float2.subtract (vm, vn)) > epsilon) {
                         // for each facet of the wedge, it's either a degenerate segment, an upward
                         // facing triangle, a downward facing triangle, or a quad.
                         let facetType = ((vm[0] < epsilon) ? 0 : 2) + ((vn[0] < epsilon) ? 0 : 1);
