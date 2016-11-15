@@ -51,6 +51,13 @@
             "fors": {},
             "namespaces": {}
         },
+        "src/main/javascript/core/loader-list.js": {
+            "name": "src/main/javascript/core/loader-list.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
         "src/main/javascript/core/loader-path.js": {
             "name": "src/main/javascript/core/loader-path.js",
             "modules": {},
@@ -157,6 +164,18 @@
             "line": 1,
             "description": "A Cloud, a scene graph node for displaying points in space."
         },
+        "Loader": {
+            "name": "Loader",
+            "shortname": "Loader",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src/main/javascript/core/loader.js",
+            "line": 1,
+            "description": "A loader for external assets."
+        },
         "LoaderPath": {
             "name": "LoaderPath",
             "shortname": "LoaderPath",
@@ -180,18 +199,6 @@
             "file": "src/main/javascript/core/loader-shader.js",
             "line": 1,
             "description": "A loader for external shader assets."
-        },
-        "Loader": {
-            "name": "Loader",
-            "shortname": "Loader",
-            "classitems": [],
-            "plugins": [],
-            "extensions": [],
-            "plugin_for": [],
-            "extension_for": [],
-            "file": "src/main/javascript/core/loader.js",
-            "line": 1,
-            "description": "A loader for external assets."
         },
         "Node": {
             "name": "Node",
@@ -695,6 +702,48 @@
             "class": "Cloud"
         },
         {
+            "file": "src/main/javascript/core/loader-list.js",
+            "line": 9,
+            "description": "the initializer for a loader.",
+            "itemtype": "method",
+            "name": "construct",
+            "params": [
+                {
+                    "name": "parameters",
+                    "description": "not used.",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "LoaderList"
+            },
+            "class": "Loader"
+        },
+        {
+            "file": "src/main/javascript/core/loader-list.js",
+            "line": 44,
+            "description": "start the fetch process for all the loaders",
+            "itemtype": "method",
+            "name": "go",
+            "params": [
+                {
+                    "name": "onFinishedAll",
+                    "description": "an OnReady object to notify when the loader is finished.",
+                    "type": "Object"
+                }
+            ],
+            "class": "Loader"
+        },
+        {
+            "file": "src/main/javascript/core/loader-list.js",
+            "line": 55,
+            "description": "continue the fetch process for all the loadable items.",
+            "itemtype": "method",
+            "name": "next",
+            "class": "Loader"
+        },
+        {
             "file": "src/main/javascript/core/loader-path.js",
             "line": 10,
             "description": "the initializer for a path loader.",
@@ -710,26 +759,6 @@
             "return": {
                 "description": "",
                 "type": "Loader"
-            },
-            "class": "LoaderPath"
-        },
-        {
-            "file": "src/main/javascript/core/loader-path.js",
-            "line": 33,
-            "description": "static method to create and construct a new LoaderPath.",
-            "itemtype": "method",
-            "name": "new",
-            "static": 1,
-            "params": [
-                {
-                    "name": "parameters",
-                    "description": "an object including Loader class parameters, as well as the type\nand path to use for all operations. The \"path\" parameter should contain a \"@\" to be replaced\nwith the fetch name.",
-                    "type": "Object"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "LoaderPath"
             },
             "class": "LoaderPath"
         },
@@ -753,26 +782,6 @@
             "class": "LoaderShader"
         },
         {
-            "file": "src/main/javascript/core/loader-shader.js",
-            "line": 37,
-            "description": "static method to create and construct a new LoaderPath.",
-            "itemtype": "method",
-            "name": "new",
-            "static": 1,
-            "params": [
-                {
-                    "name": "path",
-                    "description": "the common path for a path loader.",
-                    "type": "String"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "LoaderShader"
-            },
-            "class": "LoaderShader"
-        },
-        {
             "file": "src/main/javascript/core/loader.js",
             "line": 9,
             "description": "the initializer for a loader.",
@@ -781,7 +790,7 @@
             "params": [
                 {
                     "name": "parameters",
-                    "description": "an object specifying the scope and callback to call when an item\nis finished, and when all items are finished (onFinishedAll, onFinishedItem).",
+                    "description": "not used.",
                     "type": "Object"
                 }
             ],
@@ -793,27 +802,25 @@
         },
         {
             "file": "src/main/javascript/core/loader.js",
-            "line": 43,
+            "line": 39,
             "description": "start the fetch process for all the loadable items.",
             "itemtype": "method",
             "name": "go",
             "params": [
                 {
-                    "name": "parameters",
-                    "description": "an object specifying the scope and callback to call when an item\nis finished, and when all items are finished (onFinishedAll, onFinishedItem).",
+                    "name": "onFinishedAll",
+                    "description": "an OnReady object to notify when the loader is finished.",
                     "type": "Object"
                 }
             ],
-            "chainable": 1,
             "class": "Loader"
         },
         {
             "file": "src/main/javascript/core/loader.js",
-            "line": 57,
+            "line": 50,
             "description": "continue the fetch process for all the loadable items.",
             "itemtype": "method",
             "name": "next",
-            "chainable": 1,
             "class": "Loader"
         },
         {

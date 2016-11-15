@@ -1364,13 +1364,10 @@ let Loader = function () {
      * the initializer for a loader.
      *
      * @method construct
-     * @param {Object} parameters an object specifying the scope and callback to call when an item
-     * is finished, and when all items are finished (onFinishedAll, onFinishedItem).
+     * @param {Object} parameters not used.
      * @return {Loader}
      */
     _.construct = function (parameters) {
-        this.onFinishedAll = (parameters.onFinishedAll = (((typeof parameters.onFinishedAll !== "undefined") && (parameters.onFinishedAll != null)) ? parameters.onFinishedAll : { notify: function (x) {} }));
-        this.onFinishedItem = (parameters.onFinishedItem = (((typeof parameters.onFinishedItem !== "undefined") && (parameters.onFinishedItem != null)) ? parameters.onFinishedItem : { notify: function (x) {} }));
         this.items = [];
         this.onReady = OnReady.new (this, this.finish);
         return this;
@@ -1385,9 +1382,8 @@ let Loader = function () {
 
     _.finish = function (finishedItem) {
         if (finishedItem === this.pendingItem) {
-            // clear the pending item, and go
+            // clear the pending item, and go on to the next one
             delete this.pendingItem;
-            this.onFinishedItem.notify(finishedItem);
             this.next ();
         } else {
             LogLevel.say (LogLevel.ERROR, "WHAT'S UP WILLIS?");
@@ -1398,12 +1394,9 @@ let Loader = function () {
      * start the fetch process for all the loadable items.
      *
      * @method go
-     * @param {Object} parameters an object specifying the scope and callback to call when an item
-     * is finished, and when all items are finished (onFinishedAll, onFinishedItem).
-     * @chainable
+     * @param {Object} onFinishedAll an OnReady object to notify when the loader is finished.
      */
-    _.go = function (onFinishedEach, onFinishedAll) {
-        this.onFinishedEach = (onFinishedEach = (((typeof onFinishedEach !== "undefined") && (onFinishedEach != null)) ? onFinishedEach : { notify: function (x) {} }));
+    _.go = function (onFinishedAll) {
         this.onFinishedAll = (onFinishedAll = (((typeof onFinishedAll !== "undefined") && (onFinishedAll != null)) ? onFinishedAll : { notify: function (x) {} }));
         this.next ();
     };
@@ -1412,13 +1405,85 @@ let Loader = function () {
      * continue the fetch process for all the loadable items.
      *
      * @method next
-     * @chainable
      */
     _.next = function () {
         if (this.items.length > 0) {
             // have work to do, kick off a fetch
             let item = this.items.shift ();
             this.pendingItem = item.type.new (item.parameters, item.name);
+        } else {
+            // all done, inform our waiting handler
+            this.onFinishedAll.notify (this);
+        }
+    };
+
+    return _;
+} ();
+/**
+ * A loader for external assets.
+ *
+ * @class Loader
+ */
+let LoaderList = function () {
+    let _ = Object.create (ClassBase);
+
+    /**
+     * the initializer for a loader.
+     *
+     * @method construct
+     * @param {Object} parameters not used.
+     * @return {LoaderList}
+     */
+    _.construct = function (parameters) {
+        this.items = [];
+        this.onReady = OnReady.new (this, this.finish);
+        return this;
+    };
+
+    _.addLoader = function (loader) {
+        this.items.push (loader);
+        return this;
+    };
+
+    _.addLoaders = function (...loaders) {
+        for (let loader of loaders) {
+            this.addLoader (loader);
+        }
+        return this;
+    };
+
+    _.finish = function (finishedItem) {
+        if (finishedItem === this.pendingItem) {
+            // clear the pending item, and go on to the next one
+            delete this.pendingItem;
+            this.next ();
+        } else {
+            LogLevel.say (LogLevel.ERROR, "WHAT'S UP WILLIS?");
+        }
+    };
+
+    /**
+     * start the fetch process for all the loaders
+     *
+     * @method go
+     * @param {Object} onFinishedAll an OnReady object to notify when the loader is finished.
+     */
+    _.go = function (onFinishedAll) {
+        this.onFinishedAll = (onFinishedAll = (((typeof onFinishedAll !== "undefined") && (onFinishedAll != null)) ? onFinishedAll : { notify: function (x) {} }));
+        this.next ();
+    };
+
+    /**
+     * continue the fetch process for all the loadable items.
+     *
+     * @method next
+     */
+    _.next = function () {
+        if (this.items.length > 0) {
+            // have work to do, kick off a fetch
+            let item = this.items.shift ();
+            this.pendingItem = item;
+            item.go (this.onReady);
         } else {
             // all done, inform our waiting handler
             this.onFinishedAll.notify (this);
@@ -1459,20 +1524,6 @@ let LoaderPath = function () {
         return this;
     };
 
-    /**
-     * static method to create and construct a new LoaderPath.
-     *
-     * @method new
-     * @static
-     * @param {Object} parameters an object including Loader class parameters, as well as the type
-     * and path to use for all operations. The "path" parameter should contain a "@" to be replaced
-     * with the fetch name.
-     * @return {LoaderPath}
-     */
-    _.new = function (parameters) {
-        return Object.create (_).construct (parameters);
-    };
-
     return _;
 } ();
 /**
@@ -1511,18 +1562,6 @@ let LoaderShader = function () {
         return Object.getPrototypeOf(_).addItems.call (this, addNames (names, "fragment"), { type: context.FRAGMENT_SHADER });
     };
 
-    /**
-     * static method to create and construct a new LoaderPath.
-     *
-     * @method new
-     * @static
-     * @param {string} path the common path for a path loader.
-     * @return {LoaderShader}
-     */
-    _.new = function (path) {
-        return Object.create (_).construct (path);
-    };
-
     return _;
 } ();
 let Shader = function () {
@@ -1540,6 +1579,7 @@ let Shader = function () {
         request.onload = function (event) {
             if (request.status === 200) {
                 let shader = context.createShader (parameters.type);
+                // XXX can I do a shader include mechanism of some sort?
                 context.shaderSource (shader, request.responseText);
                 context.compileShader (shader);
                 if (!context.getShaderParameter (shader, context.COMPILE_STATUS)) {

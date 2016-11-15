@@ -34,17 +34,5 @@ let LoaderShader = function () {
         return SUPER.addItems.call (this, addNames (names, "fragment"), { type: context.FRAGMENT_SHADER });
     };
 
-    /**
-     * static method to create and construct a new LoaderPath.
-     *
-     * @method new
-     * @static
-     * @param {string} path the common path for a path loader.
-     * @return {LoaderShader}
-     */
-    _.new = function (path) {
-        return Object.create (_).construct (path);
-    };
-
     return _;
 } ();

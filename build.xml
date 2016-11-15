@@ -47,7 +47,8 @@
 
             <fileset dir="${source-dir}/core" includes="render.js"/>
             <fileset dir="${source-dir}/core" includes="types.js"/>
-            <fileset dir="${source-dir}/core" includes="loader.js" />
+            <fileset dir="${source-dir}/core" includes="loader.js"/>
+            <fileset dir="${source-dir}/core" includes="loader-list.js"/>
             <fileset dir="${source-dir}/core" includes="loader-path.js" />
             <fileset dir="${source-dir}/core" includes="loader-shader.js" />
             <fileset dir="${source-dir}/core" includes="shader.js" />

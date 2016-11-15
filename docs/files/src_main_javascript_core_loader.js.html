@@ -97,13 +97,10 @@ let Loader = function () {
      * the initializer for a loader.
      *
      * @method construct
-     * @param {Object} parameters an object specifying the scope and callback to call when an item
-     * is finished, and when all items are finished (onFinishedAll, onFinishedItem).
+     * @param {Object} parameters not used.
      * @return {Loader}
      */
     _.construct = function (parameters) {
-        this.onFinishedAll = DEFAULT_VALUE (parameters.onFinishedAll, { notify: function (x) {} });
-        this.onFinishedItem = DEFAULT_VALUE (parameters.onFinishedItem, { notify: function (x) {} });
         this.items = [];
         this.onReady = OnReady.new (this, this.finish);
         return this;
@@ -118,9 +115,8 @@ let Loader = function () {
 
     _.finish = function (finishedItem) {
         if (finishedItem === this.pendingItem) {
-            // clear the pending item, and go
+            // clear the pending item, and go on to the next one
             delete this.pendingItem;
-            this.onFinishedItem.notify(finishedItem);
             this.next ();
         } else {
             LOG (LogLevel.ERROR, &quot;WHAT&#x27;S UP WILLIS?&quot;);
@@ -131,12 +127,9 @@ let Loader = function () {
      * start the fetch process for all the loadable items.
      *
      * @method go
-     * @param {Object} parameters an object specifying the scope and callback to call when an item
-     * is finished, and when all items are finished (onFinishedAll, onFinishedItem).
-     * @chainable
+     * @param {Object} onFinishedAll an OnReady object to notify when the loader is finished.
      */
-    _.go = function (onFinishedEach, onFinishedAll) {
-        this.onFinishedEach = DEFAULT_VALUE(onFinishedEach, { notify: function (x) {} });
+    _.go = function (onFinishedAll) {
         this.onFinishedAll = DEFAULT_VALUE(onFinishedAll, { notify: function (x) {} });
         this.next ();
     };
@@ -145,7 +138,6 @@ let Loader = function () {
      * continue the fetch process for all the loadable items.
      *
      * @method next
-     * @chainable
      */
     _.next = function () {
         if (this.items.length &gt; 0) {

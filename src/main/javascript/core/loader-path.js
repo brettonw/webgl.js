@@ -30,19 +30,5 @@ let LoaderPath = function () {
         return this;
     };
 
-    /**
-     * static method to create and construct a new LoaderPath.
-     *
-     * @method new
-     * @static
-     * @param {Object} parameters an object including Loader class parameters, as well as the type
-     * and path to use for all operations. The "path" parameter should contain a "@" to be replaced
-     * with the fetch name.
-     * @return {LoaderPath}
-     */
-    _.new = function (parameters) {
-        return Object.create (_).construct (parameters);
-    };
-
     return _;
 } ();

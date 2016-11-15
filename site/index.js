@@ -194,23 +194,25 @@ let onBodyLoad = function () {
 
     Render.new ("render-canvas");
 
-    // load the shaders, and build the programs
-    LoaderShader.new ("shaders/@.glsl")
-        .addVertexShaders ("basic")
-        .addFragmentShaders (["basic", "basic-texture", "color", "overlay", "rgb", "texture"])
-        .go (null, OnReady.new (null, function (x) {
+    // loader list
+    LoaderList
+        .new ()
+        .addLoaders (
+            LoaderShader
+                .new ("shaders/@.glsl")
+                .addVertexShaders ("basic")
+                .addFragmentShaders (["basic", "basic-texture", "color", "overlay", "rgb", "texture"]),
+            LoaderPath
+                .new ({ type: Texture, path: "textures/@.png" })
+                .addItems ("moon", { generateMipMap: true })
+        )
+        .go (OnReady.new (null, function (x) {
             Program.new ({}, "basic");
             Program.new ({ vertexShader: "basic" }, "basic-texture");
             Program.new ({ vertexShader: "basic" }, "color");
             Program.new ({ vertexShader: "basic" }, "overlay");
             Program.new ({ vertexShader: "basic" }, "rgb");
             Program.new ({ vertexShader: "basic" }, "texture");
-
-            // load the textures
-            LoaderPath.new ({ type: Texture, path: "textures/@.png" })
-                .addItems ("moon", { generateMipMap: true })
-                .go (null, OnReady.new (null, function (x) {
-                    buildScene ();
-                }));
+            buildScene ();
         }));
 };

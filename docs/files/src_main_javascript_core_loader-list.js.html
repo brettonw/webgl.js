@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>src/main/javascript/core/loader-path.js - WebGL</title>
+    <title>src/main/javascript/core/loader-list.js - WebGL</title>
     <link rel="stylesheet" href="">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -80,41 +80,80 @@
                 <div id="docs-main">
                     <div class="content">
 <div class="page-header">
-    <h1>src/main/javascript/core/loader-path.js <small>File</small></h1>
+    <h1>src/main/javascript/core/loader-list.js <small>File</small></h1>
 </div>
 
 <div class="file">
     <pre class="prettyprint linenums">
 /**
- * A loader for external assets, which assumes assets reside in a common base path, and are named as
- * the file element is named.
+ * A loader for external assets.
  *
- * @class LoaderPath
+ * @class Loader
  */
-let LoaderPath = function () {
-    let _ = Object.create (Loader);
+let LoaderList = function () {
+    let _ = CLASS_BASE;
 
     /**
-     * the initializer for a path loader.
+     * the initializer for a loader.
      *
      * @method construct
-     * @param {Object} parameters an object specifying the loader class parameters
-     * @return {Loader}
+     * @param {Object} parameters not used.
+     * @return {LoaderList}
      */
     _.construct = function (parameters) {
-        SUPER.construct.call(this, parameters);
-        this.type = parameters.type;
-        this.path = parameters.path;
+        this.items = [];
+        this.onReady = OnReady.new (this, this.finish);
         return this;
     };
 
-    _.addItems = function (names, parameters) {
-        names = Array.isArray(names) ? names : Array(1).fill(names);
-        for (let name of names) {
-            let params = Object.assign (OBJ, parameters, { url:this.path.replace (&quot;@&quot;, name) });
-            SUPER.addItem.call(this, this.type, name, params);
+    _.addLoader = function (loader) {
+        this.items.push (loader);
+        return this;
+    };
+
+    _.addLoaders = function (...loaders) {
+        for (let loader of loaders) {
+            this.addLoader (loader);
         }
         return this;
+    };
+
+    _.finish = function (finishedItem) {
+        if (finishedItem === this.pendingItem) {
+            // clear the pending item, and go on to the next one
+            delete this.pendingItem;
+            this.next ();
+        } else {
+            LOG (LogLevel.ERROR, &quot;WHAT&#x27;S UP WILLIS?&quot;);
+        }
+    };
+
+    /**
+     * start the fetch process for all the loaders
+     *
+     * @method go
+     * @param {Object} onFinishedAll an OnReady object to notify when the loader is finished.
+     */
+    _.go = function (onFinishedAll) {
+        this.onFinishedAll = DEFAULT_VALUE(onFinishedAll, { notify: function (x) {} });
+        this.next ();
+    };
+
+    /**
+     * continue the fetch process for all the loadable items.
+     *
+     * @method next
+     */
+    _.next = function () {
+        if (this.items.length &gt; 0) {
+            // have work to do, kick off a fetch
+            let item = this.items.shift ();
+            this.pendingItem = item;
+            item.go (this.onReady);
+        } else {
+            // all done, inform our waiting handler
+            this.onFinishedAll.notify (this);
+        }
     };
 
     return _;

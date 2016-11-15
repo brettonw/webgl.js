@@ -1,9 +1,9 @@
 /**
- * A loader for external assets.
+ * A loader for loaders.
  *
- * @class Loader
+ * @class LoaderList
  */
-let Loader = function () {
+let LoaderList = function () {
     let _ = CLASS_BASE;
 
     /**
@@ -11,7 +11,7 @@ let Loader = function () {
      *
      * @method construct
      * @param {Object} parameters not used.
-     * @return {Loader}
+     * @return {LoaderList}
      */
     _.construct = function (parameters) {
         this.items = [];
@@ -19,10 +19,10 @@ let Loader = function () {
         return this;
     };
 
-    _.addItem = function (type, name, parameters) {
-        parameters.onReady = this.onReady;
-        let item = { type: type, name: name, parameters: parameters };
-        this.items.push (item);
+    _.addLoaders = function (...loaders) {
+        for (let loader of loaders) {
+            this.items.push (loader);
+        }
         return this;
     };
 
@@ -37,7 +37,7 @@ let Loader = function () {
     };
 
     /**
-     * start the fetch process for all the loadable items.
+     * start the fetch process for all the loaders
      *
      * @method go
      * @param {Object} onFinishedAll an OnReady object to notify when the loader is finished.
@@ -56,7 +56,8 @@ let Loader = function () {
         if (this.items.length > 0) {
             // have work to do, kick off a fetch
             let item = this.items.shift ();
-            this.pendingItem = item.type.new (item.parameters, item.name);
+            this.pendingItem = item;
+            item.go (this.onReady);
         } else {
             // all done, inform our waiting handler
             this.onFinishedAll.notify (this);
