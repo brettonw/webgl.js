@@ -36,22 +36,6 @@ let LoaderList = function () {
         }
     };
 
-    /**
-     * start the fetch process for all the loaders
-     *
-     * @method go
-     * @param {Object} onFinishedAll an OnReady object to notify when the loader is finished.
-     */
-    _.go = function (onFinishedAll) {
-        this.onFinishedAll = DEFAULT_VALUE(onFinishedAll, { notify: function (x) {} });
-        this.next ();
-    };
-
-    /**
-     * continue the fetch process for all the loadable items.
-     *
-     * @method next
-     */
     _.next = function () {
         if (this.items.length > 0) {
             // have work to do, kick off a fetch
@@ -62,6 +46,17 @@ let LoaderList = function () {
             // all done, inform our waiting handler
             this.onFinishedAll.notify (this);
         }
+    };
+
+    /**
+     * start the fetch process for all the loaders
+     *
+     * @method go
+     * @param {Object} onFinishedAll an OnReady object to notify when the loader is finished.
+     */
+    _.go = function (onFinishedAll) {
+        this.onFinishedAll = DEFAULT_VALUE(onFinishedAll, { notify: function (x) {} });
+        this.next ();
     };
 
     return _;

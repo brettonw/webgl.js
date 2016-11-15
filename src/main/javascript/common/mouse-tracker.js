@@ -33,10 +33,12 @@ let MouseTracker = function () {
     };
 
     let mouseDown = function (event) {
-        //getting mouse position correctly
-        mouseDownPosition = mousePosition(event);
-        window.addEventListener("mousemove", mouseMoved, false);
-        window.addEventListener("mouseup", mouseUp, false);
+        if (event.button == 0) {
+            //getting mouse position correctly
+            mouseDownPosition = mousePosition (event);
+            window.addEventListener ("mousemove", mouseMoved, false);
+            window.addEventListener ("mouseup", mouseUp, false);
+        }
     };
 
     let KEY_LEFT = 37;

@@ -26,7 +26,7 @@
             </li>
         </div>
         <form class="navbar-form pull-right" style="line-height: 40px; height: 40px;">
-            <input style="margin-top: 0;" type="text" class="search-query" placeholder="Search for classes/modules..." data-obj='["classes/Cloud", "classes/Float4x4", "classes/FloatNxN", "classes/Loader", "classes/LoaderPath", "classes/LoaderShader", "classes/Node", "classes/Program", "classes/Render", "classes/Utility"]'>
+            <input style="margin-top: 0;" type="text" class="search-query" placeholder="Search for classes/modules..." data-obj='["classes/Cloud", "classes/Float4x4", "classes/FloatNxN", "classes/Loader", "classes/LoaderList", "classes/LoaderPath", "classes/LoaderShader", "classes/Node", "classes/Program", "classes/Render", "classes/Utility"]'>
         </form>
     </div>
 </div>
@@ -41,6 +41,7 @@
                 <li><a href="../classes/Float4x4.html">Float4x4</a></li>
                 <li><a href="../classes/FloatNxN.html">FloatNxN</a></li>
                 <li><a href="../classes/Loader.html">Loader</a></li>
+                <li><a href="../classes/LoaderList.html">LoaderList</a></li>
                 <li><a href="../classes/LoaderPath.html">LoaderPath</a></li>
                 <li><a href="../classes/LoaderShader.html">LoaderShader</a></li>
                 <li><a href="../classes/Node.html">Node</a></li>
@@ -102,10 +103,7 @@
 			<strong>Methods</strong>
 			<ul>
 				<li><a href="#method-construct"><span class="im">construct</span>(<span class="ia">parameters</span>)</a></li>
-				<li><a href="#method-construct"><span class="im">construct</span>(<span class="ia">parameters</span>)</a></li>
 				<li><a href="#method-go"><span class="im">go</span>(<span class="ia">onFinishedAll</span>)</a></li>
-				<li><a href="#method-go"><span class="im">go</span>(<span class="ia">onFinishedAll</span>)</a></li>
-				<li><a href="#method-next"><span class="im">next</span>()</a></li>
 				<li><a href="#method-next"><span class="im">next</span>()</a></li>
 			</ul>
 		</li>
@@ -121,65 +119,6 @@
     <div id="methods" class="page-section">
         <h2 class="off-left">Methods</h2>
         <div class="item-list">
-<div id="method-construct" class="method item">
-	<div class="method-signature">
-	<span class="name"><code>construct</code></span>
-
-		<div class="args">
-			<span class="paren">(</span><ul class="args-list inline commas">
-				<li class="arg">
-						<code>parameters</code>
-				</li>
-			</ul><span class="paren">)</span>
-		</div>
-		<span class="returns-inline">
-			<span class="type">LoaderList</span>
-		</span>
-	</div>
-
-
-
-
-
-
-	<div class="meta">
-				<p>
-				Defined in
-		<a href="../files/src_main_javascript_core_loader-list.js.html#l9"><code>src&#x2F;main&#x2F;javascript&#x2F;core&#x2F;loader-list.js:9</code></a>
-		</p>
-
-
-
-	</div>
-
-	<div class="description"><p>the initializer for a loader.</p>
-</div>
-
-		<div class="params">
-			<h4>Parameters:</h4>
-
-			<ul class="params-list">
-				<li class="param">
-						<code class="param-name">parameters</code>
-						<span class="type">Object</span>
-
-
-					<div class="param-description"><p>not used.</p>
-</div>
-
-				</li>
-			</ul>
-		</div>
-
-		<div class="returns">
-			<h4>Returns:</h4>
-
-			<div class="returns-description">
-						<span class="type">LoaderList</span>
-			</div>
-		</div>
-
-</div>
 <div id="method-construct" class="method item">
 	<div class="method-signature">
 	<span class="name"><code>construct</code></span>
@@ -260,55 +199,6 @@
 	<div class="meta">
 				<p>
 				Defined in
-		<a href="../files/src_main_javascript_core_loader-list.js.html#l44"><code>src&#x2F;main&#x2F;javascript&#x2F;core&#x2F;loader-list.js:44</code></a>
-		</p>
-
-
-
-	</div>
-
-	<div class="description"><p>start the fetch process for all the loaders</p>
-</div>
-
-		<div class="params">
-			<h4>Parameters:</h4>
-
-			<ul class="params-list">
-				<li class="param">
-						<code class="param-name">onFinishedAll</code>
-						<span class="type">Object</span>
-
-
-					<div class="param-description"><p>an OnReady object to notify when the loader is finished.</p>
-</div>
-
-				</li>
-			</ul>
-		</div>
-
-
-</div>
-<div id="method-go" class="method item">
-	<div class="method-signature">
-	<span class="name"><code>go</code></span>
-
-		<div class="args">
-			<span class="paren">(</span><ul class="args-list inline commas">
-				<li class="arg">
-						<code>onFinishedAll</code>
-				</li>
-			</ul><span class="paren">)</span>
-		</div>
-	</div>
-
-
-
-
-
-
-	<div class="meta">
-				<p>
-				Defined in
 		<a href="../files/src_main_javascript_core_loader.js.html#l39"><code>src&#x2F;main&#x2F;javascript&#x2F;core&#x2F;loader.js:39</code></a>
 		</p>
 
@@ -334,34 +224,6 @@
 				</li>
 			</ul>
 		</div>
-
-
-</div>
-<div id="method-next" class="method item">
-	<div class="method-signature">
-	<span class="name"><code>next</code></span>
-
-		<span class="paren">()</span>
-	</div>
-
-
-
-
-
-
-	<div class="meta">
-				<p>
-				Defined in
-		<a href="../files/src_main_javascript_core_loader-list.js.html#l55"><code>src&#x2F;main&#x2F;javascript&#x2F;core&#x2F;loader-list.js:55</code></a>
-		</p>
-
-
-
-	</div>
-
-	<div class="description"><p>continue the fetch process for all the loadable items.</p>
-</div>
-
 
 
 </div>

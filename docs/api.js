@@ -5,6 +5,7 @@ YUI.add("yuidoc-meta", function(Y) {
         "Float4x4",
         "FloatNxN",
         "Loader",
+        "LoaderList",
         "LoaderPath",
         "LoaderShader",
         "Node",

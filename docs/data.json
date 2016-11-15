@@ -54,7 +54,9 @@
         "src/main/javascript/core/loader-list.js": {
             "name": "src/main/javascript/core/loader-list.js",
             "modules": {},
-            "classes": {},
+            "classes": {
+                "LoaderList": 1
+            },
             "fors": {},
             "namespaces": {}
         },
@@ -164,17 +166,17 @@
             "line": 1,
             "description": "A Cloud, a scene graph node for displaying points in space."
         },
-        "Loader": {
-            "name": "Loader",
-            "shortname": "Loader",
+        "LoaderList": {
+            "name": "LoaderList",
+            "shortname": "LoaderList",
             "classitems": [],
             "plugins": [],
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
-            "file": "src/main/javascript/core/loader.js",
+            "file": "src/main/javascript/core/loader-list.js",
             "line": 1,
-            "description": "A loader for external assets."
+            "description": "A loader for loaders."
         },
         "LoaderPath": {
             "name": "LoaderPath",
@@ -199,6 +201,18 @@
             "file": "src/main/javascript/core/loader-shader.js",
             "line": 1,
             "description": "A loader for external shader assets."
+        },
+        "Loader": {
+            "name": "Loader",
+            "shortname": "Loader",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src/main/javascript/core/loader.js",
+            "line": 1,
+            "description": "A loader for external assets."
         },
         "Node": {
             "name": "Node",
@@ -718,11 +732,11 @@
                 "description": "",
                 "type": "LoaderList"
             },
-            "class": "Loader"
+            "class": "LoaderList"
         },
         {
             "file": "src/main/javascript/core/loader-list.js",
-            "line": 44,
+            "line": 51,
             "description": "start the fetch process for all the loaders",
             "itemtype": "method",
             "name": "go",
@@ -733,15 +747,7 @@
                     "type": "Object"
                 }
             ],
-            "class": "Loader"
-        },
-        {
-            "file": "src/main/javascript/core/loader-list.js",
-            "line": 55,
-            "description": "continue the fetch process for all the loadable items.",
-            "itemtype": "method",
-            "name": "next",
-            "class": "Loader"
+            "class": "LoaderList"
         },
         {
             "file": "src/main/javascript/core/loader-path.js",

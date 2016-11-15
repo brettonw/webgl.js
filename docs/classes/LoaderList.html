@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>src/main/javascript/core/camera.js - WebGL</title>
+    <title>LoaderList - WebGL</title>
     <link rel="stylesheet" href="">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -81,49 +81,157 @@
                 <div id="docs-main">
                     <div class="content">
 <div class="page-header">
-    <h1>src/main/javascript/core/camera.js <small>File</small></h1>
+    <h1>LoaderList</h1>
 </div>
 
-<div class="file">
-    <pre class="prettyprint linenums">
-let Camera = function () {
-    let _ = ClassNamed (CLASS_NAME_GENERATED);
-
-    _.construct = function (parameters) {
-    };
-
-    _.apply = function (standardUniforms) {
-        // set the standard uniforms for the perspective transformation matrix and the view
-        // transformation matrix
-    };
 
 
-    _.viewMatrix = function () {
 
-    };
 
-    _.projectionMatrix = function (node) {
 
-    };
+<div class="yuidoc-class-description">
+<p>A loader for loaders.</p>
 
-    /**
-     *
-     * @param focalLength
-     * @param filmSize
-     */
-    _lens.computeFov = function (focalLength, filmSize) {
-        let fov = 2.0 * Math.atan2 (filmSize * 0.5, focalLength);
-    };
-
-    _.lookFromTo = function (from, to, fov) {
-
-    };
-
-    return _;
-} ();
-
-    </pre>
 </div>
+
+<!-- table of contents -->
+
+<div id="class-toc" class="page-section">
+	<h2>Table of Contents</h2>
+    <ul>
+		<li>
+			<strong>Methods</strong>
+			<ul>
+				<li><a href="#method-construct"><span class="im">construct</span>(<span class="ia">parameters</span>)</a></li>
+				<li><a href="#method-go"><span class="im">go</span>(<span class="ia">onFinishedAll</span>)</a></li>
+			</ul>
+		</li>
+
+
+
+	</ul>
+</div>
+
+<!-- details -->
+
+
+    <div id="methods" class="page-section">
+        <h2 class="off-left">Methods</h2>
+        <div class="item-list">
+<div id="method-construct" class="method item">
+	<div class="method-signature">
+	<span class="name"><code>construct</code></span>
+
+		<div class="args">
+			<span class="paren">(</span><ul class="args-list inline commas">
+				<li class="arg">
+						<code>parameters</code>
+				</li>
+			</ul><span class="paren">)</span>
+		</div>
+		<span class="returns-inline">
+			<span class="type"><a href="../classes/LoaderList.html" class="crosslink">LoaderList</a></span>
+		</span>
+	</div>
+
+
+
+
+
+
+	<div class="meta">
+				<p>
+				Defined in
+		<a href="../files/src_main_javascript_core_loader-list.js.html#l9"><code>src&#x2F;main&#x2F;javascript&#x2F;core&#x2F;loader-list.js:9</code></a>
+		</p>
+
+
+
+	</div>
+
+	<div class="description"><p>the initializer for a loader.</p>
+</div>
+
+		<div class="params">
+			<h4>Parameters:</h4>
+
+			<ul class="params-list">
+				<li class="param">
+						<code class="param-name">parameters</code>
+						<span class="type">Object</span>
+
+
+					<div class="param-description"><p>not used.</p>
+</div>
+
+				</li>
+			</ul>
+		</div>
+
+		<div class="returns">
+			<h4>Returns:</h4>
+
+			<div class="returns-description">
+						<span class="type"><a href="../classes/LoaderList.html" class="crosslink">LoaderList</a></span>
+			</div>
+		</div>
+
+</div>
+<div id="method-go" class="method item">
+	<div class="method-signature">
+	<span class="name"><code>go</code></span>
+
+		<div class="args">
+			<span class="paren">(</span><ul class="args-list inline commas">
+				<li class="arg">
+						<code>onFinishedAll</code>
+				</li>
+			</ul><span class="paren">)</span>
+		</div>
+	</div>
+
+
+
+
+
+
+	<div class="meta">
+				<p>
+				Defined in
+		<a href="../files/src_main_javascript_core_loader-list.js.html#l51"><code>src&#x2F;main&#x2F;javascript&#x2F;core&#x2F;loader-list.js:51</code></a>
+		</p>
+
+
+
+	</div>
+
+	<div class="description"><p>start the fetch process for all the loaders</p>
+</div>
+
+		<div class="params">
+			<h4>Parameters:</h4>
+
+			<ul class="params-list">
+				<li class="param">
+						<code class="param-name">onFinishedAll</code>
+						<span class="type">Object</span>
+
+
+					<div class="param-description"><p>an OnReady object to notify when the loader is finished.</p>
+</div>
+
+				</li>
+			</ul>
+		</div>
+
+
+</div>
+        </div>
+    </div>
+
+
+
+
                     </div>
                 </div>
             </div>

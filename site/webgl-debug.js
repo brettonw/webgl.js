@@ -412,10 +412,12 @@ let MouseTracker = function () {
     };
 
     let mouseDown = function (event) {
-        //getting mouse position correctly
-        mouseDownPosition = mousePosition(event);
-        window.addEventListener("mousemove", mouseMoved, false);
-        window.addEventListener("mouseup", mouseUp, false);
+        if (event.button == 0) {
+            //getting mouse position correctly
+            mouseDownPosition = mousePosition (event);
+            window.addEventListener ("mousemove", mouseMoved, false);
+            window.addEventListener ("mouseup", mouseUp, false);
+        }
     };
 
     let KEY_LEFT = 37;
@@ -1420,9 +1422,9 @@ let Loader = function () {
     return _;
 } ();
 /**
- * A loader for external assets.
+ * A loader for loaders.
  *
- * @class Loader
+ * @class LoaderList
  */
 let LoaderList = function () {
     let _ = Object.create (ClassBase);
@@ -1440,14 +1442,9 @@ let LoaderList = function () {
         return this;
     };
 
-    _.addLoader = function (loader) {
-        this.items.push (loader);
-        return this;
-    };
-
     _.addLoaders = function (...loaders) {
         for (let loader of loaders) {
-            this.addLoader (loader);
+            this.items.push (loader);
         }
         return this;
     };
@@ -1462,22 +1459,6 @@ let LoaderList = function () {
         }
     };
 
-    /**
-     * start the fetch process for all the loaders
-     *
-     * @method go
-     * @param {Object} onFinishedAll an OnReady object to notify when the loader is finished.
-     */
-    _.go = function (onFinishedAll) {
-        this.onFinishedAll = (onFinishedAll = (((typeof onFinishedAll !== "undefined") && (onFinishedAll != null)) ? onFinishedAll : { notify: function (x) {} }));
-        this.next ();
-    };
-
-    /**
-     * continue the fetch process for all the loadable items.
-     *
-     * @method next
-     */
     _.next = function () {
         if (this.items.length > 0) {
             // have work to do, kick off a fetch
@@ -1488,6 +1469,17 @@ let LoaderList = function () {
             // all done, inform our waiting handler
             this.onFinishedAll.notify (this);
         }
+    };
+
+    /**
+     * start the fetch process for all the loaders
+     *
+     * @method go
+     * @param {Object} onFinishedAll an OnReady object to notify when the loader is finished.
+     */
+    _.go = function (onFinishedAll) {
+        this.onFinishedAll = (onFinishedAll = (((typeof onFinishedAll !== "undefined") && (onFinishedAll != null)) ? onFinishedAll : { notify: function (x) {} }));
+        this.next ();
     };
 
     return _;
