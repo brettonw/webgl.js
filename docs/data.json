@@ -1038,35 +1038,10 @@
         },
         {
             "file": "src/main/javascript/core/render.js",
-            "line": 56,
+            "line": 68,
             "description": "Set the global rendering context.",
             "itemtype": "method",
             "name": "use",
-            "class": "Render"
-        },
-        {
-            "file": "src/main/javascript/core/render.js",
-            "line": 65,
-            "description": "Static method to create and construct a new rendering context.",
-            "itemtype": "method",
-            "name": "new",
-            "static": 1,
-            "params": [
-                {
-                    "name": "canvasId",
-                    "description": "the id of the canvas element to use for the rendering context.",
-                    "type": "String"
-                },
-                {
-                    "name": "aspectRatio",
-                    "description": "the width / height of the canvas.",
-                    "type": "Number"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "Render"
-            },
             "class": "Render"
         },
         {

@@ -1,5 +1,6 @@
 "use strict;"
 
+let render;
 let scene;
 let standardUniforms = Object.create (null);
 
@@ -179,6 +180,10 @@ let buildScene = function () {
     drawFrame ();
 };
 
+let onClickSave = function () {
+    render.save("webgl");
+};
+
 let onBodyLoad = function () {
     fovRange = document.getElementById ("fovRange");
     framingRange = document.getElementById ("framingRange");
@@ -192,7 +197,7 @@ let onBodyLoad = function () {
         }
     }), 0.01);
 
-    Render.new ("render-canvas");
+    render = Render.new ({canvasId: "render-canvas"});
 
     // loader list
     LoaderList

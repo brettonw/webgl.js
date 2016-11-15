@@ -6,7 +6,7 @@ let context;
  * @class Render
  */
 let Render = function () {
-    let _ = OBJ;
+    let _ = CLASS_BASE;
 
     /**
      * The initializer for a rendering context.
@@ -15,9 +15,9 @@ let Render = function () {
      * @param {string} canvasId the id of the canvas element to use for the rendering context
      * @return {Render}
      */
-    _.construct = function (canvasId, aspectRatio) {
-        let canvas = this.canvas = document.getElementById (canvasId);
-        DEFAULT_VALUE(aspectRatio, 16.0 / 9.0);
+    _.construct = function (parameters) {
+        let canvas = this.canvas = document.getElementById (parameters.canvasId);
+        let aspectRatio = DEFAULT_VALUE(parameters.aspectRatio, 16.0 / 9.0);
 
         // high DPI devices need to have the canvas drawing surface scaled up while leaving the style
         // size as indicated
@@ -49,8 +49,20 @@ let Render = function () {
         Sphere.makeN(2);
         Sphere.makeN(3);
         Sphere.makeN(5);
+    };
 
-        return this;
+    _.save = function (filename) {
+        //let image = this.canvas.toDataURL ("image/png").replace ("image/png", "image/octet-stream");
+        let MIME_TYPE = "image/png";
+        let imgURL = this.canvas.toDataURL (MIME_TYPE);
+        let dlLink = document.createElement ('a');
+        dlLink.download = filename + ".png";
+        dlLink.href = imgURL;
+        dlLink.dataset.downloadurl = [MIME_TYPE, dlLink.download, dlLink.href].join (':');
+
+        document.body.appendChild (dlLink);
+        dlLink.click ();
+        document.body.removeChild (dlLink);
     };
 
     /**
@@ -60,19 +72,6 @@ let Render = function () {
      */
     _.use = function () {
         context = this.context;
-    };
-
-    /**
-     * Static method to create and construct a new rendering context.
-     *
-     * @method new
-     * @static
-     * @param {string} canvasId the id of the canvas element to use for the rendering context.
-     * @param {number} aspectRatio the width / height of the canvas.
-     * @return {Render}
-     */
-    _.new = function (canvasId, aspectRatio) {
-        return (render = Object.create (_).construct (canvasId, aspectRatio));
     };
 
     return _;
