@@ -3111,14 +3111,7 @@ let makeBall = function (name, steps) {
 
     // revolve the surface, the outline is a half circle, so the revolved surface needs to be twice
     // as many steps to go all the way around
-    return makeRevolve(name, outline, normal, steps * 2, function (uvY) {
-        return uvY;
-        // uvY varies [0..1] over the course of the outline
-        let angle = Math.PI * uvY;
-        let result = 1 - ((Math.cos (angle) + 1) / 2);
-        LogLevel.say (LogLevel.TRACE, "Input " + uvY + " => " + result);
-        return result;
-    });
+    return makeRevolve(name, outline, normal, steps * 2);
 };
 var TestContainer = function () {
     var _ = Object.create (null);
