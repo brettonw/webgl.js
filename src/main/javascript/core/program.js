@@ -53,6 +53,7 @@ let Program = function () {
      * * POSITION_ATTRIBUTE: "inputPosition"
      * * NORMAL_ATTRIBUTE: "inputNormal"
      * * TEXTURE_ATTRIBUTE: "inputTexture"
+     * * COLOR_ATTRIBUTE: "inputColor"
      * parameterMapping maps standard parameters to the parameter names in the
      * shader. This allows the engine to manage setting the standard set of parameters on the shader
      * without forcing the shader author to use "standard" names. Defaults to:
