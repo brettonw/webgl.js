@@ -2,8 +2,8 @@ precision highp float;
 
 uniform float outputAlpha;
 
-varying vec4 vertexColor;
+varying vec4 color;
 
 void main(void) {
-    gl_FragColor = vec4 (vertexColor.r, vertexColor.g, vertexColor.b, vertexColor.a * outputAlpha);
+    gl_FragColor = vec4 (color.r, color.g, color.b, color.a * outputAlpha);
 }
