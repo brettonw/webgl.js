@@ -303,6 +303,15 @@
             "description": "the name for the standard TEXTURE buffer attribute in a shader.",
             "type": "{string}",
             "final": 1
+        },
+        "COLOR_ATTRIBUTE": {
+            "name": "COLOR_ATTRIBUTE",
+            "attributes": [],
+            "file": "src/main/javascript/core/program.js",
+            "line": 33,
+            "description": "the name for the standard COLOR buffer attribute in a shader.",
+            "type": "{string}",
+            "final": 1
         }
     },
     "classitems": [
@@ -902,7 +911,7 @@
         },
         {
             "file": "src/main/javascript/core/program.js",
-            "line": 35,
+            "line": 43,
             "description": "the initializer for a shader.",
             "itemtype": "method",
             "name": "construct",
@@ -921,7 +930,7 @@
         },
         {
             "file": "src/main/javascript/core/program.js",
-            "line": 159,
+            "line": 168,
             "description": "set the standard shader parameters in one call.",
             "itemtype": "method",
             "name": "setStandardUniforms",
@@ -937,7 +946,7 @@
         },
         {
             "file": "src/main/javascript/core/program.js",
-            "line": 186,
+            "line": 195,
             "description": "bind the POSITION attribute to the given buffer.",
             "itemtype": "method",
             "name": "bindPositionAttribute",
@@ -953,7 +962,7 @@
         },
         {
             "file": "src/main/javascript/core/program.js",
-            "line": 197,
+            "line": 206,
             "description": "bind the NORMAL attribute to the given buffer.",
             "itemtype": "method",
             "name": "bindNormalAttribute",
@@ -969,7 +978,7 @@
         },
         {
             "file": "src/main/javascript/core/program.js",
-            "line": 208,
+            "line": 217,
             "description": "bind the TEXTURE attribute to the given buffer.",
             "itemtype": "method",
             "name": "bindTextureAttribute",
@@ -985,7 +994,23 @@
         },
         {
             "file": "src/main/javascript/core/program.js",
-            "line": 220,
+            "line": 229,
+            "description": "bind the COLOR attribute to the given buffer.",
+            "itemtype": "method",
+            "name": "bindColorAttribute",
+            "params": [
+                {
+                    "name": "buffer",
+                    "description": "WebGL buffer to bind",
+                    "type": "Object"
+                }
+            ],
+            "chainable": 1,
+            "class": "Program"
+        },
+        {
+            "file": "src/main/javascript/core/program.js",
+            "line": 241,
             "description": "disable the enabled buffers.",
             "itemtype": "method",
             "name": "unbindAttributes",
@@ -997,7 +1022,7 @@
         },
         {
             "file": "src/main/javascript/core/program.js",
-            "line": 232,
+            "line": 253,
             "description": "fetch the shader currently in use.",
             "itemtype": "method",
             "name": "getCurrentProgram",
@@ -1010,7 +1035,7 @@
         },
         {
             "file": "src/main/javascript/core/program.js",
-            "line": 243,
+            "line": 264,
             "description": "set this as the current shader in the rendering context.",
             "itemtype": "method",
             "name": "use",

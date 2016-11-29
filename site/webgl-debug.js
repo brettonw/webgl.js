@@ -1577,12 +1577,11 @@ let Shader = function () {
                     LogLevel.say (LogLevel.ERROR, "Shader compilation failed for " + parameters.name + ":\n" + context.getShaderInfoLog (shader));
                 } else {
                     scope.compiledShader = shader;
-
-                    // call the onReady handler if one was provided
-                    if (typeof parameters.onReady !== "undefined") {
-                        parameters.onReady.notify (scope);
-                    }
                 }
+            }
+            // call the onReady handler if one was provided
+            if (typeof parameters.onReady !== "undefined") {
+                parameters.onReady.notify (scope);
             }
         };
         request.open("GET", parameters.url);
@@ -1622,6 +1621,14 @@ let Program = function () {
      * @final
      */
     _.TEXTURE_ATTRIBUTE = "TEXTURE_ATTRIBUTE";
+
+    /**
+     * the name for the standard COLOR buffer attribute in a shader.
+     * @element COLOR_ATTRIBUTE
+     * @type {string}
+     * @final
+     */
+    _.COLOR_ATTRIBUTE = "COLOR_ATTRIBUTE";
 
     let currentProgram;
 
@@ -1670,7 +1677,8 @@ let Program = function () {
             parameters.attributeMapping = {
                 POSITION_ATTRIBUTE: "inputPosition",
                 NORMAL_ATTRIBUTE: "inputNormal",
-                TEXTURE_ATTRIBUTE: "inputTexture"
+                TEXTURE_ATTRIBUTE: "inputTexture",
+                COLOR_ATTRIBUTE: "inputColor"
             };
         }
 
@@ -1807,7 +1815,19 @@ let Program = function () {
      */
     _.bindTextureAttribute = function (buffer) {
         // not every shader uses every attribute, so don't bother to set this unless it will be used
-        return bindAttribute(this, _.TEXTURE_ATTRIBUTE, buffer);
+        return bindAttribute (this, _.TEXTURE_ATTRIBUTE, buffer);
+    };
+
+    /**
+     * bind the COLOR attribute to the given buffer.
+     *
+     * @method bindColorAttribute
+     * @param {Object} buffer WebGL buffer to bind
+     * @chainable
+     */
+    _.bindColorAttribute = function (buffer) {
+        // not every shader uses every attribute, so don't bother to set this unless it will be used
+        return bindAttribute (this, _.COLOR_ATTRIBUTE, buffer);
     };
 
     /**
@@ -2455,15 +2475,26 @@ let Shape = function () {
         // 1 vertex, normal
         // 2 vertex, texture
         // 3 vertex, normal, texture
+
         // 4 vertex, index
         // 5 vertex, normal, index
         // 6 vertex, texture, index
         // 7 vertex, normal, texture, index
 
+        // 8 vertex, color
+        // 9 vertex, normal, color
+        // 10 vertex, texture, color
+        // 11 vertex, normal, texture, color
+        // 12 vertex, color, index
+        // 13 vertex, normal, color, index
+        // 14 vertex, texture, color, index
+        // 15 vertex, normal, texture, color, index
+
         // build the buffers
-        let HAS_NORMAL = 1;
-        let HAS_TEXTURE = 2;
-        let HAS_INDEX = 4;
+        const HAS_NORMAL = 1;
+        const HAS_TEXTURE = 2;
+        const HAS_INDEX = 4;
+        const HAS_COLOR = 8;
         let drawFunctionIndex = 0;
         if ("position" in buffers) {
             this.positionBuffer = makeBuffer (context.ARRAY_BUFFER, new Float32Array (buffers.position), 3);
@@ -2486,11 +2517,16 @@ let Shape = function () {
             drawFunctionIndex += HAS_INDEX;
         }
 
+        if ("color" in buffers) {
+            this.colorbuffer = makeBuffer (context.ARRAY_BUFFER, new Float32Array (buffers.color), 1);
+            drawFunctionIndex += HAS_COLOR;
+        }
+
         this.draw = [
             // 0 vertex only
             function () {
                 try {
-                    let program = Program.getCurrentProgram();
+                    let program = Program.getCurrentProgram ();
                     if (program.useShape (this)) {
                         program.bindPositionAttribute (this.positionBuffer);
                     }
@@ -2502,7 +2538,7 @@ let Shape = function () {
             // 1 vertex, normal
             function () {
                 try {
-                    let program = Program.getCurrentProgram();
+                    let program = Program.getCurrentProgram ();
                     if (program.useShape (this)) {
                         program
                             .bindPositionAttribute (this.positionBuffer)
@@ -2516,7 +2552,7 @@ let Shape = function () {
             // 2 vertex, texture
             function () {
                 try {
-                    let program = Program.getCurrentProgram();
+                    let program = Program.getCurrentProgram ();
                     if (program.useShape (this)) {
                         program
                             .bindPositionAttribute (this.positionBuffer)
@@ -2530,7 +2566,7 @@ let Shape = function () {
             // 3 vertex, normal, texture
             function () {
                 try {
-                    let program = Program.getCurrentProgram();
+                    let program = Program.getCurrentProgram ();
                     if (program.useShape (this)) {
                         program
                             .bindPositionAttribute (this.positionBuffer)
@@ -2545,7 +2581,7 @@ let Shape = function () {
             // 4 vertex, index
             function () {
                 try {
-                    let program = Program.getCurrentProgram();
+                    let program = Program.getCurrentProgram ();
                     if (program.useShape (this)) {
                         program.bindPositionAttribute (this.positionBuffer);
                         context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
@@ -2558,7 +2594,7 @@ let Shape = function () {
             // 5 vertex, normal, index
             function () {
                 try {
-                    let program = Program.getCurrentProgram();
+                    let program = Program.getCurrentProgram ();
                     if (program.useShape (this)) {
                         program
                             .bindPositionAttribute (this.positionBuffer)
@@ -2573,7 +2609,7 @@ let Shape = function () {
             // 6 vertex, texture, index
             function () {
                 try {
-                    let program = Program.getCurrentProgram();
+                    let program = Program.getCurrentProgram ();
                     if (program.useShape (this)) {
                         program
                             .bindPositionAttribute (this.positionBuffer)
@@ -2588,12 +2624,137 @@ let Shape = function () {
             // 7 vertex, normal, texture, index
             function () {
                 try {
-                    let program = Program.getCurrentProgram();
+                    let program = Program.getCurrentProgram ();
                     if (program.useShape (this)) {
                         program
                             .bindPositionAttribute (this.positionBuffer)
                             .bindNormalAttribute (this.normalBuffer)
                             .bindTextureAttribute (this.textureBuffer);
+                        context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
+                    }
+                    context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
+                } catch (err) {
+                    LogLevel.say (LogLevel.ERROR, err.message);
+                }
+            },
+
+            // 8 vertex, color
+            function () {
+                try {
+                    let program = Program.getCurrentProgram ();
+                    if (program.useShape (this)) {
+                        program
+                            .bindPositionAttribute (this.positionBuffer)
+                            .bindColorAttribute (this.colorBuffer);
+                    }
+                    context.drawArrays (context.TRIANGLES, 0, this.positionBuffer.numItems);
+                } catch (err) {
+                    LogLevel.say (LogLevel.ERROR, err.message);
+                }
+            },
+            // 9 vertex, normal, color
+            function () {
+                try {
+                    let program = Program.getCurrentProgram ();
+                    if (program.useShape (this)) {
+                        program
+                            .bindPositionAttribute (this.positionBuffer)
+                            .bindNormalAttribute (this.normalBuffer)
+                            .bindColorAttribute (this.colorBuffer);
+                    }
+                    context.drawArrays (context.TRIANGLES, 0, this.positionBuffer.numItems);
+                } catch (err) {
+                    LogLevel.say (LogLevel.ERROR, err.message);
+                }
+            },
+            // 10 vertex, texture, color
+            function () {
+                try {
+                    let program = Program.getCurrentProgram ();
+                    if (program.useShape (this)) {
+                        program
+                            .bindPositionAttribute (this.positionBuffer)
+                            .bindTextureAttribute (this.textureBuffer)
+                            .bindColorAttribute (this.colorBuffer);
+                    }
+                    context.drawArrays (context.TRIANGLES, 0, this.positionBuffer.numItems);
+                } catch (err) {
+                    LogLevel.say (LogLevel.ERROR, err.message);
+                }
+            },
+            // 11 vertex, normal, texture, color
+            function () {
+                try {
+                    let program = Program.getCurrentProgram ();
+                    if (program.useShape (this)) {
+                        program
+                            .bindPositionAttribute (this.positionBuffer)
+                            .bindNormalAttribute (this.normalBuffer)
+                            .bindTextureAttribute (this.textureBuffer)
+                            .bindColorAttribute (this.colorBuffer);
+                    }
+                    context.drawArrays (context.TRIANGLES, 0, this.positionBuffer.numItems);
+                } catch (err) {
+                    LogLevel.say (LogLevel.ERROR, err.message);
+                }
+            },
+            // 12 vertex, color, index
+            function () {
+                try {
+                    let program = Program.getCurrentProgram ();
+                    if (program.useShape (this)) {
+                        program
+                            .bindPositionAttribute (this.positionBuffer)
+                            .bindColorAttribute (this.colorBuffer);
+                        context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
+                    }
+                    context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
+                } catch (err) {
+                    LogLevel.say (LogLevel.ERROR, err.message);
+                }
+            },
+            // 13 vertex, normal, color, index
+            function () {
+                try {
+                    let program = Program.getCurrentProgram ();
+                    if (program.useShape (this)) {
+                        program
+                            .bindPositionAttribute (this.positionBuffer)
+                            .bindNormalAttribute (this.normalBuffer)
+                            .bindColorAttribute (this.colorBuffer);
+                        context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
+                    }
+                    context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
+                } catch (err) {
+                    LogLevel.say (LogLevel.ERROR, err.message);
+                }
+            },
+            // 14 vertex, texture, color, index
+            function () {
+                try {
+                    let program = Program.getCurrentProgram ();
+                    if (program.useShape (this)) {
+                        program
+                            .bindPositionAttribute (this.positionBuffer)
+                            .bindTextureAttribute (this.textureBuffer)
+                            .bindColorAttribute (this.colorBuffer);
+                        context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
+                    }
+                    context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
+                } catch (err) {
+                    LogLevel.say (LogLevel.ERROR, err.message);
+                }
+            },
+            // 15 vertex, normal, texture, color, index
+            function () {
+                try {
+                    let program = Program.getCurrentProgram ();
+                    if (program.useShape (this)) {
+                        program
+                            .bindPositionAttribute (this.positionBuffer)
+                            .bindNormalAttribute (this.normalBuffer)
+                            .bindTextureAttribute (this.textureBuffer)
+                            .bindColorAttribute (this.colorBuffer);
                         context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
                     }
                     context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
@@ -2638,10 +2799,11 @@ let TextFile = function () {
         request.onload = function (event) {
             if (request.status === 200) {
                 scope.text = request.responseText;
-                // call the onReady handler if one was provided
-                if (typeof parameters.onReady !== "undefined") {
-                    parameters.onReady.notify (scope);
-                }
+            }
+
+            // call the onReady handler if one was provided
+            if (typeof parameters.onReady !== "undefined") {
+                parameters.onReady.notify (scope);
             }
         };
         request.open ("GET", parameters.url);

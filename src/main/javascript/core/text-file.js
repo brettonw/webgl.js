@@ -12,10 +12,11 @@ let TextFile = function () {
         request.onload = function (event) {
             if (request.status === 200) {
                 scope.text = request.responseText;
-                // call the onReady handler if one was provided
-                if (typeof parameters.onReady !== "undefined") {
-                    parameters.onReady.notify (scope);
-                }
+            }
+
+            // call the onReady handler if one was provided
+            if (typeof parameters.onReady !== "undefined") {
+                parameters.onReady.notify (scope);
             }
         };
         request.open ("GET", parameters.url);
