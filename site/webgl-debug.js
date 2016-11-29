@@ -236,7 +236,7 @@ let ClassBase = function () {
     /**
      *
      * @param parameters
-     * @returns {_}
+     * @return {_}
      */
     _.new = function (parameters) {
         // create the object. this is a bit tricky here, as "this" is referring to a static instance
@@ -296,7 +296,7 @@ let ClassNamed = function (nameRequired) {
      *
      * @param parameters
      * @param name
-     * @returns {_}
+     * @return {_}
      */
     _.new = function (parameters, name) {
         // ensure parameters is a valid object
@@ -321,7 +321,7 @@ let ClassNamed = function (nameRequired) {
     /**
      *
      * @param name
-     * @returns {*}
+     * @return {*}
      */
     _.get = function (name) {
         return index[name];
@@ -339,7 +339,7 @@ let ClassNamed = function (nameRequired) {
 
     /**
      *
-     * @returns {Object}
+     * @return {Object}
      */
     _.getIndex = function () {
         return index;
@@ -2518,7 +2518,7 @@ let Shape = function () {
         }
 
         if ("color" in buffers) {
-            this.colorbuffer = makeBuffer (context.ARRAY_BUFFER, new Float32Array (buffers.color), 1);
+            this.colorbuffer = makeBuffer (context.ARRAY_BUFFER, new Float32Array (buffers.color), 4);
             drawFunctionIndex += HAS_COLOR;
         }
 

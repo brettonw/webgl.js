@@ -1624,22 +1624,6 @@
     "warnings": [
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src/main/javascript/common/class-base.js:4"
-        },
-        {
-            "message": "replacing incorrect tag: returns with return",
-            "line": " src/main/javascript/common/class-named.js:40"
-        },
-        {
-            "message": "replacing incorrect tag: returns with return",
-            "line": " src/main/javascript/common/class-named.js:66"
-        },
-        {
-            "message": "replacing incorrect tag: returns with return",
-            "line": " src/main/javascript/common/class-named.js:85"
-        },
-        {
-            "message": "replacing incorrect tag: returns with return",
             "line": " src/main/javascript/common/utility.js:117"
         },
         {

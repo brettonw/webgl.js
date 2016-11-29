@@ -63,7 +63,7 @@ let Shape = function () {
         }
 
         if ("color" in buffers) {
-            this.colorbuffer = makeBuffer (context.ARRAY_BUFFER, new Float32Array (buffers.color), 1);
+            this.colorbuffer = makeBuffer (context.ARRAY_BUFFER, new Float32Array (buffers.color), 4);
             drawFunctionIndex += HAS_COLOR;
         }
 

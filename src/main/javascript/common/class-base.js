@@ -4,7 +4,7 @@ let ClassBase = function () {
     /**
      *
      * @param parameters
-     * @returns {_}
+     * @return {_}
      */
     _.new = function (parameters) {
         // create the object. this is a bit tricky here, as "this" is referring to a static instance
