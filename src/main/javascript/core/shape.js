@@ -62,6 +62,11 @@ let Shape = function () {
             drawFunctionIndex += HAS_INDEX;
         }
 
+        if ("color" in buffers) {
+            this.colorBuffer = makeBuffer (context.ARRAY_BUFFER, new Float32Array (buffers.color), 4);
+            drawFunctionIndex += HAS_COLOR;
+        }
+
         this.draw = [
             // 0 vertex only
             function () {
