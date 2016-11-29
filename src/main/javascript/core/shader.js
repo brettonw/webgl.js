@@ -20,12 +20,11 @@ let Shader = function () {
                     LOG (LogLevel.ERROR, "Shader compilation failed for " + parameters.name + ":\n" + context.getShaderInfoLog (shader));
                 } else {
                     scope.compiledShader = shader;
-
-                    // call the onReady handler if one was provided
-                    if (typeof parameters.onReady !== "undefined") {
-                        parameters.onReady.notify (scope);
-                    }
                 }
+            }
+            // call the onReady handler if one was provided
+            if (typeof parameters.onReady !== "undefined") {
+                parameters.onReady.notify (scope);
             }
         };
         request.open("GET", parameters.url);

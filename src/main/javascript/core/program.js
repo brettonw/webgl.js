@@ -30,6 +30,14 @@ let Program = function () {
      */
     _.TEXTURE_ATTRIBUTE = "TEXTURE_ATTRIBUTE";
 
+    /**
+     * the name for the standard COLOR buffer attribute in a shader.
+     * @element COLOR_ATTRIBUTE
+     * @type {string}
+     * @final
+     */
+    _.COLOR_ATTRIBUTE = "COLOR_ATTRIBUTE";
+
     let currentProgram;
 
     /**
@@ -45,6 +53,7 @@ let Program = function () {
      * * POSITION_ATTRIBUTE: "inputPosition"
      * * NORMAL_ATTRIBUTE: "inputNormal"
      * * TEXTURE_ATTRIBUTE: "inputTexture"
+     * * COLOR_ATTRIBUTE: "inputColor"
      * parameterMapping maps standard parameters to the parameter names in the
      * shader. This allows the engine to manage setting the standard set of parameters on the shader
      * without forcing the shader author to use "standard" names. Defaults to:
@@ -77,7 +86,8 @@ let Program = function () {
             parameters.attributeMapping = {
                 POSITION_ATTRIBUTE: "inputPosition",
                 NORMAL_ATTRIBUTE: "inputNormal",
-                TEXTURE_ATTRIBUTE: "inputTexture"
+                TEXTURE_ATTRIBUTE: "inputTexture",
+                COLOR_ATTRIBUTE: "inputColor"
             };
         }
 
@@ -214,7 +224,19 @@ let Program = function () {
      */
     _.bindTextureAttribute = function (buffer) {
         // not every shader uses every attribute, so don't bother to set this unless it will be used
-        return bindAttribute(this, _.TEXTURE_ATTRIBUTE, buffer);
+        return bindAttribute (this, _.TEXTURE_ATTRIBUTE, buffer);
+    };
+
+    /**
+     * bind the COLOR attribute to the given buffer.
+     *
+     * @method bindColorAttribute
+     * @param {Object} buffer WebGL buffer to bind
+     * @chainable
+     */
+    _.bindColorAttribute = function (buffer) {
+        // not every shader uses every attribute, so don't bother to set this unless it will be used
+        return bindAttribute (this, _.COLOR_ATTRIBUTE, buffer);
     };
 
     /**

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>src/main/javascript/common/class-base.js - WebGL</title>
+    <title>COLOR_ATTRIBUTE - WebGL</title>
     <link rel="stylesheet" href="">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -80,37 +80,31 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-<div class="page-header">
-    <h1>src/main/javascript/common/class-base.js <small>File</small></h1>
+<h1>&lt;COLOR_ATTRIBUTE&gt;</h1>
+<div class="box meta">
+        <div class="foundat">
+            Defined in: <a href="../files/src_main_javascript_core_program.js.html#l33"><code>src&#x2F;main&#x2F;javascript&#x2F;core&#x2F;program.js:33</code></a>
+        </div>
+
+
 </div>
 
-<div class="file">
-    <pre class="prettyprint linenums">
-let ClassBase = function () {
-    let _ = OBJ;
 
-    /**
-     *
-     * @param parameters
-     * @return {_}
-     */
-    _.new = function (parameters) {
-        // create the object. this is a bit tricky here, as &quot;this&quot; is referring to a static instance
-        // of the class we are deriving from (&quot;new&quot; probably isn&#x27;t overloaded)
-        let baseClass = Object.create (this);
+<div class="box intro">
+    <p>the name for the standard COLOR buffer attribute in a shader.</p>
 
-        // if there is a constructor... ensure that we have parameters, then construct the object
-        if (&quot;construct&quot; in baseClass) {
-            DEFAULT_VALUE (parameters, OBJ);
-            baseClass.construct (parameters);
-        }
-        return baseClass;
-    };
 
-    return _;
-} ();
+    <ul class="definitions">
 
-    </pre>
+    </ul>
+</div>
+
+
+
+<div class="index-section attrs">
+    <h2>Attributes</h2>
+
+    <p>This element has no defined attributes.</p>
 </div>
                     </div>
                 </div>

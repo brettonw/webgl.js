@@ -60,6 +60,7 @@
             <fileset dir="${source-dir}/core" includes="cloud.js" />
             <fileset dir="${source-dir}/core" includes="shape.js"/>
             <fileset dir="${source-dir}/core" includes="thing.js"/>
+            <fileset dir="${source-dir}/core" includes="text-file.js"/>
 
             <fileset dir="${source-dir}/shapes" includes="shape-builder.js"/>
             <fileset dir="${source-dir}/shapes" includes="primitive.js"/>

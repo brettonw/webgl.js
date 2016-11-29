@@ -118,6 +118,14 @@ let Program = function () {
      */
     _.TEXTURE_ATTRIBUTE = &quot;TEXTURE_ATTRIBUTE&quot;;
 
+    /**
+     * the name for the standard COLOR buffer attribute in a shader.
+     * @element COLOR_ATTRIBUTE
+     * @type {string}
+     * @final
+     */
+    _.COLOR_ATTRIBUTE = &quot;COLOR_ATTRIBUTE&quot;;
+
     let currentProgram;
 
     /**
@@ -133,6 +141,7 @@ let Program = function () {
      * * POSITION_ATTRIBUTE: &quot;inputPosition&quot;
      * * NORMAL_ATTRIBUTE: &quot;inputNormal&quot;
      * * TEXTURE_ATTRIBUTE: &quot;inputTexture&quot;
+     * * COLOR_ATTRIBUTE: &quot;inputColor&quot;
      * parameterMapping maps standard parameters to the parameter names in the
      * shader. This allows the engine to manage setting the standard set of parameters on the shader
      * without forcing the shader author to use &quot;standard&quot; names. Defaults to:
@@ -165,7 +174,8 @@ let Program = function () {
             parameters.attributeMapping = {
                 POSITION_ATTRIBUTE: &quot;inputPosition&quot;,
                 NORMAL_ATTRIBUTE: &quot;inputNormal&quot;,
-                TEXTURE_ATTRIBUTE: &quot;inputTexture&quot;
+                TEXTURE_ATTRIBUTE: &quot;inputTexture&quot;,
+                COLOR_ATTRIBUTE: &quot;inputColor&quot;
             };
         }
 
@@ -302,7 +312,19 @@ let Program = function () {
      */
     _.bindTextureAttribute = function (buffer) {
         // not every shader uses every attribute, so don&#x27;t bother to set this unless it will be used
-        return bindAttribute(this, _.TEXTURE_ATTRIBUTE, buffer);
+        return bindAttribute (this, _.TEXTURE_ATTRIBUTE, buffer);
+    };
+
+    /**
+     * bind the COLOR attribute to the given buffer.
+     *
+     * @method bindColorAttribute
+     * @param {Object} buffer WebGL buffer to bind
+     * @chainable
+     */
+    _.bindColorAttribute = function (buffer) {
+        // not every shader uses every attribute, so don&#x27;t bother to set this unless it will be used
+        return bindAttribute (this, _.COLOR_ATTRIBUTE, buffer);
     };
 
     /**

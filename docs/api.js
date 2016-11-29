@@ -16,6 +16,7 @@ YUI.add("yuidoc-meta", function(Y) {
     "modules": [],
     "allModules": [],
     "elements": [
+        "COLOR_ATTRIBUTE",
         "NORMAL_ATTRIBUTE",
         "POSITION_ATTRIBUTE",
         "TEXTURE_ATTRIBUTE"

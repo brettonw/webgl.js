@@ -206,7 +206,7 @@ let onBodyLoad = function () {
             LoaderShader
                 .new ("shaders/@.glsl")
                 .addVertexShaders ("basic")
-                .addFragmentShaders (["basic", "basic-texture", "color", "overlay", "rgb", "texture"]),
+                .addFragmentShaders (["basic", "basic-texture", "color", "overlay", "rgb", "texture", "vertex-color"]),
             LoaderPath
                 .new ({ type: Texture, path: "textures/@.png" })
                 .addItems ("moon", { generateMipMap: true })
@@ -218,6 +218,7 @@ let onBodyLoad = function () {
             Program.new ({ vertexShader: "basic" }, "overlay");
             Program.new ({ vertexShader: "basic" }, "rgb");
             Program.new ({ vertexShader: "basic" }, "texture");
+            Program.new ({ vertexShader: "basic" }, "vertex-color");
             buildScene ();
         }));
 };
