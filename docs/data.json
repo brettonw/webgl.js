@@ -745,7 +745,7 @@
         },
         {
             "file": "src/main/javascript/core/loader-list.js",
-            "line": 51,
+            "line": 52,
             "description": "start the fetch process for all the loaders",
             "itemtype": "method",
             "name": "go",

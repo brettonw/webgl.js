@@ -1477,6 +1477,7 @@ let LoaderList = function () {
     };
 
     _.addLoaders = function (...loaders) {
+        if (Array.isArray (loaders[0])) { loaders = loaders[0]; }
         for (let loader of loaders) {
             this.items.push (loader);
         }
