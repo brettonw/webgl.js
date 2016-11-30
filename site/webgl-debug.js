@@ -1580,12 +1580,14 @@ let LoaderShader = function () {
         return result;
     }
 
+    const VERTEX_SHADER = 0x8B31;
     _.addVertexShaders = function (names) {
-        return Object.getPrototypeOf(_).addItems.call (this, addNames (names, "vertex"), { type: context.VERTEX_SHADER });
+        return Object.getPrototypeOf(_).addItems.call (this, addNames (names, "vertex"), { type: VERTEX_SHADER });
     };
 
+    const FRAGMENT_SHADER = 0x8B30;
     _.addFragmentShaders = function (names) {
-        return Object.getPrototypeOf(_).addItems.call (this, addNames (names, "fragment"), { type: context.FRAGMENT_SHADER });
+        return Object.getPrototypeOf(_).addItems.call (this, addNames (names, "fragment"), { type: FRAGMENT_SHADER });
     };
 
     return _;
