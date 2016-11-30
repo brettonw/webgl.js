@@ -13,13 +13,13 @@
 <body onload="onBodyLoad ();">
 <div id="title"><span style="margin-top:0px;font-size:24px;">webgl.js</span></div>
 <div>
-    <canvas id="render-canvas" style="border:none;margin:0;" width="854px" tabindex="0"></canvas>
+    <canvas id="render-canvas" style="border:none;margin:0;" width="854px" height="480px" tabindex="0"></canvas>
 </div>
 <div style="font-size:12px;height:34px; margin-top:2px;margin-bottom:2px;vertical-align:middle;width:854px;">
     <table style="width:100%;">
         <tr>
-            <td>FOV <input type="range" class="myRange" style="width:200px;vertical-align:middle;" id="fovRange" min="0" max="100" step="1" value="60" oninput="draw ();"></td>
-            <td>Framing <input type="range" class="myRange" style="width:200px;vertical-align:middle;" id="framingRange" min="0" max="100" step="1" value="90" oninput="draw ();"></td>
+            <td>FOV <input type="range" class="myRange" style="width:200px;vertical-align:middle;" id="fovRange" min="0" max="100" step="1" value="60" oninput="updateView ();"></td>
+            <td>Framing <input type="range" class="myRange" style="width:200px;vertical-align:middle;" id="framingRange" min="0" max="100" step="1" value="90" oninput="updateView ();"></td>
             <td><input type="checkbox" id="animateCheckbox" onchange="clickAnimateCheckbox ();" CHECKED> Animated</td>
             <td><input type="button" value="Save" onclick="onClickSave ();"></td>
             <td><span style="float:right;" id="displayFpsSpan">0</span></td>

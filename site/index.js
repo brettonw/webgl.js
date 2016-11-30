@@ -88,6 +88,12 @@ let clickAnimateCheckbox = function () {
     }
 };
 
+let updateView = function () {
+    if (! animateCheckbox.checked) {
+        drawFrame ();
+    }
+};
+
 let buildScene = function () {
     makeRevolve ("cylinder",
         [[1.0, 1.0], [1.0, -1.0], [1.0, -1.0], [0.8, -1.0], [0.8, -1.0], [0.8, 1.0], [0.8, 1.0], [1.0, 1.0]],
@@ -197,28 +203,10 @@ let onBodyLoad = function () {
         }
     }), 0.01);
 
-    render = Render.new ({canvasId: "render-canvas"});
-
-    // loader list
-    LoaderList
-        .new ()
-        .addLoaders (
-            LoaderShader
-                .new ("shaders/@.glsl")
-                .addVertexShaders ("basic")
-                .addFragmentShaders (["basic", "basic-texture", "color", "overlay", "rgb", "texture", "vertex-color"]),
-            LoaderPath
-                .new ({ type: Texture, path: "textures/@.png" })
-                .addItems ("moon", { generateMipMap: true })
-        )
-        .go (OnReady.new (null, function (x) {
-            Program.new ({}, "basic");
-            Program.new ({ vertexShader: "basic" }, "basic-texture");
-            Program.new ({ vertexShader: "basic" }, "color");
-            Program.new ({ vertexShader: "basic" }, "overlay");
-            Program.new ({ vertexShader: "basic" }, "rgb");
-            Program.new ({ vertexShader: "basic" }, "texture");
-            Program.new ({ vertexShader: "basic" }, "vertex-color");
-            buildScene ();
-        }));
+    // create the render object with my own texture...
+    render = Render.new ({
+        canvasId: "render-canvas",
+        loaders: LoaderPath.new ({ type: Texture, path: "textures/@.png" }).addItems ("moon", { generateMipMap: true }),
+        onReady: OnReady.new (null, buildScene)
+    });
 };

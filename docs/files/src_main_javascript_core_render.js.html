@@ -105,19 +105,22 @@ let Render = function () {
      */
     _.construct = function (parameters) {
         let canvas = this.canvas = document.getElementById (parameters.canvasId);
-        let aspectRatio = DEFAULT_VALUE(parameters.aspectRatio, 16.0 / 9.0);
 
-        // high DPI devices need to have the canvas drawing surface scaled up while leaving the style
-        // size as indicated
+        // try to do something smart here, like get the aspect ratio from the actual
+        // canvas size. that&#x27;s not always actually set, so the user can request an aspect
+        // ratio explicitly which will override the default size
         let width = canvas.width;
-        let height = width / aspectRatio;
+        let height = canvas.height;
+        let aspectRatio = DEFAULT_VALUE(parameters.aspectRatio, width / height);
+        height = width / aspectRatio;
 
-        // get the display size of the canvas.
+        // set the display size of the canvas.
         canvas.style.width = width + &quot;px&quot;;
         canvas.style.height = height + &quot;px&quot;;
 
-        // set the size of the drawingBuffer
-        let devicePixelRatio = window.devicePixelRatio || 1;
+        // set the size of the drawingBuffer - high DPI devices need to have the canvas
+        // drawing surface scaled up while leaving the style size as indicated
+        let devicePixelRatio = DEFAULT_VALUE(window.devicePixelRatio, 1);
         canvas.width = width * devicePixelRatio;
         canvas.height = height * devicePixelRatio;
         LOG(LogLevel.TRACE, &quot;Scaling display at &quot; + devicePixelRatio + &quot;:1 to (&quot; + canvas.width + &quot;x&quot; + canvas.height + &quot;)&quot;);
@@ -128,15 +131,47 @@ let Render = function () {
         context.viewportHeight = canvas.height;
         context.viewport (0, 0, context.viewportWidth, context.viewportHeight);
 
-        // make some shapes we might use
-        Tetrahedron.make();
-        Hexahedron.make();
-        Octahedron.make();
-        Icosahedron.make();
-        Square.make();
-        Sphere.makeN(2);
-        Sphere.makeN(3);
-        Sphere.makeN(5);
+        // set up some boilerplate, loading all the default shaders
+        let loaderList = LoaderList.new ().addLoaders (
+            LoaderShader
+                .new (&quot;https://brettonw.github.io/webgl.js/site/shaders/@.glsl&quot;)
+                .addVertexShaders (&quot;basic&quot;)
+                .addFragmentShaders ([&quot;basic&quot;, &quot;basic-texture&quot;, &quot;color&quot;, &quot;overlay&quot;, &quot;rgb&quot;, &quot;texture&quot;, &quot;vertex-color&quot;])
+        );
+
+        // include anything the user wants to load
+        if (&quot;loaders&quot; in parameters) {
+            loaderList.addLoaders (parameters.loaders);
+        }
+
+        // go get everything
+        let scope = this;
+        loaderList.go (OnReady.new (null, function (x) {
+            // make some shapes we might use
+            Tetrahedron.make ();
+            Hexahedron.make ();
+            Octahedron.make ();
+            Icosahedron.make ();
+            Square.make ();
+            Sphere.makeN (2);
+            Sphere.makeN (3);
+            Sphere.makeN (5);
+
+            // create the default shaders
+            Program.new ({}, &quot;basic&quot;);
+            Program.new ({ vertexShader: &quot;basic&quot; }, &quot;basic-texture&quot;);
+            Program.new ({ vertexShader: &quot;basic&quot; }, &quot;color&quot;);
+            Program.new ({ vertexShader: &quot;basic&quot; }, &quot;overlay&quot;);
+            Program.new ({ vertexShader: &quot;basic&quot; }, &quot;rgb&quot;);
+            Program.new ({ vertexShader: &quot;basic&quot; }, &quot;texture&quot;);
+            Program.new ({ vertexShader: &quot;basic&quot; }, &quot;vertex-color&quot;);
+
+            // call the user back when it&#x27;s all ready
+            // call the onReady handler if one was provided
+            if (typeof parameters.onReady !== &quot;undefined&quot;) {
+                parameters.onReady.notify (scope);
+            }
+        }));
     };
 
     _.save = function (filename) {

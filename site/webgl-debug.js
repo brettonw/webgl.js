@@ -1293,19 +1293,22 @@ let Render = function () {
      */
     _.construct = function (parameters) {
         let canvas = this.canvas = document.getElementById (parameters.canvasId);
-        let aspectRatio = (parameters.aspectRatio = (((typeof parameters.aspectRatio !== "undefined") && (parameters.aspectRatio != null)) ? parameters.aspectRatio : 16.0 / 9.0));
 
-        // high DPI devices need to have the canvas drawing surface scaled up while leaving the style
-        // size as indicated
+        // try to do something smart here, like get the aspect ratio from the actual
+        // canvas size. that's not always actually set, so the user can request an aspect
+        // ratio explicitly which will override the default size
         let width = canvas.width;
-        let height = width / aspectRatio;
+        let height = canvas.height;
+        let aspectRatio = (parameters.aspectRatio = (((typeof parameters.aspectRatio !== "undefined") && (parameters.aspectRatio != null)) ? parameters.aspectRatio : width / height));
+        height = width / aspectRatio;
 
-        // get the display size of the canvas.
+        // set the display size of the canvas.
         canvas.style.width = width + "px";
         canvas.style.height = height + "px";
 
-        // set the size of the drawingBuffer
-        let devicePixelRatio = window.devicePixelRatio || 1;
+        // set the size of the drawingBuffer - high DPI devices need to have the canvas
+        // drawing surface scaled up while leaving the style size as indicated
+        let devicePixelRatio = (window.devicePixelRatio = (((typeof window.devicePixelRatio !== "undefined") && (window.devicePixelRatio != null)) ? window.devicePixelRatio : 1));
         canvas.width = width * devicePixelRatio;
         canvas.height = height * devicePixelRatio;
         LogLevel.say (LogLevel.TRACE, "Scaling display at " + devicePixelRatio + ":1 to (" + canvas.width + "x" + canvas.height + ")");
@@ -1316,15 +1319,47 @@ let Render = function () {
         context.viewportHeight = canvas.height;
         context.viewport (0, 0, context.viewportWidth, context.viewportHeight);
 
-        // make some shapes we might use
-        Tetrahedron.make();
-        Hexahedron.make();
-        Octahedron.make();
-        Icosahedron.make();
-        Square.make();
-        Sphere.makeN(2);
-        Sphere.makeN(3);
-        Sphere.makeN(5);
+        // set up some boilerplate, loading all the default shaders
+        let loaderList = LoaderList.new ().addLoaders (
+            LoaderShader
+                .new ("https://brettonw.github.io/webgl.js/site/shaders/@.glsl")
+                .addVertexShaders ("basic")
+                .addFragmentShaders (["basic", "basic-texture", "color", "overlay", "rgb", "texture", "vertex-color"])
+        );
+
+        // include anything the user wants to load
+        if ("loaders" in parameters) {
+            loaderList.addLoaders (parameters.loaders);
+        }
+
+        // go get everything
+        let scope = this;
+        loaderList.go (OnReady.new (null, function (x) {
+            // make some shapes we might use
+            Tetrahedron.make ();
+            Hexahedron.make ();
+            Octahedron.make ();
+            Icosahedron.make ();
+            Square.make ();
+            Sphere.makeN (2);
+            Sphere.makeN (3);
+            Sphere.makeN (5);
+
+            // create the default shaders
+            Program.new ({}, "basic");
+            Program.new ({ vertexShader: "basic" }, "basic-texture");
+            Program.new ({ vertexShader: "basic" }, "color");
+            Program.new ({ vertexShader: "basic" }, "overlay");
+            Program.new ({ vertexShader: "basic" }, "rgb");
+            Program.new ({ vertexShader: "basic" }, "texture");
+            Program.new ({ vertexShader: "basic" }, "vertex-color");
+
+            // call the user back when it's all ready
+            // call the onReady handler if one was provided
+            if (typeof parameters.onReady !== "undefined") {
+                parameters.onReady.notify (scope);
+            }
+        }));
     };
 
     _.save = function (filename) {
