@@ -1063,7 +1063,7 @@
         },
         {
             "file": "src/main/javascript/core/render.js",
-            "line": 104,
+            "line": 103,
             "description": "Set the global rendering context.",
             "itemtype": "method",
             "name": "use",

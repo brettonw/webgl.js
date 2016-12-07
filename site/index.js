@@ -101,6 +101,7 @@ let buildScene = function () {
         36);
     makeBall ("ball", 72);
     makeBall ("ball-small", 36);
+    Program.new ({ vertexShader: "basic" }, "masked-rgb");
 
     scene = Node.new ({
         state: function (standardUniforms) {
@@ -153,7 +154,7 @@ let buildScene = function () {
         .addChild (Node.new ({
             transform: Float4x4.chain (Float4x4.rotateZ (Math.PI / 3), Float4x4.rotateX (0.25), Float4x4.translate ([0, 1.5, 0])),
             state: function (standardUniforms) {
-                Program.get ("shaded-rgb").use ();
+                Program.get ("masked-rgb").use ();
                 standardUniforms.MODEL_COLOR = [1.0, 0.5, 0.5];
             },
             shape: "cylinder",
@@ -206,7 +207,10 @@ let onBodyLoad = function () {
     // create the render object with my own texture...
     render = Render.new ({
         canvasId: "render-canvas",
-        loaders: LoaderPath.new ({ type: Texture, path: "textures/@.png" }).addItems ("moon", { generateMipMap: true }),
+        loaders: [
+            LoaderPath.new ({ type: Texture, path: "textures/@.png" }).addItems ("moon", { generateMipMap: true }),
+            LoaderShader.new ("shaders/@.glsl").addFragmentShaders ("masked-rgb")
+        ],
         onReady: OnReady.new (null, buildScene)
     });
 };
