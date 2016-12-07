@@ -1324,7 +1324,7 @@ let Render = function () {
             LoaderShader
                 .new ("https://brettonw.github.io/webgl.js/site/shaders/@.glsl")
                 .addVertexShaders ("basic")
-                .addFragmentShaders (["basic", "basic-texture", "color", "overlay", "rgb", "texture", "vertex-color"])
+                .addFragmentShaders (["basic", "basic-texture", "color", "overlay", "rgb", "shaded-rgb", "texture", "vertex-color"])
         );
 
         // include anything the user wants to load
@@ -1351,6 +1351,7 @@ let Render = function () {
             Program.new ({ vertexShader: "basic" }, "color");
             Program.new ({ vertexShader: "basic" }, "overlay");
             Program.new ({ vertexShader: "basic" }, "rgb");
+            Program.new ({ vertexShader: "basic" }, "shaded-rgb");
             Program.new ({ vertexShader: "basic" }, "texture");
             Program.new ({ vertexShader: "basic" }, "vertex-color");
 
