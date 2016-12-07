@@ -2477,7 +2477,8 @@ let Cloud = function () {
         for (let point of points) {
             this.addPoint(point);
         }
-    }
+        return this;
+    };
 
     /**
      * static method to create and construct a new cloud node.

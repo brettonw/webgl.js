@@ -706,7 +706,7 @@
         },
         {
             "file": "src/main/javascript/core/cloud.js",
-            "line": 59,
+            "line": 60,
             "description": "static method to create and construct a new cloud node.",
             "itemtype": "method",
             "name": "new",
