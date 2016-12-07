@@ -859,7 +859,7 @@
         },
         {
             "file": "src/main/javascript/core/node.js",
-            "line": 222,
+            "line": 225,
             "description": "add a child node (only applies to non-leaf nodes).",
             "itemtype": "method",
             "name": "addChild",
@@ -875,7 +875,7 @@
         },
         {
             "file": "src/main/javascript/core/node.js",
-            "line": 239,
+            "line": 242,
             "description": "draw this node's contents.",
             "itemtype": "method",
             "name": "draw",
@@ -890,7 +890,7 @@
         },
         {
             "file": "src/main/javascript/core/node.js",
-            "line": 252,
+            "line": 255,
             "description": "traverse this node and its contents. this function is a place-holder that is replaced by the\nactual function called depending on the parameters passed during construction.",
             "itemtype": "method",
             "name": "traverse",
@@ -906,7 +906,7 @@
         },
         {
             "file": "src/main/javascript/core/node.js",
-            "line": 265,
+            "line": 268,
             "class": "Node"
         },
         {
@@ -1676,7 +1676,7 @@
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/core/node.js:265"
+            "line": " src/main/javascript/core/node.js:268"
         },
         {
             "message": "Missing item type",

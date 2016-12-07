@@ -134,6 +134,9 @@ let Node = function () {
 
         if (&quot;shape&quot; in parameters) {
             this.shape = Shape.get (parameters.shape);
+            if (typeof (this.shape) === &quot;undefined&quot;) {
+                LOG (LogLevel.WARNNG, &quot;Shape not found: &quot; + parameters.shape);
+            }
             traverseFunctionIndex += HAS_SHAPE;
         }
 

@@ -2182,6 +2182,9 @@ let Node = function () {
 
         if ("shape" in parameters) {
             this.shape = Shape.get (parameters.shape);
+            if (typeof (this.shape) === "undefined") {
+                LogLevel.say (LogLevel.WARNNG, "Shape not found: " + parameters.shape);
+            }
             traverseFunctionIndex += HAS_SHAPE;
         }
 
