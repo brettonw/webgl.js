@@ -153,7 +153,7 @@ let buildScene = function () {
         .addChild (Node.new ({
             transform: Float4x4.chain (Float4x4.rotateZ (Math.PI / 3), Float4x4.rotateX (0.25), Float4x4.translate ([0, 1.5, 0])),
             state: function (standardUniforms) {
-                Program.get ("basic").use ();
+                Program.get ("rgb").use ();
                 standardUniforms.MODEL_COLOR = [1.0, 0.5, 0.5];
             },
             shape: "cylinder",
