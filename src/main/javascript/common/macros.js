@@ -1,5 +1,3 @@
-"use strict;"
-
 #ifdef DEBUG
 
 #define SET_LOG_LEVEL(logLevel) LogLevel.set (logLevel)

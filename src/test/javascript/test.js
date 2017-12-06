@@ -1,5 +1,5 @@
-var TestContainer = function () {
-    var _ = Object.create (null);
+let TestContainer = function () {
+    let _ = Object.create (null);
 
     // test design philosophy is to be verbose on failure, and silent on pass
     let assertEquals = function (msg, a, b) {
