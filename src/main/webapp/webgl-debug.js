@@ -1,4 +1,3 @@
-"use strict;"
 // class hierarchy
 
 
@@ -1322,7 +1321,7 @@ let Render = function () {
         // set up some boilerplate, loading all the default shaders
         let loaderList = LoaderList.new ().addLoaders (
             LoaderShader
-                .new ("https://brettonw.github.io/webgl.js/site/shaders/@.glsl")
+                .new ("https://brettonw.github.io/webgl.js/src/main/webapp/shaders/@.glsl")
                 .addVertexShaders ("basic")
                 .addFragmentShaders (["basic", "basic-texture", "color", "overlay", "rgb", "texture", "vertex-color"])
         );
@@ -3348,8 +3347,8 @@ let makeBall = function (name, steps) {
     // as many steps to go all the way around
     return makeRevolve(name, outline, normal, steps * 2);
 };
-var TestContainer = function () {
-    var _ = Object.create (null);
+let TestContainer = function () {
+    let _ = Object.create (null);
 
     // test design philosophy is to be verbose on failure, and silent on pass
     let assertEquals = function (msg, a, b) {

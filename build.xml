@@ -4,7 +4,7 @@
     <property name="target-name" value="webgl"/>
     <property name="src-dir" value="src"/>
     <property name="target-dir" value="target"/>
-    <property name="site-dir" value="site"/>
+    <property name="site-dir" value="src/main/webapp"/>
     <property name="docs-dir" value="docs"/>
     <property name="source-dir" value="${src-dir}/main/javascript/"/>
     <property name="test-dir" value="${src-dir}/test/javascript"/>
