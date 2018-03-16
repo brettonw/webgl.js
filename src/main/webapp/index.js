@@ -77,8 +77,6 @@ let drawFrame = function () {
 
     // draw the scene
     scene.traverse (standardUniforms);
-
-
 };
 
 let clickAnimateCheckbox = function () {
