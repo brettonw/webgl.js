@@ -3352,8 +3352,8 @@ let makeSimpleExtrude = function (name, outline, length, normal, projection) {
     // outline is an array of Float2 in XY, and the axis of extrusion is Z = 0, we make a polygon
     // for each segment of the edge, skipping zero-length segments
 
-    // make sure we have length, with default of 1
-    (length = (((typeof length !== "undefined") && (length != null)) ? length : 1));
+    // make sure we have length, with default of 2, assuming an outline spans -1..1
+    (length = (((typeof length !== "undefined") && (length != null)) ? length : 2));
 
     // make sure we have normals, generating a default set if necessary
     (normal = (((typeof normal !== "undefined") && (normal != null)) ? normal : makeNormal (outline)));
@@ -3364,6 +3364,7 @@ let makeSimpleExtrude = function (name, outline, length, normal, projection) {
             LogLevel.say (LogLevel.TRACE, "Make extruded outline");
             let builder = ShapeBuilder.new ();
             let epsilon = 1.0e-6;
+            let halfLength = length / 2.0;
 
             let last = outline.length - 1;
             for (let m = 0; m < last; ++m) {
@@ -3376,11 +3377,11 @@ let makeSimpleExtrude = function (name, outline, length, normal, projection) {
                 // between the two components is below the threshold, we skip this facet altogether.
                 if (Float2.norm (Float2.subtract (vm, vn)) > epsilon) {
                     // each facet of the outline is a quad, emit 2 triangles
-                    let vm0 = builder.addVertexNormalTexture ([vm[0], vm[1], 0], [nm[0], nm[1], 0], [0, m / last]);
-                    let vm1 = builder.addVertexNormalTexture ([vm[0], vm[1], length], [nm[0], nm[1], 0], [1, m / last]);
+                    let vm0 = builder.addVertexNormalTexture ([vm[0], vm[1], -halfLength], [nm[0], nm[1], 0], [0, m / last]);
+                    let vm1 = builder.addVertexNormalTexture ([vm[0], vm[1], halfLength], [nm[0], nm[1], 0], [1, m / last]);
 
-                    let vn0 = builder.addVertexNormalTexture ([vn[0], vn[1], 0], [nn[0], nn[1], 0], [0, n / last]);
-                    let vn1 = builder.addVertexNormalTexture ([vn[0], vn[1], length], [nn[0], nn[1], 0], [1, n / last]);
+                    let vn0 = builder.addVertexNormalTexture ([vn[0], vn[1], -halfLength], [nn[0], nn[1], 0], [0, n / last]);
+                    let vn1 = builder.addVertexNormalTexture ([vn[0], vn[1], halfLength], [nn[0], nn[1], 0], [1, n / last]);
                     builder.addFace ([vm0, vm1, vn1, vn0, vm0, vn1]);
                 }
             }
