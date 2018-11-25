@@ -69,7 +69,8 @@
             <fileset dir="${source-dir}/shapes" includes="octahedron.js"/>
             <fileset dir="${source-dir}/shapes" includes="icosahedron.js"/>
             <fileset dir="${source-dir}/shapes" includes="square.js"/>
-            <fileset dir="${source-dir}/shapes" includes="sphere.js" />
+            <fileset dir="${source-dir}/shapes" includes="sphere.js"/>
+            <fileset dir="${source-dir}/shapes" includes="make-normal.js"/>
             <fileset dir="${source-dir}/shapes" includes="revolve.js" />
             <fileset dir="${source-dir}/shapes" includes="ball.js" />
             <fileset dir="${source-dir}/shapes" includes="extrude.js" />

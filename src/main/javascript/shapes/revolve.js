@@ -1,46 +1,17 @@
 let makeRevolve = function (name, outline, normal, steps, projection) {
     // outline is an array of Float2, and the axis of revolution is x = 0, we make a number of
     // wedges, from top to bottom, to complete the revolution.
+    // projection is a function to map the position to a texture coordinate
 
     let epsilon = 1.0e-6;
     let last = outline.length - 1;
 
     // make sure we have normals, generating a default set if necessary
-    normal = Utility.defaultFunction (normal, function () {
-        // variable and function to capture the computed normals
-        let N = [];
-        let pushNormal = function (a, c) {
-            let ac = Float2.subtract (a, c);
-            let acPerp = Float2.perpendicular (ac);
-            N.push (Float2.normalize (acPerp));
-        };
-
-        // loop over the outline points to compute a normal for each one, we use a vector that is
-        // perpendicular to the segment ac as the normal.
-        if (Float2.equals (outline[0], outline[last])) {
-            // the shape is closed, so we want to wrap around
-            for (b = 0; b <= last; ++b) {
-                let a = outline[((b - 1) + last) % last];
-                let c = outline[(b + 1) % last];
-                pushNormal (a, c);
-            }
-        } else {
-            // the shape is open, so we double the first and last points for the normals
-            // XXX there might be better ways to do this...
-            for (b = 0; b <= last; ++b) {
-                let a = outline[(b == 0) ? b : b - 1];
-                let c = outline[(b == last) ? b : b + 1];
-                pushNormal (a, c);
-            }
-        }
-        return N;
-    });
+    DEFAULT_VALUE (normal, makeNormal (outline));
 
     // default projection is a plate carree, equirectangular projection
     // https://en.wikipedia.org/wiki/Equirectangular_projection
-    DEFAULT_VALUE (projection, function (uvY) {
-        return uvY;
-    });
+    DEFAULT_VALUE (projection, function (uvY) { return uvY; });
 
     return Shape.new ({
         buffers: function () {

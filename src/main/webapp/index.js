@@ -97,6 +97,20 @@ let buildScene = function () {
         [[1.0, 1.0], [1.0, -1.0], [1.0, -1.0], [0.8, -1.0], [0.8, -1.0], [0.8, 1.0], [0.8, 1.0], [1.0, 1.0]],
         [[1.0, 0.0], [1.0, 0.0], [0.0, -1.0], [0.0, -1.0], [-1.0, 0.0], [-1.0, 0.0], [0.0, 1.0], [0.0, 1.0]],
         36);
+    makeSimpleExtrude ("accordion",
+        function () {
+            let V = [];
+            let count = 4;
+            let scale = 1.0 / (2.0 * count);
+            let end = ((2 * count) + 1);
+            for (let i = 0; i < end; ++i) {
+                V.push([i * scale, (i & 0x01) * scale]);
+                let j = i + 1;
+                V.push ([j * scale, (j & 0x01) * scale]);
+            }
+            V.pop();
+            return V;
+        } ());
     makeBall ("ball", 72);
     makeBall ("ball-small", 36);
     Program.new ({ vertexShader: "basic" }, "masked-rgb");
@@ -145,7 +159,7 @@ let buildScene = function () {
                 standardUniforms.TEXTURE_SAMPLER = "moon";
                 standardUniforms.MODEL_COLOR = [1.0, 1.0, 1.0];
             },
-            shape: "ball",
+            shape: "accordion",
             children: false
         }))
 
