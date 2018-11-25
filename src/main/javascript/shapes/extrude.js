@@ -31,8 +31,7 @@ let makeSimpleExtrude = function (name, outline, length, normal, projection) {
 
                     let vn0 = builder.addVertexNormalTexture ([vn[0], vn[1], 0], [nn[0], nn[1], 0], [0, n / last]);
                     let vn1 = builder.addVertexNormalTexture ([vn[0], vn[1], length], [nn[0], nn[1], 0], [1, n / last]);
-                    builder.addFace ([vm0, vm1, vn1]);
-                    builder.addFace ([vn0, vm0, vn1]);
+                    builder.addFace ([vm0, vm1, vn1, vn0, vm0, vn1]);
                 }
             }
 

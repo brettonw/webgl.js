@@ -58,8 +58,7 @@ let makeRevolve = function (name, outline, normal, steps, projection) {
                                 let vin = builder.addVertexNormalTexture ([vn[0] * iCosAngle, vn[1], vn[0] * iSinAngle], [nn[0] * iCosAngle, nn[1], nn[0] * iSinAngle], [i / steps, projection (n / last)]);
                                 let vjm = builder.addVertexNormalTexture ([vm[0] * jCosAngle, vm[1], vm[0] * jSinAngle], [nm[0] * jCosAngle, nm[1], nm[0] * jSinAngle], [j / steps, projection (m / last)]);
                                 let vjn = builder.addVertexNormalTexture ([vn[0] * jCosAngle, vn[1], vn[0] * jSinAngle], [nn[0] * jCosAngle, nn[1], nn[0] * jSinAngle], [j / steps, projection (n / last)]);
-                                builder.addFace ([vjm, vim, vjn]);
-                                builder.addFace ([vjn, vim, vin]);
+                                builder.addFace ([vjm, vim, vjn, vjn, vim, vin]);
                                 break;
                             }
                         }

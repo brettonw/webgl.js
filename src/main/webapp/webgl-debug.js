@@ -3139,10 +3139,10 @@ let Square = function () {
     _.getShapeBuilder = function () {
         let builder = ShapeBuilder.new();
 
-        builder.addVertex([-1, -1, 0]);
-        builder.addVertex([-1, 1, 0]);
-        builder.addVertex([1, 1, 0]);
-        builder.addVertex([1, -1, 0]);
+        builder.addVertexNormalTexture([-1, -1, 0], [0, 0, 1], [0, 0]);
+        builder.addVertexNormalTexture([-1, 1, 0], [0, 0, 1], [0, 1]);
+        builder.addVertexNormalTexture([1, 1, 0], [0, 0, 1], [1, 1]);
+        builder.addVertexNormalTexture([1, -1, 0], [0, 0, 1], [1, 0]);
 
         builder.addFace([2, 1, 3, 1, 0, 3]);
 
@@ -3316,8 +3316,7 @@ let makeRevolve = function (name, outline, normal, steps, projection) {
                                 let vin = builder.addVertexNormalTexture ([vn[0] * iCosAngle, vn[1], vn[0] * iSinAngle], [nn[0] * iCosAngle, nn[1], nn[0] * iSinAngle], [i / steps, projection (n / last)]);
                                 let vjm = builder.addVertexNormalTexture ([vm[0] * jCosAngle, vm[1], vm[0] * jSinAngle], [nm[0] * jCosAngle, nm[1], nm[0] * jSinAngle], [j / steps, projection (m / last)]);
                                 let vjn = builder.addVertexNormalTexture ([vn[0] * jCosAngle, vn[1], vn[0] * jSinAngle], [nn[0] * jCosAngle, nn[1], nn[0] * jSinAngle], [j / steps, projection (n / last)]);
-                                builder.addFace ([vjm, vim, vjn]);
-                                builder.addFace ([vjn, vim, vin]);
+                                builder.addFace ([vjm, vim, vjn, vjn, vim, vin]);
                                 break;
                             }
                         }
@@ -3382,8 +3381,7 @@ let makeSimpleExtrude = function (name, outline, length, normal, projection) {
 
                     let vn0 = builder.addVertexNormalTexture ([vn[0], vn[1], 0], [nn[0], nn[1], 0], [0, n / last]);
                     let vn1 = builder.addVertexNormalTexture ([vn[0], vn[1], length], [nn[0], nn[1], 0], [1, n / last]);
-                    builder.addFace ([vm0, vm1, vn1]);
-                    builder.addFace ([vn0, vm0, vn1]);
+                    builder.addFace ([vm0, vm1, vn1, vn0, vm0, vn1]);
                 }
             }
 

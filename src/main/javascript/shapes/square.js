@@ -6,10 +6,10 @@ let Square = function () {
     _.getShapeBuilder = function () {
         let builder = ShapeBuilder.new();
 
-        builder.addVertex([-1, -1, 0]);
-        builder.addVertex([-1, 1, 0]);
-        builder.addVertex([1, 1, 0]);
-        builder.addVertex([1, -1, 0]);
+        builder.addVertexNormalTexture([-1, -1, 0], [0, 0, 1], [0, 0]);
+        builder.addVertexNormalTexture([-1, 1, 0], [0, 0, 1], [0, 1]);
+        builder.addVertexNormalTexture([1, 1, 0], [0, 0, 1], [1, 1]);
+        builder.addVertexNormalTexture([1, -1, 0], [0, 0, 1], [1, 0]);
 
         builder.addFace([2, 1, 3, 1, 0, 3]);
 
