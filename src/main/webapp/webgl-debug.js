@@ -3136,13 +3136,23 @@ let Square = function () {
 
     _.name = "square";
 
+    // override the make from builder to use buffers...
+    _.makeFromBuilder = function (name, builder) {
+        (name = (((typeof name !== "undefined") && (name != null)) ? name : this.name));
+        return Shape.new ({
+            buffers: function () {
+                return builder.makeBuffers ();
+            }
+        }, name);
+    };
+
     _.getShapeBuilder = function () {
         let builder = ShapeBuilder.new();
 
-        builder.addVertexNormalTexture([-1, -1, 0], [0, 0, 1], [0, 0]);
-        builder.addVertexNormalTexture([-1, 1, 0], [0, 0, 1], [0, 1]);
-        builder.addVertexNormalTexture([1, 1, 0], [0, 0, 1], [1, 1]);
-        builder.addVertexNormalTexture([1, -1, 0], [0, 0, 1], [1, 0]);
+        builder.addVertexNormalTexture([-1.0, -1.0, 0.0], [0.0, 0.0, 1.0], [0.0, 0.0]);
+        builder.addVertexNormalTexture([-1.0, 1.0, 0.0], [0.0, 0.0, 1.0], [0.0, 1.0]);
+        builder.addVertexNormalTexture([1.0, 1.0, 0.0], [0.0, 0.0, 1.0], [1.0, 1.0]);
+        builder.addVertexNormalTexture([1.0, -1.0, 0.0], [0.0, 0.0, 1.0], [1.0, 0.0]);
 
         builder.addFace([2, 1, 3, 1, 0, 3]);
 
