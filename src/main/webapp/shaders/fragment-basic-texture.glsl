@@ -18,7 +18,7 @@ varying vec3 model;
 varying vec3 normal;
 varying vec2 texture;
 
-vec3 multiplyColors (const in vec3 left, const in vec3 right) {
+vec3 multiplyColors (const in vec4 left, const in vec3 right) {
     vec3 result = vec3 (left.r * right.r, left.g * right.g, left.b * right.b);
     return result;
 }
