@@ -164,6 +164,18 @@ let buildScene = function () {
         }))
 
         .addChild (Node.new ({
+            transform: Float4x4.chain (Float4x4.rotateX (Math.PI / -2), Float4x4.translate ([0, 1.5, 3])),
+            //transform: Float4x4.translate([-3, 1.5, 0]),
+            state: function (standardUniforms) {
+                Program.get ("basic-texture").use ();
+                standardUniforms.TEXTURE_SAMPLER = "moon";
+                standardUniforms.MODEL_COLOR = [1.0, 1.0, 1.0];
+            },
+            shape: "square",
+            children: false
+        }))
+
+        .addChild (Node.new ({
             transform: Float4x4.chain (Float4x4.rotateZ (Math.PI / 3), Float4x4.rotateX (0.25), Float4x4.translate ([0, 1.5, 0])),
             state: function (standardUniforms) {
                 Program.get ("masked-rgb").use ();

@@ -16,12 +16,12 @@ let Square = function () {
     _.getShapeBuilder = function () {
         let builder = ShapeBuilder.new();
 
-        builder.addVertexNormalTexture([-1.0, -1.0, 0.0], [0.0, 0.0, 1.0], [0.0, 0.0]);
-        builder.addVertexNormalTexture([-1.0, 1.0, 0.0], [0.0, 0.0, 1.0], [0.0, 1.0]);
-        builder.addVertexNormalTexture([1.0, 1.0, 0.0], [0.0, 0.0, 1.0], [1.0, 1.0]);
-        builder.addVertexNormalTexture([1.0, -1.0, 0.0], [0.0, 0.0, 1.0], [1.0, 0.0]);
+        builder.addVertexNormalTexture([ 1.0,  1.0, 0.0], [0.0, 0.0, 1.0], [1.0, 0.0]);
+        builder.addVertexNormalTexture([-1.0,  1.0, 0.0], [0.0, 0.0, 1.0], [0.0, 0.0]);
+        builder.addVertexNormalTexture([-1.0, -1.0, 0.0], [0.0, 0.0, 1.0], [0.0, 1.0]);
+        builder.addVertexNormalTexture([ 1.0, -1.0, 0.0], [0.0, 0.0, 1.0], [1.0, 1.0]);
 
-        builder.addFace([2, 1, 3, 1, 0, 3]);
+        builder.addFace([0, 1, 2, 0, 2, 3]);
 
         return builder;
     };
