@@ -25,7 +25,7 @@ vec3 multiplyColors (const in vec3 left, const in vec3 right) {
 
 void main(void) {
     // figure out what color the surface is
-    vec4 textureColor = texture2D(textureSampler, texture).rgba;
+    vec4 textureColor = texture2D(textureSampler, texture);
     vec3 surfaceColor = multiplyColors (textureColor, modelColor);
 
     // compute the ambient contribution to the surface lighting
