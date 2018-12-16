@@ -41,7 +41,7 @@ let drawFrame = function () {
     }
     lastTime = nowTime;
 
-    // set up the projection matrix (earth radius is 1 and we want it to occupy about 75% of the
+    // set up the projection matrix (scene radius is 1 and we want it to occupy about 75% of the
     // view in the vertical direction - the view is probably wider than that)
     let fovRangeValue = fovRange.value;
     fovRangeValue *= 0.01;
