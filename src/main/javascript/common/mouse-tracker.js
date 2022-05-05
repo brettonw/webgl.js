@@ -33,7 +33,7 @@ let MouseTracker = function () {
     };
 
     let mouseDown = function (event) {
-        if (event.button == 0) {
+        if (event.button === 0) {
             //getting mouse position correctly
             mouseDownPosition = mousePosition (event);
             window.addEventListener ("mousemove", mouseMoved, false);

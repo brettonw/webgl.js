@@ -265,7 +265,7 @@ let FloatN = function (dim) {
      * @return {boolean}
      */
     _.equals = function (left, right) {
-        return _.str (left) == _.str (right);
+        return _.str (left) === _.str (right);
     };
 
     return _;
@@ -321,6 +321,5 @@ let Float3 = function () {
 } ();
 
 let Float4 = function () {
-    let _ = FloatN (4);
-    return _;
+    return FloatN (4);
 } ();

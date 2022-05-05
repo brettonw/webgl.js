@@ -38,7 +38,7 @@ let Render = function () {
         LOG(LogLevel.TRACE, "Scaling display at " + devicePixelRatio + ":1 to (" + canvas.width + "x" + canvas.height + ")");
 
         // get the actual rendering context
-        context = this.context = canvas.getContext ("webgl", { preserveDrawingBuffer: true, alpha: false });
+        context = this.context = canvas.getContext ("webgl2", { preserveDrawingBuffer: true });
         context.viewportWidth = canvas.width;
         context.viewportHeight = canvas.height;
         context.viewport (0, 0, context.viewportWidth, context.viewportHeight);

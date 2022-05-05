@@ -1,59 +1,37 @@
 // class hierarchy
-
-
-
-
 // default values...
-
-
-
 // vector manipulation macros
-
-
-
-
-
 let LogLevel = function () {
     let _ = Object.create (null);
-
     _.TRACE = 0;
     _.INFO = 1;
     _.WARNNG = 2;
     _.ERROR = 3;
-
     // default
     let logLevel = _.ERROR;
-
     _.set = function (newLogLevel) {
         logLevel = newLogLevel;
     };
-
     let formatStrings = ["TRC", "INF", "WRN", "ERR"];
     _.say = function (messageLogLevel, message) {
         if (messageLogLevel >= logLevel) {
             console.log (formatStrings[messageLogLevel] + ": " + message)
         }
     };
-
     _.trace = function (message) {
         this.say (_.TRACE, message);
     };
-
     _.info = function (message) {
         this.say (_.INFO, message);
     };
-
     _.warn = function (message) {
         this.say (_.WARNNG, message);
     };
-
     _.error = function (message) {
         this.say (_.ERROR, message);
     };
-
     return _;
 } ();
-
 LogLevel.set (LogLevel.INFO);
 /**
  * A collection of utility functions.
@@ -62,9 +40,7 @@ LogLevel.set (LogLevel.INFO);
  */
 let Utility = function () {
     let _ = Object.create (null);
-
     const TWO_PI = Math.PI * 2.0;
-
     let unwind = _.unwind = function (value, cap) {
         value -= Math.floor (value / cap) * cap;
         while (value >= cap) {
@@ -75,16 +51,12 @@ let Utility = function () {
         }
         return value;
     };
-
-
     _.unwindRadians = function (radians) {
         return _.unwind (radians, TWO_PI);
     };
-
     _.unwindDegrees = function (degrees) {
         return _.unwind (degrees, 360.0);
     };
-
     /**
      * Convert an angle measured in degrees to radians.
      *
@@ -95,19 +67,15 @@ let Utility = function () {
     _.degreesToRadians = function (degrees) {
         return unwind (degrees / 180.0, 2.0) * Math.PI;
     };
-
     _.cos = function (degrees) {
         return Math.cos (_.degreesToRadians (degrees));
     };
-
     _.sin = function (degrees) {
         return Math.sin (_.degreesToRadians (degrees));
     };
-
     _.tan = function (degrees) {
         return Math.tan (_.degreesToRadians (degrees));
     };
-
     /**
      * Convert an angle measured in radians to degrees.
      *
@@ -118,7 +86,6 @@ let Utility = function () {
     _.radiansToDegrees = function (radians) {
         return (unwind (radians, TWO_PI) / Math.PI) * 180;
     };
-
     /**
      * Make the first letter of a string be upper case.
      *
@@ -129,7 +96,6 @@ let Utility = function () {
     _.uppercase = function (string) {
         return string[0].toUpperCase () + string.slice (1);
     };
-
     /**
      * Make the first letter of a string be lower case.
      *
@@ -140,7 +106,6 @@ let Utility = function () {
     _.lowercase = function (string) {
         return string[0].toLowerCase () + string.slice (1);
     };
-
     /**
      * Convert an array of arrays to a single array of values (in order).
      *
@@ -157,7 +122,6 @@ let Utility = function () {
         }
         return result;
     };
-
     /**
      * truncate a number to a specific precision, equivalent to discretization
      *
@@ -170,7 +134,6 @@ let Utility = function () {
         (precision = (((typeof precision !== "undefined") && (precision != null)) ? precision : 7));
         return Number.parseFloat (number.toFixed (precision));
     };
-
     /**
      * zero pad a number to a specific width
      *
@@ -185,7 +148,6 @@ let Utility = function () {
         number = number + "";
         return number.length >= width ? number : new Array(width - number.length + 1).join(fill) + number;
     }
-
     /**
      * provide a default value if the requested value is undefined. this is
      * here because the macro doesn't handle multiline values.
@@ -198,7 +160,6 @@ let Utility = function () {
     _.defaultValue = function (value, defaultValue) {
         return (value = (((typeof value !== "undefined") && (value != null)) ? value : defaultValue));
     };
-
     /**
      * provide a default value if the requested value is undefined by calling a function. this is
      * here because the macro doesn't handle multiline values.
@@ -211,7 +172,6 @@ let Utility = function () {
     _.defaultFunction = function (value, defaultFunction) {
         return (value = (((typeof value !== "undefined") && (value != null)) ? value : defaultFunction ()));
     };
-
     /**
      * create a reversed mapping from a given object (assumes 1:1 values)
      *
@@ -226,12 +186,10 @@ let Utility = function () {
         }
         return reverseMapping;
     };
-
     return _;
 } ();
 let ClassBase = function () {
     let _ = Object.create (null);
-
     /**
      *
      * @param parameters
@@ -241,7 +199,6 @@ let ClassBase = function () {
         // create the object. this is a bit tricky here, as "this" is referring to a static instance
         // of the class we are deriving from ("new" probably isn't overloaded)
         let baseClass = Object.create (this);
-
         // if there is a constructor... ensure that we have parameters, then construct the object
         if ("construct" in baseClass) {
             (parameters = (((typeof parameters !== "undefined") && (parameters != null)) ? parameters : Object.create (null)));
@@ -249,20 +206,16 @@ let ClassBase = function () {
         }
         return baseClass;
     };
-
     return _;
 } ();
 const CLASS_NAME_REQUIRED = "CLASS_NAME_REQUIRED";
 const CLASS_NAME_GENERATED = "CLASS_NAME_GENERATED";
 const CLASS_NAME_OPTIONAL = "CLASS_NAME_OPTIONAL";
-
 let ClassNamed = function (nameRequired) {
     (nameRequired = (((typeof nameRequired !== "undefined") && (nameRequired != null)) ? nameRequired : CLASS_NAME_OPTIONAL));
     let _ = Object.create (ClassBase);
-
     // the container for names
     let index = Object.create (null);
-
     // name handling has several cases:
     // 1) it is supplied
     // 2) it is not supplied, but is auto-generated
@@ -279,7 +232,6 @@ let ClassNamed = function (nameRequired) {
             }
             throw "Duplicate name (" + name + ")";
         }
-
         // otherwise, we have to decide what to do, based on some construction parameters
         switch (nameRequired) {
             case CLASS_NAME_REQUIRED:
@@ -290,7 +242,6 @@ let ClassNamed = function (nameRequired) {
                 return null;
         }
     };
-
     /**
      *
      * @param parameters
@@ -300,23 +251,18 @@ let ClassNamed = function (nameRequired) {
     _.new = function (parameters, name) {
         // ensure parameters is a valid object
         (parameters = (((typeof parameters !== "undefined") && (parameters != null)) ? parameters : Object.create (null)));
-
         // validate the name, store a valid one in the parameters
         if ((name = validateName(name)) != null) parameters.name = name;
-
         // create the object the normal way. carefully, "this" is the static instance of the class
         // we are deriving from ("new" probably isn't overloaded)
         let classNamed = Object.getPrototypeOf(_).new.call (this, parameters);
-
         // index the object if we have a valid name
         if (name != null) {
             classNamed.name = name;
             index[name] = classNamed;
         }
-
         return classNamed;
     };
-
     /**
      *
      * @param name
@@ -325,7 +271,6 @@ let ClassNamed = function (nameRequired) {
     _.get = function (name) {
         return index[name];
     };
-
     /**
      * get the name of this named thing (if it has one).
      *
@@ -335,7 +280,6 @@ let ClassNamed = function (nameRequired) {
     _.getName = function () {
         return ("name" in this) ? this.name : "node";
     };
-
     /**
      *
      * @return {Object}
@@ -343,7 +287,6 @@ let ClassNamed = function (nameRequired) {
     _.getIndex = function () {
         return index;
     };
-
     /**
      *
      * @param todo
@@ -354,45 +297,36 @@ let ClassNamed = function (nameRequired) {
             todo (named);
         }
     };
-
     return _;
 };
 let OnReady = function () {
     let _ = Object.create (null);
-
     _.construct = function (scope, callback) {
         this.scope = scope;
         this.callback = callback;
         return this;
     };
-
     _.notify = function (parameter) {
         this.callback.call (this.scope, parameter);
     };
-
     _.new = function (scope, callback) {
         return Object.create (_).construct(scope, callback);
     };
-
     return _;
 } ();
 "use strict;"
-
 let MouseTracker = function () {
     let _ = Object.create (null);
-
     let mouseDownPosition;
     let bound;
     let onReady;
     let stepSize;
-
     let mousePosition = function (event) {
         return {
             x: (event.clientX - bound.left) / bound.width,
             y: (event.clientY - bound.top) / bound.height
         };
     }
-
     let mouseMoved = function (event) {
         let mouseMovedPosition = mousePosition(event);
         let deltaPosition = [
@@ -404,24 +338,20 @@ let MouseTracker = function () {
             onReady.notify (deltaPosition);
         }
     };
-
     let mouseUp = function (event) {
         window.removeEventListener("mousemove", mouseMoved, false);
         window.removeEventListener("mouseup", mouseUp, false);
     };
-
     let mouseDown = function (event) {
-        if (event.button == 0) {
+        if (event.button === 0) {
             //getting mouse position correctly
             mouseDownPosition = mousePosition (event);
             window.addEventListener ("mousemove", mouseMoved, false);
             window.addEventListener ("mouseup", mouseUp, false);
         }
     };
-
     let KEY_LEFT = 37;
     let KEY_RIGHT = 39;
-
     let keyDown = function (event) {
         switch (event.keyCode) {
             case KEY_LEFT: onReady.notify ([-stepSize, 0.0]); break;
@@ -429,28 +359,22 @@ let MouseTracker = function () {
             default: onReady.notify ([0.0, 0.0]); break;
         }
     };
-
     _.construct = function (canvasId, onReadyIn, stepSizeIn) {
         onReady = onReadyIn;
         stepSize = (stepSizeIn = (((typeof stepSizeIn !== "undefined") && (stepSizeIn != null)) ? stepSizeIn : 0.05));
-
         let canvas = document.getElementById(canvasId);
-
         bound = canvas.getBoundingClientRect();
         canvas.addEventListener("mousedown", mouseDown, false);
         canvas.addEventListener("keydown", keyDown, true);
         canvas.focus();
     };
-
     _.new = function (canvasId, onReadyIn, stepSizeIn) {
         return Object.create (_).construct(canvasId, onReadyIn, stepSizeIn);
     };
-
     return _;
 } ();
 let DocumentHelper = function () {
     let _ = Object.create (ClassBase);
-
     /**
      * 
      * @param id
@@ -459,7 +383,6 @@ let DocumentHelper = function () {
         this[id] = document.getElementById (id);
         return this;
     };
-
     /**
      * 
      * @param ids
@@ -470,7 +393,6 @@ let DocumentHelper = function () {
         }
         return this;
     };
-
     /**
      * 
      */
@@ -478,16 +400,13 @@ let DocumentHelper = function () {
         // find all of the elements in the document with ids...
         return this;
     };
-
     return _;
 } ();
 let FloatN = function (dim) {
     let _ = Object.create (null);
-
     _.create = function () {
         return new Float32Array(dim);
     };
-
     // _.copy (from, to)
     // from: FloatN
     // to: FloatN
@@ -507,7 +426,6 @@ let FloatN = function (dim) {
         str += "};\n";
         return str;
     } ());
-
     // _.point (from, to)
     // from: FloatN-1
     // to: FloatN
@@ -529,7 +447,6 @@ let FloatN = function (dim) {
         str += "};\n";
         return str;
     } ());
-
     // _.vector (from, to)
     // from: FloatN-1
     // to: FloatN
@@ -551,7 +468,6 @@ let FloatN = function (dim) {
         str += "};\n";
         return str;
     } ());
-
     // _.dot (left, right)
     // left: FloatN
     // right: FloatN
@@ -570,7 +486,6 @@ let FloatN = function (dim) {
         str += "};\n";
         return str;
     } ());
-
     // _.normSq (from)
     // from: FloatN
     // computes the squared length of the input vector
@@ -582,7 +497,6 @@ let FloatN = function (dim) {
     _.normSq = function (from) {
         return _.dot (from, from);
     };
-
     // _.norm (from)
     // from: FloatN
     // computes the length of the input vector
@@ -596,7 +510,6 @@ let FloatN = function (dim) {
         let n2 = _.normSq (from);
         return (n2 > 0.0) ? ((Math.abs (n2 - 1.0) > 1.0e-6) ? Math.sqrt (n2) : 1.0) : 0.0;
     };
-
     /**
      *
      * @param from
@@ -606,7 +519,6 @@ let FloatN = function (dim) {
         let n = _.norm (from);
         return (Math.abs (n - 1.0) > 1.0e-6) ? _.scale (from, 1 / n, to) : _.copy (from, to);
     };
-
     // _.add (left, right, to)
     // left: FloatN
     // right: FloatN
@@ -627,7 +539,6 @@ let FloatN = function (dim) {
         str += "};\n";
         return str;
     } ());
-
     // _.subtract (left, right, to)
     // left: FloatN
     // right: FloatN
@@ -648,7 +559,6 @@ let FloatN = function (dim) {
         str += "};\n";
         return str;
     } ());
-
     // _.scale (from, scale, to)
     // from: FloatN
     // scale: Float
@@ -669,7 +579,6 @@ let FloatN = function (dim) {
         str += "};\n";
         return str;
     } ());
-
     // _.fixNum (from, precision, to)
     // from: FloatN
     // precision: int
@@ -690,7 +599,6 @@ let FloatN = function (dim) {
         str += "};\n";
         return str;
     } ());
-
     // _.minor
     /**
      *
@@ -706,7 +614,6 @@ let FloatN = function (dim) {
         str += "};\n";
         return str;
     } ());
-
     // _.major
     /**
      *
@@ -722,7 +629,6 @@ let FloatN = function (dim) {
         str += "};\n";
         return str;
     } ());
-
     // _.str (from)
     // from: FloatN
     // returns the string representation of the from (to 7 significant digits), about 10 miles at
@@ -740,7 +646,6 @@ let FloatN = function (dim) {
         str += "};\n";
         return str;
     } ());
-
     /**
      *
      * @param left
@@ -748,15 +653,12 @@ let FloatN = function (dim) {
      * @return {boolean}
      */
     _.equals = function (left, right) {
-        return _.str (left) == _.str (right);
+        return _.str (left) === _.str (right);
     };
-
     return _;
 };
-
 let Float2 = function () {
     let _ = FloatN (2);
-
     /**
      *
      * @param from
@@ -768,7 +670,6 @@ let Float2 = function () {
         to[0] = from[1]; to[1] = -from[0];
         return to;
     };
-
     /**
      *
      * @param left
@@ -778,13 +679,10 @@ let Float2 = function () {
     _.cross = function (left, right) {
         return (left[0] * right[1]) - (left[1] * right[0]);
     };
-
     return _;
 } ();
-
 let Float3 = function () {
     let _ = FloatN (3);
-
     /**
      *
      * @param left
@@ -799,13 +697,10 @@ let Float3 = function () {
         to[2] = (left[0] * right[1]) - (left[1] * right[0]);
         return to;
     };
-
     return _;
 } ();
-
 let Float4 = function () {
-    let _ = FloatN (4);
-    return _;
+    return FloatN (4);
 } ();
 /**
  * A (square) NxN matrix
@@ -816,16 +711,13 @@ let FloatNxN = function (dim) {
     let _ = Object.create (null);
     let _FloatN = FloatN (dim);
     let size = dim * dim;
-
     let index = _.index = function (row, column) {
         return (row * dim) + column;
     };
-
     let defineTo = function (to) {
         (to = (((typeof to !== "undefined") && (to != null)) ? to : "to"));
         return to + " = (typeof " + to + " !== 'undefined') ? " + to + " : _.create ();\n";
     };
-
     /**
      * Create a new FloatNxN.
      *
@@ -836,7 +728,6 @@ let FloatNxN = function (dim) {
     _.create = function () {
         return new Float32Array (size);
     };
-
     /**
      * Copy contents from an array into a FloatNxN and return the result.
      *
@@ -860,7 +751,6 @@ let FloatNxN = function (dim) {
         str += "};\n";
         return str;
     } ());
-
     // _.identity (to)
     // to: FloatNxN
     // sets the values of 'to' to an identity matrix
@@ -871,7 +761,7 @@ let FloatNxN = function (dim) {
         str += defineTo ();
         for (let row = 0; row < dim; ++row) {
             for (let column = 0; column < dim; ++column) {
-                str += "to[" + index (row, column) + "] = " + ((row == column) ? 1 : 0) + "; ";
+                str += "to[" + index (row, column) + "] = " + ((row === column) ? 1 : 0) + "; ";
             }
             str += "\n";
         }
@@ -879,9 +769,7 @@ let FloatNxN = function (dim) {
         str += "};\n";
         return str;
     } ());
-
     _.IDENTITY = _.identity ();
-
     // _.transpose (from, to)
     // from: FloatNxN
     // to: FloatNxN
@@ -901,7 +789,6 @@ let FloatNxN = function (dim) {
         str += "};\n";
         return str;
     } ());
-
     // _.multiply (left, right, to)
     // left: FloatNxN
     // right: FloatNxN
@@ -918,7 +805,6 @@ let FloatNxN = function (dim) {
             str += ";\n";
             return str;
         };
-
         let str = "_.multiply = function (left, right, to) {\n";
         str += defineTo ();
         for (let row = 0; row < dim; ++row) {
@@ -930,7 +816,6 @@ let FloatNxN = function (dim) {
         str += "};\n";
         return str;
     } ());
-
     _.chain = function (...args) {
         let result = args[0];
         for (let index = 1, end = args.length; index < end; ++index) {
@@ -939,7 +824,6 @@ let FloatNxN = function (dim) {
         }
         return result;
     };
-
     // _.scale (scale, to)
     // scale: Float or FloatN
     // to: FloatNxN
@@ -959,7 +843,6 @@ let FloatNxN = function (dim) {
         str += "};\n";
         return str;
     }());
-
     // _.translate (translate, to)
     // translate: FloatN
     // to: FloatNxN
@@ -978,7 +861,6 @@ let FloatNxN = function (dim) {
         str += "};\n";
         return str;
     }());
-
     // _.str (from)
     // from: FloatNxN
     // returns the string representation of the matrix
@@ -991,7 +873,6 @@ let FloatNxN = function (dim) {
             str += " + ')'";
             return str;
         };
-
         let str = "_.str = function (from) {\n";
         str += "return ";
         str += strRow (0);
@@ -1002,10 +883,8 @@ let FloatNxN = function (dim) {
         str += "};\n";
         return str;
     } ());
-
     return _;
 };
-
 /**
  * A 4x4 matrix used as a 3D transformation
  *
@@ -1015,7 +894,6 @@ let FloatNxN = function (dim) {
 let Float4x4 = function () {
     let dim = 4;
     let _ = FloatNxN (dim);
-
     /**
      *
      * @param from
@@ -1050,7 +928,6 @@ let Float4x4 = function () {
         to[15] = (from[8] * G - from[9] * B + from[10] * A) * Q;
         return to;
     };
-
     /**
      *
      * @param f4
@@ -1067,7 +944,6 @@ let Float4x4 = function () {
         to[3] = (f4x4[3] * f40) + (f4x4[7] * f41) + (f4x4[11] * f42) + (f4x4[15] * f43);
         return to;
     };
-
     /**
      *
      * @param f4x4
@@ -1084,7 +960,6 @@ let Float4x4 = function () {
         to[3] = (f4x4[12] * f40) + (f4x4[13] * f41) + (f4x4[14] * f42) + (f4x4[15] * f43);
         return to;
     };
-
     /**
      *
      * @param angle
@@ -1095,7 +970,6 @@ let Float4x4 = function () {
         to[9] = -(to[6] = Math.sin (angle));
         return to;
     };
-
     /**
      *
      * @param angle
@@ -1106,7 +980,6 @@ let Float4x4 = function () {
         to[2] = -(to[8] = Math.sin (angle));
         return to;
     };
-
     /**
      *
      * @param angle
@@ -1117,7 +990,6 @@ let Float4x4 = function () {
         to[4] = -(to[1] = Math.sin (angle));
         return to;
     };
-
     /**
      *
      * @param left
@@ -1139,7 +1011,6 @@ let Float4x4 = function () {
         return to;
     };
     _.frustum = frustum;
-
     /**
      *
      * @param fov
@@ -1153,7 +1024,6 @@ let Float4x4 = function () {
         let halfHeight = halfWidth * aspectRatio;
         return frustum (-halfHeight, halfHeight, -halfWidth, halfWidth, nearPlane, farPlane, to);
     };
-
     /**
      *
      * @param left
@@ -1174,7 +1044,6 @@ let Float4x4 = function () {
         to[12] = -(left + right) / width; to[13] = -(top + bottom) / height; to[14] = -(far + near) / depth; to[15] = 1;
         return to;
     };
-
     /**
      *
      * @param xAxis
@@ -1192,7 +1061,6 @@ let Float4x4 = function () {
         return _.inverse (to);
     };
     _.viewMatrix = viewMatrix;
-
     /**
      *
      * @param from
@@ -1208,7 +1076,6 @@ let Float4x4 = function () {
         return viewMatrix (xAxis, yAxis, zAxis, from);
     };
     _.lookFrom = lookFrom;
-
     /**
      *
      * @param from
@@ -1218,7 +1085,6 @@ let Float4x4 = function () {
     _.lookFromAt = function (from, at, up) {
         return lookFrom (from, Float3.subtract (from, at), up);
     };
-
     /**
      *
      * @param size
@@ -1232,7 +1098,6 @@ let Float4x4 = function () {
         let from = Float3.add (at, Float3.scale (along, distance / Float3.norm (along)));
         return lookFrom (from, along, up);
     };
-
     /**
      *
      * @param zAxis
@@ -1251,7 +1116,6 @@ let Float4x4 = function () {
         to[12] = 0; to[13] = 0; to[14] = 0; to[15] = 1;
         return to;
     };
-
     /**
      *
      * @param n
@@ -1270,11 +1134,9 @@ let Float4x4 = function () {
         to[12] = 0; to[13] = 0; to[14] = 0; to[15] = 1;
         return to;
     };
-
     return _;
 } ();
 let context;
-
 /**
  * A Rendering context.
  *
@@ -1282,7 +1144,6 @@ let context;
  */
 let Render = function () {
     let _ = Object.create (ClassBase);
-
     /**
      * The initializer for a rendering context.
      *
@@ -1292,7 +1153,6 @@ let Render = function () {
      */
     _.construct = function (parameters) {
         let canvas = this.canvas = document.getElementById (parameters.canvasId);
-
         // try to do something smart here, like get the aspect ratio from the actual
         // canvas size. that's not always actually set, so the user can request an aspect
         // ratio explicitly which will override the default size
@@ -1300,24 +1160,20 @@ let Render = function () {
         let height = canvas.height;
         let aspectRatio = (parameters.aspectRatio = (((typeof parameters.aspectRatio !== "undefined") && (parameters.aspectRatio != null)) ? parameters.aspectRatio : width / height));
         height = width / aspectRatio;
-
         // set the display size of the canvas.
         canvas.style.width = width + "px";
         canvas.style.height = height + "px";
-
         // set the size of the drawingBuffer - high DPI devices need to have the canvas
         // drawing surface scaled up while leaving the style size as indicated
         let devicePixelRatio = (window.devicePixelRatio = (((typeof window.devicePixelRatio !== "undefined") && (window.devicePixelRatio != null)) ? window.devicePixelRatio : 1));
         canvas.width = width * devicePixelRatio;
         canvas.height = height * devicePixelRatio;
         LogLevel.say (LogLevel.TRACE, "Scaling display at " + devicePixelRatio + ":1 to (" + canvas.width + "x" + canvas.height + ")");
-
         // get the actual rendering context
-        context = this.context = canvas.getContext ("webgl", { preserveDrawingBuffer: true, alpha: false });
+        context = this.context = canvas.getContext ("webgl2", { preserveDrawingBuffer: true });
         context.viewportWidth = canvas.width;
         context.viewportHeight = canvas.height;
         context.viewport (0, 0, context.viewportWidth, context.viewportHeight);
-
         // set up some boilerplate, loading all the default shaders
         let loaderList = LoaderList.new ().addLoaders (
             LoaderShader
@@ -1325,12 +1181,10 @@ let Render = function () {
                 .addVertexShaders ("basic")
                 .addFragmentShaders (["basic", "basic-texture", "color", "overlay", "rgb", "texture", "vertex-color"])
         );
-
         // include anything the user wants to load
         if ("loaders" in parameters) {
             loaderList.addLoaders (parameters.loaders);
         }
-
         // go get everything
         let scope = this;
         loaderList.go (OnReady.new (null, function (x) {
@@ -1343,7 +1197,6 @@ let Render = function () {
             Sphere.makeN (2);
             Sphere.makeN (3);
             Sphere.makeN (5);
-
             // create the default shaders
             Program.new ({}, "basic");
             Program.new ({ vertexShader: "basic" }, "basic-texture");
@@ -1352,7 +1205,6 @@ let Render = function () {
             Program.new ({ vertexShader: "basic" }, "rgb");
             Program.new ({ vertexShader: "basic" }, "texture");
             Program.new ({ vertexShader: "basic" }, "vertex-color");
-
             // call the user back when it's all ready
             // call the onReady handler if one was provided
             if (typeof parameters.onReady !== "undefined") {
@@ -1360,7 +1212,6 @@ let Render = function () {
             }
         }));
     };
-
     _.save = function (filename) {
         //let image = this.canvas.toDataURL ("image/png").replace ("image/png", "image/octet-stream");
         let MIME_TYPE = "image/png";
@@ -1369,12 +1220,10 @@ let Render = function () {
         dlLink.download = filename + ".png";
         dlLink.href = imgURL;
         dlLink.dataset.downloadurl = [MIME_TYPE, dlLink.download, dlLink.href].join (':');
-
         document.body.appendChild (dlLink);
         dlLink.click ();
         document.body.removeChild (dlLink);
     };
-
     /**
      * Set the global rendering context.
      *
@@ -1383,7 +1232,6 @@ let Render = function () {
     _.use = function () {
         context = this.context;
     };
-
     return _;
 } ();
 let glMatrixArrayType = Array;//((typeof Float32Array) != "undefined") ? Float32Array : ((typeof WebGLFloatArray) != "undefined") ? WebGLFloatArray : Array;
@@ -1394,7 +1242,6 @@ let glMatrixArrayType = Array;//((typeof Float32Array) != "undefined") ? Float32
  */
 let Loader = function () {
     let _ = Object.create (ClassBase);
-
     /**
      * the initializer for a loader.
      *
@@ -1407,14 +1254,12 @@ let Loader = function () {
         this.onReady = OnReady.new (this, this.finish);
         return this;
     };
-
     _.addItem = function (type, name, parameters) {
         parameters.onReady = this.onReady;
         let item = { type: type, name: name, parameters: parameters };
         this.items.push (item);
         return this;
     };
-
     _.finish = function (finishedItem) {
         if (finishedItem === this.pendingItem) {
             // clear the pending item, and go on to the next one
@@ -1424,7 +1269,6 @@ let Loader = function () {
             LogLevel.say (LogLevel.ERROR, "WHAT'S UP WILLIS?");
         }
     };
-
     /**
      * start the fetch process for all the loadable items.
      *
@@ -1435,7 +1279,6 @@ let Loader = function () {
         this.onFinishedAll = (onFinishedAll = (((typeof onFinishedAll !== "undefined") && (onFinishedAll != null)) ? onFinishedAll : { notify: function (x) {} }));
         this.next ();
     };
-
     /**
      * continue the fetch process for all the loadable items.
      *
@@ -1451,7 +1294,6 @@ let Loader = function () {
             this.onFinishedAll.notify (this);
         }
     };
-
     return _;
 } ();
 /**
@@ -1461,7 +1303,6 @@ let Loader = function () {
  */
 let LoaderList = function () {
     let _ = Object.create (ClassBase);
-
     /**
      * the initializer for a loader.
      *
@@ -1474,7 +1315,6 @@ let LoaderList = function () {
         this.onReady = OnReady.new (this, this.finish);
         return this;
     };
-
     _.addLoaders = function (...loaders) {
         if (Array.isArray (loaders[0])) { loaders = loaders[0]; }
         for (let loader of loaders) {
@@ -1482,7 +1322,6 @@ let LoaderList = function () {
         }
         return this;
     };
-
     _.finish = function (finishedItem) {
         if (finishedItem === this.pendingItem) {
             // clear the pending item, and go on to the next one
@@ -1492,7 +1331,6 @@ let LoaderList = function () {
             LogLevel.say (LogLevel.ERROR, "WHAT'S UP WILLIS?");
         }
     };
-
     _.next = function () {
         if (this.items.length > 0) {
             // have work to do, kick off a fetch
@@ -1504,7 +1342,6 @@ let LoaderList = function () {
             this.onFinishedAll.notify (this);
         }
     };
-
     /**
      * start the fetch process for all the loaders
      *
@@ -1515,7 +1352,6 @@ let LoaderList = function () {
         this.onFinishedAll = (onFinishedAll = (((typeof onFinishedAll !== "undefined") && (onFinishedAll != null)) ? onFinishedAll : { notify: function (x) {} }));
         this.next ();
     };
-
     return _;
 } ();
 /**
@@ -1526,7 +1362,6 @@ let LoaderList = function () {
  */
 let LoaderPath = function () {
     let _ = Object.create (Loader);
-
     /**
      * the initializer for a path loader.
      *
@@ -1540,7 +1375,6 @@ let LoaderPath = function () {
         this.path = parameters.path;
         return this;
     };
-
     _.addItems = function (names, parameters) {
         names = Array.isArray(names) ? names : Array(1).fill(names);
         for (let name of names) {
@@ -1549,7 +1383,6 @@ let LoaderPath = function () {
         }
         return this;
     };
-
     return _;
 } ();
 /**
@@ -1559,7 +1392,6 @@ let LoaderPath = function () {
  */
 let LoaderShader = function () {
     let _ = Object.create (LoaderPath);
-
     /**
      * the initializer for a shader loader.
      *
@@ -1570,7 +1402,6 @@ let LoaderShader = function () {
     _.construct = function (path) {
         return Object.getPrototypeOf(_).construct.call(this, { type: Shader, path: path });
     };
-
     let addNames = function (names, prefix) {
         names = Array.isArray(names) ? names : Array(1).fill(names);
         let result = [];
@@ -1578,34 +1409,28 @@ let LoaderShader = function () {
             result.push (prefix + "-" + name);
         }
         return result;
-    }
-
+    };
     // this constant is from the spec, moved it here because of a cross dependency on
     // having created the context already. I hope it never changes.
     const VERTEX_SHADER = 0x8B31;
     _.addVertexShaders = function (names) {
         return Object.getPrototypeOf(_).addItems.call (this, addNames (names, "vertex"), { type: VERTEX_SHADER });
     };
-
     // this constant is from the spec, moved it here because of a cross dependency on
     // having created the context already. I hope it never changes.
     const FRAGMENT_SHADER = 0x8B30;
     _.addFragmentShaders = function (names) {
         return Object.getPrototypeOf(_).addItems.call (this, addNames (names, "fragment"), { type: FRAGMENT_SHADER });
     };
-
     return _;
 } ();
 let Shader = function () {
     let _ = ClassNamed ();
-
     _.construct = function (parameters) {
         LogLevel.say (LogLevel.INFO, "Shader: " + parameters.name);
-
         // there must be a type and url
         if (typeof parameters.type === "undefined") throw "Shader type Required";
         if (typeof parameters.url === "undefined") throw "Shader URL Required";
-
         let scope = this;
         let request = new XMLHttpRequest();
         request.onload = function (event) {
@@ -1628,7 +1453,6 @@ let Shader = function () {
         request.open("GET", parameters.url);
         request.send();
     };
-
     return _;
 } ();
 /**
@@ -1638,7 +1462,6 @@ let Shader = function () {
  */
 let Program = function () {
     let _ = ClassNamed (CLASS_NAME_REQUIRED);
-
     /**
      * the name for the standard POSITION buffer attribute in a shader.
      * @element POSITION_ATTRIBUTE
@@ -1646,7 +1469,6 @@ let Program = function () {
      * @final
      */
     _.POSITION_ATTRIBUTE = "POSITION_ATTRIBUTE";
-
     /**
      * the name for the standard NORMAL buffer attribute in a shader.
      * @element NORMAL_ATTRIBUTE
@@ -1654,7 +1476,6 @@ let Program = function () {
      * @final
      */
     _.NORMAL_ATTRIBUTE = "NORMAL_ATTRIBUTE";
-
     /**
      * the name for the standard TEXTURE buffer attribute in a shader.
      * @element TEXTURE_ATTRIBUTE
@@ -1662,7 +1483,6 @@ let Program = function () {
      * @final
      */
     _.TEXTURE_ATTRIBUTE = "TEXTURE_ATTRIBUTE";
-
     /**
      * the name for the standard COLOR buffer attribute in a shader.
      * @element COLOR_ATTRIBUTE
@@ -1670,9 +1490,7 @@ let Program = function () {
      * @final
      */
     _.COLOR_ATTRIBUTE = "COLOR_ATTRIBUTE";
-
     let currentProgram;
-
     /**
      * the initializer for a shader.
      *
@@ -1709,11 +1527,9 @@ let Program = function () {
      */
     _.construct = function (parameters) {
         LogLevel.say (LogLevel.INFO, "Program: " + parameters.name);
-
         // default value for the shader names
         parameters.vertexShader = "vertex-" + (parameters.vertexShader = (((typeof parameters.vertexShader !== "undefined") && (parameters.vertexShader != null)) ? parameters.vertexShader : parameters.name));
         parameters.fragmentShader = "fragment-" + (parameters.fragmentShader = (((typeof parameters.fragmentShader !== "undefined") && (parameters.fragmentShader != null)) ? parameters.fragmentShader : parameters.name));
-
         // default values for the attribute mapping
         if (!("attributeMapping" in parameters)) {
             parameters.attributeMapping = {
@@ -1723,7 +1539,6 @@ let Program = function () {
                 COLOR_ATTRIBUTE: "inputColor"
             };
         }
-
         // default values for the parameter mapping
         if (!("parameterMapping" in parameters)) {
             parameters.parameterMapping = {
@@ -1744,29 +1559,23 @@ let Program = function () {
                 SPECULAR_EXPONENT:"specularExponent"
             };
         }
-
         this.currentShape = null;
-
         // create the shader program and attach the components
         let program = this.program = context.createProgram ();
         context.attachShader (program, Shader.get (parameters.vertexShader).compiledShader);
         context.attachShader (program, Shader.get (parameters.fragmentShader).compiledShader);
-
         // force a binding of attribute 0 to the position attribute (which SHOULD always be present)
         // this avoids a performance penalty incurred if a randomly assigned attribute is on index 0
         // but is not used by a particular shape (like a normals buffer).
         context.bindAttribLocation (program, 0, parameters.attributeMapping.POSITION_ATTRIBUTE);
-
         // link the program and check that it succeeded
         context.linkProgram (program);
         if (!context.getProgramParameter (program, context.LINK_STATUS)) {
             LogLevel.say (LogLevel.ERROR, "Could not initialise shader");
             // XXX do we need to delete it?
         }
-
         // have to do this before collecting parameters and attributes, or else...
         context.useProgram (program);
-
         // loop over the found active shader parameters providing setter methods for them, and map
         // the ones we know about
         let parameterMapping = parameters.parameterMapping;
@@ -1780,13 +1589,11 @@ let Program = function () {
                 programUniform.set (value);
                 return this;
             };
-
             // if the shader parameter is in the standard mapping, add that
             if (programUniformName in reverseParameterMapping) {
                 standardParameterMapping[reverseParameterMapping[programUniformName]] = setProgramUniformFunctionName;
             }
         }
-
         // loop over the found active attributes, and map the ones we know about
         let reverseAttributeMapping = Utility.reverseMap (parameters.attributeMapping);
         let attributes = this.attributes = Object.create (null);
@@ -1798,7 +1605,6 @@ let Program = function () {
             }
         }
     };
-
     /**
      * set the standard shader parameters in one call.
      *
@@ -1816,7 +1622,6 @@ let Program = function () {
         }
         return this;
     };
-
     let bindAttribute = function (scope, which, buffer) {
         // not every shader uses every attribute, so don't bother to set them unless they will be used
         if (which in scope.attributes) {
@@ -1825,7 +1630,6 @@ let Program = function () {
         }
         return scope;
     };
-
     /**
      * bind the POSITION attribute to the given buffer.
      *
@@ -1836,7 +1640,6 @@ let Program = function () {
     _.bindPositionAttribute = function (buffer) {
         return bindAttribute(this, _.POSITION_ATTRIBUTE, buffer);
     };
-
     /**
      * bind the NORMAL attribute to the given buffer.
      *
@@ -1847,7 +1650,6 @@ let Program = function () {
     _.bindNormalAttribute = function (buffer) {
         return bindAttribute(this, _.NORMAL_ATTRIBUTE, buffer);
     };
-
     /**
      * bind the TEXTURE attribute to the given buffer.
      *
@@ -1859,7 +1661,6 @@ let Program = function () {
         // not every shader uses every attribute, so don't bother to set this unless it will be used
         return bindAttribute (this, _.TEXTURE_ATTRIBUTE, buffer);
     };
-
     /**
      * bind the COLOR attribute to the given buffer.
      *
@@ -1871,7 +1672,6 @@ let Program = function () {
         // not every shader uses every attribute, so don't bother to set this unless it will be used
         return bindAttribute (this, _.COLOR_ATTRIBUTE, buffer);
     };
-
     /**
      * disable the enabled buffers.
      *
@@ -1883,7 +1683,6 @@ let Program = function () {
             this.attributes[attribute].unbind ();
         }
     };
-
     /**
      * fetch the shader currently in use.
      *
@@ -1894,7 +1693,6 @@ let Program = function () {
     _.getCurrentProgram = function () {
         return currentProgram;
     };
-
     /**
      * set this as the current shader in the rendering context.
      *
@@ -1908,17 +1706,14 @@ let Program = function () {
             if (currentProgram) {
                 currentProgram.unbindAttributes ();
             }
-
             LogLevel.say (LogLevel.TRACE, "Use program: " + this.name);
             currentProgram = this;
             context.useProgram (this.program);
-
             // reset the current shape to ensure we bind attributes correctly after changing programs
             this.currentShape = null;
         }
         return this;
     };
-
     _.useShape = function (shape) {
         if (this.currentShape !== shape) {
             LogLevel.say (LogLevel.TRACE, "Use shape: " + shape.name);
@@ -1927,21 +1722,17 @@ let Program = function () {
         }
         return false;
     };
-
     return _;
 } ();
-
 let ProgramUniform = function () {
     let _ = Object.create (null);
-
     _.construct = function (program, i) {
         let activeUniform = context.getActiveUniform (program, i);
         this.name = activeUniform.name;
         this.type = activeUniform.type;
         this.location = context.getUniformLocation (program, activeUniform.name);
-
         // XXX temporarily store texture indices on the program (subversive actions here)
-        if (this.type == context.SAMPLER_2D) {
+        if (this.type === context.SAMPLER_2D) {
             this.textureIndex = ("nextTextureIndex" in program) ? program.nextTextureIndex : 0;
             program.nextTextureIndex = this.textureIndex + 1;
             LogLevel.say (LogLevel.TRACE, "Program uniform: " + this.name + " (type 0x" + this.type.toString(16) + ") at index " + this.textureIndex);
@@ -1950,7 +1741,6 @@ let ProgramUniform = function () {
         }
         return this;
     };
-
     _.set = function (value) {
         LogLevel.say (LogLevel.TRACE, "Set uniform: " + this.name);
         // see https://www.khronos.org/registry/webgl/specs/latest/1.0/#5.1 (5.14) for explanation
@@ -1967,7 +1757,6 @@ let ProgramUniform = function () {
             case 0x8B55: // context.INT_VEC4
                 context.uniform4iv (this.location, value);
                 break;
-
             case 0x1406: // context.FLOAT
                 context.uniform1f (this.location, value);
                 break;
@@ -1980,7 +1769,6 @@ let ProgramUniform = function () {
             case 0x8B52: // context.FLOAT_VEC4
                 context.uniform4fv (this.location, value);
                 break;
-
             case 0x8B5A: // context.FLOAT_MAT2
                 context.uniformMatrix2fv (this.location, false, value);
                 break;
@@ -1990,7 +1778,6 @@ let ProgramUniform = function () {
             case 0x8B5C: // context.FLOAT_MAT4
                 context.uniformMatrix4fv (this.location, false, value);
                 break;
-
             case 0x8B5E: // context.SAMPLER_2D
                 // TEXTURE0 is a constant, up to TEXTURE31 (just incremental adds to TEXTURE0)
                 // XXX I wonder if this will need to be unbound
@@ -2000,22 +1787,18 @@ let ProgramUniform = function () {
                 break;
         }
     };
-
     _.new = function (program, i) {
         return Object.create (_).construct (program, i);
     };
-
     return _;
 } ();
 let ProgramAttribute = function () {
     let _ = Object.create (null);
-
     _.construct = function (program, activeAttribute) {
         this.name = activeAttribute.name;
         this.type = activeAttribute.type;
         this.location = context.getAttribLocation (program, this.name);
         LogLevel.say (LogLevel.TRACE, "Program attribute: " + this.name + " at index " + this.location + " (type 0x" + this.type.toString(16) + ")");
-
         // set the bind function
         switch (this.type) {
             case 0x1404:
@@ -2077,36 +1860,27 @@ let ProgramAttribute = function () {
         }
         return this;
     };
-
     _.unbind = function () {
         LogLevel.say (LogLevel.TRACE, "Unbind attribute (" + this.name + ") at location " + this.location);
         context.disableVertexAttribArray (this.location);
     };
-
     _.new = function (program, activeAttribute) {
         return Object.create (_).construct (program, activeAttribute);
     };
-
     return _;
 } ();
 let Texture = function () {
     let _ = ClassNamed (CLASS_NAME_REQUIRED);
-
     let afExtension;
-
     _.construct = function (parameters) {
         LogLevel.say (LogLevel.INFO, "Texture: " + parameters.name);
-
         // make sure anisotropic filtering is defined, and has a reasonable default value
         (afExtension = (((typeof afExtension !== "undefined") && (afExtension != null)) ? afExtension : function () { return context.getExtension ("EXT_texture_filter_anisotropic") } ()));
         parameters.anisotropicFiltering = Math.min (context.getParameter(afExtension.MAX_TEXTURE_MAX_ANISOTROPY_EXT), ("anisotropicFiltering" in parameters)? parameters.anisotropicFiltering : 4);
-
         // there must be a url
         if (typeof parameters.url === "undefined") throw "Texture URL Required";
-
         let texture = this.texture = context.createTexture();
         let image = new Image();
-
         // allow cross origin loads, all of them... it's butt stupid that this isn't the default
         image.crossOrigin = "anonymous";
         let scope = this;
@@ -2114,7 +1888,7 @@ let Texture = function () {
             context.bindTexture (context.TEXTURE_2D, texture);
             context.texImage2D (context.TEXTURE_2D, 0, context.RGBA, context.RGBA, context.UNSIGNED_BYTE, image);
             context.texParameteri (context.TEXTURE_2D, context.TEXTURE_MAG_FILTER, context.LINEAR);
-            if (("generateMipMap" in parameters) && (parameters.generateMipMap == true)) {
+            if (("generateMipMap" in parameters) && (parameters.generateMipMap === true)) {
                 context.texParameteri (context.TEXTURE_2D, context.TEXTURE_MIN_FILTER, context.LINEAR_MIPMAP_LINEAR);
                 context.texParameterf (context.TEXTURE_2D, afExtension.TEXTURE_MAX_ANISOTROPY_EXT, parameters.anisotropicFiltering);
                 context.generateMipmap (context.TEXTURE_2D);
@@ -2122,7 +1896,6 @@ let Texture = function () {
                 context.texParameteri (context.TEXTURE_2D, context.TEXTURE_MIN_FILTER, context.LINEAR);
             }
             context.bindTexture (context.TEXTURE_2D, null);
-
             // call the onReady handler if one was provided
             if (typeof parameters.onReady !== "undefined") {
                 parameters.onReady.notify (scope);
@@ -2130,7 +1903,6 @@ let Texture = function () {
         };
         image.src = parameters.url;
     };
-
     return _;
 } ();
 /**
@@ -2140,7 +1912,6 @@ let Texture = function () {
  */
 let Node = function () {
     let _ = ClassNamed (CLASS_NAME_GENERATED);
-
     /**
      * the initializer for a scene graph node.
      *
@@ -2158,7 +1929,6 @@ let Node = function () {
      */
     _.construct = function (parameters) {
         LogLevel.say (LogLevel.INFO, "Node: " + parameters.name);
-
         // we select the traverse function based on the feature requested for the node. these are
         // the bit flags to indicate the features and the value we accumulate them into. note that
         // some combinations are invalid
@@ -2167,18 +1937,15 @@ let Node = function () {
         let HAS_SHAPE = 4;
         let HAS_CHILDREN = 8;
         let traverseFunctionIndex = 0;
-
         // collect the parameters, and accumulate the flags for the features
         if ("transform" in parameters) {
             this.transform = parameters.transform;
             traverseFunctionIndex += HAS_TRANSFORM;
         }
-
         if ("state" in parameters) {
             this.state = parameters.state;
             traverseFunctionIndex += HAS_STATE;
         }
-
         if ("shape" in parameters) {
             this.shape = Shape.get (parameters.shape);
             if (typeof (this.shape) === "undefined") {
@@ -2186,17 +1953,14 @@ let Node = function () {
             }
             traverseFunctionIndex += HAS_SHAPE;
         }
-
         // by default, nodes are enabled
         this.enabled = (parameters.enabled = (((typeof parameters.enabled !== "undefined") && (parameters.enabled != null)) ? parameters.enabled : true));
-
         // children are special, the default is to include children, but we want a way to say the
         // current node is a leaf node, so { children: false } is the way to do that
-        if ((!("children" in parameters)) || (parameters.children != false)) {
+        if ((!("children" in parameters)) || (parameters.children !== false)) {
             this.children = [];
             traverseFunctionIndex += HAS_CHILDREN;
         }
-
         // now make a traverse function depending on the included features
         let INVALID_TRAVERSE = function (transform) {
             LogLevel.say (LogLevel.WARNING, "INVALID TRAVERSE");
@@ -2353,10 +2117,8 @@ let Node = function () {
                 return this;
             }
         ][traverseFunctionIndex];
-
         return this;
     };
-
     /**
      * add a child node (only applies to non-leaf nodes).
      *
@@ -2373,7 +2135,6 @@ let Node = function () {
         }
         return this;
     };
-
     /**
      * draw this node's contents.
      *
@@ -2386,7 +2147,6 @@ let Node = function () {
         Program.getCurrentProgram ().setStandardUniforms (standardUniforms);
         this.shape.draw ();
     };
-
     /**
      * traverse this node and its contents. this function is a place-holder that is replaced by the
      * actual function called depending on the parameters passed during construction.
@@ -2399,7 +2159,6 @@ let Node = function () {
     _.traverse = function (standardUniforms) {
         return this;
     };
-
     /**
      *
      */
@@ -2412,10 +2171,8 @@ let Node = function () {
             return Float4x4.multiply (transform, this.parent.getTransform(root));
         }
     };
-
     return _;
 } ();
-
 /*
  thoughts...
 
@@ -2430,7 +2187,6 @@ let Node = function () {
  */
 let Cloud = function () {
     let _ = Object.create (Node);
-
     /**
      * the initializer for a cloud.
      *
@@ -2443,14 +2199,11 @@ let Cloud = function () {
     _.construct = function (parameters) {
         // call the superclass constructor on this object
         Object.getPrototypeOf(_).construct.call(this, parameters);
-
         // look to see if the user has provided a point shape or size to use
         this.pointShape = ("pointShape" in parameters) ? parameters.pointShape : "sphere2";
         this.pointSize = ("pointSize" in parameters) ? parameters.pointSize : 0.02;
-
         return this;
     };
-
     /**
      * add a point to the cloud.
      *
@@ -2467,7 +2220,6 @@ let Cloud = function () {
         }));
         return this;
     };
-
     /**
      * add multiple points to the cloud.
      *
@@ -2481,7 +2233,6 @@ let Cloud = function () {
         }
         return this;
     };
-
     /**
      * static method to create and construct a new cloud node.
      *
@@ -2496,17 +2247,13 @@ let Cloud = function () {
         parameters.children = true;
         return Object.create (_).construct (parameters);
     };
-
     return _;
 } ();
 let Shape = function () {
     let _ = ClassNamed (CLASS_NAME_REQUIRED);
-
     _.construct = function (parameters) {
         LogLevel.say (LogLevel.INFO, "Shape: " + parameters.name);
-
         let buffers = parameters.buffers ();
-
         let makeBuffer = function (bufferType, source, itemSize) {
             let buffer = context.createBuffer ();
             context.bindBuffer (bufferType, buffer);
@@ -2515,18 +2262,15 @@ let Shape = function () {
             buffer.numItems = source.length / itemSize;
             return buffer;
         };
-
         // we will use the combination of input
         // 0 vertex only
         // 1 vertex, normal
         // 2 vertex, texture
         // 3 vertex, normal, texture
-
         // 4 vertex, index
         // 5 vertex, normal, index
         // 6 vertex, texture, index
         // 7 vertex, normal, texture, index
-
         // 8 vertex, color
         // 9 vertex, normal, color
         // 10 vertex, texture, color
@@ -2535,7 +2279,6 @@ let Shape = function () {
         // 13 vertex, normal, color, index
         // 14 vertex, texture, color, index
         // 15 vertex, normal, texture, color, index
-
         // build the buffers
         const HAS_NORMAL = 1;
         const HAS_TEXTURE = 2;
@@ -2547,27 +2290,22 @@ let Shape = function () {
         } else {
             LogLevel.say (LogLevel.ERROR, "What you talking about willis?");
         }
-
         if ("normal" in buffers) {
             this.normalBuffer = makeBuffer (context.ARRAY_BUFFER, new Float32Array (buffers.normal), 3);
             drawFunctionIndex += HAS_NORMAL;
         }
-
         if ("texture" in buffers) {
             this.textureBuffer = makeBuffer (context.ARRAY_BUFFER, new Float32Array (buffers.texture), 2);
             drawFunctionIndex += HAS_TEXTURE;
         }
-
         if ("index" in buffers) {
             this.indexBuffer = makeBuffer (context.ELEMENT_ARRAY_BUFFER, new Uint16Array (buffers.index), 1);
             drawFunctionIndex += HAS_INDEX;
         }
-
         if ("color" in buffers) {
             this.colorBuffer = makeBuffer (context.ARRAY_BUFFER, new Float32Array (buffers.color), 4);
             drawFunctionIndex += HAS_COLOR;
         }
-
         this.draw = [
             // 0 vertex only
             function () {
@@ -2683,7 +2421,6 @@ let Shape = function () {
                     LogLevel.say (LogLevel.ERROR, err.message);
                 }
             },
-
             // 8 vertex, color
             function () {
                 try {
@@ -2809,44 +2546,34 @@ let Shape = function () {
                 }
             },
         ][drawFunctionIndex];
-
         return this;
     };
-
     return _;
 } ();
 let Thing = function () {
     let _ = ClassNamed (CLASS_NAME_GENERATED);
-
     _.construct = function (parameters) {
         LogLevel.say (LogLevel.INFO, "Thing: " + parameters.name);
-
         this.node = parameters.node;
         this.update = parameters.update;
     };
-
     _.updateAll = function (time) {
         _.forEach(function (thing) { thing.update (time); });
     };
-
     return _;
 } ();
 let TextFile = function () {
     let _ = ClassNamed (CLASS_NAME_REQUIRED);
-
     _.construct = function (parameters) {
         LogLevel.say (LogLevel.INFO, "TextFile: " + parameters.name);
-
         // there must be a url
         if (typeof parameters.url === "undefined") throw "TextFile URL Required";
-
         let scope = this;
         let request = new XMLHttpRequest ();
         request.onload = function (event) {
             if (request.status === 200) {
                 scope.text = request.responseText;
             }
-
             // call the onReady handler if one was provided
             if (typeof parameters.onReady !== "undefined") {
                 parameters.onReady.notify (scope);
@@ -2855,12 +2582,10 @@ let TextFile = function () {
         request.open ("GET", parameters.url);
         request.send ();
     };
-
     return _;
 } ();
 let ShapeBuilder = function () {
     let _ = Object.create (null);
-
     _.construct = function (precision) {
         this.precision = (precision = (((typeof precision !== "undefined") && (precision != null)) ? precision : 7));
         this.vertexIndex = Object.create (null);
@@ -2870,7 +2595,6 @@ let ShapeBuilder = function () {
         this.texture = [];
         return this;
     };
-
     _.addVertex = function (vertex) {
         let str = Float3.str(vertex);
         if (str in this.vertexIndex) {
@@ -2882,7 +2606,6 @@ let ShapeBuilder = function () {
             return index;
         }
     };
-
     _.addVertexNormal = function (vertex, normal) {
         let str = Float3.str(vertex) + Float3.str(normal);
         if (str in this.vertexIndex) {
@@ -2895,7 +2618,6 @@ let ShapeBuilder = function () {
             return index;
         }
     };
-
     _.addVertexTexture = function (vertex, texture) {
         let str = Float3.str(vertex) + Float2.str(texture);
         if (str in this.vertexIndex) {
@@ -2908,7 +2630,6 @@ let ShapeBuilder = function () {
             return index;
         }
     };
-
     _.addVertexNormalTexture = function (vertex, normal, texture) {
         let str = Float3.str(vertex) + Float3.str(normal) + Float2.str(texture);
         if (str in this.vertexIndex) {
@@ -2922,11 +2643,9 @@ let ShapeBuilder = function () {
             return index;
         }
     };
-
     _.addFace = function (face) {
         this.faces.push(face);
     };
-
     _.makeBuffers = function () {
         LogLevel.say (LogLevel.TRACE, this.vertices.length + " vertices for " + this.faces.length + " faces");
         let result = {
@@ -2941,7 +2660,6 @@ let ShapeBuilder = function () {
         }
         return result;
     };
-
     _.makeFacets = function () {
         let vertex = [];
         let normal = [];
@@ -2953,7 +2671,6 @@ let ShapeBuilder = function () {
             let ab = Float3.normalize(Float3.subtract(b, a));
             let bc = Float3.normalize(Float3.subtract(c, b));
             let n = Float3.cross(ab, bc);
-
             // now loop over all of the points to add them to the vertices
             for (let i = 0; i < face.length; ++i) {
                 vertex.push(this.vertices[face[i]]);
@@ -2965,19 +2682,15 @@ let ShapeBuilder = function () {
             normal: Utility.flatten(normal)
         };
     };
-
     _.new = function (precision) {
         return Object.create (ShapeBuilder).construct (precision);
     };
-
     return _;
 } ();
 let Primitive = function () {
     let _ = Object.create (null);
-
     _.getShapeBuilder = function () {
     };
-
     _.makeFromBuilder = function (name, builder) {
         (name = (((typeof name !== "undefined") && (name != null)) ? name : this.name));
         return Shape.new({
@@ -2986,44 +2699,34 @@ let Primitive = function () {
             }
         }, name);
     };
-
     _.make = function (name) {
         let builder = this.getShapeBuilder();
         return this.makeFromBuilder(name, builder);
     };
-
     return _;
 }();
 let Tetrahedron = function () {
     let _ = Object.create (Primitive);
-
     _.name = "tetrahedron";
-
     _.getShapeBuilder = function () {
         let builder = ShapeBuilder.new ();
         builder.addVertex([1, 1, 1]);
         builder.addVertex([-1, 1, -1]);
         builder.addVertex([-1, -1, 1]);
         builder.addVertex([1, -1, -1]);
-
         builder.addFace([0, 1, 2]);
         builder.addFace([1, 3, 2]);
         builder.addFace([2, 3, 0]);
         builder.addFace([3, 1, 0]);
-
         return builder;
     };
-
     return _;
 } ();
 let Hexahedron = function () {
     let _ = Object.create(Primitive);
-
     _.name = "cube";
-
     _.getShapeBuilder = function () {
         let builder = ShapeBuilder.new();
-
         builder.addVertex([-1, -1, -1]);
         builder.addVertex([-1, 1, -1]);
         builder.addVertex([1, 1, -1]);
@@ -3032,110 +2735,86 @@ let Hexahedron = function () {
         builder.addVertex([-1, 1, 1]);
         builder.addVertex([1, 1, 1]);
         builder.addVertex([1, -1, 1]);
-
         builder.addFace([0, 1, 2, 0, 2, 3]); // Front face
         builder.addFace([7, 6, 5, 7, 5, 4]); // Back face
         builder.addFace([1, 5, 6, 1, 6, 2]); // Top face
         builder.addFace([4, 0, 3, 4, 3, 7]); // Bottom face
         builder.addFace([4, 5, 1, 4, 1, 0]); // Left face
         builder.addFace([3, 2, 6, 3, 6, 7]); // Right face
-
         return builder;
     };
-
     return _;
 }();
 let Octahedron = function () {
     let _ = Object.create(Primitive);
-
     _.name = "octahedron";
-
     _.getShapeBuilder = function () {
         let builder = ShapeBuilder.new();
-
         builder.addVertex([0, 1, 0]);
         builder.addVertex([1, 0, 0]);
         builder.addVertex([0, 0, 1]);
         builder.addVertex([-1, 0, 0]);
         builder.addVertex([0, 0, -1]);
         builder.addVertex([0, -1, 0]);
-
         builder.addFace([0, 2, 1]);
         builder.addFace([0, 3, 2]);
         builder.addFace([0, 4, 3]);
         builder.addFace([0, 1, 4]);
-
-
         builder.addFace([5, 1, 2]);
         builder.addFace([5, 2, 3]);
         builder.addFace([5, 3, 4]);
         builder.addFace([5, 4, 1]);
-
         return builder;
     };
-
     return _;
 }();
 let Icosahedron = function () {
     let _ = Object.create(Primitive);
-
     _.name = "icosahedron";
-
     _.getShapeBuilder = function () {
         let builder = ShapeBuilder.new();
         let t = (1.0 + Math.sqrt(5.0)) / 2.0;
         let s = 1 / t;
         t = 1;
-
         builder.addVertex([-s, t, 0]);
         builder.addVertex([s, t, 0]);
         builder.addVertex([-s, -t, 0]);
         builder.addVertex([s, -t, 0]);
-
         builder.addVertex([0, -s, t]);
         builder.addVertex([0, s, t]);
         builder.addVertex([0, -s, -t]);
         builder.addVertex([0, s, -t]);
-
         builder.addVertex([t, 0, -s]);
         builder.addVertex([t, 0, s]);
         builder.addVertex([-t, 0, -s]);
         builder.addVertex([-t, 0, s]);
-
         builder.addFace([0, 11, 5]);
         builder.addFace([0, 5, 1]);
         builder.addFace([0, 1, 7]);
         builder.addFace([0, 7, 10]);
         builder.addFace([0, 10, 11]);
-
         builder.addFace([1, 5, 9]);
         builder.addFace([5, 11, 4]);
         builder.addFace([11, 10, 2]);
         builder.addFace([10, 7, 6]);
         builder.addFace([7, 1, 8]);
-
         builder.addFace([3, 9, 4]);
         builder.addFace([3, 4, 2]);
         builder.addFace([3, 2, 6]);
         builder.addFace([3, 6, 8]);
         builder.addFace([3, 8, 9]);
-
         builder.addFace([4, 9, 5]);
         builder.addFace([2, 4, 11]);
         builder.addFace([6, 2, 10]);
         builder.addFace([8, 6, 7]);
         builder.addFace([9, 8, 1]);
-
         return builder;
     };
-
     return _;
 }();
 let Square = function () {
     let _ = Object.create(Primitive);
-
     _.name = "square";
-
     // override the make from builder to use buffers...
     _.makeFromBuilder = function (name, builder) {
         (name = (((typeof name !== "undefined") && (name != null)) ? name : this.name));
@@ -3145,65 +2824,50 @@ let Square = function () {
             }
         }, name);
     };
-
     _.getShapeBuilder = function () {
         let builder = ShapeBuilder.new();
-
         builder.addVertexNormalTexture([ 1.0, 1.0, 0.0], [0.0, 0.0, 1.0], [1.0, 0.0]);
         builder.addVertexNormalTexture([-1.0, 1.0, 0.0], [0.0, 0.0, 1.0], [0.0, 0.0]);
         builder.addVertexNormalTexture([-1.0, -1.0, 0.0], [0.0, 0.0, 1.0], [0.0, 1.0]);
         builder.addVertexNormalTexture([ 1.0, -1.0, 0.0], [0.0, 0.0, 1.0], [1.0, 1.0]);
-
         builder.addFace([0, 1, 2, 0, 2, 3]);
-
         return builder;
     };
-
     return _;
 }();
 let Sphere = function () {
     let _ = Object.create (Primitive);
-
     _.name = "sphere";
-
     _.parameters = {
         baseShapeBuilderType: Icosahedron,
         subdivisions: 4
     };
-
     _.getShapeBuilder = function () {
         let builder = ShapeBuilder.new ();
-
         let addVertex = function (vertex) {
             return builder.addVertex (Float3.normalize (vertex));
         };
-
         let baseShapeBuilder = this.parameters.baseShapeBuilderType.getShapeBuilder ();
-
         // add all the vertices and faces from the baseShapeBuilder into ours...
         for (let vertex of baseShapeBuilder.vertices) {
             addVertex (vertex);
         }
         let vertices = builder.vertices;
         let faces = builder.faces = baseShapeBuilder.faces;
-
         // function to subdivide a face
         let subdivide = function () {
             // remove the triangle we want to subdivide, which is always the first one
             let tri = faces.splice (0, 1)[0];
-
             // compute three new vertices as the averages of each pair of vertices
             let v0 = addVertex (Float3.add (vertices[tri[0]], vertices[tri[1]]));
             let v1 = addVertex (Float3.add (vertices[tri[1]], vertices[tri[2]]));
             let v2 = addVertex (Float3.add (vertices[tri[2]], vertices[tri[0]]));
-
             // add 4 new triangles to replace the one we removed
             builder.addFace ([tri[0], v0, v2]);
             builder.addFace ([tri[1], v1, v0]);
             builder.addFace ([tri[2], v2, v1]);
             builder.addFace ([v0, v1, v2]);
         };
-
         // subdivide the triangles we already defined, do this the requested number of times (3
         // seems to be the minimum for a spherical appearance)
         LogLevel.say (LogLevel.TRACE, "Build sphere...");
@@ -3216,7 +2880,6 @@ let Sphere = function () {
         LogLevel.say (LogLevel.TRACE, "Finished sphere with " + vertices.length + " points in " + faces.length + " triangles");
         return builder;
     };
-
     _.makeFromBuilder = function (name, builder) {
         (name = (((typeof name !== "undefined") && (name != null)) ? name : this.name));
         return Shape.new ({
@@ -3227,17 +2890,14 @@ let Sphere = function () {
             }
         }, name);
     };
-
     _.makeN = function (n) {
         this.parameters.subdivisions = n;
         this.make (this.name + n);
     };
-
     return _;
 } ();
 let makeNormal = function (outline) {
     let last = outline.length - 1;
-
     // variable and function to capture the computed normals
     let N = [];
     let pushNormal = function (a, c) {
@@ -3245,7 +2905,6 @@ let makeNormal = function (outline) {
         let acPerp = Float2.perpendicular (ac);
         N.push (Float2.normalize (acPerp));
     };
-
     // loop over the outline points to compute a normal for each one, we use a vector that is
     // perpendicular to the segment ac as the normal.
     if (Float2.equals (outline[0], outline[last])) {
@@ -3270,17 +2929,13 @@ let makeRevolve = function (name, outline, normal, steps, projection) {
     // outline is an array of Float2, and the axis of revolution is x = 0, we make a number of
     // wedges, from top to bottom, to complete the revolution.
     // projection is a function to map the position to a texture coordinate
-
     let epsilon = 1.0e-6;
     let last = outline.length - 1;
-
     // make sure we have normals, generating a default set if necessary
     (normal = (((typeof normal !== "undefined") && (normal != null)) ? normal : makeNormal (outline)));
-
     // default projection is a plate carree, equirectangular projection
     // https://en.wikipedia.org/wiki/Equirectangular_projection
     (projection = (((typeof projection !== "undefined") && (projection != null)) ? projection : function (uvY) { return uvY; }));
-
     return Shape.new ({
         buffers: function () {
             // compute the steps we need to make to build the rotated shape
@@ -3297,7 +2952,6 @@ let makeRevolve = function (name, outline, normal, steps, projection) {
                     let n = m + 1;
                     let vm = outline[m], nm = normal[m];
                     let vn = outline[n], nn = normal[n];
-
                     // we allow degenerate faces by duplicating vertices in the outline, if the length
                     // between the two components is below the threshold, we skip this facet altogether.
                     if (Float2.norm (Float2.subtract (vm, vn)) > epsilon) {
@@ -3333,7 +2987,6 @@ let makeRevolve = function (name, outline, normal, steps, projection) {
                     }
                 }
             }
-
             return builder.makeBuffers ();
         }
     }, name);
@@ -3346,14 +2999,12 @@ let makeBall = function (name, steps) {
     let stepAngle = Math.PI / steps;
     for (let i = 0; i <= steps; ++i) {
         let angle = stepAngle * i;
-
         // using an angle setup so that 0 is (0, 1), and Pi is (0, -1) means switching (x, y) so we
         // get an outline that can be revolved around the x=0 axis
         let value = Float2.fixNum([Math.sin (angle), Math.cos (angle)]);
         outline.push (value);
         normal.push (value);
     }
-
     // revolve the surface, the outline is a half circle, so the revolved surface needs to be twice
     // as many steps to go all the way around
     return makeRevolve(name, outline, normal, steps * 2);
@@ -3361,13 +3012,10 @@ let makeBall = function (name, steps) {
 let makeSimpleExtrude = function (name, outline, length, normal, projection) {
     // outline is an array of Float2 in XY, and the axis of extrusion is Z = 0, we make a polygon
     // for each segment of the edge, skipping zero-length segments
-
     // make sure we have length, with default of 2, assuming an outline spans -1..1
     (length = (((typeof length !== "undefined") && (length != null)) ? length : 2));
-
     // make sure we have normals, generating a default set if necessary
     (normal = (((typeof normal !== "undefined") && (normal != null)) ? normal : makeNormal (outline)));
-
     return Shape.new ({
         buffers: function () {
             // compute the steps we need to make to build the extruded shape
@@ -3375,34 +3023,29 @@ let makeSimpleExtrude = function (name, outline, length, normal, projection) {
             let builder = ShapeBuilder.new ();
             let epsilon = 1.0e-6;
             let halfLength = length / 2.0;
-
             let last = outline.length - 1;
             for (let m = 0; m < last; ++m) {
                 // the line segment mn is now going to be extruded along the z-axis
                 let n = m + 1;
                 let vm = outline[m], nm = normal[m];
                 let vn = outline[n], nn = normal[n];
-
                 // we allow degenerate faces by duplicating vertices in the outline, if the length
                 // between the two components is below the threshold, we skip this facet altogether.
                 if (Float2.norm (Float2.subtract (vm, vn)) > epsilon) {
                     // each facet of the outline is a quad, emit 2 triangles
                     let vm0 = builder.addVertexNormalTexture ([vm[0], vm[1], -halfLength], [nm[0], nm[1], 0], [0, m / last]);
                     let vm1 = builder.addVertexNormalTexture ([vm[0], vm[1], halfLength], [nm[0], nm[1], 0], [1, m / last]);
-
                     let vn0 = builder.addVertexNormalTexture ([vn[0], vn[1], -halfLength], [nn[0], nn[1], 0], [0, n / last]);
                     let vn1 = builder.addVertexNormalTexture ([vn[0], vn[1], halfLength], [nn[0], nn[1], 0], [1, n / last]);
                     builder.addFace ([vm0, vm1, vn1, vn0, vm0, vn1]);
                 }
             }
-
             return builder.makeBuffers ();
         }
     }, name);
 };
 let TestContainer = function () {
     let _ = Object.create (null);
-
     // test design philosophy is to be verbose on failure, and silent on pass
     let assertEquals = function (msg, a, b) {
         a = (!isNaN (a)) ? Utility.fixNum (a) : a;
@@ -3413,7 +3056,6 @@ let TestContainer = function () {
         }
         return true;
     };
-
     let assertArrayEquals = function (msg, a, b) {
         if (a.length == b.length) {
             for (let i = 0; i < a.length; ++i) {
@@ -3427,7 +3069,6 @@ let TestContainer = function () {
             return false;
         }
     };
-
     let tests = [
         function () {
             LogLevel.say (LogLevel.INFO, "FloatN...");
@@ -3445,7 +3086,6 @@ let TestContainer = function () {
             viewMatrix = Float4x4.multiply (Float4x4.rotateY (Utility.degreesToRadians (10)), viewMatrix);
             viewMatrix = Float4x4.multiply (Float4x4.scale ([ 2, 2, 2 ]), viewMatrix);
             viewMatrix = Float4x4.multiply (Float4x4.translate ([ -0.5, -0.5, -0.5 ]), viewMatrix);
-
             let inverted = Float4x4.inverse(viewMatrix, Float4x4.create());
             let inverted2 = [
                 0.49240389466285706, 1.7235358695799619e-9, 0.08682408928871155, 0,
@@ -3456,7 +3096,6 @@ let TestContainer = function () {
             assertArrayEquals("inverted == inverted2", inverted, inverted2)
         }
     ];
-
     _.runTests = function () {
         LogLevel.say (LogLevel.INFO, "Running Tests...");
         for (let test of tests) {
@@ -3464,8 +3103,6 @@ let TestContainer = function () {
         }
         LogLevel.say (LogLevel.INFO, "Finished Running Tests.");
     };
-
     return _;
 } ();
-
 TestContainer.runTests();

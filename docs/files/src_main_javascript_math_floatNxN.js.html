@@ -150,7 +150,7 @@ let FloatNxN = function (dim) {
         str += defineTo ();
         for (let row = 0; row &lt; dim; ++row) {
             for (let column = 0; column &lt; dim; ++column) {
-                str += &quot;to[&quot; + index (row, column) + &quot;] = &quot; + ((row == column) ? 1 : 0) + &quot;; &quot;;
+                str += &quot;to[&quot; + index (row, column) + &quot;] = &quot; + ((row === column) ? 1 : 0) + &quot;; &quot;;
             }
             str += &quot;\n&quot;;
         }

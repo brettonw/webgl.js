@@ -23,7 +23,7 @@ let Texture = function () {
             context.bindTexture (context.TEXTURE_2D, texture);
             context.texImage2D (context.TEXTURE_2D, 0, context.RGBA, context.RGBA, context.UNSIGNED_BYTE, image);
             context.texParameteri (context.TEXTURE_2D, context.TEXTURE_MAG_FILTER, context.LINEAR);
-            if (("generateMipMap" in parameters) && (parameters.generateMipMap == true)) {
+            if (("generateMipMap" in parameters) && (parameters.generateMipMap === true)) {
                 context.texParameteri (context.TEXTURE_2D, context.TEXTURE_MIN_FILTER, context.LINEAR_MIPMAP_LINEAR);
                 context.texParameterf (context.TEXTURE_2D, afExtension.TEXTURE_MAX_ANISOTROPY_EXT, parameters.anisotropicFiltering);
                 context.generateMipmap (context.TEXTURE_2D);

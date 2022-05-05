@@ -24,7 +24,7 @@ let LoaderShader = function () {
             result.push (prefix + "-" + name);
         }
         return result;
-    }
+    };
 
     // this constant is from the spec, moved it here because of a cross dependency on
     // having created the context already. I hope it never changes.

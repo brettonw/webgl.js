@@ -8,7 +8,7 @@ let ProgramUniform = function () {
         this.location = context.getUniformLocation (program, activeUniform.name);
 
         // XXX temporarily store texture indices on the program (subversive actions here)
-        if (this.type == context.SAMPLER_2D) {
+        if (this.type === context.SAMPLER_2D) {
             this.textureIndex = ("nextTextureIndex" in program) ? program.nextTextureIndex : 0;
             program.nextTextureIndex = this.textureIndex + 1;
             LOG (LogLevel.TRACE, "Program uniform: " + this.name + " (type 0x" + this.type.toString(16) + ") at index " + this.textureIndex);
