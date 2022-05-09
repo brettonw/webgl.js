@@ -9,7 +9,7 @@ varying vec3 normal;
 
 void main(void) {
 	vec3 viewVector = normalize (cameraPosition - model);
-    vec3 normalVector = normalize ((normalMatrix * vec4 (normal, 0.0)).xyz);
+    vec3 normalVector = normalize (normal);
 	float cosViewNormalAngle = clamp (dot(normalVector, viewVector), 0.0, 1.0);
 	float scale = 0.7 + (cosViewNormalAngle * 0.3);
 

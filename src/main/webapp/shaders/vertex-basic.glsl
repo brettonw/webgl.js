@@ -1,25 +1,27 @@
-attribute vec3 inputPosition;
-attribute vec3 inputNormal;
-attribute vec2 inputTexture;
-attribute vec4 inputColor;
-attribute mat4 inputModelMatrix;
+in vec3 inputPosition;
+in vec3 inputNormal;
+in vec2 inputTexture;
+in vec4 inputColor;
+in mat4 inputModelMatrix;
 
 uniform mat4 modelMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 
-varying vec3 normal;
-varying vec2 texture;
-varying vec4 color;
-varying vec3 model;
+out vec3 normal;
+out vec2 texture;
+out vec4 color;
+out vec3 model;
 
 void main(void) {
     vec4 vertexPosition = vec4(inputPosition, 1.0);
-    vec4 modelPosition = inputModelMatrix * modelMatrix * vertexPosition;
+    mat4 composedModelMatrix = inputModelMatrix * modelMatrix;
+    vec4 modelPosition = composedModelMatrix * vertexPosition;
     vec4 viewPosition = viewMatrix * modelPosition;
     gl_Position = projectionMatrix * viewPosition;
     model = modelPosition.xyz;
-    normal = inputNormal;
+    mat4 normalMatrix = transpose (inverse (composedModelMatrix));
+    normal = (normalMatrix * vec4 (inputNormal, 0.0)).xyz;
     texture = inputTexture;
     color = inputColor;
 }

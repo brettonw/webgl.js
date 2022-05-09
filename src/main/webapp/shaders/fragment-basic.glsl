@@ -29,7 +29,7 @@ void main(void) {
     vec3 ambientColor = multiplyColors (ambientContribution * ambientLightColor, surfaceColor);
 
     // compute the diffuse contribution to the surface lighting
-    vec3 normalVector = normalize ((normalMatrix * vec4 (normal, 0.0)).xyz);
+    vec3 normalVector = normalize (normal); //normalize ((normalMatrix * vec4 (normal, 0.0)).xyz);
 	float diffuseMultiplier = clamp (dot(normalVector, lightDirection) * diffuseContribution, 0.0, 1.0);
     vec3 diffuseColor = multiplyColors (diffuseMultiplier * lightColor, surfaceColor);
 
