@@ -56,7 +56,7 @@ let Sphere = function () {
 
     _.makeFromBuilder = function (name, builder) {
         DEFAULT_VALUE(name, this.name);
-        return Shape.new ({
+        return InstancedShape.new ({
             buffers: function () {
                 let buffers = builder.makeBuffers ();
                 buffers.normal = buffers.position;

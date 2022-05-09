@@ -6,7 +6,7 @@ let Square = function () {
     // override the make from builder to use buffers...
     _.makeFromBuilder = function (name, builder) {
         DEFAULT_VALUE (name, this.name);
-        return Shape.new ({
+        return InstancedShape.new ({
             buffers: function () {
                 return builder.makeBuffers ();
             }

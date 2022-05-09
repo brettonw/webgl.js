@@ -8,7 +8,7 @@ let makeSimpleExtrude = function (name, outline, length, normal, projection) {
     // make sure we have normals, generating a default set if necessary
     DEFAULT_VALUE (normal, makeNormal (outline));
 
-    return Shape.new ({
+    return InstancedShape.new ({
         buffers: function () {
             // compute the steps we need to make to build the extruded shape
             LOG (LogLevel.TRACE, "Make extruded outline");
