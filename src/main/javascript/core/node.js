@@ -49,6 +49,11 @@ let Node = function () {
             if (typeof (this.shape) === "undefined") {
                 LOG (LogLevel.WARNNG, "Shape not found: " + parameters.shape);
             }
+
+            // retrieve the transforms - instance might not be in parameters, but that's ok as the
+            // method will create a default
+            this.instanceTransforms = this.shape.createInstanceTransforms(parameters.instance);
+
             traverseFunctionIndex += HAS_SHAPE;
         }
 
@@ -249,6 +254,7 @@ let Node = function () {
     _.draw = function (standardUniforms) {
         standardUniforms.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardUniforms.MODEL_MATRIX_PARAMETER));
         Program.getCurrentProgram ().setStandardUniforms (standardUniforms);
+        this.shape.instanceTransforms = this.instanceTransforms;
         this.shape.draw ();
     };
 

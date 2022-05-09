@@ -15,7 +15,7 @@ varying vec3 model;
 
 void main(void) {
     vec4 vertexPosition = vec4(inputPosition, 1.0);
-    vec4 modelPosition = modelMatrix * inputModelMatrix * vertexPosition;
+    vec4 modelPosition = inputModelMatrix * modelMatrix * vertexPosition;
     vec4 viewPosition = viewMatrix * modelPosition;
     gl_Position = projectionMatrix * viewPosition;
     model = modelPosition.xyz;

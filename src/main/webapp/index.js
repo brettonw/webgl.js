@@ -176,7 +176,6 @@ let buildScene = function () {
         }))
 
         .addChild (Node.new ({
-            transform: Float4x4.IDENTITY,
             state: function (standardUniforms) {
                 Program.get ("masked-rgb").use ();
                 standardUniforms.MODEL_COLOR = [1.0, 0.5, 0.5];
@@ -186,25 +185,30 @@ let buildScene = function () {
         }, "cylinder"))
 
         .addChild (Node.new ({
-            transform: Float4x4.translate ([3, 1.5, 0]),
             state: function (standardUniforms) {
                 Program.get ("basic").use ();
                 standardUniforms.MODEL_COLOR = [1.0, 1.0, 0.25];
             },
             shape: "icosahedron",
+            instance: function (count) {
+                let matrices = [];
+                for (let i = 0; i < count; ++i) {
+                    matrices.push (Float4x4.translate ([3, 1.5, -2.5 * i]));
+                }
+                return matrices;
+            } (100),
             children: false
-        }));
+        }, "icosahedron"));
 
     Thing.new ({
-        node: "cylinder", update: function (time) {
-            let node = Node.get (this.node);
+        node: "cylinder",
+        update: function (time) {
             Float4x4.copy (Float4x4.chain (
-            //node.transform = Float4x4.chain (
                 Float4x4.rotateZ (Math.PI / 3),
                 Float4x4.rotateX (0.25),
                 Float4x4.rotateY (Math.PI * time * 0.0005),
                 Float4x4.translate ([0, 1.5, 0])
-            ), node.shape.instanceTransforms[0]);
+            ), Node.get (this.node).instanceTransforms.matrices[0]);
         }
     });
 
