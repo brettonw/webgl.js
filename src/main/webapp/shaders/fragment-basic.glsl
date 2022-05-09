@@ -15,8 +15,10 @@ uniform float specularContribution;
 uniform float specularExponent;
 
 // inputs expected from the vertex shader
-varying vec3 model;
-varying vec3 normal;
+in vec3 model;
+in vec3 normal;
+
+out vec4 fragmentColor;
 
 vec3 multiplyColors (const in vec3 left, const in vec3 right) {
     vec3 result = vec3 (left.r * right.r, left.g * right.g, left.b * right.b);
@@ -43,5 +45,5 @@ void main(void) {
 
     vec3 finalColor = clamp (ambientColor + diffuseColor + specularColor, 0.0, 1.0);
 
-    gl_FragColor = vec4 (finalColor, outputAlpha);
+    fragmentColor = vec4 (finalColor, outputAlpha);
 }

@@ -1,3 +1,5 @@
+#version 300 es
+
 precision highp float;
 
 uniform mat4 normalMatrix;
@@ -14,9 +16,11 @@ uniform float specularContribution;
 uniform float specularExponent;
 
 // inputs expected from the vertex shader
-varying vec3 model;
-varying vec3 normal;
-varying vec2 texture;
+in vec3 model;
+in vec3 normal;
+in vec2 uv;
+
+out vec4 fragmentColor;
 
 vec3 multiplyColors (const in vec3 left, const in vec3 right) {
     vec3 result = vec3 (left.r * right.r, left.g * right.g, left.b * right.b);
@@ -25,7 +29,7 @@ vec3 multiplyColors (const in vec3 left, const in vec3 right) {
 
 void main(void) {
     // figure out what color the surface is
-    vec4 textureColor = texture2D(textureSampler, texture);
+    vec4 textureColor = texture(textureSampler, uv);
     if (textureColor.a < 0.001) {
         discard;
     }
@@ -48,5 +52,5 @@ void main(void) {
 
     vec3 finalColor = clamp (ambientColor + diffuseColor + specularColor, 0.0, 1.0);
 
-    gl_FragColor = vec4 (finalColor, outputAlpha * textureColor.a);
+    fragmentColor = vec4 (finalColor, outputAlpha * textureColor.a);
 }

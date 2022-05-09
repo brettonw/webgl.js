@@ -1,9 +1,13 @@
+#version 300 es
+
 precision highp float;
 
 uniform float outputAlpha;
 
-varying vec4 color;
+in vec4 color;
+
+out vec4 fragmentColor;
 
 void main(void) {
-    gl_FragColor = vec4 (color.r, color.g, color.b, color.a * outputAlpha);
+    fragmentColor = vec4 (color.r, color.g, color.b, color.a * outputAlpha);
 }

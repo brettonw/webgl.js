@@ -1,14 +1,18 @@
+#version 300 es
+
 precision highp float;
 
 uniform sampler2D textureSampler;
 uniform float outputAlpha;
 
-varying vec3 model;
-varying vec3 normal;
-varying vec2 texture;
+in vec3 model;
+in vec3 normal;
+in vec2 uv;
+
+out vec4 fragmentColor;
 
 void main(void) {
-    vec3 textureColor = texture2D(textureSampler, texture).rgb;
+    vec3 textureColor = texture(textureSampler, uv).rgb;
     float alpha = sqrt (dot (textureColor, textureColor)) / sqrt (3.0);
-    gl_FragColor = vec4 (textureColor, outputAlpha * alpha);
+    fragmentColor = vec4 (textureColor, outputAlpha * alpha);
 }
