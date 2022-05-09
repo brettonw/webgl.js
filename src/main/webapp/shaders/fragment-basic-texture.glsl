@@ -2,7 +2,6 @@
 
 precision highp float;
 
-uniform mat4 normalMatrix;
 uniform vec3 cameraPosition;
 uniform float outputAlpha;
 uniform sampler2D textureSampler;

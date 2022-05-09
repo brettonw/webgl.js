@@ -2,7 +2,6 @@
 
 precision highp float;
 
-uniform mat4 normalMatrix;
 uniform float outputAlpha;
 uniform vec3 cameraPosition;
 
