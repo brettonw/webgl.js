@@ -70,7 +70,6 @@ let Program = function () {
      * * MODEL_MATRIX_PARAMETER: "modelMatrix"
      * * VIEW_MATRIX_PARAMETER: "viewMatrix"
      * * PROJECTION_MATRIX_PARAMETER: "projectionMatrix"
-     * * NORMAL_MATRIX_PARAMETER: "normalMatrix"
      * * CAMERA_POSITION: "cameraPosition"
      * * OUTPUT_ALPHA_PARAMETER: "outputAlpha"
      * * TEXTURE_SAMPLER: "textureSampler"
@@ -108,7 +107,6 @@ let Program = function () {
                 MODEL_MATRIX_PARAMETER: "modelMatrix",
                 VIEW_MATRIX_PARAMETER: "viewMatrix",
                 PROJECTION_MATRIX_PARAMETER: "projectionMatrix",
-                NORMAL_MATRIX_PARAMETER: "normalMatrix",
                 CAMERA_POSITION: "cameraPosition",
                 OUTPUT_ALPHA_PARAMETER: "outputAlpha",
                 TEXTURE_SAMPLER: "textureSampler",

@@ -1521,7 +1521,6 @@ let Program = function () {
      * * MODEL_MATRIX_PARAMETER: "modelMatrix"
      * * VIEW_MATRIX_PARAMETER: "viewMatrix"
      * * PROJECTION_MATRIX_PARAMETER: "projectionMatrix"
-     * * NORMAL_MATRIX_PARAMETER: "normalMatrix"
      * * CAMERA_POSITION: "cameraPosition"
      * * OUTPUT_ALPHA_PARAMETER: "outputAlpha"
      * * TEXTURE_SAMPLER: "textureSampler"
@@ -1556,7 +1555,6 @@ let Program = function () {
                 MODEL_MATRIX_PARAMETER: "modelMatrix",
                 VIEW_MATRIX_PARAMETER: "viewMatrix",
                 PROJECTION_MATRIX_PARAMETER: "projectionMatrix",
-                NORMAL_MATRIX_PARAMETER: "normalMatrix",
                 CAMERA_POSITION: "cameraPosition",
                 OUTPUT_ALPHA_PARAMETER: "outputAlpha",
                 TEXTURE_SAMPLER: "textureSampler",
@@ -2182,7 +2180,6 @@ let Node = function () {
      * Program
      */
     _.draw = function (standardUniforms) {
-        standardUniforms.NORMAL_MATRIX_PARAMETER = Float4x4.transpose (Float4x4.inverse (standardUniforms.MODEL_MATRIX_PARAMETER));
         Program.getCurrentProgram ().setStandardUniforms (standardUniforms);
         this.shape.instanceTransforms = this.instanceTransforms;
         this.shape.draw ();

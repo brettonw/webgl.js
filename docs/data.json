@@ -890,7 +890,7 @@
         },
         {
             "file": "src/main/javascript/core/node.js",
-            "line": 261,
+            "line": 260,
             "description": "traverse this node and its contents. this function is a place-holder that is replaced by the\nactual function called depending on the parameters passed during construction.",
             "itemtype": "method",
             "name": "traverse",
@@ -906,7 +906,7 @@
         },
         {
             "file": "src/main/javascript/core/node.js",
-            "line": 274,
+            "line": 273,
             "class": "Node"
         },
         {
@@ -918,7 +918,7 @@
             "params": [
                 {
                     "name": "parameters",
-                    "description": "shader construction parameters\nvertexShader name of the vertex shader to use\nfragmentShader name of the fragment shader to use\nattributeMapping maps POSITION, NORMAL, and TEXTURE attributes to the\nattribute names in the shader. This allows the engine to manage the attributes without\nforcing the shader author to use \"standard\" names for everything. Defaults to:\n* POSITION_ATTRIBUTE: \"inputPosition\"\n* NORMAL_ATTRIBUTE: \"inputNormal\"\n* TEXTURE_ATTRIBUTE: \"inputTexture\"\n* COLOR_ATTRIBUTE: \"inputColor\"\n* MODEL_MATRIX_ATTRIBUTE: \"inputModelMatrix\"\n\nparameterMapping maps standard parameters to the parameter names in the\nshader. This allows the engine to manage setting the standard set of parameters on the shader\nwithout forcing the shader author to use \"standard\" names. Defaults to:\n* MODEL_MATRIX_PARAMETER: \"modelMatrix\"\n* VIEW_MATRIX_PARAMETER: \"viewMatrix\"\n* PROJECTION_MATRIX_PARAMETER: \"projectionMatrix\"\n* NORMAL_MATRIX_PARAMETER: \"normalMatrix\"\n* CAMERA_POSITION: \"cameraPosition\"\n* OUTPUT_ALPHA_PARAMETER: \"outputAlpha\"\n* TEXTURE_SAMPLER: \"textureSampler\"\n* MODEL_COLOR:\"modelColor\"\n* AMBIENT_LIGHT_COLOR: \"ambientLightColor\"\n* AMBIENT_CONTRIBUTION:\"ambientContribution\"\n* LIGHT_DIRECTION: \"lightDirection\"\n* LIGHT_COLOR:\"lightColor\"\n* DIFFUSE_CONTRIBUTION:\"diffuseContribution\"\n* SPECULAR_CONTRIBUTION:\"specularContribution\"\n* SPECULAR_EXPONENT:\"specularExponent\"",
+                    "description": "shader construction parameters\nvertexShader name of the vertex shader to use\nfragmentShader name of the fragment shader to use\nattributeMapping maps POSITION, NORMAL, and TEXTURE attributes to the\nattribute names in the shader. This allows the engine to manage the attributes without\nforcing the shader author to use \"standard\" names for everything. Defaults to:\n* POSITION_ATTRIBUTE: \"inputPosition\"\n* NORMAL_ATTRIBUTE: \"inputNormal\"\n* TEXTURE_ATTRIBUTE: \"inputTexture\"\n* COLOR_ATTRIBUTE: \"inputColor\"\n* MODEL_MATRIX_ATTRIBUTE: \"inputModelMatrix\"\n\nparameterMapping maps standard parameters to the parameter names in the\nshader. This allows the engine to manage setting the standard set of parameters on the shader\nwithout forcing the shader author to use \"standard\" names. Defaults to:\n* MODEL_MATRIX_PARAMETER: \"modelMatrix\"\n* VIEW_MATRIX_PARAMETER: \"viewMatrix\"\n* PROJECTION_MATRIX_PARAMETER: \"projectionMatrix\"\n* CAMERA_POSITION: \"cameraPosition\"\n* OUTPUT_ALPHA_PARAMETER: \"outputAlpha\"\n* TEXTURE_SAMPLER: \"textureSampler\"\n* MODEL_COLOR:\"modelColor\"\n* AMBIENT_LIGHT_COLOR: \"ambientLightColor\"\n* AMBIENT_CONTRIBUTION:\"ambientContribution\"\n* LIGHT_DIRECTION: \"lightDirection\"\n* LIGHT_COLOR:\"lightColor\"\n* DIFFUSE_CONTRIBUTION:\"diffuseContribution\"\n* SPECULAR_CONTRIBUTION:\"specularContribution\"\n* SPECULAR_EXPONENT:\"specularExponent\"",
                     "type": "Object"
                 }
             ],
@@ -930,7 +930,7 @@
         },
         {
             "file": "src/main/javascript/core/program.js",
-            "line": 180,
+            "line": 178,
             "description": "set the standard shader parameters in one call.",
             "itemtype": "method",
             "name": "setStandardUniforms",
@@ -946,7 +946,7 @@
         },
         {
             "file": "src/main/javascript/core/program.js",
-            "line": 207,
+            "line": 205,
             "description": "bind the POSITION attribute to the given buffer.",
             "itemtype": "method",
             "name": "bindPositionAttribute",
@@ -962,7 +962,7 @@
         },
         {
             "file": "src/main/javascript/core/program.js",
-            "line": 218,
+            "line": 216,
             "description": "bind the NORMAL attribute to the given buffer.",
             "itemtype": "method",
             "name": "bindNormalAttribute",
@@ -978,7 +978,7 @@
         },
         {
             "file": "src/main/javascript/core/program.js",
-            "line": 229,
+            "line": 227,
             "description": "bind the TEXTURE attribute to the given buffer.",
             "itemtype": "method",
             "name": "bindTextureAttribute",
@@ -994,7 +994,7 @@
         },
         {
             "file": "src/main/javascript/core/program.js",
-            "line": 241,
+            "line": 239,
             "description": "bind the COLOR attribute to the given buffer.",
             "itemtype": "method",
             "name": "bindColorAttribute",
@@ -1010,7 +1010,7 @@
         },
         {
             "file": "src/main/javascript/core/program.js",
-            "line": 253,
+            "line": 251,
             "description": "bind the COLOR attribute to the given buffer.",
             "itemtype": "method",
             "name": "bindColorAttribute",
@@ -1026,7 +1026,7 @@
         },
         {
             "file": "src/main/javascript/core/program.js",
-            "line": 265,
+            "line": 263,
             "description": "disable the enabled buffers.",
             "itemtype": "method",
             "name": "unbindAttributes",
@@ -1038,7 +1038,7 @@
         },
         {
             "file": "src/main/javascript/core/program.js",
-            "line": 277,
+            "line": 275,
             "description": "fetch the shader currently in use.",
             "itemtype": "method",
             "name": "getCurrentProgram",
@@ -1051,7 +1051,7 @@
         },
         {
             "file": "src/main/javascript/core/program.js",
-            "line": 288,
+            "line": 286,
             "description": "set this as the current shader in the rendering context.",
             "itemtype": "method",
             "name": "use",
@@ -1692,7 +1692,7 @@
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/core/node.js:274"
+            "line": " src/main/javascript/core/node.js:273"
         },
         {
             "message": "Missing item type",
