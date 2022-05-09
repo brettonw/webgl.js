@@ -134,8 +134,8 @@ let Render = function () {
         // set up some boilerplate, loading all the default shaders
         let loaderList = LoaderList.new ().addLoaders (
             LoaderShader
-                //.new (&quot;https://brettonw.github.io/webgl.js/src/main/webapp/shaders/@.glsl&quot;)
-                .new (&quot;shaders/@.glsl&quot;)
+                .new (&quot;https://brettonw.github.io/webgl.js/src/main/webapp/shaders/@.glsl&quot;)
+                //.new (&quot;shaders/@.glsl&quot;)
                 .addVertexShaders (&quot;basic&quot;)
                 .addFragmentShaders ([&quot;basic&quot;, &quot;basic-texture&quot;, &quot;color&quot;, &quot;overlay&quot;, &quot;rgb&quot;, &quot;texture&quot;, &quot;vertex-color&quot;])
         );

@@ -6,7 +6,7 @@ let Primitive = function () {
 
     _.makeFromBuilder = function (name, builder) {
         DEFAULT_VALUE(name, this.name);
-        return InstancedShape.new({
+        return Shape.new({
             buffers: function () {
                 return builder.makeFacets ();
             }

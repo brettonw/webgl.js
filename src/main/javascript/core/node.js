@@ -45,7 +45,7 @@ let Node = function () {
         }
 
         if ("shape" in parameters) {
-            this.shape = InstancedShape.get (parameters.shape);
+            this.shape = Shape.get (parameters.shape);
             if (typeof (this.shape) === "undefined") {
                 LOG (LogLevel.WARNNG, "Shape not found: " + parameters.shape);
             }

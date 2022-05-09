@@ -67,15 +67,43 @@ let Shape = function () {
             drawFunctionIndex += HAS_COLOR;
         }
 
+        // set up the instance transforms data we'll map to the buffer
+        const bytesPerFloat = 4;
+        const floatsPerMatrix = 16;
+        let instanceCount = this.instanceCount = "instanceCount" in parameters ? parameters.instanceCount : 1;
+        let instanceTransformsData = this.instanceTransformsData = new Float32Array(instanceCount * floatsPerMatrix);
+
+        // create "views" into the data so we can update the transforms easily
+        this.instanceTransforms = [];
+        for (let i = 0; i < instanceCount; ++i) {
+            const byteOffsetToMatrix = i * floatsPerMatrix * bytesPerFloat;
+            let view = new Float32Array (instanceTransformsData.buffer, byteOffsetToMatrix, floatsPerMatrix)
+            this.instanceTransforms.push(view);
+
+            // and init it to identity
+            Float4x4.identity (view);
+        }
+
+        // create the context buffer for the instance transforms
+        this.instanceTransformsBuffer = function () {
+            let buffer = context.createBuffer ();
+            context.bindBuffer (context.ARRAY_BUFFER, buffer);
+            context.bufferData (context.ARRAY_BUFFER, instanceTransformsData.byteLength, context.DYNAMIC_DRAW);
+            return buffer;
+        } ();
+
         this.draw = [
             // 0 vertex only
             function () {
                 try {
                     let program = Program.getCurrentProgram ();
                     if (program.useShape (this)) {
-                        program.bindPositionAttribute (this.positionBuffer);
+                        program
+                            .bindPositionAttribute (this.positionBuffer)
+                            .bindModelMatrixAttribute (this.instanceTransformsBuffer);
+                        context.bufferSubData(context.ARRAY_BUFFER, 0, this.instanceTransformsData);
                     }
-                    context.drawArrays (context.TRIANGLES, 0, this.positionBuffer.numItems);
+                    context.drawArraysInstanced(context.TRIANGLES, 0, this.positionBuffer.numItems, this.instanceCount);
                 } catch (err) {
                     LOG (LogLevel.ERROR, err.message);
                 }
@@ -87,9 +115,11 @@ let Shape = function () {
                     if (program.useShape (this)) {
                         program
                             .bindPositionAttribute (this.positionBuffer)
-                            .bindNormalAttribute (this.normalBuffer);
+                            .bindNormalAttribute (this.normalBuffer)
+                            .bindModelMatrixAttribute (this.instanceTransformsBuffer);
+                        context.bufferSubData(context.ARRAY_BUFFER, 0, this.instanceTransformsData);
                     }
-                    context.drawArrays (context.TRIANGLES, 0, this.positionBuffer.numItems);
+                    context.drawArraysInstanced (context.TRIANGLES, 0, this.positionBuffer.numItems, this.instanceCount);
                 } catch (err) {
                     LOG (LogLevel.ERROR, err.message);
                 }
@@ -101,9 +131,11 @@ let Shape = function () {
                     if (program.useShape (this)) {
                         program
                             .bindPositionAttribute (this.positionBuffer)
-                            .bindTextureAttribute (this.textureBuffer);
+                            .bindTextureAttribute (this.textureBuffer)
+                            .bindModelMatrixAttribute (this.instanceTransformsBuffer);
+                        context.bufferSubData(context.ARRAY_BUFFER, 0, this.instanceTransformsData);
                     }
-                    context.drawArrays (context.TRIANGLES, 0, this.positionBuffer.numItems);
+                    context.drawArraysInstanced (context.TRIANGLES, 0, this.positionBuffer.numItems, this.instanceCount);
                 } catch (err) {
                     LOG (LogLevel.ERROR, err.message);
                 }
@@ -116,9 +148,11 @@ let Shape = function () {
                         program
                             .bindPositionAttribute (this.positionBuffer)
                             .bindNormalAttribute (this.normalBuffer)
-                            .bindTextureAttribute (this.textureBuffer);
+                            .bindTextureAttribute (this.textureBuffer)
+                            .bindModelMatrixAttribute (this.instanceTransformsBuffer);
+                        context.bufferSubData(context.ARRAY_BUFFER, 0, this.instanceTransformsData);
                     }
-                    context.drawArrays (context.TRIANGLES, 0, this.positionBuffer.numItems);
+                    context.drawArraysInstanced(context.TRIANGLES, 0, this.positionBuffer.numItems, this.instanceCount);
                 } catch (err) {
                     LOG (LogLevel.ERROR, err.message);
                 }
@@ -128,10 +162,13 @@ let Shape = function () {
                 try {
                     let program = Program.getCurrentProgram ();
                     if (program.useShape (this)) {
-                        program.bindPositionAttribute (this.positionBuffer);
+                        program
+                            .bindPositionAttribute (this.positionBuffer)
+                            .bindModelMatrixAttribute (this.instanceTransformsBuffer);
+                        context.bufferSubData(context.ARRAY_BUFFER, 0, this.instanceTransformsData);
                         context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
                     }
-                    context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
+                    context.drawElementsInstanced (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0, this.instanceCount);
                 } catch (err) {
                     LOG (LogLevel.ERROR, err.message);
                 }
@@ -143,10 +180,12 @@ let Shape = function () {
                     if (program.useShape (this)) {
                         program
                             .bindPositionAttribute (this.positionBuffer)
-                            .bindNormalAttribute (this.normalBuffer);
+                            .bindNormalAttribute (this.normalBuffer)
+                            .bindModelMatrixAttribute (this.instanceTransformsBuffer);
+                        context.bufferSubData(context.ARRAY_BUFFER, 0, this.instanceTransformsData);
                         context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
                     }
-                    context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
+                    context.drawElementsInstanced (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0, this.instanceCount);
                 } catch (err) {
                     LOG (LogLevel.ERROR, err.message);
                 }
@@ -158,10 +197,12 @@ let Shape = function () {
                     if (program.useShape (this)) {
                         program
                             .bindPositionAttribute (this.positionBuffer)
-                            .bindTextureAttribute (this.textureBuffer);
+                            .bindTextureAttribute (this.textureBuffer)
+                            .bindModelMatrixAttribute (this.instanceTransformsBuffer);
+                        context.bufferSubData(context.ARRAY_BUFFER, 0, this.instanceTransformsData);
                         context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
                     }
-                    context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
+                    context.drawElementsInstanced (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0, this.instanceCount);
                 } catch (err) {
                     LOG (LogLevel.ERROR, err.message);
                 }
@@ -174,10 +215,12 @@ let Shape = function () {
                         program
                             .bindPositionAttribute (this.positionBuffer)
                             .bindNormalAttribute (this.normalBuffer)
-                            .bindTextureAttribute (this.textureBuffer);
+                            .bindTextureAttribute (this.textureBuffer)
+                            .bindModelMatrixAttribute (this.instanceTransformsBuffer);
+                        context.bufferSubData(context.ARRAY_BUFFER, 0, this.instanceTransformsData);
                         context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
                     }
-                    context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
+                    context.drawElementsInstanced (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0, this.instanceCount);
                 } catch (err) {
                     LOG (LogLevel.ERROR, err.message);
                 }
@@ -190,9 +233,11 @@ let Shape = function () {
                     if (program.useShape (this)) {
                         program
                             .bindPositionAttribute (this.positionBuffer)
-                            .bindColorAttribute (this.colorBuffer);
+                            .bindColorAttribute (this.colorBuffer)
+                            .bindModelMatrixAttribute (this.instanceTransformsBuffer);
+                        context.bufferSubData(context.ARRAY_BUFFER, 0, this.instanceTransformsData);
                     }
-                    context.drawArrays (context.TRIANGLES, 0, this.positionBuffer.numItems);
+                    context.drawArraysInstanced (context.TRIANGLES, 0, this.positionBuffer.numItems, this.instanceCount);
                 } catch (err) {
                     LOG (LogLevel.ERROR, err.message);
                 }
@@ -205,9 +250,11 @@ let Shape = function () {
                         program
                             .bindPositionAttribute (this.positionBuffer)
                             .bindNormalAttribute (this.normalBuffer)
-                            .bindColorAttribute (this.colorBuffer);
+                            .bindColorAttribute (this.colorBuffer)
+                            .bindModelMatrixAttribute (this.instanceTransformsBuffer);
+                        context.bufferSubData(context.ARRAY_BUFFER, 0, this.instanceTransformsData);
                     }
-                    context.drawArrays (context.TRIANGLES, 0, this.positionBuffer.numItems);
+                    context.drawArraysInstanced (context.TRIANGLES, 0, this.positionBuffer.numItems, this.instanceCount);
                 } catch (err) {
                     LOG (LogLevel.ERROR, err.message);
                 }
@@ -220,9 +267,11 @@ let Shape = function () {
                         program
                             .bindPositionAttribute (this.positionBuffer)
                             .bindTextureAttribute (this.textureBuffer)
-                            .bindColorAttribute (this.colorBuffer);
+                            .bindColorAttribute (this.colorBuffer)
+                            .bindModelMatrixAttribute (this.instanceTransformsBuffer);
+                        context.bufferSubData(context.ARRAY_BUFFER, 0, this.instanceTransformsData);
                     }
-                    context.drawArrays (context.TRIANGLES, 0, this.positionBuffer.numItems);
+                    context.drawArraysInstanced (context.TRIANGLES, 0, this.positionBuffer.numItems, this.instanceCount);
                 } catch (err) {
                     LOG (LogLevel.ERROR, err.message);
                 }
@@ -236,9 +285,11 @@ let Shape = function () {
                             .bindPositionAttribute (this.positionBuffer)
                             .bindNormalAttribute (this.normalBuffer)
                             .bindTextureAttribute (this.textureBuffer)
-                            .bindColorAttribute (this.colorBuffer);
+                            .bindColorAttribute (this.colorBuffer)
+                            .bindModelMatrixAttribute (this.instanceTransformsBuffer);
+                        context.bufferSubData(context.ARRAY_BUFFER, 0, this.instanceTransformsData);
                     }
-                    context.drawArrays (context.TRIANGLES, 0, this.positionBuffer.numItems);
+                    context.drawArraysInstanced (context.TRIANGLES, 0, this.positionBuffer.numItems, this.instanceCount);
                 } catch (err) {
                     LOG (LogLevel.ERROR, err.message);
                 }
@@ -250,10 +301,12 @@ let Shape = function () {
                     if (program.useShape (this)) {
                         program
                             .bindPositionAttribute (this.positionBuffer)
-                            .bindColorAttribute (this.colorBuffer);
+                            .bindColorAttribute (this.colorBuffer)
+                            .bindModelMatrixAttribute (this.instanceTransformsBuffer);
+                        context.bufferSubData(context.ARRAY_BUFFER, 0, this.instanceTransformsData);
                         context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
                     }
-                    context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
+                    context.drawElementsInstanced (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0, this.instanceCount);
                 } catch (err) {
                     LOG (LogLevel.ERROR, err.message);
                 }
@@ -266,10 +319,12 @@ let Shape = function () {
                         program
                             .bindPositionAttribute (this.positionBuffer)
                             .bindNormalAttribute (this.normalBuffer)
-                            .bindColorAttribute (this.colorBuffer);
+                            .bindColorAttribute (this.colorBuffer)
+                            .bindModelMatrixAttribute (this.instanceTransformsBuffer);
+                        context.bufferSubData(context.ARRAY_BUFFER, 0, this.instanceTransformsData);
                         context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
                     }
-                    context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
+                    context.drawElementsInstanced() (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0, this.instanceCount);
                 } catch (err) {
                     LOG (LogLevel.ERROR, err.message);
                 }
@@ -282,10 +337,12 @@ let Shape = function () {
                         program
                             .bindPositionAttribute (this.positionBuffer)
                             .bindTextureAttribute (this.textureBuffer)
-                            .bindColorAttribute (this.colorBuffer);
+                            .bindColorAttribute (this.colorBuffer)
+                            .bindModelMatrixAttribute (this.instanceTransformsBuffer);
+                        context.bufferSubData(context.ARRAY_BUFFER, 0, this.instanceTransformsData);
                         context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
                     }
-                    context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
+                    context.drawElementsInstanced (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0, this.instanceCount);
                 } catch (err) {
                     LOG (LogLevel.ERROR, err.message);
                 }
@@ -299,10 +356,12 @@ let Shape = function () {
                             .bindPositionAttribute (this.positionBuffer)
                             .bindNormalAttribute (this.normalBuffer)
                             .bindTextureAttribute (this.textureBuffer)
-                            .bindColorAttribute (this.colorBuffer);
+                            .bindColorAttribute (this.colorBuffer)
+                            .bindModelMatrixAttribute (this.instanceTransformsBuffer);
+                        context.bufferSubData(context.ARRAY_BUFFER, 0, this.instanceTransformsData);
                         context.bindBuffer (context.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
                     }
-                    context.drawElements (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0);
+                    context.drawElementsInstanced (context.TRIANGLES, this.indexBuffer.numItems, context.UNSIGNED_SHORT, 0, this.instanceCount);
                 } catch (err) {
                     LOG (LogLevel.ERROR, err.message);
                 }

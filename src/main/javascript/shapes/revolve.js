@@ -13,7 +13,7 @@ let makeRevolve = function (name, outline, normal, steps, projection) {
     // https://en.wikipedia.org/wiki/Equirectangular_projection
     DEFAULT_VALUE (projection, function (uvY) { return uvY; });
 
-    return InstancedShape.new ({
+    return Shape.new ({
         buffers: function () {
             // compute the steps we need to make to build the rotated shape
             LOG (LogLevel.TRACE, "Make revolved outline");
