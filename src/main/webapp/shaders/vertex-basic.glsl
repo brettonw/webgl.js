@@ -1,3 +1,5 @@
+#version 300 es
+
 in vec3 inputPosition;
 in vec3 inputNormal;
 in vec2 inputTexture;
