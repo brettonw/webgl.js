@@ -127,6 +127,7 @@ let Node = function () {
                         standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
                         child.traverse (standardUniforms);
                     }
+                    standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
                 }
                 return this;
             },
@@ -134,11 +135,13 @@ let Node = function () {
             function (standardUniforms) {
                 if (this.enabled) {
                     LOG (LogLevel.TRACE, "Traverse: " + this.name);
+                    let origModelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER;
                     let modelMatrix = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
                     for (let child of this.children) {
                         standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
                         child.traverse (standardUniforms);
                     }
+                    standardUniforms.MODEL_MATRIX_PARAMETER = origModelMatrix;
                 }
                 return this;
             },
@@ -152,6 +155,7 @@ let Node = function () {
                         standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
                         child.traverse (standardUniforms);
                     }
+                    standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
                 }
                 return this;
             },
@@ -160,11 +164,13 @@ let Node = function () {
                 if (this.enabled) {
                     LOG (LogLevel.TRACE, "Traverse: " + this.name);
                     this.state (standardUniforms);
+                    let origModelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER;
                     let modelMatrix = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
                     for (let child of this.children) {
                         standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
                         child.traverse (standardUniforms);
                     }
+                    standardUniforms.MODEL_MATRIX_PARAMETER = origModelMatrix;
                 }
                 return this;
             },
@@ -178,6 +184,7 @@ let Node = function () {
                         standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
                         child.traverse (standardUniforms);
                     }
+                    standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
                 }
                 return this;
             },
@@ -185,12 +192,14 @@ let Node = function () {
             function (standardUniforms) {
                 if (this.enabled) {
                     LOG (LogLevel.TRACE, "Traverse: " + this.name);
+                    let origModelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER;
                     let modelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
                     this.draw (standardUniforms);
                     for (let child of this.children) {
                         standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
                         child.traverse (standardUniforms);
                     }
+                    standardUniforms.MODEL_MATRIX_PARAMETER = origModelMatrix;
                 }
                 return this;
             },
@@ -205,6 +214,7 @@ let Node = function () {
                         standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
                         child.traverse (standardUniforms);
                     }
+                    standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
                 }
                 return this;
             },
@@ -213,12 +223,14 @@ let Node = function () {
                 if (this.enabled) {
                     LOG (LogLevel.TRACE, "Traverse: " + this.name);
                     this.state (standardUniforms);
+                    let origModelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER;
                     let modelMatrix = standardUniforms.MODEL_MATRIX_PARAMETER = Float4x4.multiply (this.transform, standardUniforms.MODEL_MATRIX_PARAMETER);
                     this.draw (standardUniforms);
                     for (let child of this.children) {
                         standardUniforms.MODEL_MATRIX_PARAMETER = modelMatrix;
                         child.traverse (standardUniforms);
                     }
+                    standardUniforms.MODEL_MATRIX_PARAMETER = origModelMatrix;
                 }
                 return this;
             }
@@ -291,5 +303,5 @@ let Node = function () {
 
  Nodes are a hierarchical way of traversing "state", which includes, shape, program (shaders),
  texture, and other state information. Should each one of these be a special element? Should "draw"
- just be a flag on the node construction, assuming that some node set all of the "state" needed
+ just be a flag on the node construction, assuming that some node set all the "state" needed
  */
