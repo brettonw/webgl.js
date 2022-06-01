@@ -40,6 +40,7 @@
             <fileset dir="${source-dir}/common" includes="on-ready.js"/>
             <fileset dir="${source-dir}/common" includes="mouse-tracker.js"/>
             <fileset dir="${source-dir}/common" includes="document-helper.js"/>
+            <fileset dir="${source-dir}/common" includes="rolling-stats.js"/>
 
             <fileset dir="${source-dir}/math" includes="floatN.js"/>
             <fileset dir="${source-dir}/math" includes="floatNxN.js"/>

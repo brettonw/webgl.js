@@ -1064,13 +1064,6 @@
             "description": "The initializer for a rendering context.",
             "itemtype": "method",
             "name": "construct",
-            "params": [
-                {
-                    "name": "canvasId",
-                    "description": "the id of the canvas element to use for the rendering context",
-                    "type": "String"
-                }
-            ],
             "return": {
                 "description": "",
                 "type": "Render"
@@ -1079,7 +1072,7 @@
         },
         {
             "file": "src/main/javascript/core/render.js",
-            "line": 104,
+            "line": 93,
             "description": "Set the global rendering context.",
             "itemtype": "method",
             "name": "use",

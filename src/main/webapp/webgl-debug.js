@@ -402,6 +402,51 @@ let DocumentHelper = function () {
     };
     return _;
 } ();
+"use strict;"
+let RollingStats = function () {
+    let _ = Object.create (ClassBase);
+    _.construct = function (parameters) {
+        this.count = Utility.defaultValue (parameters.count, 10);
+        if ("fill" in parameters) {
+            this.fill = parameters.fill;
+        }
+        this.reset ();
+    };
+    _.update = function (value) {
+        this.sum += value;
+        if (this.history.length < this.count) {
+            this.history.push(value);
+        } else {
+            this.sum -= this.history[this.current];
+            this.history[this.current] = value;
+            this.current = (this.current + 1) % this.count;
+        }
+        let avg = this.sum / this.history.length;
+        let min = Number.POSITIVE_INFINITY;
+        let max = Number.NEGATIVE_INFINITY;
+        let variance = 0;
+        for (let value of this.history) {
+            max = Math.max (value, max);
+            min = Math.min (value, min);
+            let sampleVariance = (value - avg);
+            variance += (sampleVariance * sampleVariance);
+        }
+        variance /= this.count;
+        return { min: min, max: max, avg: avg, var: variance, std: Math.sqrt (variance) };
+    };
+    _.reset = function () {
+        this.history = [];
+        this.sum = 0;
+        if ("fill" in this) {
+            for (let i = 0; i < this.count; ++i) {
+                this.history.push (this.fill);
+                this.sum += this.fill;
+            }
+        }
+        this.current = 0;
+    };
+    return _;
+} ();
 let FloatN = function (dim) {
     let _ = Object.create (null);
     _.create = function () {
@@ -1148,32 +1193,25 @@ let Render = function () {
      * The initializer for a rendering context.
      *
      * @method construct
-     * @param {string} canvasId the id of the canvas element to use for the rendering context
      * @return {Render}
      */
     _.construct = function (parameters) {
-        let canvas = this.canvas = document.getElementById (parameters.canvasId);
-        // try to do something smart here, like get the aspect ratio from the actual
-        // canvas size. that's not always actually set, so the user can request an aspect
-        // ratio explicitly which will override the default size
-        let width = canvas.width;
-        let height = canvas.height;
-        let aspectRatio = (parameters.aspectRatio = (((typeof parameters.aspectRatio !== "undefined") && (parameters.aspectRatio != null)) ? parameters.aspectRatio : width / height));
-        height = width / aspectRatio;
-        // set the display size of the canvas.
-        canvas.style.width = width + "px";
-        canvas.style.height = height + "px";
-        // set the size of the drawingBuffer - high DPI devices need to have the canvas
-        // drawing surface scaled up while leaving the style size as indicated
-        let devicePixelRatio = (window.devicePixelRatio = (((typeof window.devicePixelRatio !== "undefined") && (window.devicePixelRatio != null)) ? window.devicePixelRatio : 1));
-        canvas.width = width * devicePixelRatio;
-        canvas.height = height * devicePixelRatio;
-        LogLevel.say (LogLevel.TRACE, "Scaling display at " + devicePixelRatio + ":1 to (" + canvas.width + "x" + canvas.height + ")");
-        // get the actual rendering context
+        // get the parent div, create the canvas, and the rendering context
+        let canvasDiv = document.getElementById (parameters.canvasDivId);
+        let canvas = document.createElement("canvas");
+        canvasDiv.appendChild(canvas);
         context = this.context = canvas.getContext ("webgl2", { preserveDrawingBuffer: true });
-        context.viewportWidth = canvas.width;
-        context.viewportHeight = canvas.height;
-        context.viewport (0, 0, context.viewportWidth, context.viewportHeight);
+        // size everything to the parent div
+        let devicePixelRatio = (window.devicePixelRatio = (((typeof window.devicePixelRatio !== "undefined") && (window.devicePixelRatio != null)) ? window.devicePixelRatio : 1));
+        let resizeHandler = function (event) {
+            let canvasDiv = event[0].target;
+            context.viewportWidth = context.canvas.width = canvasDiv.clientWidth * devicePixelRatio;
+            context.viewportHeight = context.canvas.height = canvasDiv.clientHeight * devicePixelRatio;
+            context.viewport (0, 0, context.viewportWidth, context.viewportHeight);
+            context.canvas.style.width = canvasDiv.clientWidth + "px";
+            context.canvas.style.height = canvasDiv.clientHeight + "px";
+        };
+        new ResizeObserver(resizeHandler).observe(canvasDiv);
         // set up some boilerplate, loading all the default shaders
         let loaderList = LoaderList.new ().addLoaders (
             LoaderShader
@@ -1207,7 +1245,6 @@ let Render = function () {
             Program.new ({ vertexShader: "basic" }, "texture");
             Program.new ({ vertexShader: "basic" }, "vertex-color");
             // call the user back when it's all ready
-            // call the onReady handler if one was provided
             if (typeof parameters.onReady !== "undefined") {
                 parameters.onReady.notify (scope);
             }
@@ -1216,7 +1253,7 @@ let Render = function () {
     _.save = function (filename) {
         //let image = this.canvas.toDataURL ("image/png").replace ("image/png", "image/octet-stream");
         let MIME_TYPE = "image/png";
-        let imgURL = this.canvas.toDataURL (MIME_TYPE);
+        let imgURL = this.context.canvas.toDataURL (MIME_TYPE);
         let dlLink = document.createElement ('a');
         dlLink.download = filename + ".png";
         dlLink.href = imgURL;

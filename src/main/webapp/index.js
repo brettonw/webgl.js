@@ -11,35 +11,31 @@ let framingRange;
 let animateCheckbox;
 let displayFpsSpan;
 
-let lastTime = new Date ().getTime ();
-let globalTime = 0;
-const fpsHistoryCount = 50;
-let fpsHistory = Array (fpsHistoryCount).fill (0);
-let fpsHistoryIndex = 0;
-let fpsHistoryAverage = 0;
-let drawFrame = function () {
+const msPerSecond = 1000;
+const sixytHzMs = msPerSecond / 60;
+let lastTimestamp = 0;
+let fpsHistory = RollingStats.new({ count: 60, fill: sixytHzMs });
+let drawFrame = function (timestamp) {
     if (document.hidden) {
         animateCheckbox.checked = false;
         return;
     }
-    let nowTime = new Date ().getTime ();
     if (animateCheckbox.checked) {
         // compute the updated time
-        let deltaTime = nowTime - lastTime;
-        globalTime += deltaTime;
-        Thing.updateAll (globalTime);
+        let deltaTime = timestamp - lastTimestamp;
+        if (deltaTime < 1000) {
+            Thing.updateAll (timestamp);
 
-        // update the fps
-        fpsHistoryAverage -= fpsHistory[fpsHistoryIndex];
-        fpsHistoryAverage += (fpsHistory[fpsHistoryIndex] = deltaTime);
-        fpsHistoryIndex = (fpsHistoryIndex + 1) % fpsHistoryCount;
-        let fps = 1000.0 / (fpsHistoryAverage / fpsHistoryCount);
-        displayFpsSpan.innerHTML = Utility.padNum(fps.toFixed(1), 3) + " fps";
+            // update the fps
+            let stats = fpsHistory.update(deltaTime);
+            let fps = 1000.0 / stats.avg;
+            displayFpsSpan.innerHTML = Utility.padNum (fps.toFixed (1), 3) + " fps";
+        }
 
         // draw again as fast as possible
         window.requestAnimationFrame (drawFrame);
     }
-    lastTime = nowTime;
+    lastTimestamp = timestamp;
 
     // set up the projection matrix (scene radius is 1 and we want it to occupy about 75% of the
     // view in the vertical direction - the view is probably wider than that)
@@ -81,7 +77,7 @@ let drawFrame = function () {
 
 let clickAnimateCheckbox = function () {
     if (animateCheckbox.checked) {
-        lastTime = new Date ().getTime ();
+        lastTimestamp = performance.now();
         drawFrame ();
     }
 };
@@ -226,7 +222,7 @@ let onBodyLoad = function () {
     animateCheckbox = document.getElementById("animateCheckbox");
     displayFpsSpan = document.getElementById("displayFpsSpan");
 
-    MouseTracker.new ("render-canvas", OnReady.new (null, function (deltaPosition) {
+    MouseTracker.new ("render-canvas-div", OnReady.new (null, function (deltaPosition) {
         currentAngle += deltaPosition[0] * 180;
         if (! animateCheckbox.checked) {
             window.requestAnimationFrame (drawFrame);
@@ -235,7 +231,7 @@ let onBodyLoad = function () {
 
     // create the render object with my own texture...
     render = Render.new ({
-        canvasId: "render-canvas",
+        canvasDivId: "render-canvas-div",
         loaders: [
             LoaderPath.new ({ type: Texture, path: "textures/@.png" }).addItems ("moon", { generateMipMap: true }),
             LoaderShader.new ("shaders/@.glsl").addFragmentShaders ("masked-rgb")
