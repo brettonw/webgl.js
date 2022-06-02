@@ -85,11 +85,11 @@
 
 <div class="file">
     <pre class="prettyprint linenums">
-const CLASS_NAME_REQUIRED = &quot;CLASS_NAME_REQUIRED&quot;;
-const CLASS_NAME_GENERATED = &quot;CLASS_NAME_GENERATED&quot;;
-const CLASS_NAME_OPTIONAL = &quot;CLASS_NAME_OPTIONAL&quot;;
+export const CLASS_NAME_REQUIRED = &quot;CLASS_NAME_REQUIRED&quot;;
+export const CLASS_NAME_GENERATED = &quot;CLASS_NAME_GENERATED&quot;;
+export const CLASS_NAME_OPTIONAL = &quot;CLASS_NAME_OPTIONAL&quot;;
 
-let ClassNamed = function (nameRequired) {
+export let ClassNamed = function (nameRequired) {
     DEFAULT_VALUE (nameRequired, CLASS_NAME_OPTIONAL);
     let _ = Object.create (ClassBase);
 

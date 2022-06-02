@@ -1,7 +1,4 @@
-import * as WebGL from "./webgl.mjs";
-Object.entries(WebGL).forEach(([name, exported]) => window[name] = exported);
-
-let context;
+import {Context, Node, Float3, Float4x4, LoaderPath, LoaderShader, makeBall, makeRevolve, makeSimpleExtrude, MouseTracker, OnReady, Program, Render, RollingStats, Texture, Thing, Utility} from "./webgl.mjs";
 
 let render;
 let scene;

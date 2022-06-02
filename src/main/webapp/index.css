@@ -30,6 +30,7 @@ body {
 #render-canvas-div {
     width:              100%;
     aspect-ratio:       16 / 9;
+    touch-action:       none;
 }
 
 canvas {

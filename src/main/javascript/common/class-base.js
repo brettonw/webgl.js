@@ -1,4 +1,4 @@
-let ClassBase = function () {
+export let ClassBase = function () {
     let _ = OBJ;
 
     /**

@@ -271,7 +271,7 @@ let FloatN = function (dim) {
     return _;
 };
 
-let Float2 = function () {
+export let Float2 = function () {
     let _ = FloatN (2);
 
     /**

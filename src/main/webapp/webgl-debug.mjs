@@ -188,7 +188,7 @@ export let Utility = function () {
     };
     return _;
 } ();
-let ClassBase = function () {
+export let ClassBase = function () {
     let _ = Object.create (null);
     /**
      *
@@ -208,10 +208,10 @@ let ClassBase = function () {
     };
     return _;
 } ();
-const CLASS_NAME_REQUIRED = "CLASS_NAME_REQUIRED";
-const CLASS_NAME_GENERATED = "CLASS_NAME_GENERATED";
-const CLASS_NAME_OPTIONAL = "CLASS_NAME_OPTIONAL";
-let ClassNamed = function (nameRequired) {
+export const CLASS_NAME_REQUIRED = "CLASS_NAME_REQUIRED";
+export const CLASS_NAME_GENERATED = "CLASS_NAME_GENERATED";
+export const CLASS_NAME_OPTIONAL = "CLASS_NAME_OPTIONAL";
+export let ClassNamed = function (nameRequired) {
     (nameRequired = (((typeof nameRequired !== "undefined") && (nameRequired != null)) ? nameRequired : CLASS_NAME_OPTIONAL));
     let _ = Object.create (ClassBase);
     // the container for names
@@ -700,7 +700,7 @@ let FloatN = function (dim) {
     };
     return _;
 };
-let Float2 = function () {
+export let Float2 = function () {
     let _ = FloatN (2);
     /**
      *

@@ -1,8 +1,8 @@
-const CLASS_NAME_REQUIRED = "CLASS_NAME_REQUIRED";
-const CLASS_NAME_GENERATED = "CLASS_NAME_GENERATED";
-const CLASS_NAME_OPTIONAL = "CLASS_NAME_OPTIONAL";
+export const CLASS_NAME_REQUIRED = "CLASS_NAME_REQUIRED";
+export const CLASS_NAME_GENERATED = "CLASS_NAME_GENERATED";
+export const CLASS_NAME_OPTIONAL = "CLASS_NAME_OPTIONAL";
 
-let ClassNamed = function (nameRequired) {
+export let ClassNamed = function (nameRequired) {
     DEFAULT_VALUE (nameRequired, CLASS_NAME_OPTIONAL);
     let _ = Object.create (ClassBase);
 
