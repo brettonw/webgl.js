@@ -3,7 +3,7 @@ Javascript drawing in 3D
 
 Deployed at: https://brettonw.github.io/webgl.js/ or http://webgl-js.azurewebsites.net/.
 
-<img style="width:640px; margin: 0 auto;" src="src/main/img/sample.png" alt="Drawing"/>
+<img style="width:640px; margin: 0 auto;" src="/src/main/img/sample.png" alt="Drawing"/>
 
 ### Building
 This project uses ant for building, with the "dev" target being the default:
