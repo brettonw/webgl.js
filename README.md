@@ -3,7 +3,7 @@ Javascript drawing in 3D
 
 Deployed at: https://brettonw.github.io/webgl.js/ or http://webgl-js.azurewebsites.net/.
 
-<img style="width:640px; margin: 0 auto;" src="/src/main/img/sample.png" alt="Drawing"/>
+![sample](src/main/webapp/img/sample.png)
 
 ### Building
 This project uses ant for building, with the "dev" target being the default:
@@ -18,19 +18,18 @@ This project uses ant for building, with the "dev" target being the default:
 * yuidoc (for Documentation)
 
 ### UglifyJS
+Uglify-JS provides minification and some obscuration, and is installed via npm:
 
     npm install --location=global uglify-js
 
 ### YUIDoc
-YUIDoc only reads the comments, so it doesn't impose any code structure:
+YUIDoc is the documentation processor of choice as it only reads the comments and doesn't impose any code structure. Installation is via npm:
  
     npm install --location=global yuidocjs
     
-It would be better if I could point it at a single file. Syntax reference at 
-http://yui.github.io/yuidoc/
-.
+See the [Syntax reference](http://yui.github.io/yuidoc/) for explanation of documentation requirements.
 
-The theme is "lucid", from https://www.npmjs.com/package/yuidoc-lucid-theme
+The display theme is [lucid](https://www.npmjs.com/package/yuidoc-lucid-theme), installed as:
 
     npm install --location=global yuidoc-lucid-theme
     
