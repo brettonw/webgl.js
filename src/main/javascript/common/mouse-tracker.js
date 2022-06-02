@@ -7,6 +7,7 @@ export let MouseTracker = function () {
     let stepSize;
 
     let hole = function (event) {
+        event.stopPropagation();
         event.preventDefault();
         return false;
     };
