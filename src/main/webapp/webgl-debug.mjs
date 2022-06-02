@@ -320,52 +320,75 @@ export let MouseTracker = function () {
     let bound;
     let onReady;
     let stepSize;
+    let hole = function (event) {
+        event.preventDefault();
+        return false;
+    };
     let mousePosition = function (event) {
-        return {
-            x: (event.clientX - bound.left) / bound.width,
-            y: (event.clientY - bound.top) / bound.height
-        };
+        return Float3.copy ([
+            (event.clientX - bound.left) / bound.width,
+            (event.clientY - bound.top) / bound.height,
+            0.0
+        ]);
     }
     let mouseMoved = function (event) {
         let mouseMovedPosition = mousePosition(event);
-        let deltaPosition = [
-            mouseMovedPosition.x - mouseDownPosition.x,
-            mouseMovedPosition.y - mouseDownPosition.y
-        ];
-        if (Float2.normSq (deltaPosition) > 0) {
+        let deltaPosition = Float3.subtract (mouseMovedPosition, mouseDownPosition);
+        if (Float3.normSq (deltaPosition) > 0) {
             mouseDownPosition = mouseMovedPosition;
             onReady.notify (deltaPosition);
         }
+        return hole (event);
     };
     let mouseUp = function (event) {
         window.removeEventListener("pointermove", mouseMoved, false);
         window.removeEventListener("pointerup", mouseUp, false);
+        return hole (event);
     };
     let mouseDown = function (event) {
-        if (event.button === 0) {
-            //getting mouse position correctly
-            mouseDownPosition = mousePosition (event);
-            window.addEventListener ("pointermove", mouseMoved, false);
-            window.addEventListener ("pointerup", mouseUp, false);
+        switch (event.buttons) {
+            case 1:
+                switch (event.button) {
+                    case 0:
+                        // standard left click
+                        mouseDownPosition = mousePosition (event);
+                        window.addEventListener ("pointermove", mouseMoved, false);
+                        window.addEventListener ("pointerup", mouseUp, false);
+                        break;
+                    case 1:
+                        // right click
+                        break;
+                }
+                break;
+            case 2:
+                // scroll
+                break;
         }
+        return hole (event);
     };
-    let KEY_LEFT = 37;
-    let KEY_RIGHT = 39;
+    let mouseWheel = function (event) {
+        onReady.notify (Float3.copy ([0, 0, event.deltaY]));
+        return hole (event);
+    };
+    const KEY_LEFT = 37;
+    const KEY_RIGHT = 39;
     let keyDown = function (event) {
         switch (event.keyCode) {
-            case KEY_LEFT: onReady.notify ([-stepSize, 0.0]); break;
-            case KEY_RIGHT: onReady.notify ([stepSize, 0.0]); break;
-            default: onReady.notify ([0.0, 0.0]); break;
+            case KEY_LEFT: onReady.notify ([-stepSize, 0.0, 0.0]); break;
+            case KEY_RIGHT: onReady.notify ([stepSize, 0.0, 0.0]); break;
+            default: onReady.notify ([0.0, 0.0, 0.0]); break;
         }
     };
-    _.construct = function (canvasId, onReadyIn, stepSizeIn) {
+    _.construct = function (elementId, onReadyIn, stepSizeIn) {
         onReady = onReadyIn;
         stepSize = (stepSizeIn = (((typeof stepSizeIn !== "undefined") && (stepSizeIn != null)) ? stepSizeIn : 0.05));
-        let canvas = document.getElementById(canvasId);
-        bound = canvas.getBoundingClientRect();
-        canvas.addEventListener("pointerdown", mouseDown, false);
-        canvas.addEventListener("keydown", keyDown, true);
-        canvas.focus();
+        let element = document.getElementById(elementId);
+        bound = element.getBoundingClientRect();
+        element.addEventListener("pointerdown", mouseDown, false);
+        element.addEventListener("keydown", keyDown, true);
+        element.addEventListener("contextmenu", hole, false);
+        element.addEventListener("wheel", mouseWheel, false);
+        element.focus();
     };
     _.new = function (canvasId, onReadyIn, stepSizeIn) {
         return Object.create (_).construct(canvasId, onReadyIn, stepSizeIn);

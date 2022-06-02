@@ -1,4 +1,4 @@
-import {Context, Node, Float3, Float4x4, LoaderPath, LoaderShader, makeBall, makeRevolve, makeSimpleExtrude, MouseTracker, OnReady, Program, Render, RollingStats, Texture, Thing, Utility} from "./webgl.mjs";
+import {Context, Node, Float3, Float4x4, LoaderPath, LoaderShader, makeBall, makeRevolve, makeSimpleExtrude, MouseTracker, OnReady, Program, Render, RollingStats, Texture, Thing, Utility, LogLevel} from "./webgl.mjs";
 
 let render;
 let scene;
@@ -227,6 +227,8 @@ window.addEventListener("load", event => {
 
     MouseTracker.new ("render-canvas-div", OnReady.new (null, function (deltaPosition) {
         currentAngle += deltaPosition[0] * 180;
+        let step = (deltaPosition[2] / Math.abs(deltaPosition[2])) * fovRange.step;
+        fovRange.value = Number (fovRange.value)+ step;
         if (! animateCheckbox.checked) {
             window.requestAnimationFrame (drawFrame);
         }
