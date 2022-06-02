@@ -26,16 +26,16 @@ export let MouseTracker = function () {
     };
 
     let mouseUp = function (event) {
-        window.removeEventListener("mousemove", mouseMoved, false);
-        window.removeEventListener("mouseup", mouseUp, false);
+        window.removeEventListener("pointermove", mouseMoved, false);
+        window.removeEventListener("pointerup", mouseUp, false);
     };
 
     let mouseDown = function (event) {
         if (event.button === 0) {
             //getting mouse position correctly
             mouseDownPosition = mousePosition (event);
-            window.addEventListener ("mousemove", mouseMoved, false);
-            window.addEventListener ("mouseup", mouseUp, false);
+            window.addEventListener ("pointermove", mouseMoved, false);
+            window.addEventListener ("pointerup", mouseUp, false);
         }
     };
 
@@ -57,7 +57,7 @@ export let MouseTracker = function () {
         let canvas = document.getElementById(canvasId);
 
         bound = canvas.getBoundingClientRect();
-        canvas.addEventListener("mousedown", mouseDown, false);
+        canvas.addEventListener("pointerdown", mouseDown, false);
         canvas.addEventListener("keydown", keyDown, true);
         canvas.focus();
     };
