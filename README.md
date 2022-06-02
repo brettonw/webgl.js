@@ -3,7 +3,7 @@ Javascript drawing in 3D
 
 Deployed at: https://brettonw.github.io/webgl.js/ or http://webgl-js.azurewebsites.net/.
 
-<center><img src="http://webgl-js.azurewebsites.net/site/img/sample.png" alt="Drawing" style="width: 320px;"/></center>
+<img style="width:640px; margin: 0 auto;" src="src/main/img/sample.png" alt="Drawing"/>
 
 ### Building
 This project uses ant for building, with the "dev" target being the default:
@@ -14,21 +14,17 @@ This project uses ant for building, with the "dev" target being the default:
 * ant
 * node/npm
 * gcc (for the C-preprocessor)
-* uglifyjs (for Minification)
+* uglify-js (for Minification)
 * yuidoc (for Documentation)
 
-### UglifyJS2
-For ES6 compatibility, you have to use the "harmony" branch of UglifyJS2:
+### UglifyJS
 
-    git clone git://github.com/mishoo/UglifyJS2.git
-    cd UglifyJS2
-    git checkout harmony
-    npm link .
-    
+    npm install --location=global uglify-js
+
 ### YUIDoc
 YUIDoc only reads the comments, so it doesn't impose any code structure:
  
-    npm install -g yuidocjs
+    npm install --location=global yuidocjs
     
 It would be better if I could point it at a single file. Syntax reference at 
 http://yui.github.io/yuidoc/
@@ -36,11 +32,7 @@ http://yui.github.io/yuidoc/
 
 The theme is "lucid", from https://www.npmjs.com/package/yuidoc-lucid-theme
 
-    npm install -g yuidoc-lucid-theme
+    npm install --location=global yuidoc-lucid-theme
     
-I also tried:
-* JSDoc, which wanted very specific code structure, and wouldn't bend to my will, and
-* ESDoc, which crashed on my code.
-
 ### Building a scene
 ...
