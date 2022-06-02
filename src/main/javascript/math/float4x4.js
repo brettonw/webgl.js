@@ -190,7 +190,7 @@ let Float4x4 = function () {
      * @param from
      * @param along
      * @param up
-     * @returns {FloatNxN|Object}
+     * @return {FloatNxN|Object}
      */
     let lookFrom = function (from, along, up) {
         up = Float3.normalize (Utility.defaultValue (up, [0.0, 1.0, 0.0]));
@@ -229,7 +229,7 @@ let Float4x4 = function () {
      *
      * @param zAxis
      * @param up
-     * @returns {FloatNxN|Object}
+     * @return {FloatNxN|Object}
      */
     _.rotateZAxisTo = function (zAxis, up) {
         up = Utility.defaultFunction(up, function () { return [0, 1, 0]; });
@@ -248,7 +248,7 @@ let Float4x4 = function () {
      *
      * @param n
      * @param up
-     * @returns {FloatNxN|Object}
+     * @return {FloatNxN|Object}
      */
     _.rotateXAxisTo = function (xAxis, up) {
         up = Utility.defaultFunction(up, function () { return [0, 1, 0]; });

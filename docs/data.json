@@ -1632,22 +1632,6 @@
     ],
     "warnings": [
         {
-            "message": "replacing incorrect tag: returns with return",
-            "line": " src/main/javascript/common/utility.js:117"
-        },
-        {
-            "message": "replacing incorrect tag: returns with return",
-            "line": " src/main/javascript/math/float4x4.js:188"
-        },
-        {
-            "message": "replacing incorrect tag: returns with return",
-            "line": " src/main/javascript/math/float4x4.js:228"
-        },
-        {
-            "message": "replacing incorrect tag: returns with return",
-            "line": " src/main/javascript/math/float4x4.js:247"
-        },
-        {
             "message": "Missing item type",
             "line": " src/main/javascript/common/class-base.js:4"
         },

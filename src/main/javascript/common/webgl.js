@@ -1,3 +1,9 @@
 "use strict;"
 
-let WebGl = Object.create (null);
+let WebGl = function () {
+    let _ = Object.create (null);
+
+    _.getContext = function () { return context; };
+
+    return _;
+} ();

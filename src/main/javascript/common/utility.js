@@ -121,7 +121,7 @@ let Utility = function () {
      * @param {number} number the number to pad
      * @param {integer} width how many places the final number should be
      * @param {char} fill the character to pad with (default is "0")
-     * @returns {*}
+     * @return {*}
      */
     _.padNum = function (number, width, fill) {
         fill = fill || "0";
