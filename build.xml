@@ -112,7 +112,8 @@
     <target name="js-minify" depends="js-document">
         <exec executable="uglifyjs">
             <arg value="${target-dir}/${preprocess-target}"/>
-            <arg value="-o"/>
+            <arg value="--mangle"/>
+            <arg value="--output"/>
             <arg value="${site-dir}/${final-target}"/>
         </exec>
     </target>
