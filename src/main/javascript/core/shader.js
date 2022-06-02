@@ -1,4 +1,4 @@
-let Shader = function () {
+export let Shader = function () {
     let _ = ClassNamed ();
 
     _.construct  = function (parameters) {

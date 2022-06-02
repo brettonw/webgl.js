@@ -1,4 +1,4 @@
-let makeRevolve = function (name, outline, normal, steps, projection) {
+export let makeRevolve = function (name, outline, normal, steps, projection) {
     // outline is an array of Float2, and the axis of revolution is x = 0, we make a number of
     // wedges, from top to bottom, to complete the revolution.
     // projection is a function to map the position to a texture coordinate

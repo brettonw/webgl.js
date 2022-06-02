@@ -299,7 +299,7 @@ let Float2 = function () {
     return _;
 } ();
 
-let Float3 = function () {
+export let Float3 = function () {
     let _ = FloatN (3);
 
     /**
@@ -320,6 +320,6 @@ let Float3 = function () {
     return _;
 } ();
 
-let Float4 = function () {
+export let Float4 = function () {
     return FloatN (4);
 } ();

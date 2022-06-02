@@ -3,7 +3,7 @@
  *
  * @class Node
  */
-let Node = function () {
+export let Node = function () {
     let _ = ClassNamed (CLASS_NAME_GENERATED);
 
     /**
@@ -285,11 +285,3 @@ let Node = function () {
 
     return _;
 } ();
-
-/*
- thoughts...
-
- Nodes are a hierarchical way of traversing "state", which includes, shape, program (shaders),
- texture, and other state information. Should each one of these be a special element? Should "draw"
- just be a flag on the node construction, assuming that some node set all the "state" needed
- */

@@ -3,7 +3,7 @@
  *
  * @class Utility
  */
-let Utility = function () {
+export let Utility = function () {
     let _ = OBJ;
 
     const TWO_PI = Math.PI * 2.0;

@@ -1,4 +1,4 @@
-let makeBall = function (name, steps) {
+export let makeBall = function (name, steps) {
     LOG (LogLevel.TRACE, "Make ball...");
     // generate an outline, and then revolve it
     let outline = [];

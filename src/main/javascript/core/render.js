@@ -1,11 +1,9 @@
-let context;
-
 /**
  * A Rendering context.
  *
  * @class Render
  */
-let Render = function () {
+export let Render = function () {
     let _ = CLASS_BASE;
 
     /**

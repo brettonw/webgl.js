@@ -1,4 +1,4 @@
-let Thing = function () {
+export let Thing = function () {
     let _ = ClassNamed (CLASS_NAME_GENERATED);
 
     _.construct = function (parameters) {

@@ -4,7 +4,7 @@
  *
  * @class LoaderPath
  */
-let LoaderPath = function () {
+export let LoaderPath = function () {
     let _ = Object.create (Loader);
 
     /**

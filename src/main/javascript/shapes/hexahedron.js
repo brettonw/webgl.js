@@ -1,4 +1,4 @@
-let Hexahedron = function () {
+export let Hexahedron = function () {
     let _ = Object.create(Primitive);
 
     _.name = "cube";

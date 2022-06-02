@@ -1,6 +1,4 @@
-"use strict;"
-
-let MouseTracker = function () {
+export let MouseTracker = function () {
     let _ = OBJ;
 
     let mouseDownPosition;

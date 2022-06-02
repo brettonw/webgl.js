@@ -1,4 +1,4 @@
-let Primitive = function () {
+export let Primitive = function () {
     let _ = OBJ;
 
     _.getShapeBuilder = function () {

@@ -1,4 +1,4 @@
-let Texture = function () {
+export let Texture = function () {
     let _ = ClassNamed (CLASS_NAME_REQUIRED);
 
     let afExtension;

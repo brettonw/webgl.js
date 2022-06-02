@@ -42,15 +42,6 @@
             "fors": {},
             "namespaces": {}
         },
-        "src/main/javascript/core/cloud.js": {
-            "name": "src/main/javascript/core/cloud.js",
-            "modules": {},
-            "classes": {
-                "Cloud": 1
-            },
-            "fors": {},
-            "namespaces": {}
-        },
         "src/main/javascript/core/loader-list.js": {
             "name": "src/main/javascript/core/loader-list.js",
             "modules": {},
@@ -154,18 +145,6 @@
             "line": 1,
             "description": "A collection of utility functions."
         },
-        "Cloud": {
-            "name": "Cloud",
-            "shortname": "Cloud",
-            "classitems": [],
-            "plugins": [],
-            "extensions": [],
-            "plugin_for": [],
-            "extension_for": [],
-            "file": "src/main/javascript/core/cloud.js",
-            "line": 1,
-            "description": "A Cloud, a scene graph node for displaying points in space."
-        },
         "LoaderList": {
             "name": "LoaderList",
             "shortname": "LoaderList",
@@ -247,7 +226,7 @@
             "plugin_for": [],
             "extension_for": [],
             "file": "src/main/javascript/core/render.js",
-            "line": 3,
+            "line": 1,
             "description": "A Rendering context."
         },
         "Float4x4": {
@@ -651,78 +630,7 @@
                     "description": ""
                 }
             ],
-            "class": "Cloud"
-        },
-        {
-            "file": "src/main/javascript/core/cloud.js",
-            "line": 9,
-            "description": "the initializer for a cloud.",
-            "itemtype": "method",
-            "name": "construct",
-            "params": [
-                {
-                    "name": "parameters",
-                    "description": "an object with optional information for the cloud node, including:\n* pointShape: (default = \"sphere2\")\n* pointSize: (default = 0.02)",
-                    "type": "Object"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "Cloud"
-            },
-            "class": "Cloud"
-        },
-        {
-            "file": "src/main/javascript/core/cloud.js",
-            "line": 29,
-            "description": "add a point to the cloud.",
-            "itemtype": "method",
-            "name": "addPoint",
-            "params": [
-                {
-                    "name": "point",
-                    "description": "the location of the new point.",
-                    "type": "Float3"
-                }
-            ],
-            "chainable": 1,
-            "class": "Cloud"
-        },
-        {
-            "file": "src/main/javascript/core/cloud.js",
-            "line": 46,
-            "description": "add multiple points to the cloud.",
-            "itemtype": "method",
-            "name": "addPoints",
-            "params": [
-                {
-                    "name": "points",
-                    "description": "an array of Float3 points to be added.",
-                    "type": "Array"
-                }
-            ],
-            "chainable": 1,
-            "class": "Cloud"
-        },
-        {
-            "file": "src/main/javascript/core/cloud.js",
-            "line": 60,
-            "description": "static method to create and construct a new cloud node.",
-            "itemtype": "method",
-            "name": "new",
-            "static": 1,
-            "params": [
-                {
-                    "name": "parameters",
-                    "description": "an object with optional information to include in the node (see\n\"Node.construct\" for more information)",
-                    "type": "Object"
-                }
-            ],
-            "return": {
-                "description": "",
-                "type": "Cloud"
-            },
-            "class": "Cloud"
+            "class": "LoaderList"
         },
         {
             "file": "src/main/javascript/core/loader-list.js",
@@ -1060,7 +968,7 @@
         },
         {
             "file": "src/main/javascript/core/render.js",
-            "line": 11,
+            "line": 9,
             "description": "The initializer for a rendering context.",
             "itemtype": "method",
             "name": "construct",
@@ -1072,7 +980,7 @@
         },
         {
             "file": "src/main/javascript/core/render.js",
-            "line": 93,
+            "line": 91,
             "description": "Set the global rendering context.",
             "itemtype": "method",
             "name": "use",

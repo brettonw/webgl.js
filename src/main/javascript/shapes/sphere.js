@@ -1,4 +1,4 @@
-let Sphere = function () {
+export let Sphere = function () {
     let _ = Object.create (Primitive);
 
     _.name = "sphere";

@@ -10,8 +10,8 @@
     <property name="test-dir" value="${src-dir}/test/javascript"/>
     <property name="concat-target" value="${target-name}-concat.js"/>
     <property name="preprocess-target" value="${target-name}-preprocess.js"/>
-    <property name="dev-target" value="${target-name}-debug.js"/>
-    <property name="rel-target" value="${target-name}.js"/>
+    <property name="dev-target" value="${target-name}-debug.mjs"/>
+    <property name="rel-target" value="${target-name}.mjs"/>
 
     <target name="dev" depends="dev-init, dev-js-concatenate, js-copy" description="Development target"/>
 
@@ -46,8 +46,8 @@
             <fileset dir="${source-dir}/math" includes="floatNxN.js"/>
             <fileset dir="${source-dir}/math" includes="float4x4.js"/>
 
+            <fileset dir="${source-dir}/core" includes="context.js"/>
             <fileset dir="${source-dir}/core" includes="render.js"/>
-            <fileset dir="${source-dir}/core" includes="types.js"/>
             <fileset dir="${source-dir}/core" includes="loader.js"/>
             <fileset dir="${source-dir}/core" includes="loader-list.js"/>
             <fileset dir="${source-dir}/core" includes="loader-path.js" />
@@ -58,7 +58,6 @@
             <fileset dir="${source-dir}/core" includes="program-attribute.js" />
             <fileset dir="${source-dir}/core" includes="texture.js"/>
             <fileset dir="${source-dir}/core" includes="node.js"/>
-            <fileset dir="${source-dir}/core" includes="cloud.js" />
             <fileset dir="${source-dir}/core" includes="shape.js"/>
             <fileset dir="${source-dir}/core" includes="thing.js"/>
             <fileset dir="${source-dir}/core" includes="text-file.js"/>

@@ -3,7 +3,7 @@
  *
  * @class LoaderShader
  */
-let LoaderShader = function () {
+export let LoaderShader = function () {
     let _ = Object.create (LoaderPath);
 
     /**

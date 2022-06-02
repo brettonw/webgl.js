@@ -1,4 +1,4 @@
-let makeSimpleExtrude = function (name, outline, length, normal, projection) {
+export let makeSimpleExtrude = function (name, outline, length, normal, projection) {
     // outline is an array of Float2 in XY, and the axis of extrusion is Z = 0, we make a polygon
     // for each segment of the edge, skipping zero-length segments
 

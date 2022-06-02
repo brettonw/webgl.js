@@ -3,7 +3,7 @@
  *
  * @class Loader
  */
-let Loader = function () {
+export let Loader = function () {
     let _ = CLASS_BASE;
 
     /**

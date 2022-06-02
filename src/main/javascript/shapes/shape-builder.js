@@ -1,4 +1,4 @@
-let ShapeBuilder = function () {
+export let ShapeBuilder = function () {
     let _ = OBJ;
 
     _.construct = function (precision) {

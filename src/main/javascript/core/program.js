@@ -3,7 +3,7 @@
  *
  * @class Program
  */
-let Program = function () {
+export let Program = function () {
     let _ = ClassNamed (CLASS_NAME_REQUIRED);
 
     /**

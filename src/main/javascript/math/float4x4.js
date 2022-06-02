@@ -4,7 +4,7 @@
  * @class Float4x4
  * @extends FloatNxN
  */
-let Float4x4 = function () {
+export let Float4x4 = function () {
     let dim = 4;
     let _ = FloatNxN (dim);
 

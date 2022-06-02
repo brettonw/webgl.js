@@ -1,4 +1,4 @@
-let OnReady = function () {
+export let OnReady = function () {
     let _ = OBJ;
 
     _.construct = function (scope, callback) {

@@ -1,4 +1,7 @@
-"use strict;"
+import * as WebGL from "./webgl.mjs";
+Object.entries(WebGL).forEach(([name, exported]) => window[name] = exported);
+
+let context;
 
 let render;
 let scene;
@@ -12,9 +15,9 @@ let animateCheckbox;
 let displayFpsSpan;
 
 const msPerSecond = 1000;
-const sixytHzMs = msPerSecond / 60;
+const sixtyHzMs = msPerSecond / 60;
 let lastTimestamp = 0;
-let fpsHistory = RollingStats.new({ count: 60, fill: sixytHzMs });
+let fpsHistory = RollingStats.new({ count: 60, fill: sixtyHzMs });
 let drawFrame = function (timestamp) {
     if (document.hidden) {
         animateCheckbox.checked = false;
@@ -55,9 +58,10 @@ let drawFrame = function (timestamp) {
     // along the view vector to the front of the scene bounds, and the back of the scene bounds
     let nearPlane = 0.1;
     let farPlane = nearPlane + 1000;
+    let context = Context.get();
     standardUniforms.PROJECTION_MATRIX_PARAMETER = Float4x4.perspective (fov, context.viewportWidth / context.viewportHeight, nearPlane, farPlane);
 
-    // setup the view matrix
+    // set up the view matrix
     let viewMatrix = Float4x4.lookAt (goalOpposite, fov, [0, 2, 7], [0, 1.5, 0]);
     //console.log ("LOOK AT: " + Float3.str ([0, 1.5, 0]));
     //console.log ("LOOK ALONG: " + Float3.str ([0, 2, 7]));
@@ -111,6 +115,7 @@ let buildScene = function () {
     makeBall ("ball-small", 36);
     Program.new ({ vertexShader: "basic" }, "masked-rgb");
 
+    let context = Context.get();
     scene = Node.new ({
         state: function (standardUniforms) {
             // ordinarily, webGl will automatically present and clear when we return control to the
@@ -126,7 +131,7 @@ let buildScene = function () {
             context.enable (context.DEPTH_TEST);
             context.depthMask (true);
 
-            // extensions I want for getting gradient infomation inside the fragment shaders
+            // extensions I want for getting gradient information inside the fragment shaders
             //context.getExtension ("OES_standard_derivatives");
             //context.getExtension ("EXT_shader_texture_lod");
 
@@ -134,7 +139,7 @@ let buildScene = function () {
             context.blendFunc (context.SRC_ALPHA, context.ONE_MINUS_SRC_ALPHA);
             context.enable (context.BLEND);
 
-            // a little bit of setup for lighting
+            // a bit of setup for lighting
             standardUniforms.OUTPUT_ALPHA_PARAMETER = 1.0;
             standardUniforms.AMBIENT_LIGHT_COLOR = [0.8, 0.8, 1.0];
             standardUniforms.LIGHT_COLOR = [1.0, 1.0, 0.8];
@@ -216,7 +221,8 @@ let onClickSave = function () {
     render.save("webgl");
 };
 
-let onBodyLoad = function () {
+// do this when the window load finishes...
+window.addEventListener("load", event => {
     fovRange = document.getElementById ("fovRange");
     framingRange = document.getElementById ("framingRange");
     animateCheckbox = document.getElementById("animateCheckbox");
@@ -238,4 +244,4 @@ let onBodyLoad = function () {
         ],
         onReady: OnReady.new (null, buildScene)
     });
-};
+});

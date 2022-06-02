@@ -1,4 +1,4 @@
-let Icosahedron = function () {
+export let Icosahedron = function () {
     let _ = Object.create(Primitive);
 
     _.name = "icosahedron";

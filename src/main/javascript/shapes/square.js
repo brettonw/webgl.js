@@ -1,4 +1,4 @@
-let Square = function () {
+export let Square = function () {
     let _ = Object.create(Primitive);
 
     _.name = "square";

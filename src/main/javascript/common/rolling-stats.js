@@ -1,6 +1,4 @@
-"use strict;"
-
-let RollingStats = function () {
+export let RollingStats = function () {
     let _ = Object.create (ClassBase);
 
     _.construct = function (parameters) {

@@ -1,4 +1,4 @@
-let Shape = function () {
+export let Shape = function () {
     let _ = ClassNamed (CLASS_NAME_REQUIRED);
 
     _.construct = function (parameters) {

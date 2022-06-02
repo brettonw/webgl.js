@@ -1,7 +1,7 @@
 // class hierarchy
 // default values...
 // vector manipulation macros
-let LogLevel = function () {
+export let LogLevel = function () {
     let _ = Object.create (null);
     _.TRACE = 0;
     _.INFO = 1;
@@ -38,7 +38,7 @@ LogLevel.set (LogLevel.INFO);
  *
  * @class Utility
  */
-let Utility = function () {
+export let Utility = function () {
     let _ = Object.create (null);
     const TWO_PI = Math.PI * 2.0;
     let unwind = _.unwind = function (value, cap) {
@@ -299,7 +299,7 @@ let ClassNamed = function (nameRequired) {
     };
     return _;
 };
-let OnReady = function () {
+export let OnReady = function () {
     let _ = Object.create (null);
     _.construct = function (scope, callback) {
         this.scope = scope;
@@ -314,8 +314,7 @@ let OnReady = function () {
     };
     return _;
 } ();
-"use strict;"
-let MouseTracker = function () {
+export let MouseTracker = function () {
     let _ = Object.create (null);
     let mouseDownPosition;
     let bound;
@@ -402,8 +401,7 @@ let DocumentHelper = function () {
     };
     return _;
 } ();
-"use strict;"
-let RollingStats = function () {
+export let RollingStats = function () {
     let _ = Object.create (ClassBase);
     _.construct = function (parameters) {
         this.count = Utility.defaultValue (parameters.count, 10);
@@ -726,7 +724,7 @@ let Float2 = function () {
     };
     return _;
 } ();
-let Float3 = function () {
+export let Float3 = function () {
     let _ = FloatN (3);
     /**
      *
@@ -744,7 +742,7 @@ let Float3 = function () {
     };
     return _;
 } ();
-let Float4 = function () {
+export let Float4 = function () {
     return FloatN (4);
 } ();
 /**
@@ -936,7 +934,7 @@ let FloatNxN = function (dim) {
  * @class Float4x4
  * @extends FloatNxN
  */
-let Float4x4 = function () {
+export let Float4x4 = function () {
     let dim = 4;
     let _ = FloatNxN (dim);
     /**
@@ -1182,12 +1180,17 @@ let Float4x4 = function () {
     return _;
 } ();
 let context;
+export let Context = function () {
+    let _ = Object.create (null);
+    _.get = function () { return context; };
+    return _;
+} ();
 /**
  * A Rendering context.
  *
  * @class Render
  */
-let Render = function () {
+export let Render = function () {
     let _ = Object.create (ClassBase);
     /**
      * The initializer for a rendering context.
@@ -1272,13 +1275,12 @@ let Render = function () {
     };
     return _;
 } ();
-let glMatrixArrayType = Array;//((typeof Float32Array) != "undefined") ? Float32Array : ((typeof WebGLFloatArray) != "undefined") ? WebGLFloatArray : Array;
 /**
  * A loader for external assets.
  *
  * @class Loader
  */
-let Loader = function () {
+export let Loader = function () {
     let _ = Object.create (ClassBase);
     /**
      * the initializer for a loader.
@@ -1339,7 +1341,7 @@ let Loader = function () {
  *
  * @class LoaderList
  */
-let LoaderList = function () {
+export let LoaderList = function () {
     let _ = Object.create (ClassBase);
     /**
      * the initializer for a loader.
@@ -1398,7 +1400,7 @@ let LoaderList = function () {
  *
  * @class LoaderPath
  */
-let LoaderPath = function () {
+export let LoaderPath = function () {
     let _ = Object.create (Loader);
     /**
      * the initializer for a path loader.
@@ -1428,7 +1430,7 @@ let LoaderPath = function () {
  *
  * @class LoaderShader
  */
-let LoaderShader = function () {
+export let LoaderShader = function () {
     let _ = Object.create (LoaderPath);
     /**
      * the initializer for a shader loader.
@@ -1462,7 +1464,7 @@ let LoaderShader = function () {
     };
     return _;
 } ();
-let Shader = function () {
+export let Shader = function () {
     let _ = ClassNamed ();
     _.construct = function (parameters) {
         LogLevel.say (LogLevel.INFO, "Shader: " + parameters.name);
@@ -1498,7 +1500,7 @@ let Shader = function () {
  *
  * @class Program
  */
-let Program = function () {
+export let Program = function () {
     let _ = ClassNamed (CLASS_NAME_REQUIRED);
     /**
      * the name for the standard POSITION buffer attribute in a shader.
@@ -1940,7 +1942,7 @@ let ProgramAttribute = function () {
     };
     return _;
 } ();
-let Texture = function () {
+export let Texture = function () {
     let _ = ClassNamed (CLASS_NAME_REQUIRED);
     let afExtension;
     _.construct = function (parameters) {
@@ -1981,7 +1983,7 @@ let Texture = function () {
  *
  * @class Node
  */
-let Node = function () {
+export let Node = function () {
     let _ = ClassNamed (CLASS_NAME_GENERATED);
     /**
      * the initializer for a scene graph node.
@@ -2247,83 +2249,7 @@ let Node = function () {
     };
     return _;
 } ();
-/*
- thoughts...
-
- Nodes are a hierarchical way of traversing "state", which includes, shape, program (shaders),
- texture, and other state information. Should each one of these be a special element? Should "draw"
- just be a flag on the node construction, assuming that some node set all the "state" needed
- */
-/**
- * A Cloud, a scene graph node for displaying points in space.
- *
- * @class Cloud
- */
-let Cloud = function () {
-    let _ = Object.create (Node);
-    /**
-     * the initializer for a cloud.
-     *
-     * @method construct
-     * @param {Object} parameters an object with optional information for the cloud node, including:
-     * * pointShape: (default = "sphere2")
-     * * pointSize: (default = 0.02)
-     * @return {Cloud}
-     */
-    _.construct = function (parameters) {
-        // call the superclass constructor on this object
-        Object.getPrototypeOf(_).construct.call(this, parameters);
-        // look to see if the user has provided a point shape or size to use
-        this.pointShape = ("pointShape" in parameters) ? parameters.pointShape : "sphere2";
-        this.pointSize = ("pointSize" in parameters) ? parameters.pointSize : 0.02;
-        return this;
-    };
-    /**
-     * add a point to the cloud.
-     *
-     * @method addPoint
-     * @param {Float3} point the location of the new point.
-     * @chainable
-     */
-    _.addPoint = function (point) {
-        let transform = Float4x4.multiply (Float4x4.scale (this.pointSize), Float4x4.translate (point));
-        this.addChild (Node.new ({
-            transform: transform,
-            shape: this.pointShape,
-            children: false
-        }));
-        return this;
-    };
-    /**
-     * add multiple points to the cloud.
-     *
-     * @method addPoints
-     * @param {Array} points an array of Float3 points to be added.
-     * @chainable
-     */
-    _.addPoints = function (points) {
-        for (let point of points) {
-            this.addPoint(point);
-        }
-        return this;
-    };
-    /**
-     * static method to create and construct a new cloud node.
-     *
-     * @method new
-     * @static
-     * @param {Object} parameters an object with optional information to include in the node (see
-     * "Node.construct" for more information)
-     * @return {Cloud}
-     */
-    _.new = function (parameters) {
-        // ensure that we have children enabled
-        parameters.children = true;
-        return Object.create (_).construct (parameters);
-    };
-    return _;
-} ();
-let Shape = function () {
+export let Shape = function () {
     let _ = ClassNamed (CLASS_NAME_REQUIRED);
     _.construct = function (parameters) {
         LogLevel.say (LogLevel.INFO, "Shape: " + parameters.name);
@@ -2700,7 +2626,7 @@ let Shape = function () {
     };
     return _;
 } ();
-let Thing = function () {
+export let Thing = function () {
     let _ = ClassNamed (CLASS_NAME_GENERATED);
     _.construct = function (parameters) {
         LogLevel.say (LogLevel.INFO, "Thing: " + parameters.name);
@@ -2712,7 +2638,7 @@ let Thing = function () {
     };
     return _;
 } ();
-let TextFile = function () {
+export let TextFile = function () {
     let _ = ClassNamed (CLASS_NAME_REQUIRED);
     _.construct = function (parameters) {
         LogLevel.say (LogLevel.INFO, "TextFile: " + parameters.name);
@@ -2734,7 +2660,7 @@ let TextFile = function () {
     };
     return _;
 } ();
-let ShapeBuilder = function () {
+export let ShapeBuilder = function () {
     let _ = Object.create (null);
     _.construct = function (precision) {
         this.precision = (precision = (((typeof precision !== "undefined") && (precision != null)) ? precision : 7));
@@ -2837,7 +2763,7 @@ let ShapeBuilder = function () {
     };
     return _;
 } ();
-let Primitive = function () {
+export let Primitive = function () {
     let _ = Object.create (null);
     _.getShapeBuilder = function () {
     };
@@ -2855,7 +2781,7 @@ let Primitive = function () {
     };
     return _;
 }();
-let Tetrahedron = function () {
+export let Tetrahedron = function () {
     let _ = Object.create (Primitive);
     _.name = "tetrahedron";
     _.getShapeBuilder = function () {
@@ -2872,7 +2798,7 @@ let Tetrahedron = function () {
     };
     return _;
 } ();
-let Hexahedron = function () {
+export let Hexahedron = function () {
     let _ = Object.create(Primitive);
     _.name = "cube";
     _.getShapeBuilder = function () {
@@ -2895,7 +2821,7 @@ let Hexahedron = function () {
     };
     return _;
 }();
-let Octahedron = function () {
+export let Octahedron = function () {
     let _ = Object.create(Primitive);
     _.name = "octahedron";
     _.getShapeBuilder = function () {
@@ -2918,7 +2844,7 @@ let Octahedron = function () {
     };
     return _;
 }();
-let Icosahedron = function () {
+export let Icosahedron = function () {
     let _ = Object.create(Primitive);
     _.name = "icosahedron";
     _.getShapeBuilder = function () {
@@ -2962,7 +2888,7 @@ let Icosahedron = function () {
     };
     return _;
 }();
-let Square = function () {
+export let Square = function () {
     let _ = Object.create(Primitive);
     _.name = "square";
     // override the make from builder to use buffers...
@@ -2985,7 +2911,7 @@ let Square = function () {
     };
     return _;
 }();
-let Sphere = function () {
+export let Sphere = function () {
     let _ = Object.create (Primitive);
     _.name = "sphere";
     _.parameters = {
@@ -3075,7 +3001,7 @@ let makeNormal = function (outline) {
     }
     return N;
 };
-let makeRevolve = function (name, outline, normal, steps, projection) {
+export let makeRevolve = function (name, outline, normal, steps, projection) {
     // outline is an array of Float2, and the axis of revolution is x = 0, we make a number of
     // wedges, from top to bottom, to complete the revolution.
     // projection is a function to map the position to a texture coordinate
@@ -3141,7 +3067,7 @@ let makeRevolve = function (name, outline, normal, steps, projection) {
         }
     }, name);
 };
-let makeBall = function (name, steps) {
+export let makeBall = function (name, steps) {
     LogLevel.say (LogLevel.TRACE, "Make ball...");
     // generate an outline, and then revolve it
     let outline = [];
@@ -3159,7 +3085,7 @@ let makeBall = function (name, steps) {
     // as many steps to go all the way around
     return makeRevolve(name, outline, normal, steps * 2);
 };
-let makeSimpleExtrude = function (name, outline, length, normal, projection) {
+export let makeSimpleExtrude = function (name, outline, length, normal, projection) {
     // outline is an array of Float2 in XY, and the axis of extrusion is Z = 0, we make a polygon
     // for each segment of the edge, skipping zero-length segments
     // make sure we have length, with default of 2, assuming an outline spans -1..1

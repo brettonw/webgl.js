@@ -1,4 +1,4 @@
-let TextFile = function () {
+export let TextFile = function () {
     let _ = ClassNamed (CLASS_NAME_REQUIRED);
 
     _.construct = function (parameters) {

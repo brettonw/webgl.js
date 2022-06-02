@@ -1,4 +1,4 @@
-let LogLevel = function () {
+export let LogLevel = function () {
     let _ = OBJ;
 
     _.TRACE = 0;
