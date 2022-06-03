@@ -76,7 +76,7 @@ let drawFrame = function (timestamp) {
     scene.traverse (standardUniforms);
 };
 
-let clickAnimateCheckbox = function () {
+let clickAnimateCheckbox = function (event) {
     if (animateCheckbox.checked) {
         lastTimestamp = performance.now();
         drawFrame ();
@@ -214,7 +214,7 @@ let buildScene = function () {
     drawFrame ();
 };
 
-let onClickSave = function () {
+let onClickSave = function (event) {
     render.save("webgl");
 };
 
@@ -223,7 +223,10 @@ window.addEventListener("load", event => {
     fovRange = document.getElementById ("fovRange");
     framingRange = document.getElementById ("framingRange");
     animateCheckbox = document.getElementById("animateCheckbox");
+    animateCheckbox.addEventListener("change", clickAnimateCheckbox)
     displayFpsSpan = document.getElementById("displayFpsSpan");
+    let saveButton = document.getElementById("saveButton");
+    saveButton.addEventListener("click",  onClickSave);
 
     PointerTracker.new ({elementId: "render-canvas-div", onReady: OnReady.new (null, function (deltaPosition) {
         currentAngle += deltaPosition[0] * 180;
