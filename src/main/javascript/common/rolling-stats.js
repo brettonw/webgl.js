@@ -1,5 +1,5 @@
 export let RollingStats = function () {
-    let _ = Object.create (ClassBase);
+    let _ = CLASS_BASE;
 
     _.construct = function (parameters) {
         this.count = Utility.defaultValue (parameters.count, 10);

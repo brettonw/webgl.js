@@ -314,77 +314,76 @@ export let OnReady = function () {
     };
     return _;
 } ();
-export let MouseTracker = function () {
-    let _ = Object.create (null);
-    let mouseDownPosition;
-    let bound;
-    let onReady;
-    let stepSize;
+export let PointerTracker = function () {
+    let _ = Object.create (ClassBase);
+    let trackers = {};
     let hole = function (event) {
         event.stopPropagation();
         event.preventDefault();
         return false;
     };
-    let mousePosition = function (event) {
+    let pointerPositionFunctionXY = function (bound, event) {
         return [(event.clientX - bound.left) / bound.width, (event.clientY - bound.top) / bound.height, 0.0];
     }
-    let mousePositionZ = function (event) {
+    let pointerPositionFunctionZ = function (bound, event) {
         return [0.0, 0.0, (event.clientY - bound.top) / bound.height];
     }
-    let mouseMoved = function (event) {
-        let mouseMovedPosition = mousePosition(event);
-        let deltaPosition = Float3.subtract (mouseMovedPosition, mouseDownPosition);
-        if (Float3.normSq (deltaPosition) > 0) {
-            mouseDownPosition = mouseMovedPosition;
-            onReady.notify (deltaPosition);
+    let pointerPositionFunctionEmpty = function (bound, event) {
+        return [0.0, 0.0, 0.0];
+    }
+    let pointerMoved = function (event) {
+        let tracker = trackers[event.currentTarget.id];
+        // check if there is a tracker (because there was a pointer down)...
+        if (event.pointerId in tracker.events) {
+            // get the last event and save this one over it
+            let lastEvent = tracker.events[event.pointerId];
+            tracker.events[event.pointerId] = event;
+            // look to see how many pointers we are tracking
+            switch (Object.keys(tracker.events).length) {
+                case 1:
+                    // the simple move... check the buttons to decide how to handle it
+                    let bound = tracker.element.getBoundingClientRect();
+                    let pointerPositionFunction = pointerPositionFunctionEmpty;
+                    switch (event.buttons) {
+                        case 1: // primary button
+                            pointerPositionFunction = pointerPositionFunctionXY;
+                            break;
+                        case 2: // secondary button
+                            pointerPositionFunction = pointerPositionFunctionZ;
+                            break;
+                    }
+                    let a = pointerPositionFunction(bound, event);
+                    let b = pointerPositionFunction(bound, lastEvent);
+                    let delta = Float3.subtract (a, b);
+                    if (Float3.normSq (delta) > 0) {
+                        tracker.onReady.notify (delta);
+                    }
+                    break;
+                case 2:
+                    // gestures - why doesn't the browser already do this?
+                    // two-finger vertical slide reported as wheel
+                    // pinch-in/out reported as wheel
+                    break;
+                default:
+                    // we don't handle this...
+                    break;
+            }
         }
         return hole (event);
     };
-    let mouseMovedZ = function (event) {
-        let mouseMovedPosition = mousePositionZ(event);
-        let deltaPosition = Float3.subtract (mouseMovedPosition, mouseDownPosition);
-        if (Float3.normSq (deltaPosition) > 0) {
-            mouseDownPosition = mouseMovedPosition;
-            onReady.notify (deltaPosition);
-        }
+    let pointerUp = function (event) {
+        let tracker = trackers[event.currentTarget.id];
+        delete tracker.events[event.pointerId];
         return hole (event);
     };
-    let mouseUp = function (event) {
-        window.removeEventListener("pointermove", mouseMoved, false);
-        window.removeEventListener("pointerup", mouseUp, false);
+    let pointerDown = function (event) {
+        let tracker = trackers[event.currentTarget.id];
+        tracker.events[event.pointerId] = event;
         return hole (event);
     };
-    let mouseUpZ = function (event) {
-        window.removeEventListener("pointermove", mouseMovedZ, false);
-        window.removeEventListener("pointerup", mouseUpZ, false);
-        return hole (event);
-    };
-    let mouseDown = function (event) {
-        switch (event.buttons) {
-            case 1:
-                switch (event.button) {
-                    case 0:
-                        // standard left click
-                        mouseDownPosition = mousePosition (event);
-                        window.addEventListener ("pointermove", mouseMoved, false);
-                        window.addEventListener ("pointerup", mouseUp, false);
-                        break;
-                    case 1:
-                        // right click
-                        break;
-                }
-                break;
-            case 2:
-                // scroll
-                mouseDownPosition = mousePositionZ (event);
-                window.addEventListener ("pointermove", mouseMovedZ, false);
-                window.addEventListener ("pointerup", mouseUpZ, false);
-                break;
-        }
-        return hole (event);
-    };
-    let mouseWheel = function (event) {
-        onReady.notify (Float3.copy ([0, 0, event.deltaY]));
+    let wheel = function (event) {
+        let tracker = trackers[event.currentTarget.id];
+        tracker.onReady.notify (Float3.copy ([0, 0, event.deltaY]));
         return hole (event);
     };
     const KEY_LEFT = 37;
@@ -392,27 +391,33 @@ export let MouseTracker = function () {
     const KEY_RIGHT = 39;
     const KEY_DOWN = 40;
     let keyDown = function (event) {
+        let tracker = trackers[event.currentTarget.id];
         switch (event.keyCode) {
-            case KEY_LEFT: onReady.notify ([-stepSize, 0.0, 0.0]); break;
-            case KEY_UP: onReady.notify ([0.0, stepSize, 0.0]); break;
-            case KEY_RIGHT: onReady.notify ([stepSize, 0.0, 0.0]); break;
-            case KEY_DOWN: onReady.notify ([0.0, -stepSize, 0.0]); break;
-            default: onReady.notify ([0.0, 0.0, 0.0]); break;
+            case KEY_LEFT: tracker.onReady.notify ([-tracker.stepSize, 0.0, 0.0]); break;
+            case KEY_UP: tracker.onReady.notify ([0.0, tracker.stepSize, 0.0]); break;
+            case KEY_RIGHT: tracker.onReady.notify ([tracker.stepSize, 0.0, 0.0]); break;
+            case KEY_DOWN: tracker.onReady.notify ([0.0, -tracker.stepSize, 0.0]); break;
+            default: tracker.onReady.notify ([0.0, 0.0, 0.0]); break;
         }
     };
-    _.construct = function (elementId, onReadyIn, stepSizeIn) {
-        onReady = onReadyIn;
-        stepSize = (stepSizeIn = (((typeof stepSizeIn !== "undefined") && (stepSizeIn != null)) ? stepSizeIn : 0.05));
-        let element = document.getElementById(elementId);
-        bound = element.getBoundingClientRect();
-        element.addEventListener("pointerdown", mouseDown, false);
-        element.addEventListener("keydown", keyDown, true);
+    _.construct = function (parameters) {
+        // get the elementId and save this tracker to the global list
+        trackers[parameters.elementId] = this;
+        // elementId, onReadyIn, stepSizeIn
+        this.onReady = parameters.onReady;
+        this.stepSize = (parameters.stepSize = (((typeof parameters.stepSize !== "undefined") && (parameters.stepSize != null)) ? parameters.stepSize : 0.05));
+        this.pointerPositionFunction = pointerPositionFunctionEmpty;
+        this.events = {};
+        // setup all the event handlers on this element
+        let element = this.element = document.getElementById(parameters.elementId);
+        element.addEventListener("pointerdown", pointerDown, false);
+        element.addEventListener ("pointermove", pointerMoved, false);
+        element.addEventListener ("pointerup", pointerUp, false);
+        element.addEventListener ("pointercancel", pointerUp, false);
+        element.addEventListener("keydown", keyDown, false);
+        element.addEventListener("wheel", wheel, false);
         element.addEventListener("contextmenu", hole, false);
-        element.addEventListener("wheel", mouseWheel, false);
         element.focus();
-    };
-    _.new = function (canvasId, onReadyIn, stepSizeIn) {
-        return Object.create (_).construct(canvasId, onReadyIn, stepSizeIn);
     };
     return _;
 } ();
@@ -692,7 +697,7 @@ let FloatN = function (dim) {
      */
     eval (function () {
         let str = "_.minor = function (from) {\n";
-        str += "let minorIndex = 0, minorValue = from[minorIndex];\n";
+        str += "let minorIndex = 0, minorValue = from[minorIndex], nextValue;\n";
         for (let i = 1; i < dim; ++i) {
             str += "nextValue = from[" + i +"]; ";
             str += "if (minorValue > nextValue) { minorIndex = " + i + "; minorValue = nextValue;};\n";
@@ -707,7 +712,7 @@ let FloatN = function (dim) {
      */
     eval (function () {
         let str = "_.major = function (from) {\n";
-        str += "let majorIndex = 0, majorValue = from[majorIndex];\n";
+        str += "let majorIndex = 0, majorValue = from[majorIndex], nextValue;\n";
         for (let i = 1; i < dim; ++i) {
             str += "nextValue = from[" + i +"]; ";
             str += "if (majorValue < nextValue) { majorIndex = " + i + "; majorValue = nextValue;};\n";

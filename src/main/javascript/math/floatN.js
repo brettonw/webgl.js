@@ -214,7 +214,7 @@ let FloatN = function (dim) {
      */
     eval (function () {
         let str = "_.minor = function (from) {\n";
-        str += "let minorIndex = 0, minorValue = from[minorIndex];\n";
+        str += "let minorIndex = 0, minorValue = from[minorIndex], nextValue;\n";
         for (let i = 1; i < dim; ++i) {
             str += "nextValue = from[" + i +"]; ";
             str += "if (minorValue > nextValue) { minorIndex = " + i + "; minorValue = nextValue;};\n";
@@ -230,7 +230,7 @@ let FloatN = function (dim) {
      */
     eval (function () {
         let str = "_.major = function (from) {\n";
-        str += "let majorIndex = 0, majorValue = from[majorIndex];\n";
+        str += "let majorIndex = 0, majorValue = from[majorIndex], nextValue;\n";
         for (let i = 1; i < dim; ++i) {
             str += "nextValue = from[" + i +"]; ";
             str += "if (majorValue < nextValue) { majorIndex = " + i + "; majorValue = nextValue;};\n";

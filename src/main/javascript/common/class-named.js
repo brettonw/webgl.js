@@ -4,7 +4,7 @@ export const CLASS_NAME_OPTIONAL = "CLASS_NAME_OPTIONAL";
 
 export let ClassNamed = function (nameRequired) {
     DEFAULT_VALUE (nameRequired, CLASS_NAME_OPTIONAL);
-    let _ = Object.create (ClassBase);
+    let _ = CLASS_BASE;
 
     // the container for names
     let index = OBJ;

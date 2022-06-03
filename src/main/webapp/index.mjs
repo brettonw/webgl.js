@@ -1,4 +1,4 @@
-import {Context, Node, Float3, Float4x4, LoaderPath, LoaderShader, makeBall, makeRevolve, makeSimpleExtrude, MouseTracker, OnReady, Program, Render, RollingStats, Texture, Thing, Utility, LogLevel} from "./webgl.mjs";
+import {Context, Node, Float3, Float4x4, LoaderPath, LoaderShader, makeBall, makeRevolve, makeSimpleExtrude, PointerTracker, OnReady, Program, Render, RollingStats, Texture, Thing, Utility, LogLevel} from "./webgl-debug.mjs";
 
 let render;
 let scene;
@@ -225,7 +225,7 @@ window.addEventListener("load", event => {
     animateCheckbox = document.getElementById("animateCheckbox");
     displayFpsSpan = document.getElementById("displayFpsSpan");
 
-    MouseTracker.new ("render-canvas-div", OnReady.new (null, function (deltaPosition) {
+    PointerTracker.new ({elementId: "render-canvas-div", onReady: OnReady.new (null, function (deltaPosition) {
         currentAngle += deltaPosition[0] * 180;
         if (deltaPosition[2] !== 0) {
             let step = (deltaPosition[2] / Math.abs (deltaPosition[2])) * fovRange.step;
@@ -234,7 +234,7 @@ window.addEventListener("load", event => {
         if (! animateCheckbox.checked) {
             window.requestAnimationFrame (drawFrame);
         }
-    }), 0.01);
+    }), stepSize: 0.01 });
 
     // create the render object with my own texture...
     render = Render.new ({
