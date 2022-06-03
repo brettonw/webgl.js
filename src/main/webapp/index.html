@@ -7,10 +7,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="img/tab-icon.png?v=2" />
     <link rel="stylesheet" href="index.css" />
-    <script type="module" src="index.mjs"></script>
+    <script type="module" src="index.mjs?3"></script>
 </head>
 <body><div id="title" style="text-align:left; font-size:24px;">webgl.js</div><div id="render-container"><div id="render-canvas-div"></div></div><div style="font-size:12px;height:34px; margin-top:2px;margin-bottom:2px;vertical-align:middle;">
     <table style="width:100%;">
+        <tr><td><span id="pekeys">X</span></td></tr>
         <tr>
             <td>FOV <input type="range" class="myRange" style="width:200px;vertical-align:middle;" id="fovRange" min="0" max="100" step="1" value="60" oninput="updateView ();"></td>
             <td>Framing <input type="range" class="myRange" style="width:200px;vertical-align:middle;" id="framingRange" min="0" max="100" step="1" value="90" oninput="updateView ();"></td>
@@ -18,7 +19,6 @@
             <td><input type="button" id="saveButton" value="Save"></td>
             <td><span style="float:right;" id="displayFpsSpan">0</span></td>
         </tr>
-        <tr><td><span id="pekeys">X</span></td></tr>
     </table>
 </div>
 <div id="footer">
