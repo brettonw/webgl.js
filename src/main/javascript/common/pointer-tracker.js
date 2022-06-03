@@ -4,7 +4,7 @@ export let PointerTracker = function () {
     let trackers = {};
 
     let debugPeKeys = function () {
-        document.getElementById("pekeys").innerText = Object.keys (trackers[Object.keys (trackers)[0]].events).join(", ");
+        //document.getElementById("pekeys").innerText = Object.keys (trackers[Object.keys (trackers)[0]].events).join(", ");
     };
 
     let hole = function (event) {
@@ -12,10 +12,6 @@ export let PointerTracker = function () {
         event.preventDefault();
         return false;
     };
-
-    let ppfEmpty = function (e) {
-        return [0.0, 0.0, 0.0];
-    }
 
     let pointerMoved = function (event) {
         let tracker = trackers[event.currentTarget.id];
@@ -25,25 +21,23 @@ export let PointerTracker = function () {
             // get the last event and save this one over it
             let lastEvent = tracker.events[event.pointerId];
             tracker.events[event.pointerId] = event;
+            let bound = tracker.element.getBoundingClientRect();
 
+            let ppfXY = function (e) { return [(e.clientX - bound.left) / bound.width, (e.clientY - bound.top) / -bound.height, 0.0] };
+            let ppfZ = function (e) { return [0.0, 0.0, (e.clientY - bound.top) / -bound.height] };
+            let ppfEmpty = function (e){ [0.0, 0.0, 0.0] };
+
+            let ppf;
             // look to see how many pointers we are tracking
             switch (Object.keys(tracker.events).length) {
                 case 1:
                     // the simple move... check the buttons to decide how to handle it
-                    let bound = tracker.element.getBoundingClientRect();
-                    let ppf = [
+                    ppf = [
                         ppfEmpty,
-                        (e) => { return [(e.clientX - bound.left) / bound.width, (e.clientY - bound.top) / -bound.height, 0.0] },
-                        (e) => { return [0.0, 0.0, (e.clientY - bound.top) / -bound.height] },
+                        ppxXY, // left click
+                        ppfZ, // right click
                         ppfEmpty, ppfEmpty, ppfEmpty
                     ][event.buttons];
-                    let a = ppf(event);
-                    let b = ppf(lastEvent);
-                    let delta = Float3.subtract (a, b);
-                    if (Float3.normSq (delta) > 0) {
-                        tracker.onReady.notify (delta);
-                    }
-
                     break;
                 case 2:
                     // gestures - why doesn't the browser already do this?
@@ -51,10 +45,17 @@ export let PointerTracker = function () {
                     // the settings)
                     // two-finger vertical slide reported as wheel
                     // pinch-in/out reported as wheel
+                    ppf = ppfZ;
                     break;
                 default:
                     // we don't handle this...
                     break;
+            }
+            let a = ppf(event);
+            let b = ppf(lastEvent);
+            let delta = Float3.subtract (a, b);
+            if (Float3.normSq (delta) > 0) {
+                tracker.onReady.notify (delta);
             }
         }
         return hole (event);
