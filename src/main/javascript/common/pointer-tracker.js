@@ -34,7 +34,7 @@ export let PointerTracker = function () {
                     // the simple move... check the buttons to decide how to handle it
                     ppf = [
                         ppfEmpty,
-                        ppxXY, // left click
+                        ppfXY, // left click
                         ppfZ, // right click
                         ppfEmpty, ppfEmpty, ppfEmpty
                     ][event.buttons];
@@ -105,7 +105,6 @@ export let PointerTracker = function () {
         // elementId, onReadyIn, stepSizeIn
         this.onReady = parameters.onReady;
         this.stepSize = DEFAULT_VALUE(parameters.stepSize, 0.05);
-        this.pointerPositionFunction = ppfEmpty;
         this.events = {};
 
         // setup all the event handlers on this element
