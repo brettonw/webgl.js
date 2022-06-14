@@ -25,7 +25,7 @@ export let PointerTracker = function () {
 
             let ppfXY = function (e) { return [(e.clientX - bound.left) / bound.width, (e.clientY - bound.top) / -bound.height, 0.0] };
             let ppfZ = function (e) { return [0.0, 0.0, (e.clientY - bound.top) / -bound.height] };
-            let ppfEmpty = function (e){ [0.0, 0.0, 0.0] };
+            let ppfEmpty = function (e) { return [0.0, 0.0, 0.0]; };
 
             let ppf;
             // look to see how many pointers we are tracking
@@ -49,6 +49,7 @@ export let PointerTracker = function () {
                     break;
                 default:
                     // we don't handle this...
+                    ppf = ppfEmpty;
                     break;
             }
             let a = ppf(event);

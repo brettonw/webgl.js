@@ -95,6 +95,7 @@ export let Render = function () {
      */
     _.use = function () {
         context = this.context;
+        return context;
     };
 
     return _;
