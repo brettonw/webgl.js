@@ -1,1 +1,2 @@
-let context;
+    let context;
+    $.getContext = function () { return context; };
