@@ -33,18 +33,25 @@
         <concat destfile="${target-dir}/${concat-target}">
             <!-- file order is important -->
             <fileset dir="${source-dir}/common" includes="macros.js"/>
+
+            <!-- some things exist independently -->
             <fileset dir="${source-dir}/common" includes="log-level.js"/>
             <fileset dir="${source-dir}/common" includes="utility.js"/>
+
+            <!-- math functions will exist independently -->
+            <fileset dir="${source-dir}/math" includes="floatN.js"/>
+            <fileset dir="${source-dir}/math" includes="floatNxN.js"/>
+            <fileset dir="${source-dir}/math" includes="float4x4.js"/>
+
+            <!-- everything is wrapped by the header and footer to be enclosed in a WebGL namespace -->
+            <fileset dir="${source-dir}/wrapper" includes="header.js"/>
+
             <fileset dir="${source-dir}/common" includes="class-base.js"/>
             <fileset dir="${source-dir}/common" includes="class-named.js"/>
             <fileset dir="${source-dir}/common" includes="on-ready.js"/>
             <fileset dir="${source-dir}/common" includes="pointer-tracker.js"/>
             <fileset dir="${source-dir}/common" includes="document-helper.js"/>
             <fileset dir="${source-dir}/common" includes="rolling-stats.js"/>
-
-            <fileset dir="${source-dir}/math" includes="floatN.js"/>
-            <fileset dir="${source-dir}/math" includes="floatNxN.js"/>
-            <fileset dir="${source-dir}/math" includes="float4x4.js"/>
 
             <fileset dir="${source-dir}/core" includes="context.js"/>
             <fileset dir="${source-dir}/core" includes="render.js"/>
@@ -75,6 +82,8 @@
             <fileset dir="${source-dir}/shapes" includes="ball.js" />
             <fileset dir="${source-dir}/shapes" includes="extrude.js" />
             <fileset dir="${source-dir}/shapes" includes="triangulate.js" />
+
+            <fileset dir="${source-dir}/wrapper" includes="footer.js"/>
         </concat>
     </target>
 

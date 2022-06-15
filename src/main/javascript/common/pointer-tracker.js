@@ -1,126 +1,126 @@
-export let PointerTracker = function () {
-    let _ = CLASS_BASE;
+    let PointerTracker = $.PointerTracker = function () {
+        let _ = CLASS_BASE;
 
-    let trackers = {};
+        let trackers = {};
 
-    let debugPeKeys = function () {
-        //document.getElementById("pekeys").innerText = Object.keys (trackers[Object.keys (trackers)[0]].events).join(", ");
-    };
+        let debugPeKeys = function () {
+            //document.getElementById("pekeys").innerText = Object.keys (trackers[Object.keys (trackers)[0]].events).join(", ");
+        };
 
-    let hole = function (event) {
-        event.stopPropagation();
-        event.preventDefault();
-        return false;
-    };
+        let hole = function (event) {
+            event.stopPropagation();
+            event.preventDefault();
+            return false;
+        };
 
-    let pointerMoved = function (event) {
-        let tracker = trackers[event.currentTarget.id];
+        let pointerMoved = function (event) {
+            let tracker = trackers[event.currentTarget.id];
 
-        // check if there is a tracker (because there was a pointer down)...
-        if (event.pointerId in tracker.events) {
-            // get the last event and save this one over it
-            let lastEvent = tracker.events[event.pointerId];
+            // check if there is a tracker (because there was a pointer down)...
+            if (event.pointerId in tracker.events) {
+                // get the last event and save this one over it
+                let lastEvent = tracker.events[event.pointerId];
+                tracker.events[event.pointerId] = event;
+                let bound = tracker.element.getBoundingClientRect();
+
+                let ppfXY = function (e) { return [(e.clientX - bound.left) / bound.width, (e.clientY - bound.top) / -bound.height, 0.0] };
+                let ppfZ = function (e) { return [0.0, 0.0, (e.clientY - bound.top) / -bound.height] };
+                let ppfEmpty = function (e) { return [0.0, 0.0, 0.0]; };
+
+                let ppf;
+                // look to see how many pointers we are tracking
+                switch (Object.keys(tracker.events).length) {
+                    case 1:
+                        // the simple move... check the buttons to decide how to handle it
+                        ppf = [
+                            ppfEmpty,
+                            ppfXY, // left click
+                            ppfZ, // right click
+                            ppfEmpty, ppfEmpty, ppfEmpty
+                        ][event.buttons];
+                        break;
+                    case 2:
+                        // gestures - why doesn't the browser already do this?
+                        // macos laptop does right click on 2-finger gesture (if configured that way in
+                        // the settings)
+                        // two-finger vertical slide reported as wheel
+                        // pinch-in/out reported as wheel
+                        ppf = ppfZ;
+                        break;
+                    default:
+                        // we don't handle this...
+                        ppf = ppfEmpty;
+                        break;
+                }
+                let a = ppf(event);
+                let b = ppf(lastEvent);
+                let delta = Float3.subtract (a, b);
+                if (Float3.normSq (delta) > 0) {
+                    tracker.onReady.notify (delta);
+                }
+            }
+            return hole (event);
+        };
+
+        let pointerUp = function (event) {
+            let tracker = trackers[event.currentTarget.id];
+            delete tracker.events[event.pointerId];
+            debugPeKeys ();
+            return hole (event);
+        };
+
+        let pointerDown = function (event) {
+            let tracker = trackers[event.currentTarget.id];
             tracker.events[event.pointerId] = event;
-            let bound = tracker.element.getBoundingClientRect();
+            debugPeKeys ();
+            return hole (event);
+        };
 
-            let ppfXY = function (e) { return [(e.clientX - bound.left) / bound.width, (e.clientY - bound.top) / -bound.height, 0.0] };
-            let ppfZ = function (e) { return [0.0, 0.0, (e.clientY - bound.top) / -bound.height] };
-            let ppfEmpty = function (e) { return [0.0, 0.0, 0.0]; };
+        let wheel = function (event) {
+            let tracker = trackers[event.currentTarget.id];
+            tracker.onReady.notify (Float3.copy ([0, 0, -event.deltaY]));
+            return hole (event);
+        };
 
-            let ppf;
-            // look to see how many pointers we are tracking
-            switch (Object.keys(tracker.events).length) {
-                case 1:
-                    // the simple move... check the buttons to decide how to handle it
-                    ppf = [
-                        ppfEmpty,
-                        ppfXY, // left click
-                        ppfZ, // right click
-                        ppfEmpty, ppfEmpty, ppfEmpty
-                    ][event.buttons];
-                    break;
-                case 2:
-                    // gestures - why doesn't the browser already do this?
-                    // macos laptop does right click on 2-finger gesture (if configured that way in
-                    // the settings)
-                    // two-finger vertical slide reported as wheel
-                    // pinch-in/out reported as wheel
-                    ppf = ppfZ;
-                    break;
-                default:
-                    // we don't handle this...
-                    ppf = ppfEmpty;
-                    break;
+        const KEY_LEFT  = 37;
+        const KEY_UP    = 38;
+        const KEY_RIGHT = 39;
+        const KEY_DOWN  = 40;
+
+        let keyDown = function (event) {
+            let tracker = trackers[event.currentTarget.id];
+            switch (event.keyCode) {
+                case KEY_LEFT: tracker.onReady.notify ([-tracker.stepSize, 0.0, 0.0]); break;
+                case KEY_UP: tracker.onReady.notify ([0.0, tracker.stepSize, 0.0]); break;
+                case KEY_RIGHT: tracker.onReady.notify ([tracker.stepSize, 0.0, 0.0]); break;
+                case KEY_DOWN: tracker.onReady.notify ([0.0, -tracker.stepSize, 0.0]); break;
+                default: tracker.onReady.notify ([0.0, 0.0, 0.0]); break;
             }
-            let a = ppf(event);
-            let b = ppf(lastEvent);
-            let delta = Float3.subtract (a, b);
-            if (Float3.normSq (delta) > 0) {
-                tracker.onReady.notify (delta);
-            }
-        }
-        return hole (event);
-    };
+            return hole (event);
+        };
 
-    let pointerUp = function (event) {
-        let tracker = trackers[event.currentTarget.id];
-        delete tracker.events[event.pointerId];
-        debugPeKeys ();
-        return hole (event);
-    };
+        _.construct = function (parameters) {
+            // get the elementId and save this tracker to the global list
+            trackers[parameters.elementId] = this;
 
-    let pointerDown = function (event) {
-        let tracker = trackers[event.currentTarget.id];
-        tracker.events[event.pointerId] = event;
-        debugPeKeys ();
-        return hole (event);
-    };
+            // elementId, onReadyIn, stepSizeIn
+            this.onReady = parameters.onReady;
+            this.stepSize = DEFAULT_VALUE(parameters.stepSize, 0.05);
+            this.events = {};
 
-    let wheel = function (event) {
-        let tracker = trackers[event.currentTarget.id];
-        tracker.onReady.notify (Float3.copy ([0, 0, -event.deltaY]));
-        return hole (event);
-    };
+            // setup all the event handlers on this element
+            let element = this.element = document.getElementById(parameters.elementId);
+            element.addEventListener("pointerdown", pointerDown, false);
+            element.addEventListener ("pointermove", pointerMoved, false);
+            element.addEventListener ("pointerup", pointerUp, false);
+            element.addEventListener ("pointercancel", pointerUp, false);
+            element.addEventListener ("pointerleave", pointerUp, false);
+            element.addEventListener ("pointerout", pointerUp, false);
+            element.addEventListener("keydown", keyDown, false);
+            element.addEventListener("wheel", wheel, false);
+            element.addEventListener("contextmenu", hole, false);
+            element.focus();
+        };
 
-    const KEY_LEFT  = 37;
-    const KEY_UP    = 38;
-    const KEY_RIGHT = 39;
-    const KEY_DOWN  = 40;
-
-    let keyDown = function (event) {
-        let tracker = trackers[event.currentTarget.id];
-        switch (event.keyCode) {
-            case KEY_LEFT: tracker.onReady.notify ([-tracker.stepSize, 0.0, 0.0]); break;
-            case KEY_UP: tracker.onReady.notify ([0.0, tracker.stepSize, 0.0]); break;
-            case KEY_RIGHT: tracker.onReady.notify ([tracker.stepSize, 0.0, 0.0]); break;
-            case KEY_DOWN: tracker.onReady.notify ([0.0, -tracker.stepSize, 0.0]); break;
-            default: tracker.onReady.notify ([0.0, 0.0, 0.0]); break;
-        }
-        return hole (event);
-    };
-
-    _.construct = function (parameters) {
-        // get the elementId and save this tracker to the global list
-        trackers[parameters.elementId] = this;
-
-        // elementId, onReadyIn, stepSizeIn
-        this.onReady = parameters.onReady;
-        this.stepSize = DEFAULT_VALUE(parameters.stepSize, 0.05);
-        this.events = {};
-
-        // setup all the event handlers on this element
-        let element = this.element = document.getElementById(parameters.elementId);
-        element.addEventListener("pointerdown", pointerDown, false);
-        element.addEventListener ("pointermove", pointerMoved, false);
-        element.addEventListener ("pointerup", pointerUp, false);
-        element.addEventListener ("pointercancel", pointerUp, false);
-        element.addEventListener ("pointerleave", pointerUp, false);
-        element.addEventListener ("pointerout", pointerUp, false);
-        element.addEventListener("keydown", keyDown, false);
-        element.addEventListener("wheel", wheel, false);
-        element.addEventListener("contextmenu", hole, false);
-        element.focus();
-    };
-
-    return _;
-} ();
+        return _;
+    } ();

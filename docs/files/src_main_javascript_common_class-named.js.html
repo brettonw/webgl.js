@@ -85,111 +85,111 @@
 
 <div class="file">
     <pre class="prettyprint linenums">
-export const CLASS_NAME_REQUIRED = &quot;CLASS_NAME_REQUIRED&quot;;
-export const CLASS_NAME_GENERATED = &quot;CLASS_NAME_GENERATED&quot;;
-export const CLASS_NAME_OPTIONAL = &quot;CLASS_NAME_OPTIONAL&quot;;
+    $.CLASS_NAME_REQUIRED = &quot;CLASS_NAME_REQUIRED&quot;;
+    $.CLASS_NAME_GENERATED = &quot;CLASS_NAME_GENERATED&quot;;
+    $.CLASS_NAME_OPTIONAL = &quot;CLASS_NAME_OPTIONAL&quot;;
 
-export let ClassNamed = function (nameRequired) {
-    DEFAULT_VALUE (nameRequired, CLASS_NAME_OPTIONAL);
-    let _ = CLASS_BASE;
+    let ClassNamed = $.ClassNamed = function (nameRequired) {
+        DEFAULT_VALUE (nameRequired, $.CLASS_NAME_OPTIONAL);
+        let _ = CLASS_BASE;
 
-    // the container for names
-    let index = OBJ;
+        // the container for names
+        let index = OBJ;
 
-    // name handling has several cases:
-    // 1) it is supplied
-    // 2) it is not supplied, but is auto-generated
-    // 3) it is not supplied, and that is ok
-    // 4) it is not supplied and that is an error
-    // so a flag is needed indicating how to handle a name that is not present
-    let uniqueNameId = 0;
-    let validateName = function (name) {
-        // if the name was supplied, it&#x27;s all good
-        if ((typeof name !== &quot;undefined&quot;) &amp;&amp; (name != null)) {
-            // but make sure it&#x27;s not already in the index
-            if (!(name in index)) {
-                return name;
+        // name handling has several cases:
+        // 1) it is supplied
+        // 2) it is not supplied, but is auto-generated
+        // 3) it is not supplied, and that is ok
+        // 4) it is not supplied and that is an error
+        // so a flag is needed indicating how to handle a name that is not present
+        let uniqueNameId = 0;
+        let validateName = function (name) {
+            // if the name was supplied, it&#x27;s all good
+            if ((typeof name !== &quot;undefined&quot;) &amp;&amp; (name != null)) {
+                // but make sure it&#x27;s not already in the index
+                if (!(name in index)) {
+                    return name;
+                }
+                throw &quot;Duplicate name (&quot; + name + &quot;)&quot;;
             }
-            throw &quot;Duplicate name (&quot; + name + &quot;)&quot;;
-        }
 
-        // otherwise, we have to decide what to do, based on some construction parameters
-        switch (nameRequired) {
-            case CLASS_NAME_REQUIRED:
-                throw &quot;Name is required&quot;;
-            case CLASS_NAME_GENERATED:
-                return &quot;id&quot; + Utility.padNum(++uniqueNameId, 5);
-            case CLASS_NAME_OPTIONAL:
-                return null;
-        }
+            // otherwise, we have to decide what to do, based on some construction parameters
+            switch (nameRequired) {
+                case $.CLASS_NAME_REQUIRED:
+                    throw &quot;Name is required&quot;;
+                case $.CLASS_NAME_GENERATED:
+                    return &quot;id&quot; + Utility.padNum(++uniqueNameId, 5);
+                case $.CLASS_NAME_OPTIONAL:
+                    return null;
+            }
+        };
+
+        /**
+         *
+         * @param parameters
+         * @param name
+         * @return {_}
+         */
+        _.new = function (parameters, name) {
+            // ensure parameters is a valid object
+            DEFAULT_VALUE (parameters, OBJ);
+
+            // validate the name, store a valid one in the parameters
+            if ((name = validateName(name)) != null) parameters.name = name;
+
+            // create the object the normal way. carefully, &quot;this&quot; is the static instance of the class
+            // we are deriving from (&quot;new&quot; probably isn&#x27;t overloaded)
+            let classNamed = SUPER.new.call (this, parameters);
+
+            // index the object if we have a valid name
+            if (name != null) {
+                classNamed.name = name;
+                index[name] = classNamed;
+            }
+
+            return classNamed;
+        };
+
+        /**
+         *
+         * @param name
+         * @return {*}
+         */
+        _.get = function (name) {
+            return index[name];
+        };
+
+        /**
+         * get the name of this named thing (if it has one).
+         *
+         * @method getName
+         * @return {string} the name of this node, or just &quot;node&quot;.
+         */
+        _.getName = function () {
+            return (&quot;name&quot; in this) ? this.name : &quot;node&quot;;
+        };
+
+        /**
+         *
+         * @return {Object}
+         */
+        _.getIndex = function () {
+            return index;
+        };
+
+        /**
+         *
+         * @param todo
+         */
+        _.forEach = function (todo) {
+            for (let name in index) {
+                let named = index[name];
+                todo (named);
+            }
+        };
+
+        return _;
     };
-
-    /**
-     *
-     * @param parameters
-     * @param name
-     * @return {_}
-     */
-    _.new = function (parameters, name) {
-        // ensure parameters is a valid object
-        DEFAULT_VALUE (parameters, OBJ);
-
-        // validate the name, store a valid one in the parameters
-        if ((name = validateName(name)) != null) parameters.name = name;
-
-        // create the object the normal way. carefully, &quot;this&quot; is the static instance of the class
-        // we are deriving from (&quot;new&quot; probably isn&#x27;t overloaded)
-        let classNamed = SUPER.new.call (this, parameters);
-
-        // index the object if we have a valid name
-        if (name != null) {
-            classNamed.name = name;
-            index[name] = classNamed;
-        }
-
-        return classNamed;
-    };
-
-    /**
-     *
-     * @param name
-     * @return {*}
-     */
-    _.get = function (name) {
-        return index[name];
-    };
-
-    /**
-     * get the name of this named thing (if it has one).
-     *
-     * @method getName
-     * @return {string} the name of this node, or just &quot;node&quot;.
-     */
-    _.getName = function () {
-        return (&quot;name&quot; in this) ? this.name : &quot;node&quot;;
-    };
-
-    /**
-     *
-     * @return {Object}
-     */
-    _.getIndex = function () {
-        return index;
-    };
-
-    /**
-     *
-     * @param todo
-     */
-    _.forEach = function (todo) {
-        for (let name in index) {
-            let named = index[name];
-            todo (named);
-        }
-    };
-
-    return _;
-};
 
     </pre>
 </div>

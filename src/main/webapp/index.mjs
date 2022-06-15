@@ -1,4 +1,7 @@
-import {Node, Float3, Float4x4, LoaderPath, LoaderShader, makeBall, makeRevolve, makeSimpleExtrude, PointerTracker, OnReady, Program, Render, RollingStats, Texture, Thing, Utility, LogLevel} from "./webgl-debug.mjs";
+// import all of wgl with a new instance...
+import {WebGL2, Utility, Float4x4, Float3} from "./webgl.mjs";
+let wgl = WebGL2();
+Object.entries(wgl).forEach(([name, exported]) => window[name] = exported);
 
 let render;
 let scene;
@@ -55,7 +58,7 @@ let drawFrame = function (timestamp) {
     // along the view vector to the front of the scene bounds, and the back of the scene bounds
     let nearPlane = 0.1;
     let farPlane = nearPlane + 1000;
-    let context = render.use();
+    let context = wgl.getContext();
     standardUniforms.PROJECTION_MATRIX_PARAMETER = Float4x4.perspective (fov, context.viewportWidth / context.viewportHeight, nearPlane, farPlane);
 
     // set up the view matrix
@@ -112,7 +115,7 @@ let buildScene = function () {
     makeBall ("ball-small", 36);
     Program.new ({ vertexShader: "basic" }, "masked-rgb");
 
-    let context = render.use();
+    let context = wgl.getContext()
     scene = Node.new ({
         state: function (standardUniforms) {
             // ordinarily, webGl will automatically present and clear when we return control to the
