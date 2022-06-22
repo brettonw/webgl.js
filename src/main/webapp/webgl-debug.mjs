@@ -959,11 +959,11 @@ export let WebGL2 = function () {
         // 4) it is not supplied and that is an error
         // so a flag is needed indicating how to handle a name that is not present
         let uniqueNameId = 0;
-        let validateName = function (name) {
+        let validateName = function (name, replace) {
             // if the name was supplied, it's all good
             if ((typeof name !== "undefined") && (name != null)) {
-                // but make sure it's not already in the index
-                if (!(name in index)) {
+                // but make sure it's not already in the index or we haven't declared we want to replace it
+                if (!(name in index) || replace) {
                     return name;
                 }
                 throw "Duplicate name (" + name + ")";
@@ -988,7 +988,7 @@ export let WebGL2 = function () {
             // ensure parameters is a valid object
             (parameters = (((typeof parameters !== "undefined") && (parameters != null)) ? parameters : Object.create (null)));
             // validate the name, store a valid one in the parameters
-            if ((name = validateName(name)) != null) parameters.name = name;
+            if ((name = validateName(name, (parameters.replace = (((typeof parameters.replace !== "undefined") && (parameters.replace != null)) ? parameters.replace : false)))) != null) parameters.name = name;
             // create the object the normal way. carefully, "this" is the static instance of the class
             // we are deriving from ("new" probably isn't overloaded)
             let classNamed = Object.getPrototypeOf(_).new.call (this, parameters);
@@ -2246,7 +2246,13 @@ export let WebGL2 = function () {
          */
         _.addChild = function (node) {
             if ("children" in this) {
-                this.children.push (node);
+                // if the new node name already exists, remove it
+                let existingIndex = this.children.findIndex((child) => child.name === node.name);
+                if (existingIndex >= 0) {
+                    this.children.splice(existingIndex,1, node);
+                } else {
+                    this.children.push (node);
+                }
                 node.parent = this;
             } else {
                 LogLevel.say (LogLevel.ERROR, "Attempting to add child (" + node.getName () + ") to node (" + this.getName () + ") that is a leaf.");

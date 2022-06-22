@@ -783,7 +783,7 @@
         },
         {
             "file": "src/main/javascript/core/node.js",
-            "line": 247,
+            "line": 253,
             "description": "draw this node's contents.",
             "itemtype": "method",
             "name": "draw",
@@ -798,7 +798,7 @@
         },
         {
             "file": "src/main/javascript/core/node.js",
-            "line": 260,
+            "line": 266,
             "description": "traverse this node and its contents. this function is a place-holder that is replaced by the\nactual function called depending on the parameters passed during construction.",
             "itemtype": "method",
             "name": "traverse",
@@ -814,7 +814,7 @@
         },
         {
             "file": "src/main/javascript/core/node.js",
-            "line": 273,
+            "line": 279,
             "class": "Node"
         },
         {
@@ -1569,7 +1569,7 @@
         },
         {
             "message": "Missing item type",
-            "line": " src/main/javascript/core/node.js:273"
+            "line": " src/main/javascript/core/node.js:279"
         },
         {
             "message": "Missing item type",

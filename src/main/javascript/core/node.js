@@ -236,7 +236,13 @@
          */
         _.addChild = function (node) {
             if ("children" in this) {
-                this.children.push (node);
+                // if the new node name already exists, remove it
+                let existingIndex = this.children.findIndex((child) => child.name === node.name);
+                if (existingIndex >= 0) {
+                    this.children.splice(existingIndex,1, node);
+                } else {
+                    this.children.push (node);
+                }
                 node.parent = this;
             } else {
                 LOG (LogLevel.ERROR, "Attempting to add child (" + node.getName () + ") to node (" + this.getName () + ") that is a leaf.");

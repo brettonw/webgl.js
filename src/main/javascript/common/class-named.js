@@ -16,11 +16,11 @@
         // 4) it is not supplied and that is an error
         // so a flag is needed indicating how to handle a name that is not present
         let uniqueNameId = 0;
-        let validateName = function (name) {
+        let validateName = function (name, replace) {
             // if the name was supplied, it's all good
             if ((typeof name !== "undefined") && (name != null)) {
-                // but make sure it's not already in the index
-                if (!(name in index)) {
+                // but make sure it's not already in the index or we haven't declared we want to replace it
+                if (!(name in index) || replace) {
                     return name;
                 }
                 throw "Duplicate name (" + name + ")";
@@ -48,7 +48,7 @@
             DEFAULT_VALUE (parameters, OBJ);
 
             // validate the name, store a valid one in the parameters
-            if ((name = validateName(name)) != null) parameters.name = name;
+            if ((name = validateName(name, DEFAULT_VALUE(parameters.replace, false))) != null) parameters.name = name;
 
             // create the object the normal way. carefully, "this" is the static instance of the class
             // we are deriving from ("new" probably isn't overloaded)
