@@ -71,7 +71,7 @@
                         let dbc = Float3.norm (Float3.subtract (b, c));
 
                         // compute the ratio of dAC / dBA, and scale the z value from that
-                        tracker.onReady.notify ([0.0, 0.0, (dac > dbc) ? -1 : 1]);
+                        tracker.onReady.notify ([0.0, 0.0, (dac > dbc) ? 1 : -1]);
                         break;
                     }
                     default:
