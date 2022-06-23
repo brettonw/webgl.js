@@ -1064,11 +1064,12 @@ export let WebGL2 = function () {
         };
         let pointerMoved = function (event) {
             let tracker = trackers[event.currentTarget.id];
+            let events = tracker.events;
             // check if there is a tracker (because there was a pointer down)...
-            if (event.pointerId in tracker.events) {
+            if (event.pointerId in events) {
                 // get the last event and save this one over it
-                let lastEvent = tracker.events[event.pointerId];
-                tracker.events[event.pointerId] = event;
+                let lastEvent = events[event.pointerId];
+                events[event.pointerId] = event;
                 let bound = tracker.element.getBoundingClientRect();
                 let ppfXY = function (e) { return [(e.clientX - bound.left) / bound.width, (e.clientY - bound.top) / -bound.height, 0.0] };
                 let ppfZ = function (e) { return [0.0, 0.0, (e.clientY - bound.top) / -bound.height] };
@@ -1083,8 +1084,8 @@ export let WebGL2 = function () {
                 };
                 let ppf;
                 // look to see how many pointers we are tracking
-                let trackerKeys = Object.keys(tracker.events);
-                switch (trackerKeys.length) {
+                let eventKeys = Object.keys(events);
+                switch (eventKeys.length) {
                     case 1:
                         // the simple move... check the buttons to decide how to handle it
                         ppf = [
@@ -1101,10 +1102,8 @@ export let WebGL2 = function () {
                         // the settings)
                         // two-finger vertical slide reported as wheel
                         // pinch-in/out reported as wheel
-                        // report Z as a fraction of the distance between the two events compared to
-                        // the previous fraction
                         // get the *other* last event as 'c'
-                        let otherLastEvent = trackers[trackerKeys[(trackerKeys[0] === event.currentTarget.id) ? 0 : 1]];
+                        let otherLastEvent = events[eventKeys[(eventKeys[0] === event.currentTarget.id) ? 0 : 1]];
                         let c = ppfXY(otherLastEvent);
                         // my last event is 'a', my current event is 'b'
                         let a = ppfXY(lastEvent);
@@ -1114,7 +1113,6 @@ export let WebGL2 = function () {
                         let dbc = Float3.norm (Float3.subtract (b, c));
                         // compute the ratio of dAC / dBA, and scale the z value from that
                         tracker.onReady.notify ([0.0, 0.0, (dac > dbc) ? -1 : 1]);
-                        ppf = ppfZ;
                         break;
                     }
                     default:
