@@ -1112,12 +1112,8 @@ export let WebGL2 = function () {
                         let dac = Float3.norm (Float3.subtract (a, c));
                         let dbc = Float3.norm (Float3.subtract (b, c));
                         let delta = dac - dbc;
-                        console.log ("a = " + Float3.str (a));
-                        console.log ("b = " + Float3.str (a));
-                        console.log ("c = " + Float3.str (a));
-                        console.log ("dac = " + dac.toFixed (5));
-                        console.log ("dbc = " + dbc.toFixed (5));
-                        console.log ("delta = " + delta.toFixed (5));
+                        console.log ("a = " + Float3.str (a) + ", b = " + Float3.str (a) + ", c = " + Float3.str (a));
+                        console.log ("dac = " + dac.toFixed (5) + ", dbc = " + dbc.toFixed (5) + ", delta = " + delta.toFixed (5));
                         let absDelta = Math.abs (delta);
                         if (absDelta > 0.01) {
                             let response = (absDelta > 0.01) ? (delta / absDelta) : 0;
