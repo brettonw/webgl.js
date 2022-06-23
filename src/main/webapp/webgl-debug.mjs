@@ -1116,6 +1116,7 @@ export let WebGL2 = function () {
                         console.log("c = " + Float3.str (a));
                         console.log("dac = " + dac.toFixed(5));
                         console.log("dbc = " + dbc.toFixed(5));
+                        console.log("output = " + ((dac > dbc) ? 1 : -1));
                         // compute the ratio of dAC / dBA, and scale the z value from that
                         tracker.onReady.notify ([0.0, 0.0, (dac > dbc) ? 1 : -1]);
                         break;
