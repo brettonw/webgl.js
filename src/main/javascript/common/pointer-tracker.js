@@ -59,7 +59,7 @@
                         // pinch-in/out reported as wheel
 
                         // get the *other* last event as 'c'
-                        let otherLastEvent = events[eventKeys[(eventKeys[0] === event.currentTarget.id) ? 0 : 1]];
+                        let otherLastEvent = events[eventKeys[(eventKeys[0] === event.pointerId) ? 0 : 1]];
                         let c = ppfXY(otherLastEvent);
 
                         // my last event is 'a', my current event is 'b'
