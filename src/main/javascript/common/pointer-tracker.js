@@ -27,9 +27,19 @@
                 let ppfZ = function (e) { return [0.0, 0.0, (e.clientY - bound.top) / -bound.height] };
                 let ppfEmpty = function (e) { return [0.0, 0.0, 0.0]; };
 
+                let simpleDelta = function () {
+                    let a = ppf(event);
+                    let b = ppf(lastEvent);
+                    let delta = Float3.subtract (a, b);
+                    if (Float3.normSq (delta) > 0) {
+                        tracker.onReady.notify (delta);
+                    }
+                };
+
                 let ppf;
                 // look to see how many pointers we are tracking
-                switch (Object.keys(tracker.events).length) {
+                let trackerKeys = Object.keys(tracker.events);
+                switch (trackerKeys.length) {
                     case 1:
                         // the simple move... check the buttons to decide how to handle it
                         ppf = [
@@ -38,25 +48,39 @@
                             ppfZ, // right click
                             ppfEmpty, ppfEmpty, ppfEmpty
                         ][event.buttons];
+                        simpleDelta ();
                         break;
-                    case 2:
+                    case 2: {
                         // gestures - why doesn't the browser already do this?
                         // macos laptop does right click on 2-finger gesture (if configured that way in
                         // the settings)
                         // two-finger vertical slide reported as wheel
                         // pinch-in/out reported as wheel
+
+                        // report Z as a fraction of the distance between the two events compared to
+                        // the previous fraction
+
+                        // get the *other* last event as 'c'
+                        let otherLastEvent = trackers[trackerKeys[(trackerKeys[0] === event.currentTarget.id) ? 0 : 1]];
+                        let c = ppfXY(otherLastEvent);
+
+                        // my last event is 'a', my current event is 'b'
+                        let a = ppfXY(lastEvent);
+                        let b = ppfXY(event);
+
+                        // compute the dAC = A - C,  dBC = B - C
+                        let dac = Float3.norm (Float3.subtract (a, c));
+                        let dbc = Float3.norm (Float3.subtract (b, c));
+                        // compute the ratio of dAC / dBA, and scale the z value from that
+                        tracker.onReady.notify ([0.0, 0.0, (dac > dbc) ? -1 : 1]);
                         ppf = ppfZ;
                         break;
+                    }
                     default:
                         // we don't handle this...
                         ppf = ppfEmpty;
+                        simpleDelta();
                         break;
-                }
-                let a = ppf(event);
-                let b = ppf(lastEvent);
-                let delta = Float3.subtract (a, b);
-                if (Float3.normSq (delta) > 0) {
-                    tracker.onReady.notify (delta);
                 }
             }
             return hole (event);
