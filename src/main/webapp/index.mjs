@@ -1,5 +1,5 @@
 // import all of wgl with a new instance...
-import {WebGL2, Utility, Float3, Float4x4} from "./webgl.mjs";
+import {WebGL2, Utility, Float3, Float4x4} from "./webgl-debug.mjs";
 let wgl = WebGL2();
 Object.entries(wgl).forEach(([name, exported]) => window[name] = exported);
 

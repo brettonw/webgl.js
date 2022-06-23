@@ -1028,6 +1028,7 @@ export let WebGL2 = function () {
          * @param todo
          */
         _.forEach = function (todo) {
+            // note this proceeds in hash order, whatever that might be
             for (let name in index) {
                 let named = index[name];
                 todo (named);
@@ -2237,6 +2238,14 @@ export let WebGL2 = function () {
             ][traverseFunctionIndex];
             return this;
         };
+        _.removeChild = function (name) {
+            let existingIndex = this.children.findIndex(child => child.name === name);
+            if (existingIndex >= 0) {
+                this.children.splice (existingIndex, 1);
+                return true;
+            }
+            return false;
+        };
         /**
          * add a child node (only applies to non-leaf nodes).
          *
@@ -2246,13 +2255,10 @@ export let WebGL2 = function () {
          */
         _.addChild = function (node) {
             if ("children" in this) {
-                // if the new node name already exists, remove it
-                let existingIndex = this.children.findIndex((child) => child.name === node.name);
-                if (existingIndex >= 0) {
-                    this.children.splice(existingIndex,1, node);
-                } else {
-                    this.children.push (node);
+                if (this.removeChild (node.getName ())) {
+                    LogLevel.say (LogLevel.WARNNG, "Removed duplicate child node (" + node.getName () + ") from (" + this.getName () + ").");
                 }
+                this.children.push (node);
                 node.parent = this;
             } else {
                 LogLevel.say (LogLevel.ERROR, "Attempting to add child (" + node.getName () + ") to node (" + this.getName () + ") that is a leaf.");

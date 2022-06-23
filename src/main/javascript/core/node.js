@@ -227,6 +227,15 @@
             return this;
         };
 
+        _.removeChild = function (name) {
+            let existingIndex = this.children.findIndex(child => child.name === name);
+            if (existingIndex >= 0) {
+                this.children.splice (existingIndex, 1);
+                return true;
+            }
+            return false;
+        };
+
         /**
          * add a child node (only applies to non-leaf nodes).
          *
@@ -236,13 +245,12 @@
          */
         _.addChild = function (node) {
             if ("children" in this) {
-                // if the new node name already exists, remove it
-                let existingIndex = this.children.findIndex((child) => child.name === node.name);
-                if (existingIndex >= 0) {
-                    this.children.splice(existingIndex,1, node);
-                } else {
-                    this.children.push (node);
+                #ifdef DEBUG
+                if (this.removeChild (node.getName ())) {
+                    LOG (LogLevel.WARNNG, "Removed duplicate child node (" + node.getName () + ") from (" + this.getName () + ").");
                 }
+                #endif
+                this.children.push (node);
                 node.parent = this;
             } else {
                 LOG (LogLevel.ERROR, "Attempting to add child (" + node.getName () + ") to node (" + this.getName () + ") that is a leaf.");

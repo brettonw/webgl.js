@@ -182,6 +182,7 @@
          * @param todo
          */
         _.forEach = function (todo) {
+            // note this proceeds in hash order, whatever that might be
             for (let name in index) {
                 let named = index[name];
                 todo (named);
