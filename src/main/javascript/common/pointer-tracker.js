@@ -2,6 +2,7 @@
         let _ = CLASS_BASE;
 
         let trackers = {};
+        let previousDeltaSq = 0;
 
         let debugPeKeys = function () {
             //document.getElementById("pekeys").innerText = Object.keys (trackers[Object.keys (trackers)[0]].events).join(", ");
@@ -58,7 +59,18 @@
                         // two-finger vertical slide reported as wheel
                         // pinch-in/out reported as wheel
 
+                        let a = ppfXY(events[eventKeys[0]]);
+                        let b = ppfXY(events[eventKeys[0]]);
+                        let deltaSq = Math.abs(Float3.normSq (Float3.subtract (a, b)));
+                        if (previousDeltaSq > 0) {
+                            let response = (previousDeltaSq > deltaSq) ? 1 : -1;
+                            console.log ("response = " + response);
+                            tracker.onReady.notify ([0.0, 0.0, response]);
+                        }
+                        previousDeltaSq = deltaSq;
+
                         // get the *other* last event as 'c'
+                        /*
                         let otherLastEvent = events[eventKeys[(eventKeys[0] === event.pointerId) ? 0 : 1]];
                         let c = ppfXY(otherLastEvent);
 
@@ -80,6 +92,7 @@
                             console.log ("response = " + response);
                             tracker.onReady.notify ([0.0, 0.0, response]);
                         }
+                        */
                         break;
                     }
                     default:
@@ -102,6 +115,7 @@
         let pointerDown = function (event) {
             let tracker = trackers[event.currentTarget.id];
             tracker.events[event.pointerId] = event;
+            previousDeltaSq = 0;
             debugPeKeys ();
             return hole (event);
         };
