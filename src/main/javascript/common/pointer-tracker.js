@@ -60,8 +60,8 @@
                         // pinch-in/out reported as wheel
 
                         let a = ppfXY(events[eventKeys[0]]);
-                        let b = ppfXY(events[eventKeys[0]]);
-                        let deltaSq = Math.abs(Float3.normSq (Float3.subtract (a, b)));
+                        let b = ppfXY(events[eventKeys[1]]);
+                        let deltaSq = Float3.normSq (Float3.subtract (a, b));
                         if (previousDeltaSq > 0) {
                             let response = (previousDeltaSq > deltaSq) ? 1 : -1;
                             console.log ("response = " + response);
