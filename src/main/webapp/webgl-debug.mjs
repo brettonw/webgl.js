@@ -1107,35 +1107,11 @@ export let WebGL2 = function () {
                         let b = ppfXY(events[eventKeys[1]]);
                         let deltaSq = Float3.normSq (Float3.subtract (a, b));
                         if (previousDeltaSq > 0) {
-                            let response = (previousDeltaSq > deltaSq) ? 1 : -1;
+                            let response = (deltaSq > previousDeltaSq) ? 1 : -1;
                             console.log ("response = " + response);
                             tracker.onReady.notify ([0.0, 0.0, response]);
                         }
                         previousDeltaSq = deltaSq;
-                        // get the *other* last event as 'c'
-                        /*
-                        let otherLastEvent = events[eventKeys[(eventKeys[0] === event.pointerId) ? 0 : 1]];
-                        let c = ppfXY(otherLastEvent);
-
-                        // my last event is 'a', my current event is 'b'
-                        let a = ppfXY(lastEvent);
-                        let b = ppfXY(event);
-
-                        // compute the dAC = A - C,  dBC = B - C
-                        let dac = Float3.norm (Float3.subtract (a, c));
-                        let dbc = Float3.norm (Float3.subtract (b, c));
-                        let delta = dac - dbc;
-
-                        console.log ("a = " + Float3.str (a) + ", b = " + Float3.str (b) + ", c = " + Float3.str (c));
-                        console.log ("dac = " + dac.toFixed (5) + ", dbc = " + dbc.toFixed (5) + ", delta = " + delta.toFixed (5));
-
-                        let absDelta = Math.abs (delta);
-                        if (absDelta > 0.01) {
-                            let response = (absDelta > 0.01) ? (delta / absDelta) : 0;
-                            console.log ("response = " + response);
-                            tracker.onReady.notify ([0.0, 0.0, response]);
-                        }
-                        */
                         break;
                     }
                     default:
