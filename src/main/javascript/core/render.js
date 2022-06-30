@@ -34,8 +34,8 @@
             // set up some boilerplate, loading all the default shaders
             let loaderList = LoaderList.new ().addLoaders (
                 LoaderShader
-                    //.new ("https://brettonw.github.io/webgl.js/src/main/webapp/shaders/@.glsl")
-                    .new ("shaders/@.glsl")
+                    .new ("https://webgl.irdev.us/shaders/@.glsl")
+                    //.new ("shaders/@.glsl")
                     .addVertexShaders ("basic")
                     .addFragmentShaders (["basic", "basic-texture", "color", "overlay", "rgb", "texture", "vertex-color"])
             );
